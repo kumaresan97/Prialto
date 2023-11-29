@@ -1,0 +1,220 @@
+.fc-header-toolbar {
+  position: relative;
+}
+.fc-header-toolbar .fc-next-button {
+  position: absolute;
+  right: 0;
+}
+.place-card {
+  display: none !important;
+}
+.fc-toolbar-title {
+  color: #000;
+}
+#workbenchPageContent {
+  max-width: 100%;
+}
+
+.content_3f3fd3c2,
+.CanvasZone {
+  padding: 0 !important;
+
+  max-width: 100% !important;
+}
+
+.report-style-class {
+  height: 100vh;
+}
+table.fc-col-header {
+  background: #dbc7a9;
+}
+.fc .fc-daygrid-day-frame {
+  width: 50px !important;
+  /* height: 50px !important; */
+}
+/* today */
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: transparent !important;
+}
+/* Event Hidden */
+.fc-daygrid-day-events {
+  display: none !important;
+}
+/* .fc-daygrid-day-frame:hover .fc-daygrid-day-events {
+  display: inline-block !important;
+} */
+/* normal */
+.fc-day :has([data-bs-target="event"]) .fc-daygrid-day-number {
+  background: #a98644 !important;
+  color: #fff !important;
+  border-radius: 15px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer !important;
+}
+
+.fc-daygrid-day-number :hover {
+  cursor: pointer !important;
+}
+
+.fc-day :has([data-bs-target="birth"]) .fc-daygrid-day-number {
+  background: red !important;
+  color: #fff !important;
+  border-radius: 15px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* //marriage */
+
+.fc-day :has([data-bs-target="testmrg"]) .fc-daygrid-day-number {
+  background: orange !important;
+  color: #fff !important;
+  border-radius: 15px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* vacation */
+.fc-day :has([data-bs-target="testvacation"]) .fc-daygrid-day-number {
+  background: blue !important;
+  color: #fff !important;
+  border-radius: 15px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fc-day :has([data-bs-target="deepavali"]) .fc-daygrid-day-number {
+  background: pink !important;
+  color: #fff !important;
+  border-radius: 15px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fc .fc-button-primary {
+  background: #fff !important;
+  border: none !important;
+  color: #e65b20 !important;
+}
+.fc .fc-toolbar-title {
+  font-weight: 400;
+  font-size: 16px !important;
+}
+th.fc-col-header-cell a {
+  font-weight: 500;
+}
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: none !important;
+  padding: 6px;
+}
+.fc-theme-standard .fc-scrollgrid {
+  border: none !important;
+}
+.fc .fc-daygrid-day-frame a {
+  text-decoration: none !important;
+  color: #000;
+}
+.fc .fc-daygrid-day-frame a:hover {
+  cursor: pointer !important;
+}
+.fc .fc-highlight {
+  background: none !important;
+}
+
+.fc-header-toolbar {
+  width: 216px;
+  margin: auto;
+}
+.fc-toolbar-title {
+  margin-left: -20% !important;
+}
+th[role="presentation"] {
+  position: relative !important;
+}
+th[role="columnheader"] a {
+  text-decoration: none !important;
+  color: #000 !important;
+}
+.fc .fc-daygrid-day-top {
+  justify-content: center !important;
+}
+/* .fc-other-month .fc-day-number {
+  display: none !important;
+} */
+.fc-day.fc-other-month {
+  display: none !important;
+}
+
+.fc .fc-cell-shaded,
+.fc .fc-day-disabled {
+  background: none !important;
+}
+.fc .fc-button-primary {
+  color: #a98644 !important;
+}
+/* calendar header margin removal */
+.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr {
+  margin-bottom: 0 !important;
+}
+.event-date {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  background-color: #ffc107; /* Change the background color */
+  color: #000; /* Change the text color */
+  font-weight: bold;
+}
+
+.iframe_container iframe {
+  height: 100% !important;
+  width: 100% !important;
+}
+/* map */
+/* .place-card {
+  display: none;
+} */
+.place-card.place-card-large {
+  display: none !important;
+}
+/* Remove outline for the next icon in the calendar */
+.fc .fc-button-primary:focus {
+  box-shadow: none !important;
+}
+/* Increase specificity */
+
+/* //tootltip */
+/* .fc-tooltip {
+  position: absolute !important;
+  background-color: #333;
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  z-index: 1000;
+  white-space: nowrap;
+  font-size: 14px;
+  max-width: 200px;
+  text-align: center;
+  pointer-events: none; 
+}
+.your-calendar-container {
+  position: relative !important;
+} */
+.colorchange {
+  color: red;
+}

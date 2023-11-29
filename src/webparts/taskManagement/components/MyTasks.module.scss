@@ -1,0 +1,24 @@
+.myTaskSection {
+  .filterSection {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  td:nth-child(1) {
+    display: flex;
+  }
+  .myTaskHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+  }
+}
+.tblTxtBox {
+  width: 100%;
+}
+.tblAction {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}

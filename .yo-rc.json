@@ -1,0 +1,16 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "version": "1.14.0",
+    "libraryName": "task-management",
+    "libraryId": "7a42ee66-321a-4372-a574-9a358366de95",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "Task Management",
+    "solutionShortDescription": "Task Management description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

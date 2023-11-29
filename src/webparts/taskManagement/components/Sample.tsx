@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { TreeTable } from "primereact/treetable";
+import { TreeTable, TreeTableExpandedKeysType } from "primereact/treetable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -60,6 +60,13 @@ const Sample = (props): JSX.Element => {
       Title: curuserId.Title,
     },
   };
+  const [configure, setConfigure] = useState({
+    backupId: null,
+    EMail: "",
+    Title: "",
+  });
+  const [expandedKeys, setExpandedKeys] =
+    useState<TreeTableExpandedKeysType | null>(null);
 
   const _sampleParent: IParent = {
     key: "",
@@ -75,9 +82,9 @@ const Sample = (props): JSX.Element => {
       Status: "",
       Created: new Date().toString(),
       Backup: {
-        EMail: "",
-        Id: null,
-        Title: "",
+        EMail: configure.EMail,
+        Id: configure.backupId,
+        Title: configure.Title,
       },
       Creator: {
         EMail: curuserId.EMail,
@@ -115,135 +122,9 @@ const Sample = (props): JSX.Element => {
     },
   };
   const [curdata, setCurdata] = useState<IMyTasks>(data);
-
-  //   const _myTaskArray = [
-  //     {
-  //       key: "1",
-  //       Id: "1",
-  //       isParent: true,
-  //       isClick: false,
-  //       isEdit: false,
-  //       isAdd: false,
-  //       data: {
-  //         name: "LinkedIn Learning",
-  //         Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //         Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //         DueDate: "08/11/1997",
-  //         PriorityLevel: "high",
-  //         Status: "complete",
-  //         Created: "08/11/1997",
-  //       },
-  //       children: [
-  //         {
-  //           key: "1-1",
-  //           Id: "1",
-  //           isParent: false,
-  //           isClick: false,
-  //           isEdit: false,
-  //           isAdd: false,
-  //           data: {
-  //             name: "How to Schedule",
-  //             Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //             Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //             DueDate: "08/11/1997",
-  //             PriorityLevel: "high",
-  //             Status: "complete",
-  //             Created: "08/11/1997",
-  //           },
-  //         },
-  //         {
-  //           key: "1-2",
-  //           Id: "2",
-  //           isParent: false,
-  //           isClick: false,
-  //           isEdit: false,
-  //           isAdd: false,
-  //           data: {
-  //             name: "How to Schedule",
-  //             Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //             Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //             DueDate: "08/11/1997",
-  //             PriorityLevel: "high",
-  //             Status: "complete",
-  //             Created: "08/11/1997",
-  //           },
-  //         },
-  //         // {
-  //         //   key: "1-3",
-  //         //   Id: "3",
-  //         //   isParent: false,
-  //         //   isClick: false,
-  //         //   isEdit: false,
-  //         //   isAdd: false,
-  //         //   data: {
-  //         //     name: "Applications",
-  //         //     Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //         //     Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //         //     DueDate: "08/11/1997",
-  //         //     PriorityLevel: "high",
-  //         //     Status: "complete",
-  //         //     Created: "08/11/1997",
-  //         //   },
-  //         // },
-  //       ],
-  //     },
-  //     {
-  //       key: "2",
-  //       Id: "2",
-  //       isParent: true,
-  //       isClick: false,
-  //       isEdit: false,
-  //       isAdd: false,
-  //       data: {
-  //         name: "Unload Dishwasher",
-  //         Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //         Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //         DueDate: "08/11/1997",
-  //         PriorityLevel: "high",
-  //         Status: "complete",
-  //         Created: "08/11/1997",
-  //       },
-  //       children: [
-  //         {
-  //           key: "2-1",
-  //           Id: "4",
-  //           isParent: false,
-  //           isClick: false,
-  //           isEdit: false,
-  //           isAdd: false,
-  //           data: {
-  //             name: "How to Schedule",
-  //             Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //             Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //             DueDate: "08/11/1997",
-  //             PriorityLevel: "high",
-  //             Status: "complete",
-  //             Created: "08/11/1997",
-  //           },
-  //         },
-  //         {
-  //           key: "2-2",
-  //           Id: "5",
-  //           isParent: false,
-  //           isClick: false,
-  //           isEdit: false,
-  //           isAdd: false,
-  //           data: {
-  //             name: "How to Schedule",
-  //             Creator: "devaraj@chandrudemo.onmicrosoft.com",
-  //             Backup: "devaraj@chandrudemo.onmicrosoft.com",
-  //             DueDate: "08/11/1997",
-  //             PriorityLevel: "high",
-  //             Status: "complete",
-  //             Created: "08/11/1997",
-  //           },
-  //         },
-  //       ],
-  //     },
-  //   ];
-
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
+
   //onchange values get
   const getOnchange = (key, _value) => {
     let FormData = { ...curdata };
@@ -275,7 +156,10 @@ const Sample = (props): JSX.Element => {
           icon="pi pi-plus"
           rounded
           onClick={(_) => {
+            console.log(_);
+
             _handleData("addChild", obj);
+            toggleApplications(obj.key);
           }}
         />
         <Button
@@ -334,23 +218,29 @@ const Sample = (props): JSX.Element => {
   };
   //Add item
   const AddItem = (obj) => {
+    debugger;
     console.log(obj, "obj");
 
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
-      TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id,
-      DueDate: new Date(curdata.DueDate).toISOString(),
-      PriorityLevel: curdata.PriorityLevel["name"],
-      Status: curdata.Status["name"],
+      TaskName: curdata.TaskName ? curdata.TaskName : "",
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
+      PriorityLevel: curdata.PriorityLevel["name"]
+        ? curdata.PriorityLevel["name"]
+        : "",
+      Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
     };
     let Main = {
-      TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id,
-      DueDate: new Date(curdata.DueDate).toISOString(),
-      PriorityLevel: curdata.PriorityLevel["name"],
-      Status: curdata.Status["name"],
+      TaskName: curdata.TaskName ? curdata.TaskName : "",
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
+      PriorityLevel: curdata.PriorityLevel["name"]
+        ? curdata.PriorityLevel["name"]
+        : "",
+      Status: curdata.Status["name"] ? curdata.Status["name"] : "",
+      AssistantId: curuserId.Id,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -419,9 +309,11 @@ const Sample = (props): JSX.Element => {
     let editval = {
       TaskName: curdata.TaskName,
       BackupId: curdata.Backup.Id,
-      DueDate: new Date(curdata.DueDate).toISOString(),
-      PriorityLevel: curdata.PriorityLevel["name"],
-      Status: curdata.Status["name"],
+      DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
+      PriorityLevel: curdata.PriorityLevel["name"]
+        ? curdata.PriorityLevel["name"]
+        : "",
+      Status: curdata.Status["name"] ? curdata.Status["name"] : "",
     };
     SPServices.SPUpdateItem({
       Listname: ListName,
@@ -687,7 +579,7 @@ const Sample = (props): JSX.Element => {
             //   value.PeopleEmail ? [value.PeopleEmail] : []
             // }
             defaultSelectedUsers={
-              curdata.Backup.EMail ? [curdata.Backup.EMail] : []
+              curdata.Backup.EMail ? [curdata.Backup.EMail] : [configure.EMail]
             }
             resolveDelay={1000}
             onChange={(items: any[]) => {
@@ -886,8 +778,8 @@ const Sample = (props): JSX.Element => {
   };
   //getmaintask
   const getMainTask = (id) => {
+    debugger;
     SPServices.SPReadItems({
-      // Listname: "Disclosed Investors Dev",
       Listname: "Tasks",
       Select:
         "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title",
@@ -898,41 +790,41 @@ const Sample = (props): JSX.Element => {
       Filter: [
         {
           FilterKey: "Assistant/ID",
-          FilterValue: id,
           Operator: "eq",
+          FilterValue: id,
         },
       ],
-      //   FilterCondition: curuserId ? `AssistantId eq '${curuserId}'` : "",
     })
       .then((res) => {
         MainTask = [];
         res.forEach((val: any) => {
-          MainTask.push({
-            key: val.Id,
-            Id: val.Id,
-            isParent: true,
-            isClick: false,
-            isAdd: false,
-            isEdit: false,
-            data: {
-              TaskName: val.TaskName,
-              Creator: {
-                Id: val.Author.ID,
-                EMail: val.Author.EMail,
-                Title: val.Author.Title,
+          val.ClientName == null &&
+            MainTask.push({
+              key: val.Id,
+              Id: val.Id,
+              isParent: true,
+              isClick: false,
+              isAdd: false,
+              isEdit: false,
+              data: {
+                TaskName: val.TaskName,
+                Creator: {
+                  Id: val.Author.ID,
+                  EMail: val.Author.EMail,
+                  Title: val.Author.Title,
+                },
+                Backup: {
+                  Id: val.Backup?.ID,
+                  EMail: val.Backup?.EMail,
+                  Title: val.Backup?.Title,
+                },
+                DueDate: val.DueDate,
+                PriorityLevel: val.PriorityLevel,
+                Status: val.Status,
+                Created: moment(val.Created).format("l"),
               },
-              Backup: {
-                Id: val.Backup.ID,
-                EMail: val.Backup.EMail,
-                Title: val.Backup.Title,
-              },
-              DueDate: val.DueDate,
-              PriorityLevel: val.PriorityLevel,
-              Status: val.Status,
-              Created: val.Created,
-            },
-            children: [],
-          });
+              children: [],
+            });
         });
         console.log(MainTask, "maintask");
         getsubTask();
@@ -945,7 +837,7 @@ const Sample = (props): JSX.Element => {
   const getsubTask = () => {
     MainArray = [];
     let count = 0;
-    debugger;
+
     for (let i = 0; i < MainTask.length; i++) {
       SPServices.SPReadItems({
         Listname: "SubTasks",
@@ -965,33 +857,35 @@ const Sample = (props): JSX.Element => {
       })
         .then((res) => {
           SubTask = [];
+
           res.forEach((val: any, index) => {
-            SubTask.push({
-              key: `${MainTask[i].Id}-${index + 1}`,
-              Id: val.Id,
-              subId: MainTask[i].Id,
-              isClick: false,
-              isParent: false,
-              isAdd: false,
-              isEdit: false,
-              data: {
-                TaskName: val.TaskName,
-                Creator: {
-                  Id: val.Author.ID,
-                  EMail: val.Author.EMail,
-                  Title: val.Author.Title,
+            val.ClientName == null &&
+              SubTask.push({
+                key: `${MainTask[i].Id}-${index + 1}`,
+                Id: val.Id,
+                subId: MainTask[i].Id,
+                isClick: false,
+                isParent: false,
+                isAdd: false,
+                isEdit: false,
+                data: {
+                  TaskName: val.TaskName,
+                  Creator: {
+                    Id: val.Author.ID,
+                    EMail: val.Author.EMail,
+                    Title: val.Author.Title,
+                  },
+                  Backup: {
+                    Id: val.Backup?.ID,
+                    EMail: val.Backup?.EMail,
+                    Title: val.Backup?.Title,
+                  },
+                  DueDate: val.DueDate,
+                  PriorityLevel: val.PriorityLevel,
+                  Status: val.Status,
+                  Created: moment(val.Created).format("l"),
                 },
-                Backup: {
-                  Id: val.Backup.ID,
-                  EMail: val.Backup.EMail,
-                  Title: val.Backup.Title,
-                },
-                DueDate: val.DueDate,
-                PriorityLevel: val.PriorityLevel,
-                Status: val.Status,
-                Created: val.Created,
-              },
-            });
+              });
           });
 
           MainArray.push({
@@ -1019,6 +913,31 @@ const Sample = (props): JSX.Element => {
       curuserId.Id = res.Id;
       curuserId.EMail = res.Email;
       curuserId.Title = res.Title;
+      SPServices.SPReadItems({
+        Listname: "Configuration",
+        Select:
+          "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
+        Expand: "BackingUp ,Name,TeamCaptain",
+        Filter: [
+          {
+            FilterKey: "Name/ID",
+            FilterValue: res.Id.toString(),
+            Operator: "eq",
+          },
+        ],
+      })
+        .then((res: any) => {
+          let x = { ...configure };
+          res.forEach((val) => {
+            x.EMail = val.BackingUp[0].EMail;
+            x.backupId = val.BackingUp[0].ID;
+            x.Title = val.BackingUp[0].Title;
+          });
+          setConfigure({ ...x });
+          //   console.log(res.BackingUp[0].EMail, "backup");
+          //   res.BackingUp.EMail
+        })
+        .catch((err) => errFunction(err));
 
       setCuruserId({ ...curuserId });
       getMainTask(res.Id);
@@ -1065,6 +984,13 @@ const Sample = (props): JSX.Element => {
 
     setCurMyTask([...filteredResults]);
     console.log(e);
+  };
+  const toggleApplications = (key) => {
+    let _expandedKeys = { ...expandedKeys };
+
+    if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
+    else _expandedKeys[`${key}`] = true;
+    setExpandedKeys(_expandedKeys);
   };
   useEffect(() => {
     // setCurMyTask([..._myTaskArray]);
@@ -1122,19 +1048,20 @@ const Sample = (props): JSX.Element => {
       </div>
       <TreeTable
         selectionMode="checkbox"
-        // selectionMode="multiple"
         sortMode="multiple"
         selectionKeys={selectedNodeKeys}
         onSelect={onSelect}
         onUnselect={unselect}
+        expandedKeys={expandedKeys}
+        onToggle={(e) => setExpandedKeys(e.value)}
         onSelectionChange={(e) => {
           console.log(e);
           setSelectedNodeKeys(e.value);
         }}
         value={[...curMyTask]}
         tableStyle={{ minWidth: "50rem" }}
-        paginator
-        rows={10}
+        // paginator
+        // rows={10}
       >
         <Column
           field="TaskName"
@@ -1142,31 +1069,21 @@ const Sample = (props): JSX.Element => {
           expander
           sortable
           style={{ width: "265px" }}
-          //   style={{ height: "3.5rem", width: "150px" }}
           body={(obj: any) => _addTextField(obj, "TaskName")}
         />
-        <Column
-          //   headerClassName="w-10rem"
-          style={{ width: "200px" }}
-          body={(obj: any) =>
-            // !obj.isClick && _action(obj)
-            _action(obj)
-          }
-        />
+        <Column style={{ width: "200px" }} body={(obj: any) => _action(obj)} />
 
         <Column
           field="Creator"
           header="Creator"
           sortable
           style={{ width: "200px" }}
-          //   style={{ height: "3.5rem", width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Creator")}
         />
         <Column
           field="Backup"
           header="Backup"
           sortable
-          //   style={{ height: "3.5rem", width: "200px" }}
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Backup")}
         />
@@ -1174,7 +1091,6 @@ const Sample = (props): JSX.Element => {
           field="DueDate"
           header="Due Date"
           sortable
-          //   style={{ height: "3.5rem", width: "200px" }}
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "DueDate")}
         />
@@ -1183,7 +1099,6 @@ const Sample = (props): JSX.Element => {
           field="PriorityLevel"
           header=" Priority Level"
           sortable
-          //   style={{ height: "3.5rem", width: "150px" }}
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "PriorityLevel")}
         />
@@ -1191,7 +1106,6 @@ const Sample = (props): JSX.Element => {
           field="Status"
           header="Status"
           sortable
-          //   style={{ height: "3.5rem", width: "150px" }}
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Status")}
         />
@@ -1199,18 +1113,13 @@ const Sample = (props): JSX.Element => {
           field="Created"
           header="Created"
           sortable
-          //   style={{ height: "3.5rem", width: "150px" }}
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Created")}
         />
         <Column
-          //   headerClassName="w-10rem"
-          //   style={{ width: "150px" }}
           style={{ width: "150px" }}
-          body={
-            (obj: any) =>
-              obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
-            // _actionSubmit(obj)
+          body={(obj: any) =>
+            obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
           }
         />
       </TreeTable>

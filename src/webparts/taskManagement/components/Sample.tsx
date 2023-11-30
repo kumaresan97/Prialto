@@ -4,7 +4,7 @@ import { TreeTable, TreeTableExpandedKeysType } from "primereact/treetable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Label } from "@fluentui/react";
+import { Label, Persona, PersonaSize } from "@fluentui/react";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { sp } from "@pnp/sp/presets/all";
@@ -123,11 +123,31 @@ const Sample = (props): JSX.Element => {
   };
   const [curdata, setCurdata] = useState<IMyTasks>(data);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
+  const [error, setError] = useState({
+    TaskName: "",
+
+    DueDate: "",
+  });
   const [masterdata, setMasterdata] = useState<any[]>([]);
 
   //onchange values get
   const getOnchange = (key, _value) => {
     let FormData = { ...curdata };
+    let err = { ...error };
+    if (key == "TaskName") {
+      if (_value.trim() == "") {
+        err[key] = "TaskName required";
+      } else {
+        err[key] = "";
+      }
+    }
+    if (key == "DueDate") {
+      if (_value == null) {
+        err[key] = "DueDate required";
+      } else {
+        err[key] = null;
+      }
+    }
     if (key == "Backup") {
       FormData.Backup.Id = _value;
     } else if (key == "Status" || key == "PriorityLevel") {
@@ -141,6 +161,7 @@ const Sample = (props): JSX.Element => {
       FormData[key] = _value;
     }
     console.log(FormData, "formdata");
+    setError({ ...err });
 
     setCurdata({ ...FormData });
   };
@@ -154,7 +175,6 @@ const Sample = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-plus"
-          rounded
           onClick={(_) => {
             console.log(_);
 
@@ -162,11 +182,18 @@ const Sample = (props): JSX.Element => {
             toggleApplications(obj.key);
           }}
         />
+        {/* <i
+          className="pi pi-plus"
+          onClick={() => {
+            _handleData("addChild", obj);
+            toggleApplications(obj.key);
+          }}
+        ></i> */}
+
         <Button
           disabled={obj.isClick}
           type="button"
           icon="pi pi-pencil"
-          rounded
           onClick={(_) => {
             _handleData("edit", obj);
           }}
@@ -175,7 +202,6 @@ const Sample = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
-          rounded
           onClick={() => deleteData(obj)}
         />
       </div>
@@ -188,6 +214,7 @@ const Sample = (props): JSX.Element => {
         <Button
           type="button"
           icon="pi pi-check"
+          disabled={error.TaskName || error.DueDate ? true : false}
           rounded
           onClick={(_) => {
             _handleDataoperation(obj);
@@ -215,6 +242,26 @@ const Sample = (props): JSX.Element => {
     } else if (!obj.isParent && !obj.Id) {
       AddItem(obj);
     }
+  };
+
+  //validate
+
+  const validate = () => {
+    let valid = true;
+    const newErrors = { ...error };
+
+    if (!curdata.TaskName.trim()) {
+      newErrors.TaskName = "TaskName is required";
+      valid = false;
+    }
+
+    if (!curdata.DueDate) {
+      newErrors.DueDate = "Date is required";
+      valid = false;
+    }
+
+    setError({ ...newErrors });
+    return valid;
   };
   //Add item
   const AddItem = (obj) => {
@@ -245,16 +292,20 @@ const Sample = (props): JSX.Element => {
 
     let Json = obj.isParent ? Main : sub;
 
-    SPServices.SPAddItem({
-      Listname: ListName,
-      RequestJSON: Json,
-    })
-      .then((res) => {
-        setCurdata({ ...data });
-        getcurUser();
-        console.log(res, "success");
+    const isValid = validate();
+
+    if (isValid) {
+      SPServices.SPAddItem({
+        Listname: ListName,
+        RequestJSON: Json,
       })
-      .catch((err) => errFunction(err));
+        .then((res) => {
+          setCurdata({ ...data });
+          getcurUser();
+          console.log(res, "success");
+        })
+        .catch((err) => errFunction(err));
+    }
   };
   //deleteitem
   const deleteData = (obj) => {
@@ -512,56 +563,63 @@ const Sample = (props): JSX.Element => {
     if (!val.Id && val.isAdd) {
       if (fieldType == "TaskName") {
         return (
-          <InputText
-            type="text"
-            placeholder="TaskName"
-            value={curdata.TaskName}
-            className={styles.tblTxtBox}
-            onChange={(e: any) => getOnchange("TaskName", e.target.value)}
-          />
+          <>
+            <InputText
+              type="text"
+              placeholder="TaskName"
+              value={curdata.TaskName}
+              aria-errormessage={error.TaskName ? error.TaskName : ""}
+              className={styles.tblTxtBox}
+              onChange={(e: any) => getOnchange("TaskName", e.target.value)}
+            />
+            {error.TaskName && <div className="p-error">{error.TaskName}</div>}
+          </>
         );
       }
       if (fieldType == "DueDate") {
         return (
-          <Calendar
-            placeholder="Date"
-            value={new Date(curdata.DueDate)}
-            onChange={(e) => getOnchange("DueDate", e.value)}
-            showIcon
-          />
+          <>
+            <Calendar
+              placeholder="Date"
+              value={new Date(curdata.DueDate)}
+              onChange={(e) => getOnchange("DueDate", e.value)}
+              showIcon
+            />
+            {/* {error.DueDate && <div className="p-error">{error.DueDate}</div>} */}
+          </>
         );
       }
-      if (fieldType == "Creator") {
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            placeholder="Enter Email"
-            // required={true}
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            // defaultSelectedUsers={
-            //   value.PeopleEmail ? [value.PeopleEmail] : []
-            // }
-            defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("Creator", selectedItem.id);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("Creator", null);
-              }
-            }}
-          />
-        );
-      }
+      //   if (fieldType == "Creator") {
+      //     return (
+      //       <PeoplePicker
+      //         context={props.context}
+      //         personSelectionLimit={1}
+      //         groupName={""}
+      //         showtooltip={true}
+      //         placeholder="Enter Email"
+      //         // required={true}
+      //         ensureUser={true}
+      //         // showHiddenInUI={false}
+      //         showHiddenInUI={true}
+      //         principalTypes={[PrincipalType.User]}
+      //         // defaultSelectedUsers={
+      //         //   value.PeopleEmail ? [value.PeopleEmail] : []
+      //         // }
+      //         defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
+      //         resolveDelay={1000}
+      //         onChange={(items: any[]) => {
+      //           if (items.length > 0) {
+      //             const selectedItem = items[0];
+      //             getOnchange("Creator", selectedItem.id);
+      //             // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //           } else {
+      //             // No selection, pass null or handle as needed
+      //             getOnchange("Creator", null);
+      //           }
+      //         }}
+      //       />
+      //     );
+      //   }
       if (fieldType == "Backup") {
         return (
           <PeoplePicker
@@ -645,36 +703,36 @@ const Sample = (props): JSX.Element => {
         return <Calendar value={new Date(curdata.DueDate)} showIcon />;
       }
 
-      if (fieldType == "Creator") {
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            // required={true}
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            // defaultSelectedUsers={
-            //   value.PeopleEmail ? [value.PeopleEmail] : []
-            // }
-            defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
-            resolveDelay={1000}
-            // onChange={(items: any[]) => {
-            //   if (items.length > 0) {
-            //     const selectedItem = items[0];
-            //     getonChange("assignId", selectedItem.id);
-            //     // getonChange("PeopleEmail", selectedItem.secondaryText);
-            //   } else {
-            //     // No selection, pass null or handle as needed
-            //     getonChange("assignId", null);
-            //   }
-            // }}
-          />
-        );
-      }
+      //   if (fieldType == "Creator") {
+      //     return (
+      //       <PeoplePicker
+      //         context={props.context}
+      //         personSelectionLimit={1}
+      //         groupName={""}
+      //         showtooltip={true}
+      //         // required={true}
+      //         ensureUser={true}
+      //         // showHiddenInUI={false}
+      //         showHiddenInUI={true}
+      //         principalTypes={[PrincipalType.User]}
+      //         // defaultSelectedUsers={
+      //         //   value.PeopleEmail ? [value.PeopleEmail] : []
+      //         // }
+      //         defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
+      //         resolveDelay={1000}
+      //         // onChange={(items: any[]) => {
+      //         //   if (items.length > 0) {
+      //         //     const selectedItem = items[0];
+      //         //     getonChange("assignId", selectedItem.id);
+      //         //     // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         //   } else {
+      //         //     // No selection, pass null or handle as needed
+      //         //     getonChange("assignId", null);
+      //         //   }
+      //         // }}
+      //       />
+      //     );
+      //   }
       if (fieldType == "Backup") {
         return (
           <PeoplePicker
@@ -742,19 +800,32 @@ const Sample = (props): JSX.Element => {
         );
       }
     } else {
+      //   if (fieldType == "Backup") {
+      //     return (
+      //       <span
+      //         style={{
+      //           textOverflow: "ellipsis",
+      //           overflow: "hidden",
+      //           whiteSpace: "nowrap",
+      //           display: "block",
+      //           width: "160px",
+      //         }}
+      //       >
+      //         {data[fieldType].Title}
+      //       </span>
+      //     );
+      //   }
       if (fieldType == "Creator" || fieldType == "Backup") {
         return (
-          <span
-            style={{
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              display: "block",
-              width: "160px",
-            }}
-          >
-            {data[fieldType].Title}
-          </span>
+          <Persona
+            size={PersonaSize.size32}
+            text={data[fieldType].Title}
+            imageUrl={
+              curuserId.Id &&
+              "/_layouts/15/userphoto.aspx?size=S&username=" +
+                data[fieldType].EMail
+            }
+          />
         );
       } else {
         return (
@@ -818,7 +889,7 @@ const Sample = (props): JSX.Element => {
                   EMail: val.Backup?.EMail,
                   Title: val.Backup?.Title,
                 },
-                DueDate: val.DueDate,
+                DueDate: val.DueDate ? moment(val.DueDate).format("l") : null,
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
                 Created: moment(val.Created).format("l"),
@@ -880,7 +951,7 @@ const Sample = (props): JSX.Element => {
                     EMail: val.Backup?.EMail,
                     Title: val.Backup?.Title,
                   },
-                  DueDate: val.DueDate,
+                  DueDate: val.DueDate ? moment(val.DueDate).format("l") : null,
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
                   Created: moment(val.Created).format("l"),
@@ -1016,9 +1087,9 @@ const Sample = (props): JSX.Element => {
         <Button
           label="Automate"
           severity="warning"
-          onClick={() => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
+          //   onClick={() => {
+          //     _handleData("addParent", { ..._sampleParent });
+          //   }}
         />
         <Button
           label="Export"

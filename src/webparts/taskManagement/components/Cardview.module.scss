@@ -1,0 +1,33 @@
+// colors
+$roleHeader: #757b81;
+
+.mainContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 16px;
+  .cardSize {
+    width: 32.3%;
+    box-shadow: 0px -1px 4px #b9b9b926;
+    .secDivider {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+    }
+    .noPaddingLable {
+      padding: 0px;
+      font-size: 16px;
+      color: #007c81;
+      font-weight: 400;
+    }
+    .roleHead {
+      color: $roleHeader;
+      font-size: 14px;
+    }
+    .teaCaptianSec {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+  }
+}

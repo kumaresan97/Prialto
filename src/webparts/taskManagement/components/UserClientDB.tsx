@@ -16,7 +16,7 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
-let x = [];
+let x:any = [];
 const cities = [
   { name: "New York", code: "NY" },
   { name: "Rome", code: "RM" },
@@ -43,7 +43,7 @@ const UserClientDB = (props): JSX.Element => {
 
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
-  const data: IMyTasks = {
+  const data: any = {
     TaskName: "",
     ClientName:"",
     ClientID:0,
@@ -64,9 +64,9 @@ const UserClientDB = (props): JSX.Element => {
   };
   const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
-    useState<TreeTableExpandedKeysType | null>(null);
+    useState<TreeTableExpandedKeysType | any>(null);
 
-  const _sampleParent: IParent = {
+  const _sampleParent: any = {
     key: "",
     Id: null,
     isParent: true,
@@ -94,7 +94,7 @@ const UserClientDB = (props): JSX.Element => {
     children: [],
   };
 
-  const _sampleChild: IChild = {
+  const _sampleChild: any = {
     key: "",
     Id: null,
     isParent: false,
@@ -289,7 +289,7 @@ const UserClientDB = (props): JSX.Element => {
   //deleteitem
   const deleteData = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
-    let Ids = [];
+    let Ids:any = [];
 
     ListName === "Tasks" &&
       obj.children.length &&
@@ -537,7 +537,7 @@ const UserClientDB = (props): JSX.Element => {
     console.log("test")
   };
   //addtextfield
-  const _addTextField = (val: any, fieldType: string): JSX.Element => {
+  const _addTextField = (val: any, fieldType: string): any => {
     
     const data: any = val?.data;
 
@@ -911,7 +911,7 @@ const UserClientDB = (props): JSX.Element => {
         onUnselect={unselect}
         expandedKeys={expandedKeys}
         onToggle={(e) => setExpandedKeys(e.value)}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e:any) => {
           setSelectedNodeKeys(e.value);
         }}
         value={[...curMyTask]}

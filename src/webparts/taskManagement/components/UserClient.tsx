@@ -4,10 +4,10 @@ import { Label } from "@fluentui/react";
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
 import UserClientDB from "./UserClientDB";
-let MyClients=[];
-let MainTask=[];
-let MainArray=[];
-let SubTask=[];
+let MyClients:any=[];
+let MainTask:any=[];
+let MainArray:any=[];
+let SubTask:any=[];
 export default function UserClients(props)
 {
     const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
@@ -34,7 +34,7 @@ export default function UserClients(props)
     const getcurUser = () => {
         let user = sp.web.siteUsers.getByEmail(UserEmail).get().then((res) => 
         {
-          let crntUserDetails=
+          let crntUserDetails:any=
           {
               Id:res.Id,
               EMail:res.Email,
@@ -178,7 +178,7 @@ function getMyClients(id)
                 });
             });
     
-            let arrFilter=[];
+            let arrFilter:any=[];
             for (let i = 0; i < MainTask.length; i++) {
               arrFilter.push({
                 FilterKey: "MainTaskID/ID",
@@ -257,7 +257,7 @@ function getMyClients(id)
     
               if (count === MainTask.length) {
                 console.log(MainArray, "MainArray");
-                let tempClient=[];
+                let tempClient:any=[];
                 for(let i=0;i<MyClients.length;i++)
                 {
                     tempClient.push({ClientName:MyClients[i].Name,Tasks:[]});

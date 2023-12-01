@@ -16,7 +16,7 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
-let x = [];
+let x:any = [];
 const cities = [
   { name: "New York", code: "NY" },
   { name: "Rome", code: "RM" },
@@ -30,22 +30,23 @@ const dropval = [
   { name: "Urgent", code: "Normal" },
   { name: "Newindia", code: "Newindia" },
 ];
+
+let MyClients=[];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
-const MyTasksDashboard = (props): JSX.Element => {
-  const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
+
+const UserClientDB = (props): JSX.Element => {
+  //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
 
-  const [curuserId, setCuruserId] = useState({
-    Id: null,
-    EMail: "",
-    Title: "",
-  });
+  const [curuserId, setCuruserId] = useState(props.crntUserData);
 
-  const data: IMyTasks = {
+  const data: any = {
     TaskName: "",
+    ClientName:"",
+    ClientID:0,
     DueDate: "",
     PriorityLevel: "",
     Status: "",
@@ -61,15 +62,11 @@ const MyTasksDashboard = (props): JSX.Element => {
       Title: curuserId.Title,
     },
   };
-  const [configure, setConfigure] = useState({
-    backupId: null,
-    EMail: "",
-    Title: "",
-  });
+  const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
-    useState<TreeTableExpandedKeysType | null>(null);
+    useState<TreeTableExpandedKeysType | any>(null);
 
-  const _sampleParent: IParent = {
+  const _sampleParent: any = {
     key: "",
     Id: null,
     isParent: true,
@@ -78,6 +75,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
+      ClientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -96,7 +94,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     children: [],
   };
 
-  const _sampleChild: IChild = {
+  const _sampleChild: any = {
     key: "",
     Id: null,
     isParent: false,
@@ -106,6 +104,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
+      ClientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -131,7 +130,10 @@ const MyTasksDashboard = (props): JSX.Element => {
   const getOnchange = (key, _value) => {
     let FormData = { ...curdata };
     if (key == "Backup") {
-      FormData.Backup.Id = _value;
+      debugger;
+      FormData.Backup.Id = _value.id;
+      FormData.Backup.EMail= _value.secondaryText;
+      FormData.Backup.Title=_value.text;
     } else if (key == "Status" || key == "PriorityLevel") {
       FormData[key] = _value;
     }
@@ -237,24 +239,57 @@ const MyTasksDashboard = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       AssistantId: curuserId.Id,
+      ClientId:3
     };
 
     let Json = obj.isParent ? Main : sub;
 
+    
     SPServices.SPAddItem({
       Listname: ListName,
       RequestJSON: Json,
     })
       .then((res) => {
-        setCurdata({ ...data });
-        getcurUser();
+        // props.maindata=[...curMyTask];
+        // let temptest=props.maindata;
+        // let tempObject={...obj}
+        // tempObject.data={...curdata};
+        // temptest[indexOfObj].Id=res.data.ID;
+        // temptest[indexOfObj].key=res.data.ID;
+        // temptest[indexOfObj].isClick=false;
+        // temptest[indexOfObj].isAdd=false;
+        // props.maindata=temptest;
+        //BindAfterData(temptest);
+        debugger;
+        console.log(curdata);
+        let newData=  {
+          "key": res.data.ID,
+          "Id": res.data.ID,
+          "isParent": true,
+          "isClick": false,
+          "isEdit": false,
+          "isAdd": false,
+          "data": {
+            "TaskName": Json.TaskName,
+            "ClientName": "Mksan 3",
+            "ClientID": 3,
+            "DueDate": SPServices.displayDate(Json.DueDate),
+            "PriorityLevel": Json.PriorityLevel,
+            "Status": Json.Status,
+            "Created": moment().format("YYYY-MM-DD"),
+            "Backup": curdata.Backup,
+            "Creator": curdata.Creator
+          },
+          "children": []
+        }
+        BindAfternewData(newData);
       })
       .catch((err) => errFunction(err));
   };
   //deleteitem
   const deleteData = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
-    let Ids = [];
+    let Ids:any = [];
 
     ListName === "Tasks" &&
       obj.children.length &&
@@ -272,7 +307,9 @@ const MyTasksDashboard = (props): JSX.Element => {
     })
       .then((res) => {
         if (Ids.length) {
-          for (let i: number = 0; Ids.length > i; i++) {
+          BindAfterDataDelete(obj.Id);
+          for (let i: number = 0; Ids.length > i; i++) 
+          {
             SPServices.SPDeleteItem({
               Listname: "SubTasks",
               ID: Ids[i].Id,
@@ -280,7 +317,7 @@ const MyTasksDashboard = (props): JSX.Element => {
               .then((res) => {
                 if (Ids.length === i + 1) {
                   console.log("delete successfully");
-                  getcurUser();
+                  //getcurUser();
                 }
               })
               .catch((err) => {
@@ -289,7 +326,7 @@ const MyTasksDashboard = (props): JSX.Element => {
           }
         } else {
           console.log("delete successfully");
-          getcurUser();
+          BindAfterDataDelete(obj.Id);
         }
       })
       .catch((err) => {
@@ -318,7 +355,7 @@ const MyTasksDashboard = (props): JSX.Element => {
         console.log(res, "editsuccessfully");
         setCurdata({ ...data });
 
-        getcurUser();
+        //getcurUser();
       })
       .catch((err) => errFunction(err));
   };
@@ -497,9 +534,10 @@ const MyTasksDashboard = (props): JSX.Element => {
     }
 
     setCurMyTask([..._curArray]);
+    console.log("test")
   };
   //addtextfield
-  const _addTextField = (val: any, fieldType: string): JSX.Element => {
+  const _addTextField = (val: any, fieldType: string): any => {
     
     const data: any = val?.data;
 
@@ -579,7 +617,7 @@ const MyTasksDashboard = (props): JSX.Element => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Backup", selectedItem.id);
+                getOnchange("Backup", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -772,178 +810,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     console.log(err);
   };
 
-  //getmaintask
-  const getMainTask = (id) => {
-    SPServices.SPReadItems({
-      Listname: "Tasks",
-      Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,ClientName/ID",
 
-      Expand: "Assistant,Backup,Author,ClientName",
-      Orderby: "Created",
-      Orderbydecorasc: false,
-      Filter: [
-        {
-          FilterKey: "Assistant/ID",
-          Operator: "eq",
-          FilterValue: id,
-        },
-      ],
-    })
-      .then((res) => {
-        MainTask = [];
-        res.forEach((val: any) => {
-          val.ClientName == null &&
-            MainTask.push({
-              key: val.Id,
-              Id: val.Id,
-              isParent: true,
-              isClick: false,
-              isAdd: false,
-              isEdit: false,
-              data: {
-                TaskName: val.TaskName,
-                Creator: {
-                  Id: val.Author.ID,
-                  EMail: val.Author.EMail,
-                  Title: val.Author.Title,
-                },
-                Backup: {
-                  Id: val.Backup?.ID,
-                  EMail: val.Backup?.EMail,
-                  Title: val.Backup?.Title,
-                },
-                DueDate: SPServices.displayDate(val.DueDate),
-                PriorityLevel: val.PriorityLevel,
-                Status: val.Status,
-                Created: SPServices.displayDate(val.Created),
-              },
-              children: [],
-            });
-        });
-
-        let arrFilter=[];
-        for (let i = 0; i < MainTask.length; i++) {
-          arrFilter.push({
-            FilterKey: "MainTaskID/ID",
-            FilterValue: MainTask[i].Id.toString(),
-            Operator: "eq"
-          })
-        }
-        getsubTask(arrFilter);
-      })
-      .catch((err) => {
-        errFunction(err);
-      });
-  };
-  //getsubtask
-  const getsubTask = (FilterValue) => {
-    MainArray = [];
-    SPServices.SPReadItems({
-      Listname: "SubTasks",
-      Select:
-        "*,  Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
-      Expand: "MainTaskID, Backup, Author",
-      Orderby: "Created",
-      Orderbydecorasc: false,
-      Filter:FilterValue,
-      FilterCondition:"or",
-      Topcount: 5000,
-    })
-      .then((response) => 
-      {
-        let count = 0;
-        for (let i = 0; i < MainTask.length; i++) {
-        /* Start Of Subtaks */
-              SubTask = [];
-              var res =  response.filter(function(data:any) {
-                return data.MainTaskID.ID == MainTask[i].Id;
-              });
-              res.forEach((val: any, index) => {
-                val.ClientName == null &&
-                  SubTask.push({
-                    key: `${MainTask[i].Id}-${index + 1}`,
-                    Id: val.Id,
-                    subId: MainTask[i].Id,
-                    isClick: false,
-                    isParent: false,
-                    isAdd: false,
-                    isEdit: false,
-                    data: {
-                      TaskName: val.TaskName,
-                      Creator: {
-                        Id: val.Author.ID,
-                        EMail: val.Author.EMail,
-                        Title: val.Author.Title,
-                      },
-                      Backup: {
-                        Id: val.Backup?.ID,
-                        EMail: val.Backup?.EMail,
-                        Title: val.Backup?.Title,
-                      },
-                      DueDate: SPServices.displayDate(val.DueDate),
-                      PriorityLevel: val.PriorityLevel,
-                      Status: val.Status,
-                      Created: SPServices.displayDate(val.Created)
-                    },
-                  });
-              });
-    
-              MainArray.push({
-                ...MainTask[i],
-                children: SubTask,
-              });
-              count++;
-    
-              if (count === MainTask.length) {
-                console.log(MainArray, "MainArray");
-                setCurMyTask([...MainArray]);
-                setMasterdata([...MainArray]);
-              }
-              /* End Of Subtaks */ 
-        }
-      })
-      .catch((err) => 
-      {
-        errFunction(err);
-      });
-  };
-  //getcuruser
-  const getcurUser = () => {
-    //let user = sp.web.currentUser().then((res) => {
-      let user = sp.web.siteUsers.getByEmail(UserEmail).get().then((res) => {
-      curuserId.Id = res.Id;
-      curuserId.EMail = res.Email;
-      curuserId.Title = res.Title;
-
-      SPServices.SPReadItems({
-        Listname: "Configuration",
-        Select:
-          "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
-        Expand: "BackingUp ,Name,TeamCaptain",
-        Filter: [
-          {
-            FilterKey: "Name/ID",
-            FilterValue: res.Id.toString(),
-            Operator: "eq",
-          },
-        ],
-      })
-        .then((res: any) => {
-          let x = { ...configure };
-          res.forEach((val) => {
-            x.EMail = val.BackingUp[0].EMail;
-            x.backupId = val.BackingUp[0].ID;
-            x.Title = val.BackingUp[0].Title;
-          });
-          setConfigure({ ...x });
-        })
-        .catch((err) => errFunction(err));
-
-      setCuruserId({ ...curuserId });
-      getMainTask(res.Id);
-    });
-  };
 
   const onSelect = (event) => {
     // x = [];
@@ -982,42 +849,42 @@ const MyTasksDashboard = (props): JSX.Element => {
     else _expandedKeys[`${key}`] = true;
     setExpandedKeys(_expandedKeys);
   };
-  useEffect(() => {
-    // setCurMyTask([..._myTaskArray]);
-    getcurUser();
-  }, []);
+
+  function BindAfternewData(newData)
+  {
+        let tempData=curMyTask;
+        let indexOfObj=tempData.findIndex(data=>!data.Id);
+        if(indexOfObj>=0)
+        {
+          tempData[indexOfObj]=newData;
+        }
+        setCurMyTask([...tempData]);
+        setMasterdata([...tempData]);
+        setCurdata({...data});
+  }
+
+  function BindAfterDataDelete(ID)
+  {
+        let tempData=curMyTask;
+        let indexOfObj=tempData.findIndex(data=>data.Id==ID);
+        if(indexOfObj>=0)
+        {
+          tempData.splice(indexOfObj,1);
+        }
+        setCurMyTask([...tempData]);
+        setMasterdata([...tempData]);
+        setCurdata({...data});
+  }
+
+  
+  useEffect(() => 
+  {
+    setCurMyTask([...props.mainData]);
+    setMasterdata([...props.mainData]);
+  }, [props.bind]);
 
   return (
     <div className={styles.myTaskSection}>
-      <div className={styles.filterSection}>
-        {/* <InputText
-          value={search}
-          onChange={(e: any) => SearchFilter(e.target.value)}
-        /> */}
-
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            placeholder="Search"
-            value={search}
-            onChange={(e: any) => SearchFilter(e.target.value)}
-          />
-        </span>
-        <Button
-          label="Automate"
-          severity="warning"
-          onClick={() => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
-        />
-        <Button
-          label="Export"
-          severity="warning"
-          onClick={() => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
-        />
-      </div>
       <div
         className={styles.myTaskHeader}
         style={{
@@ -1027,7 +894,7 @@ const MyTasksDashboard = (props): JSX.Element => {
           margin: "10px 0px",
         }}
       >
-        <Label>My Tasks</Label>
+        <Label>{props.clientName?props.clientName:""}</Label>
         <Button
           label="New task"
           severity="warning"
@@ -1044,7 +911,7 @@ const MyTasksDashboard = (props): JSX.Element => {
         onUnselect={unselect}
         expandedKeys={expandedKeys}
         onToggle={(e) => setExpandedKeys(e.value)}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e:any) => {
           setSelectedNodeKeys(e.value);
         }}
         value={[...curMyTask]}
@@ -1061,7 +928,12 @@ const MyTasksDashboard = (props): JSX.Element => {
           body={(obj: any) => _addTextField(obj, "TaskName")}
         />
         <Column style={{ width: "200px" }} body={(obj: any) => _action(obj)} />
-
+        <Column
+          field="ClientName"
+          header="ClientName"
+          sortable
+          style={{ width: "200px" }}
+        />
         <Column
           field="Creator"
           header="Creator"
@@ -1107,7 +979,7 @@ const MyTasksDashboard = (props): JSX.Element => {
         />
         <Column
           style={{ width: "150px" }}
-          body={(obj: any) =>
+          body={(obj: any,index) =>
             obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
           }
         />
@@ -1116,4 +988,4 @@ const MyTasksDashboard = (props): JSX.Element => {
   );
 };
 
-export default MyTasksDashboard;
+export default UserClientDB;

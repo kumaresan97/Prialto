@@ -30,10 +30,11 @@ const dropval = [
   { name: "Urgent", code: "Normal" },
   { name: "Newindia", code: "Newindia" },
 ];
+let MyClients=[];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
-const MyTasksDashboard = (props): JSX.Element => {
+const ClientDashboard = (props): JSX.Element => {
   const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
@@ -46,6 +47,7 @@ const MyTasksDashboard = (props): JSX.Element => {
 
   const data: IMyTasks = {
     TaskName: "",
+    ClientName:"",
     DueDate: "",
     PriorityLevel: "",
     Status: "",
@@ -78,6 +80,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
+      ClientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -106,6 +109,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
+      ClientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -772,28 +776,71 @@ const MyTasksDashboard = (props): JSX.Element => {
     console.log(err);
   };
 
+  function getMyClients(id)
+  {
+        SPServices.SPReadItems({
+        Listname: "ClientDetails",
+        Select:
+          "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title",
+  
+        Expand: "Assistant,Backup,Author",
+        Orderby: "Created",
+        Orderbydecorasc: false,
+        Filter: [
+          {
+            FilterKey: "Assistant/ID",
+            Operator: "eq",
+            FilterValue: id,
+          },
+        ],
+      })
+        .then((res) => {
+            MyClients=[];
+            
+            res.forEach((val: any) => {
+                MyClients.push(val.ID);
+            });
+            getMainTask(id);
+
+        }).catch(function(error)
+        {
+            getMainTask(id);
+        })
+  }
+
   //getmaintask
   const getMainTask = (id) => {
-    SPServices.SPReadItems({
-      Listname: "Tasks",
-      Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,ClientName/ID",
 
-      Expand: "Assistant,Backup,Author,ClientName",
-      Orderby: "Created",
-      Orderbydecorasc: false,
-      Filter: [
+    let Filter=[
         {
           FilterKey: "Assistant/ID",
           Operator: "eq",
           FilterValue: id,
-        },
-      ],
+        }
+      ]
+    MyClients.forEach((val: any) => {
+        Filter.push({
+            FilterKey: "Client/ID",
+            Operator: "eq",
+            FilterValue: val
+          });
+    });
+    debugger;
+    SPServices.SPReadItems({
+      Listname: "Tasks",
+      Select:
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+
+      Expand: "Assistant,Backup,Author,Client",
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Filter: Filter,
+      FilterCondition:"or"
     })
       .then((res) => {
         MainTask = [];
         res.forEach((val: any) => {
-          val.ClientName == null &&
+          val.ClientId &&
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -801,8 +848,10 @@ const MyTasksDashboard = (props): JSX.Element => {
               isClick: false,
               isAdd: false,
               isEdit: false,
+              
               data: {
                 TaskName: val.TaskName,
+                ClientName:val.ClientId?val.Client.FirstName:"",
                 Creator: {
                   Id: val.Author.ID,
                   EMail: val.Author.EMail,
@@ -871,6 +920,7 @@ const MyTasksDashboard = (props): JSX.Element => {
                     isEdit: false,
                     data: {
                       TaskName: val.TaskName,
+                      ClientName:MainTask[i].ClientName,
                       Creator: {
                         Id: val.Author.ID,
                         EMail: val.Author.EMail,
@@ -941,7 +991,8 @@ const MyTasksDashboard = (props): JSX.Element => {
         .catch((err) => errFunction(err));
 
       setCuruserId({ ...curuserId });
-      getMainTask(res.Id);
+      getMyClients(res.Id);
+      
     });
   };
 
@@ -982,6 +1033,8 @@ const MyTasksDashboard = (props): JSX.Element => {
     else _expandedKeys[`${key}`] = true;
     setExpandedKeys(_expandedKeys);
   };
+
+  
   useEffect(() => {
     // setCurMyTask([..._myTaskArray]);
     getcurUser();
@@ -989,35 +1042,6 @@ const MyTasksDashboard = (props): JSX.Element => {
 
   return (
     <div className={styles.myTaskSection}>
-      <div className={styles.filterSection}>
-        {/* <InputText
-          value={search}
-          onChange={(e: any) => SearchFilter(e.target.value)}
-        /> */}
-
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            placeholder="Search"
-            value={search}
-            onChange={(e: any) => SearchFilter(e.target.value)}
-          />
-        </span>
-        <Button
-          label="Automate"
-          severity="warning"
-          onClick={() => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
-        />
-        <Button
-          label="Export"
-          severity="warning"
-          onClick={() => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
-        />
-      </div>
       <div
         className={styles.myTaskHeader}
         style={{
@@ -1027,7 +1051,7 @@ const MyTasksDashboard = (props): JSX.Element => {
           margin: "10px 0px",
         }}
       >
-        <Label>My Tasks</Label>
+        <Label>Client Tasks</Label>
         <Button
           label="New task"
           severity="warning"
@@ -1061,7 +1085,12 @@ const MyTasksDashboard = (props): JSX.Element => {
           body={(obj: any) => _addTextField(obj, "TaskName")}
         />
         <Column style={{ width: "200px" }} body={(obj: any) => _action(obj)} />
-
+        <Column
+          field="ClientName"
+          header="ClientName"
+          sortable
+          style={{ width: "200px" }}
+        />
         <Column
           field="Creator"
           header="Creator"
@@ -1116,4 +1145,4 @@ const MyTasksDashboard = (props): JSX.Element => {
   );
 };
 
-export default MyTasksDashboard;
+export default ClientDashboard;

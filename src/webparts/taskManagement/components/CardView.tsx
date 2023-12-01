@@ -163,12 +163,12 @@ const CardView = () => {
                         }}
                       >
                         <Avatar
-                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0].Email}`}
+                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0]?.Email}`}
                           size="normal"
                           shape="circle"
-                          label={val.TeamCaptain[0].Title}
+                          label={val.TeamCaptain[0]?.Title}
                         />
-                        <span>{val.TeamCaptain[0].Title}</span>
+                        <span>{val.TeamCaptain[0]?.Title}</span>
                       </div>
                     </div>
                   </div>
@@ -189,12 +189,12 @@ const CardView = () => {
                         }}
                       >
                         <Avatar
-                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0].Email}`}
+                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
                           size="normal"
                           shape="circle"
-                          label={val.TeamLeader[0].Title}
+                          label={val.TeamLeader[0]?.Title}
                         />
-                        <span>{val.TeamLeader[0].Title}</span>
+                        <span>{val.TeamLeader[0]?.Title}</span>
                       </div>
                     </div>
                     <div>

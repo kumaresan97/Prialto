@@ -354,13 +354,13 @@ const OrgChart = (props) => {
             //     : []
             // }
 
-            // defaultSelectedUsers={curobj.DirectReports.map(
-            //   (report) => report.EMail
-            // )}
-            defaultSelectedUsers={[
-              "devaraj@chandrudemo.onmicrosoft.com",
-              "devaraj@chandrudemo.onmicrosoft.com",
-            ]}
+            defaultSelectedUsers={curobj.DirectReports.map((report) => {
+              return report.EMail;
+            })}
+            // defaultSelectedUsers={[
+            //   "devaraj@chandrudemo.onmicrosoft.com",
+            //   "devaraj@chandrudemo.onmicrosoft.com",
+            // ]}
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
@@ -369,7 +369,7 @@ const OrgChart = (props) => {
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
-                getOnchange("DirectReports", null);
+                getOnchange("DirectReports", []);
               }
             }}
           />
@@ -379,7 +379,7 @@ const OrgChart = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={1}
+            personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -388,20 +388,21 @@ const OrgChart = (props) => {
             // showHiddenInUI={false}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.DirectReports[0].EMail
-                ? [curobj.DirectReports[0].EMail]
-                : []
-            }
+            // defaultSelectedUsers={
+            //   curobj.BackingUp[0].EMail ? [curobj.BackingUp[0].EMail] : []
+            // }
+            defaultSelectedUsers={curobj.BackingUp?.map((report) => {
+              return report.EMail;
+            })}
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("BackingUp", selectedItem.id);
+                const selectedItem = items;
+                getOnchange("BackingUp", selectedItem);
                 // getonChange("BackingUp", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
-                getOnchange("BackingUp", null);
+                getOnchange("BackingUp", []);
               }
             }}
           />
@@ -561,7 +562,7 @@ const OrgChart = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={1}
+            personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -570,20 +571,23 @@ const OrgChart = (props) => {
             // showHiddenInUI={false}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.DirectReports[0].EMail
-                ? [curobj.DirectReports[0].EMail]
-                : []
-            }
+            // defaultSelectedUsers={
+            //   curobj.DirectReports[0].EMail
+            //     ? [curobj.DirectReports[0].EMail]
+            //     : []
+            // }
+            defaultSelectedUsers={curobj.DirectReports.map((report) => {
+              return report.EMail;
+            })}
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("DirectReports", selectedItem.id);
+                const selectedItem = items;
+                getOnchange("DirectReports", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
-                getOnchange("DirectReports", null);
+                getOnchange("DirectReports", []);
               }
             }}
           />
@@ -593,7 +597,7 @@ const OrgChart = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={1}
+            personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -602,20 +606,23 @@ const OrgChart = (props) => {
             // showHiddenInUI={false}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.DirectReports[0].EMail
-                ? [curobj.DirectReports[0].EMail]
-                : []
-            }
+            defaultSelectedUsers={curobj.BackingUp.map((report) => {
+              return report.EMail;
+            })}
+            // defaultSelectedUsers={
+            //   curobj.DirectReports[0].EMail
+            //     ? [curobj.DirectReports[0].EMail]
+            //     : []
+            // }
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("BackingUp", selectedItem.id);
+                const selectedItem = items;
+                getOnchange("BackingUp", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
-                getOnchange("BackingUp", null);
+                getOnchange("BackingUp", []);
               }
             }}
           />
@@ -625,8 +632,6 @@ const OrgChart = (props) => {
       if (
         fieldType == "TeamCaptain" ||
         fieldType == "TeamLeader" ||
-        fieldType == "DirectReports" ||
-        fieldType == "BackingUp" ||
         fieldType == "Manager"
       ) {
         return (
@@ -641,6 +646,47 @@ const OrgChart = (props) => {
           >
             {data[fieldType].Title}
           </span>
+        );
+      }
+
+      // if (fieldType == "DirectReports") {
+      //   data[fieldType].length &&
+      //     data[fieldType].map((val) => {
+      //       return (
+      //         <span
+      //           style={{
+      //             textOverflow: "ellipsis",
+      //             overflow: "hidden",
+      //             whiteSpace: "nowrap",
+      //             display: "block",
+      //             width: "160px",
+      //           }}
+      //         >
+      //           {val.Title}
+      //         </span>
+      //       );
+      //     });
+      // }
+
+      if (fieldType === "DirectReports" || fieldType == "BackingUp") {
+        return (
+          <>
+            {data[fieldType].length > 0 &&
+              data[fieldType].map((val, index) => (
+                <span
+                  key={index} // Add a unique key prop when mapping elements in React
+                  style={{
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    display: "block",
+                    width: "160px",
+                  }}
+                >
+                  {val.Title}
+                </span>
+              ))}
+          </>
         );
       } else {
         return (
@@ -679,8 +725,8 @@ const OrgChart = (props) => {
       // Handle arrays of objects for DirectReports, BackingUp
       FormData[key] = _value.map((item) => ({
         Id: item.id,
-        EMail: item.EMail,
-        Title: item.Title,
+        EMail: item.secondaryText,
+        Title: item.text,
       }));
     } else {
       FormData[key] = _value;
@@ -692,9 +738,20 @@ const OrgChart = (props) => {
   };
 
   const AddItem = (obj) => {
-    debugger;
+    // debugger;
     console.log(obj, "obj");
+    let directorId = [];
+    let BackupId = [];
 
+    curobj.DirectReports.length >= 1 &&
+      curobj.DirectReports.map((val) => {
+        directorId.push(val.Id);
+      });
+    curobj.BackingUp.length >= 1 &&
+      curobj.BackingUp.map((val) => {
+        BackupId.push(val.Id);
+      });
+    debugger;
     let json = {
       FirstName: curobj.FirstName ? curobj.FirstName : "",
       LastName: curobj.LastName ? curobj.LastName : "",
@@ -702,12 +759,17 @@ const OrgChart = (props) => {
       Team: curobj.Team ? curobj.Team["name"] : "",
       Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
-      BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
+      // BackingUpId: BackupId.length && { results: BackupId },
+      BackingUpId: { results: BackupId },
+
+      // BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
       TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
       TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
-      DirectReportsId: curobj.DirectReports[0].Id
-        ? curobj.DirectReports[0].Id
-        : null,
+      // DirectReportsId: curobj.DirectReports[0].Id
+      //   ? curobj.DirectReports[0].Id
+      //   : null,
+      // DirectReportsId: directorId.length ? { results: directorId },
+      DirectReportsId: { results: directorId },
     };
 
     SPServices.SPAddItem({
@@ -807,6 +869,17 @@ const OrgChart = (props) => {
   };
 
   const Editfunction = (obj) => {
+    let directorId = [];
+    let BackupId = [];
+    curobj.DirectReports.length >= 1 &&
+      curobj.DirectReports.map((val) => {
+        directorId.push(val.Id);
+      });
+
+    curobj.BackingUp.length >= 1 &&
+      curobj.BackingUp.map((val) => {
+        BackupId.push(val.Id);
+      });
     let json = {
       FirstName: curobj.FirstName ? curobj.FirstName : "",
       LastName: curobj.LastName ? curobj.LastName : "",
@@ -814,12 +887,16 @@ const OrgChart = (props) => {
       Team: curobj.Team ? curobj.Team["name"] : "",
       Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
-      BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
+      BackingUpId: { results: BackupId },
+
+      // BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
       TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
       TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
-      DirectReportsId: curobj.DirectReports[0].Id
-        ? curobj.DirectReports[0].Id
-        : null,
+      // DirectReportsId: curobj.DirectReports[0].Id
+      //   ? curobj.DirectReports[0].Id
+      //   : null,
+
+      DirectReportsId: { results: directorId },
     };
 
     SPServices.SPUpdateItem({
@@ -872,20 +949,35 @@ const OrgChart = (props) => {
               EMail: val.TeamLeader?.EMail,
               Title: val.TeamLeader?.Title,
             },
-            DirectReports: [
-              {
-                Id: val.DirectReports?.ID,
-                EMail: val.DirectReports?.EMail,
-                Title: val.DirectReports?.Title,
-              },
-            ],
-            BackingUp: [
-              {
-                Id: val.BackingUp?.ID,
-                EMail: val.BackingUp?.EMail,
-                Title: val.BackingUp?.Title,
-              },
-            ],
+            // DirectReports:
+            //   val.DirectReports.length &&
+            //   val.DirectReports.map((response) => ({
+            //     Id: response?.ID,
+            //     EMail: response?.EMail,
+            //     Title: response?.Title,
+            //   })),
+            DirectReports: Array.isArray(val.DirectReports)
+              ? val.DirectReports.map((response) => ({
+                  Id: response?.ID,
+                  EMail: response?.EMail,
+                  Title: response?.Title,
+                }))
+              : [],
+
+            // BackingUp: [
+            //   {
+            //     Id: val.BackingUp?.ID,
+            //     EMail: val.BackingUp?.EMail,
+            //     Title: val.BackingUp?.Title,
+            //   },
+            // ],
+            BackingUp: Array.isArray(val.BackingUp)
+              ? val.BackingUp.map((response) => ({
+                  Id: response?.ID,
+                  EMail: response?.EMail,
+                  Title: response?.Title,
+                }))
+              : [],
           });
         });
         setValue([...array]);

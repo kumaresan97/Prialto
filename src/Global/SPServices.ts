@@ -19,6 +19,7 @@ import { Web } from "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import "@pnp/sp/site-groups/web";
 import { IAttachmentFileInfo } from "@pnp/sp/attachments";
+import * as moment from "moment";
 
 const getAllUsers = async (): Promise<[]> => {
   return await sp.web.siteUsers();
@@ -274,6 +275,11 @@ const formatFilterValue = (
   return strFilter;
 };
 
+function displayDate(inputDate)
+{
+   return moment(inputDate).format("YYYY-MM-DD");
+}
+
 export default {
   getAllUsers,
   SPAddItem,
@@ -289,4 +295,5 @@ export default {
   batchInsert,
   batchUpdate,
   batchDelete,
+  displayDate
 };

@@ -1,0 +1,33 @@
+.activeBtn {
+  background: #007c81 !important;
+}
+
+.inActive {
+  background: none !important;
+}
+
+.TaskManagementSection {
+  width: 100%;
+  display: flex;
+  gap: 20px;
+  .leftNav {
+    width: 20%;
+    height: 100vh;
+    background: #009b9f;
+    .accordTeam {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0 10px 20px;
+      cursor: pointer;
+    }
+    .accordTeamMembers {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 400;
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 0;
+    }
+  }
+}

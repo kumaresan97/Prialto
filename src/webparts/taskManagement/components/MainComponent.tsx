@@ -11,7 +11,8 @@ import {
 } from "@fluentui/react/lib/Nav";
 
 import Mytasks from "./Mytasks";
-import styles from "./TaskManagement.module.scss";
+// import styles from "./TaskManagement.module.scss";
+import styles from "./MainComponent.module.scss";
 import { DefaultButton, Icon, Label } from "@fluentui/react";
 import Tasks from "./Tasks";
 import CardView from "./CardView";
@@ -43,46 +44,6 @@ const MainComponent = (props) => {
       backgroundColor: "#4ea0b5",
     },
   };
-  //   const navLinks = [
-  //     {
-  //       links: [
-
-  //         {
-  //           name: "Home",
-  //           key: "home",
-  //           url: "/sites/Prialto-dev/_layouts/15/workbench.aspx", // Relative URL
-  //         },
-  //         {
-  //           name: "About",
-  //           key: "about",
-  //           url: "/sites/Prialto-dev/_layouts/15/workbench.aspx/about", // Relative URL
-  //         },
-  //         {
-  //             name: 'Utilities',
-  //             expandAriaLabel: 'Show more Utilities',
-  //             links: [
-  //               {
-  //                 key: 'FocusTrapZone',
-  //                 name: 'FocusTrapZone',
-  //                 url: '#/examples/focustrapzone',
-  //               },
-  //               {
-  //                 key: 'FocusZone',
-  //                 name: 'FocusZone',
-  //                 url: '#/examples/focuszone',
-  //               },
-  //               {
-  //                 key: 'MarqueeSelection',
-  //                 name: 'MarqueeSelection',
-  //                 url: '#/examples/marqueeselection',
-  //               },
-  //             ],
-  //           },
-  //         // Add more links for different routes
-  //       ],
-  //     },
-  //   ];
-
   const _curUser: string = props.context._pageContext._user.email;
   const getAdmin = () => {
     const users = sp.web.siteGroups
@@ -143,13 +104,13 @@ const MainComponent = (props) => {
         configArr.forEach((config) => {
           console.log(config, "config1");
           if (config.Role == "TL") {
-            TL.push(config.Name.EMail);
+            TL.push(config.Name?.EMail);
           }
           if (config.Role == "TC") {
-            TC.push(config.Name.EMail);
+            TC.push(config.Name?.EMail);
           }
           if (config.Role == "PA") {
-            TA.push(config.Name.EMail);
+            TA.push(config.Name?.EMail);
           }
           console.log(TL, "TL");
           console.log(TC, "TC");
@@ -173,8 +134,8 @@ const MainComponent = (props) => {
 
             if (arr.NameId) {
               teamMembers.push({
-                Name: arr.Name.Title,
-                Email: arr.Name.EMail,
+                Name: arr.Name?.Title,
+                Email: arr.Name?.EMail,
                 Id: arr.NameId,
               });
             }
@@ -210,13 +171,12 @@ const MainComponent = (props) => {
     getAdmin();
   }, []);
   return (
-    <div style={{ width: "100%", display: "flex", gap: "20px" }}>
-      <div style={{ width: "20%", height: "100vh", background: "#009B9F" }}>
+    <div className={styles.TaskManagementSection}>
+      <div className={styles.leftNav}>
         <div>
           <Label
             onClick={(e) => {
               console.log(e, "e");
-
               setvalue("mytasks");
             }}
             className={value == "mytasks" ? styles.activeBtn : styles.inActive}
@@ -240,14 +200,7 @@ const MainComponent = (props) => {
             return (
               <div>
                 <div
-                  style={{
-                    display: "flex",
-                    gap: "10px",
-                    alignItems: "center",
-                    // margin: "8px 0px",
-                    padding: "0px 0px 0px 20px",
-                    cursor: "pointer",
-                  }}
+                  className={styles.accordTeam}
                   onClick={() => toggleTeam(i)}
                 >
                   <Icon
@@ -265,11 +218,6 @@ const MainComponent = (props) => {
                         color: "#FFFFFF !important",
                       },
                     }}
-                    //   style={{
-                    //     backgroundColor: "#00573d",
-                    //     color: "white",
-                    //     padding: "5px 10px",
-                    //   }}
                   />
                   <Label
                     styles={{
@@ -277,10 +225,7 @@ const MainComponent = (props) => {
                         width: "100%",
                         fontSize: " 16px !important",
                         fontWeight: "400 !important",
-
                         color: "#FFFFFF !important",
-
-                        // padding: "10px 0px 10px 20px !important",
                         cursor: "pointer !important",
                       },
                     }}
@@ -296,15 +241,7 @@ const MainComponent = (props) => {
                   <ul style={{ margin: 0 }}>
                     {val.members.map((member, index) => (
                       <li
-                        style={{
-                          //   margin: 0,
-                          color: "#FFFFFF",
-                          fontSize: "14px",
-                          fontWeight: 400,
-                          listStyle: "none",
-                          margin: "6px 0px",
-                          cursor: "pointer",
-                        }}
+                        className={styles.accordTeamMembers}
                         // className={
                         //   value == "member" ? styles.activeBtn : styles.inActive
                         // }
@@ -379,7 +316,7 @@ const MainComponent = (props) => {
         ) : value == "CardView" ? (
           <CardView></CardView>
         ) : value == "OrgChart" ? (
-          <OrgChart></OrgChart>
+          <OrgChart context={props.context}></OrgChart>
         ) : (
           <></>
         )}

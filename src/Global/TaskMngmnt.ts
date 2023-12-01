@@ -39,3 +39,11 @@ export interface IChild {
   isAdd: boolean;
   data: IMyTasks;
 }
+export interface IClient {
+  Id: number;
+  FirstName: string;
+  LastName: string;
+  CompanyName: string;
+  Assistant: IPeoplePicker;
+  Backup: IPeoplePicker;
+}

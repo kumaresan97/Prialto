@@ -16,6 +16,8 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
+import { Tag } from "primereact/tag";
+import { Avatar } from "primereact/avatar";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -555,6 +557,22 @@ const Sample = (props): JSX.Element => {
 
     setCurMyTask([..._curArray]);
   };
+
+  const getSeverity = (value: string) => {
+    switch (value) {
+      case "High":
+        return "warning";
+
+      case "Normal":
+        return "info";
+
+      case "Urgent":
+        return "danger";
+
+      default:
+        return null;
+    }
+  };
   //addtextfield
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     // console.log(val, "valtext");
@@ -659,7 +677,7 @@ const Sample = (props): JSX.Element => {
             options={dropval}
             placeholder="priority level"
             optionLabel="name"
-            value={curdata.PriorityLevel || null}
+            value={curdata.PriorityLevel}
             onChange={(e: any) => getOnchange("PriorityLevel", e.value)}
             // className="w-full md:w-14rem"
           />
@@ -671,7 +689,7 @@ const Sample = (props): JSX.Element => {
             options={dropval}
             placeholder="Select a status"
             optionLabel="name"
-            value={curdata.Status || null}
+            value={curdata.Status}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -769,7 +787,7 @@ const Sample = (props): JSX.Element => {
         return (
           <Dropdown
             options={dropval}
-            placeholder="Select a priority level"
+            placeholder="priority level"
             optionLabel="name"
             value={curdata.PriorityLevel}
             onChange={(e: any) => getOnchange("PriorityLevel", e.value)}
@@ -781,7 +799,7 @@ const Sample = (props): JSX.Element => {
         return (
           <Dropdown
             options={dropval}
-            placeholder="Select a status"
+            placeholder="Status"
             optionLabel="name"
             value={curdata.Status}
             onChange={(e: any) => getOnchange("Status", e.value)}
@@ -826,6 +844,15 @@ const Sample = (props): JSX.Element => {
                 data[fieldType].EMail
             }
           />
+          // <Avatar image="https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png" size="large" shape="circle" />
+        );
+      }
+      if (fieldType == "Status" || fieldType == "PriorityLevel") {
+        return (
+          <Tag
+            value={data[fieldType]}
+            severity={getSeverity(data[fieldType])}
+          ></Tag>
         );
       } else {
         return (
@@ -1108,7 +1135,17 @@ const Sample = (props): JSX.Element => {
           margin: "10px 0px",
         }}
       >
-        <Label>My Tasks</Label>
+        <Label
+          styles={{
+            root: {
+              fontSize: "18px",
+              fontWeight: 600,
+              color: "orange",
+            },
+          }}
+        >
+          My Tasks
+        </Label>
         <Button
           label="New task"
           severity="warning"

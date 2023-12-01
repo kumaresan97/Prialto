@@ -8,10 +8,12 @@
     display: flex;
     align-items: center;
   }
-
+  // tr :nth-child(1) {
+  //   background: #747a7c33 !important;
+  // }
   tbody > tr > td {
     padding: 8px !important;
-    background: #747a7c33 !important;
+    // background: #747a7c33 !important;
   }
   .myTaskHeader {
     display: flex;

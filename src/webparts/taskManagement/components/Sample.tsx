@@ -1027,9 +1027,9 @@ const Sample = (props): JSX.Element => {
         .then((res: any) => {
           let x = { ...configure };
           res.forEach((val) => {
-            x.EMail = val.BackingUp[0].EMail;
-            x.backupId = val.BackingUp[0].ID;
-            x.Title = val.BackingUp[0].Title;
+            x.EMail = val.BackingUp[0]?.EMail;
+            x.backupId = val.BackingUp[0]?.ID;
+            x.Title = val.BackingUp[0]?.Title;
           });
           setConfigure({ ...x });
           //   console.log(res.BackingUp[0].EMail, "backup");

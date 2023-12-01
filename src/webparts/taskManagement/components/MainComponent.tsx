@@ -104,13 +104,13 @@ const MainComponent = (props) => {
         configArr.forEach((config) => {
           console.log(config, "config1");
           if (config.Role == "TL") {
-            TL.push(config.Name.EMail);
+            TL.push(config.Name?.EMail);
           }
           if (config.Role == "TC") {
-            TC.push(config.Name.EMail);
+            TC.push(config.Name?.EMail);
           }
           if (config.Role == "PA") {
-            TA.push(config.Name.EMail);
+            TA.push(config.Name?.EMail);
           }
           console.log(TL, "TL");
           console.log(TC, "TC");
@@ -134,8 +134,8 @@ const MainComponent = (props) => {
 
             if (arr.NameId) {
               teamMembers.push({
-                Name: arr.Name.Title,
-                Email: arr.Name.EMail,
+                Name: arr.Name?.Title,
+                Email: arr.Name?.EMail,
                 Id: arr.NameId,
               });
             }
@@ -316,7 +316,7 @@ const MainComponent = (props) => {
         ) : value == "CardView" ? (
           <CardView></CardView>
         ) : value == "OrgChart" ? (
-          <OrgChart></OrgChart>
+          <OrgChart context={props.context}></OrgChart>
         ) : (
           <></>
         )}

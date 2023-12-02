@@ -10,6 +10,7 @@ import {
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import SPServices from "../../../Global/SPServices";
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 
 interface clinet {
   Id: number;
@@ -57,6 +58,9 @@ let team = [
 ];
 
 const OrgChart = (props) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
+
   let products: clinet[] = [
     {
       Id: 1,
@@ -175,18 +179,41 @@ const OrgChart = (props) => {
     ],
   };
 
+  const editIconStyle = {
+    backgroundColor: "transparent",
+    color: "#007C81",
+    border: "none",
+    // height: 26,
+    // width: 26,
+  };
+  const tickIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+    height: 26,
+    width: 26,
+  };
+  const delIconBtnStyle = {
+    color: "#BF4927",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+    fontSize: "1.3rem",
+  };
+
   const [value, setValue] = useState([]);
   const [mastedata, setMasterdata] = useState([]);
   const [curobj, setcurobj] = useState(addparent);
-  const [isadd, setisAdd] = useState(false);
+  const [add, setAdd] = useState(false);
   const [search, setSearch] = useState("");
 
-  const [isedit, setisEdit] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     const data: any = val;
 
-    if (!val.Id && isadd) {
+    if (!val.Id && add) {
       if (fieldType == "FirstName") {
         return (
           <InputText
@@ -410,7 +437,7 @@ const OrgChart = (props) => {
       }
 
       //   return <InputText type="text" value={""} />;
-    } else if (val.Id && isedit && val.Id === curobj.Id) {
+    } else if (val.Id && edit && val.Id === curobj.Id) {
       if (fieldType == "FirstName") {
         return (
           <InputText
@@ -738,19 +765,35 @@ const OrgChart = (props) => {
   };
 
   const AddItem = (obj) => {
-    // debugger;
+    debugger;
     console.log(obj, "obj");
     let directorId = [];
     let BackupId = [];
 
-    curobj.DirectReports.length >= 1 &&
-      curobj.DirectReports.map((val) => {
-        directorId.push(val.Id);
+    // curobj.DirectReports.length >= 1 &&
+    //   curobj.DirectReports.map((val) => {
+    //     directorId.push(val.Id);
+    //   });
+    // curobj.BackingUp.length >= 1 &&
+    //   curobj.BackingUp.map((val) => {
+    //     BackupId.push(val.Id);
+    //   });
+
+    if (curobj.DirectReports && curobj.DirectReports.length >= 1) {
+      curobj.DirectReports.forEach((val) => {
+        if (val && val.Id) {
+          directorId.push(val.Id);
+        }
       });
-    curobj.BackingUp.length >= 1 &&
-      curobj.BackingUp.map((val) => {
-        BackupId.push(val.Id);
+    }
+
+    if (curobj.BackingUp && curobj.BackingUp.length >= 1) {
+      curobj.BackingUp.forEach((val) => {
+        if (val && val.Id) {
+          BackupId.push(val.Id);
+        }
       });
+    }
     debugger;
     let json = {
       FirstName: curobj.FirstName ? curobj.FirstName : "",
@@ -777,8 +820,8 @@ const OrgChart = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
-        setisAdd(false);
-        setisEdit(false);
+        setAdd(false);
+        setEdit(false);
         setcurobj({ ...addparent });
         getdatas();
         console.log(res, "success");
@@ -792,27 +835,27 @@ const OrgChart = (props) => {
     debugger;
     console.log(obj, "obj");
 
-    if (isedit && obj.Id) {
+    if (edit && obj.Id) {
       Editfunction(obj);
-    } else if (!obj.Id && isadd && key == "check") {
+    } else if (!obj.Id && add && key == "check") {
       AddItem(obj);
     } else if (key == "cancel") {
       if (obj.Id) {
         // If the item has an Id (existing item), do nothing
-        setisAdd(false);
-        setisEdit(false);
+        setAdd(false);
+        setEdit(false);
       } else {
         // If the item doesn't have an Id (new item), remove it
         const updatedClientDetail = value.filter((val) => val.Id !== null);
-        setisAdd(false);
-        setisEdit(false);
+        setAdd(false);
+        setEdit(false);
         setValue(updatedClientDetail);
       }
     }
   };
 
   const handledata = (obj) => {
-    setisAdd(false);
+    setAdd(false);
 
     let editobj: any = { ...obj };
 
@@ -831,22 +874,36 @@ const OrgChart = (props) => {
   const _action = (obj: any): JSX.Element => {
     return (
       <div>
-        {isedit == false && isadd == false && (
-          <Button
-            type="button"
-            icon="pi pi-pencil"
-            onClick={(_) => {
-              handledata(obj);
-              setisEdit(true);
-            }}
-          />
+        {edit == false && add == false && (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Button
+              type="button"
+              icon="pi pi-pencil"
+              style={editIconStyle}
+              onClick={(_) => {
+                handledata(obj);
+                setEdit(true);
+              }}
+            />
+
+            <Button
+              type="button"
+              icon=" pi pi-trash"
+              style={delIconBtnStyle}
+              onClick={(_) => {
+                confirmDelete(obj);
+                // handledata(obj);
+                // setisEdit(true);
+              }}
+            />
+          </div>
         )}
-        {((isadd && obj.Id == curobj.Id) ||
-          (isedit && obj.Id == curobj.Id)) && (
+        {((add && obj.Id == curobj.Id) || (edit && obj.Id == curobj.Id)) && (
           <div style={{ display: "flex", gap: "10px" }}>
             <Button
               type="button"
               icon="pi pi-check"
+              style={tickIconStyle}
               rounded
               onClick={(_) => {
                 _handleDataoperation("check", obj);
@@ -855,10 +912,11 @@ const OrgChart = (props) => {
             <Button
               type="button"
               icon="pi pi-times"
+              style={delIconBtnStyle}
               rounded
               onClick={(_) => {
-                setisAdd(false);
-                setisEdit(false);
+                setAdd(false);
+                setEdit(false);
                 _handleDataoperation("cancel", obj);
               }}
             />
@@ -871,15 +929,31 @@ const OrgChart = (props) => {
   const Editfunction = (obj) => {
     let directorId = [];
     let BackupId = [];
-    curobj.DirectReports.length >= 1 &&
-      curobj.DirectReports.map((val) => {
-        directorId.push(val.Id);
-      });
+    // curobj.DirectReports.length >= 1 &&
+    //   curobj.DirectReports.map((val) => {
+    //     directorId.push(val.Id);
+    //   });
 
-    curobj.BackingUp.length >= 1 &&
-      curobj.BackingUp.map((val) => {
-        BackupId.push(val.Id);
+    // curobj.BackingUp.length >= 1 &&
+    //   curobj.BackingUp.map((val) => {
+    //     BackupId.push(val.Id);
+    //   });
+
+    if (curobj.DirectReports && curobj.DirectReports.length >= 1) {
+      curobj.DirectReports.forEach((val) => {
+        if (val && val.Id) {
+          directorId.push(val.Id);
+        }
       });
+    }
+
+    if (curobj.BackingUp && curobj.BackingUp.length >= 1) {
+      curobj.BackingUp.forEach((val) => {
+        if (val && val.Id) {
+          BackupId.push(val.Id);
+        }
+      });
+    }
     let json = {
       FirstName: curobj.FirstName ? curobj.FirstName : "",
       LastName: curobj.LastName ? curobj.LastName : "",
@@ -906,8 +980,8 @@ const OrgChart = (props) => {
     })
       .then((res) => {
         console.log(res, "editsuccessfully");
-        setisAdd(false);
-        setisAdd(false);
+        setAdd(false);
+        setAdd(false);
         setcurobj({ ...addparent });
         getdatas();
       })
@@ -982,8 +1056,8 @@ const OrgChart = (props) => {
         });
         setValue([...array]);
         setMasterdata([...array]);
-        setisAdd(false);
-        setisEdit(false);
+        setAdd(false);
+        setEdit(false);
       })
       .catch((err) => errFunction(err));
   };
@@ -1041,6 +1115,27 @@ const OrgChart = (props) => {
   //      setValue([...products,addparent]);
 
   // }
+  const confirmDelete = (item: any) => {
+    setItemToDelete(item);
+    // Set the item to delete
+    setShowDialog(true);
+    // deleteItem(item)
+  };
+  const deleteItem = () => {
+    if (showDialog) {
+      SPServices.SPDeleteItem({
+        Listname: "Configuration",
+        ID: itemToDelete.Id,
+      }).then((res) => {
+        setShowDialog(false);
+
+        getdatas();
+        console.log("delete successfully");
+      });
+    } else {
+      setShowDialog(false);
+    }
+  };
   useEffect(() => {
     getdatas();
   }, []);
@@ -1079,8 +1174,8 @@ const OrgChart = (props) => {
             label="Add Client"
             severity="warning"
             onClick={() => {
-              setisEdit(false);
-              setisAdd(true);
+              setEdit(false);
+              setAdd(true);
               setValue([...value, addInput]);
 
               // _handleData("addParent", { ..._sampleParent });
@@ -1171,6 +1266,19 @@ const OrgChart = (props) => {
           <Column header="Action" body={(obj) => _action(obj)}></Column>
         </DataTable>
       </div>
+
+      <ConfirmDialog
+        visible={showDialog}
+        onHide={() => setShowDialog(false)}
+        message="Are you sure you want to delete?"
+        header="Confirmation"
+        icon="pi pi-exclamation-triangle"
+        acceptClassName="p-button-danger"
+        acceptLabel="Yes"
+        rejectLabel="No"
+        accept={deleteItem}
+        reject={() => setShowDialog(false)}
+      />
     </div>
   );
 };

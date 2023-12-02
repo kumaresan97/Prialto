@@ -11,7 +11,10 @@ import { InputText } from "primereact/inputtext";
 import SPServices from "../../../Global/SPServices";
 import { IClient } from "../../../Global/TaskMngmnt";
 import styles from "./TaskManagement.module.scss";
+import { ConfirmDialog } from "primereact/confirmdialog";
 const Client = (props) => {
+  const [showDialog, setShowDialog] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<any>(null);
   // style variables
   const editIconStyle = {
     backgroundColor: "transparent",
@@ -69,6 +72,22 @@ const Client = (props) => {
       Title: "",
     },
   };
+  let Newdatadd: IClient = {
+    Id: null,
+    FirstName: "",
+    LastName: "",
+    CompanyName: "",
+    Assistant: {
+      Id: null,
+      EMail: "",
+      Title: "",
+    },
+    Backup: {
+      Id: null,
+      EMail: "",
+      Title: "",
+    },
+  };
   const [clientdetail, setClientdetail] = useState<IClient[]>([]);
   const [value, setValue] = useState(x);
   const handledata = (obj) => {
@@ -93,6 +112,7 @@ const Client = (props) => {
         setisAdd(false);
         setisEdit(false);
         setValue({ ...x });
+        getdatas();
         // getcurUser();
       })
       .catch((err) => errFunction(err));
@@ -123,19 +143,21 @@ const Client = (props) => {
   const _handleDataoperation = (key, obj) => {
     if (isedit && obj.Id) {
       Editfunction(obj);
-    } else if (!obj.Id && isadd) {
+    } else if (!obj.Id && isadd && key == "check") {
       AddItem(obj);
     } else if (key == "cancel") {
       if (obj.Id) {
-        let cancel = [...clientdetail].filter((val) => val.Id !== null);
+        // If the item has an Id (existing item), do nothing
         setisAdd(false);
         setisEdit(false);
-        setClientdetail([...cancel]);
       } else {
-        let cancel = [...clientdetail].filter((val) => val.Id !== null);
+        // If the item doesn't have an Id (new item), remove it
+        const updatedClientDetail = clientdetail.filter(
+          (val) => val.Id !== null
+        );
         setisAdd(false);
         setisEdit(false);
-        setClientdetail([...cancel]);
+        setClientdetail(updatedClientDetail);
       }
     }
   };
@@ -144,18 +166,30 @@ const Client = (props) => {
     return (
       <div>
         {isedit == false && isadd == false && (
-          <Button
-            type="button"
-            icon="pi pi-pencil"
-            style={editIconStyle}
-            onClick={(_) => {
-              handledata(obj);
-              setisEdit(true);
-            }}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Button
+              type="button"
+              icon="pi pi-pencil"
+              style={editIconStyle}
+              onClick={(_) => {
+                handledata(obj);
+                setisEdit(true);
+              }}
+            />
+            <Button
+              type="button"
+              icon=" pi pi-trash"
+              style={delIconBtnStyle}
+              onClick={(_) => {
+                confirmDelete(obj);
+                // handledata(obj);
+                // setisEdit(true);
+              }}
+            />
+          </div>
         )}
         {((isadd && obj.Id == value.Id) || (isedit && obj.Id == value.Id)) && (
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <Button
               className={styles.iconStyle}
               type="button"
@@ -173,6 +207,10 @@ const Client = (props) => {
               rounded
               style={delIconBtnStyle}
               onClick={(_) => {
+                let falsevalue = false;
+                setisEdit(falsevalue);
+
+                setisAdd(falsevalue);
                 _handleDataoperation("cancel", obj);
               }}
             />
@@ -449,6 +487,28 @@ const Client = (props) => {
 
     setValue({ ...FormData });
   };
+
+  const confirmDelete = (item: any) => {
+    setItemToDelete(item);
+    // Set the item to delete
+    setShowDialog(true);
+    // deleteItem(item)
+  };
+  const deleteItem = () => {
+    if (showDialog) {
+      SPServices.SPDeleteItem({
+        Listname: "ClientDetails",
+        ID: itemToDelete.Id,
+      }).then((res) => {
+        setShowDialog(false);
+
+        getdatas();
+        console.log("delete successfully");
+      });
+    } else {
+      setShowDialog(false);
+    }
+  };
   useEffect(() => {
     getdatas();
   }, []);
@@ -493,7 +553,7 @@ const Client = (props) => {
             onClick={() => {
               setisEdit(false);
               setisAdd(true);
-              setClientdetail([...clientdetail, x]);
+              setClientdetail([...clientdetail, Newdatadd]);
               // _handleData("addParent", { ..._sampleParent });
             }}
           />
@@ -536,6 +596,19 @@ const Client = (props) => {
         ></Column>
         <Column header="Action" body={(obj) => _action(obj)}></Column>
       </DataTable>
+
+      <ConfirmDialog
+        visible={showDialog}
+        onHide={() => setShowDialog(false)}
+        message="Are you sure you want to delete?"
+        header="Confirmation"
+        icon="pi pi-exclamation-triangle"
+        acceptClassName="p-button-danger"
+        acceptLabel="Yes"
+        rejectLabel="No"
+        accept={deleteItem}
+        reject={() => setShowDialog(false)}
+      />
     </div>
   );
 };

@@ -35,7 +35,7 @@ const dropval = [
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
-const Sample = (props): JSX.Element => {
+const UserMyTasksDB = (props): JSX.Element => {
   // styles variables
   const cellStyle = { backgroundColor: "#fff", width: 200 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
@@ -1295,4 +1295,4 @@ const Sample = (props): JSX.Element => {
   );
 };
 
-export default Sample;
+export default UserMyTasksDB;

@@ -12,11 +12,17 @@ import { Dropdown } from "primereact/dropdown";
 import SPServices from "../../../Global/SPServices";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import styles from "./TaskManagement.module.scss";
+import Loader from "./Loader";
 
 interface clinet {
   Id: number;
-  FirstName: string;
-  LastName: string;
+  // FirstName: string;
+  // LastName: string;
+  Name: {
+    Id: number;
+    EMail: string;
+    Title: string;
+  };
   Role: string;
   Manager: {
     Id: number;
@@ -73,55 +79,61 @@ const OrgChart = (props) => {
       },
     },
   };
+  const [loader, setLoader] = useState(false);
 
   const [showDialog, setShowDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
 
-  let products: clinet[] = [
-    {
-      Id: 1,
-      FirstName: "1000",
-      LastName: "f230fh0g3",
-      Role: "PA",
-      Manager: {
-        Id: null,
-        EMail: "",
-        Title: "Kumaresan",
-      },
-      Team: "Team1",
-      TeamCaptain: {
-        Id: null,
-        EMail: "",
-        Title: "raj",
-      },
-      TeamLeader: {
-        Id: null,
-        EMail: "",
-        Title: "raj",
-      },
-      Cohort: "2",
-      // Country: "india",
-      DirectReports: [
-        {
-          Id: null,
-          EMail: "",
-          Title: "raj",
-        },
-      ],
-      BackingUp: [
-        {
-          Id: null,
-          EMail: "",
-          Title: "raj",
-        },
-      ],
-    },
-  ];
+  // let products: clinet[] = [
+  //   {
+  //     Id: 1,
+  //     FirstName: "1000",
+  //     LastName: "f230fh0g3",
+  //     Role: "PA",
+  //     Manager: {
+  //       Id: null,
+  //       EMail: "",
+  //       Title: "Kumaresan",
+  //     },
+  //     Team: "Team1",
+  //     TeamCaptain: {
+  //       Id: null,
+  //       EMail: "",
+  //       Title: "raj",
+  //     },
+  //     TeamLeader: {
+  //       Id: null,
+  //       EMail: "",
+  //       Title: "raj",
+  //     },
+  //     Cohort: "2",
+  //     // Country: "india",
+  //     DirectReports: [
+  //       {
+  //         Id: null,
+  //         EMail: "",
+  //         Title: "raj",
+  //       },
+  //     ],
+  //     BackingUp: [
+  //       {
+  //         Id: null,
+  //         EMail: "",
+  //         Title: "raj",
+  //       },
+  //     ],
+  //   },
+  // ];
 
   let addparent: clinet = {
     Id: null,
-    FirstName: "",
-    LastName: "",
+    // FirstName: "",
+    // LastName: "",
+    Name: {
+      Id: null,
+      EMail: "",
+      Title: "",
+    },
     Role: "",
     Manager: {
       Id: null,
@@ -158,8 +170,13 @@ const OrgChart = (props) => {
   };
   let addInput: clinet = {
     Id: null,
-    FirstName: "",
-    LastName: "",
+    // FirstName: "",
+    // LastName: "",
+    Name: {
+      Id: null,
+      EMail: "",
+      Title: "",
+    },
     Role: "",
     Manager: {
       Id: null,
@@ -230,23 +247,54 @@ const OrgChart = (props) => {
     const data: any = val;
 
     if (!val.Id && add) {
-      if (fieldType == "FirstName") {
+      // if (fieldType == "FirstName") {
+      //   return (
+      //     <InputText
+      //       type="text"
+      //       placeholder="FirstName"
+      //       value={curobj.FirstName}
+      //       onChange={(e) => getOnchange("FirstName", e.target.value)}
+      //     />
+      //   );
+      // }
+      // if (fieldType == "LastName") {
+      //   return (
+      //     <InputText
+      //       type="text"
+      //       placeholder="LastName"
+      //       value={curobj.LastName}
+      //       onChange={(e) => getOnchange("LastName", e.target.value)}
+      //     />
+      //   );
+      // }
+
+      if (fieldType == "Name") {
         return (
-          <InputText
-            type="text"
-            placeholder="FirstName"
-            value={curobj.FirstName}
-            onChange={(e) => getOnchange("FirstName", e.target.value)}
-          />
-        );
-      }
-      if (fieldType == "LastName") {
-        return (
-          <InputText
-            type="text"
-            placeholder="LastName"
-            value={curobj.LastName}
-            onChange={(e) => getOnchange("LastName", e.target.value)}
+          <PeoplePicker
+            context={props.context}
+            personSelectionLimit={1}
+            groupName={""}
+            showtooltip={true}
+            styles={multiPeoplePickerStyle}
+            // required={true}
+            placeholder="Enter Email"
+            ensureUser={true}
+            // showHiddenInUI={false}
+            showHiddenInUI={true}
+            principalTypes={[PrincipalType.User]}
+            defaultSelectedUsers={curobj.Name.EMail ? [curobj.Name.EMail] : []}
+            // defaultSelectedUsers={[]}
+            resolveDelay={1000}
+            onChange={(items: any[]) => {
+              if (items.length > 0) {
+                const selectedItem = items[0];
+                getOnchange("Name", selectedItem.id);
+                // getonChange("PeopleEmail", selectedItem.secondaryText);
+              } else {
+                // No selection, pass null or handle as needed
+                getOnchange("Name", null);
+              }
+            }}
           />
         );
       }
@@ -461,23 +509,54 @@ const OrgChart = (props) => {
 
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && edit && val.Id === curobj.Id) {
-      if (fieldType == "FirstName") {
+      // if (fieldType == "FirstName") {
+      //   return (
+      //     <InputText
+      //       type="text"
+      //       placeholder="FirstName"
+      //       value={curobj.FirstName}
+      //       onChange={(e) => getOnchange("FirstName", e.target.value)}
+      //     />
+      //   );
+      // }
+      // if (fieldType == "LastName") {
+      //   return (
+      //     <InputText
+      //       type="text"
+      //       placeholder="LastName"
+      //       value={curobj.LastName}
+      //       onChange={(e) => getOnchange("LastName", e.target.value)}
+      //     />
+      //   );
+      // }
+
+      if (fieldType == "Name") {
         return (
-          <InputText
-            type="text"
-            placeholder="FirstName"
-            value={curobj.FirstName}
-            onChange={(e) => getOnchange("FirstName", e.target.value)}
-          />
-        );
-      }
-      if (fieldType == "LastName") {
-        return (
-          <InputText
-            type="text"
-            placeholder="LastName"
-            value={curobj.LastName}
-            onChange={(e) => getOnchange("LastName", e.target.value)}
+          <PeoplePicker
+            context={props.context}
+            personSelectionLimit={1}
+            groupName={""}
+            showtooltip={true}
+            styles={multiPeoplePickerStyle}
+            // required={true}
+            placeholder="Enter Email"
+            ensureUser={true}
+            // showHiddenInUI={false}
+            showHiddenInUI={true}
+            principalTypes={[PrincipalType.User]}
+            defaultSelectedUsers={curobj.Name.EMail ? [curobj.Name.EMail] : []}
+            // defaultSelectedUsers={[]}
+            resolveDelay={1000}
+            onChange={(items: any[]) => {
+              if (items.length > 0) {
+                const selectedItem = items[0];
+                getOnchange("Name", selectedItem.id);
+                // getonChange("PeopleEmail", selectedItem.secondaryText);
+              } else {
+                // No selection, pass null or handle as needed
+                getOnchange("Name", null);
+              }
+            }}
           />
         );
       }
@@ -687,7 +766,8 @@ const OrgChart = (props) => {
       if (
         fieldType == "TeamCaptain" ||
         fieldType == "TeamLeader" ||
-        fieldType == "Manager"
+        fieldType == "Manager" ||
+        fieldType == "Name"
       ) {
         return (
           <span
@@ -776,6 +856,13 @@ const OrgChart = (props) => {
       // } else if (key == "BackingUp") {
       //   FormData.BackingUp[0].Id = _value;
       // }
+    } else if (key == "Name") {
+      FormData.Name.Id = _value;
+      // } else if (key == "DirectReports") {
+      //   FormData.DirectReports[0].Id = _value;
+      // } else if (key == "BackingUp") {
+      //   FormData.BackingUp[0].Id = _value;
+      // }
     } else if (key === "DirectReports" || key === "BackingUp") {
       // Handle arrays of objects for DirectReports, BackingUp
       FormData[key] = _value.map((item) => ({
@@ -787,14 +874,11 @@ const OrgChart = (props) => {
       FormData[key] = _value;
     }
 
-    console.log(FormData, "formdata");
-
     setcurobj({ ...FormData });
   };
 
   const AddItem = (obj) => {
-    debugger;
-    console.log(obj, "obj");
+    setLoader(true);
     let directorId = [];
     let BackupId = [];
 
@@ -824,8 +908,9 @@ const OrgChart = (props) => {
     }
     debugger;
     let json = {
-      FirstName: curobj.FirstName ? curobj.FirstName : "",
-      LastName: curobj.LastName ? curobj.LastName : "",
+      // FirstName: curobj.FirstName ? curobj.FirstName : "",
+      // LastName: curobj.LastName ? curobj.LastName : "",
+      NameId: curobj.Name.Id ? curobj.Name.Id : null,
       Role: curobj.Role ? curobj.Role["name"] : "",
       Team: curobj.Team ? curobj.Team["name"] : "",
       Cohort: curobj.Cohort ? curobj.Cohort : "",
@@ -851,18 +936,18 @@ const OrgChart = (props) => {
         setAdd(false);
         setEdit(false);
         setcurobj({ ...addparent });
+        setLoader(true);
+
         getdatas();
-        console.log(res, "success");
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => errFunction("Configuration err ", err));
   };
-  const errFunction = (err) => {
-    console.log(err);
+
+  const errFunction = (type, err) => {
+    setLoader(false);
+    console.log(type, err);
   };
   const _handleDataoperation = (key, obj) => {
-    debugger;
-    console.log(obj, "obj");
-
     if (edit && obj.Id) {
       Editfunction(obj);
     } else if (!obj.Id && add && key == "check") {
@@ -896,8 +981,6 @@ const OrgChart = (props) => {
       code: obj.Role,
     };
     setcurobj({ ...editobj });
-
-    console.log(editobj, "edit");
   };
   const _action = (obj: any): JSX.Element => {
     return (
@@ -955,6 +1038,8 @@ const OrgChart = (props) => {
   };
 
   const Editfunction = (obj) => {
+    setLoader(true);
+
     let directorId = [];
     let BackupId = [];
     // curobj.DirectReports.length >= 1 &&
@@ -983,8 +1068,10 @@ const OrgChart = (props) => {
       });
     }
     let json = {
-      FirstName: curobj.FirstName ? curobj.FirstName : "",
-      LastName: curobj.LastName ? curobj.LastName : "",
+      NameId: curobj.Name.Id ? curobj.Name.Id : null,
+
+      // FirstName: curobj.FirstName ? curobj.FirstName : "",
+      // LastName: curobj.LastName ? curobj.LastName : "",
       Role: curobj.Role ? curobj.Role["name"] : "",
       Team: curobj.Team ? curobj.Team["name"] : "",
       Cohort: curobj.Cohort ? curobj.Cohort : "",
@@ -1007,22 +1094,23 @@ const OrgChart = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
         setAdd(false);
         setAdd(false);
         setcurobj({ ...addparent });
+        setLoader(false);
+
         getdatas();
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => errFunction("Configuration json", err));
   };
 
   const getdatas = () => {
     SPServices.SPReadItems({
       Listname: "Configuration",
       Select:
-        "*, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title",
+        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title",
 
-      Expand: "Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp",
+      Expand: "Name,Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp",
       Orderby: "Created",
       Orderbydecorasc: false,
     })
@@ -1031,8 +1119,13 @@ const OrgChart = (props) => {
         res.forEach((val: any) => {
           array.push({
             Id: val.Id,
-            FirstName: val.FirstName ? val.FirstName : "",
-            LastName: val.LastName ? val.LastName : "",
+            // FirstName: val.FirstName ? val.FirstName : "",
+            // LastName: val.LastName ? val.LastName : "",
+            Name: {
+              Id: val.Name?.ID,
+              EMail: val.Name?.EMail,
+              Title: val.Name?.Title,
+            },
             Role: val.Role ? val.Role : "",
             Team: val.Team ? val.Team : "",
             Cohort: val.Cohort ? val.Cohort : "",
@@ -1086,8 +1179,9 @@ const OrgChart = (props) => {
         setMasterdata([...array]);
         setAdd(false);
         setEdit(false);
+        setLoader(false);
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => errFunction("Configuration get all data", err));
   };
 
   const SearchFilter = (e) => {
@@ -1108,8 +1202,7 @@ const OrgChart = (props) => {
 
     const filteredData = mastedata.filter((item) => {
       const searchableFields = [
-        "FirstName",
-        "LastName",
+        "Name",
         "Role",
         "Team",
         "Cohort",
@@ -1130,13 +1223,12 @@ const OrgChart = (props) => {
           );
         } else {
           // Search within regular string fields
-          return item[field].toLowerCase().includes(e.toLowerCase());
+          return item[field].toString().toLowerCase().includes(e.toLowerCase());
         }
       });
     });
 
     setValue([...filteredData]);
-    console.log(e);
   };
 
   // const addParent=()=>{
@@ -1150,161 +1242,172 @@ const OrgChart = (props) => {
     // deleteItem(item)
   };
   const deleteItem = () => {
+    setLoader(true);
+
     if (showDialog) {
       SPServices.SPDeleteItem({
         Listname: "Configuration",
         ID: itemToDelete.Id,
       }).then((res) => {
         setShowDialog(false);
+        setLoader(false);
 
         getdatas();
-        console.log("delete successfully");
       });
     } else {
+      setLoader(false);
       setShowDialog(false);
     }
   };
   useEffect(() => {
+    setLoader(true);
     getdatas();
   }, []);
   return (
-    <div>
-      <div className={styles.clientContainer}>
-        <h2>Org Chart</h2>
-        {/* <InputText
+    <>
+      {loader ? (
+        <Loader />
+      ) : (
+        <div>
+          <div className={styles.clientContainer}>
+            <h2>Org Chart</h2>
+            {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
         /> */}
-        <div className={styles.rightSection}>
-          <div>
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                placeholder="Search"
-                value={search}
-                onChange={(e: any) => SearchFilter(e.target.value)}
+            <div className={styles.rightSection}>
+              <div>
+                <span className="p-input-icon-left">
+                  <i className="pi pi-search" />
+                  <InputText
+                    placeholder="Search"
+                    value={search}
+                    onChange={(e: any) => SearchFilter(e.target.value)}
+                  />
+                </span>
+              </div>
+              <Button
+                label="Export"
+                icon="pi pi-file-excel"
+                className={styles.btnColor}
+                //   onClick={() => {
+                //     _handleData("addParent", { ..._sampleParent });
+                //   }}
               />
-            </span>
+              <Button
+                label="Add New"
+                className={styles.btnColor}
+                onClick={() => {
+                  setEdit(false);
+                  setAdd(true);
+                  setValue([...value, addInput]);
+
+                  // _handleData("addParent", { ..._sampleParent });
+                }}
+              />
+            </div>
           </div>
-          <Button
-            label="Export"
-            icon="pi pi-file-excel"
-            className={styles.btnColor}
-            //   onClick={() => {
-            //     _handleData("addParent", { ..._sampleParent });
-            //   }}
-          />
-          <Button
-            label="Add Client"
-            className={styles.btnColor}
-            onClick={() => {
-              setEdit(false);
-              setAdd(true);
-              setValue([...value, addInput]);
+          <DataTable
+            value={value}
+            removableSort
+            sortMode="multiple"
+            className={styles.dataTableContainer}
+            tableStyle={{ minWidth: "60rem" }}
+          >
+            <Column
+              field="Name"
+              header="Name"
+              sortable
+              style={{ width: "20%" }}
+              body={(obj: any) => _addTextField(obj, "Name")}
+            ></Column>
+            {/* <Column
+              field="LastName"
+              header="last Name"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "LastName")}
+            ></Column> */}
+            <Column
+              field="Role"
+              header="Role"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "Role")}
+            ></Column>
+            <Column
+              field="Manager"
+              header="Manager"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "Manager")}
+            ></Column>
+            <Column
+              field="Team"
+              header="Team"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "Team")}
+            ></Column>
 
-              // _handleData("addParent", { ..._sampleParent });
-            }}
-          />
-        </div>
-      </div>
-      <DataTable
-        value={value}
-        sortMode="multiple"
-        className={styles.dataTableContainer}
-        tableStyle={{ minWidth: "60rem" }}
-      >
-        <Column
-          field="FirstName"
-          header="First Name"
-          sortable
-          style={{ width: "20%" }}
-          body={(obj: any) => _addTextField(obj, "FirstName")}
-        ></Column>
-        <Column
-          field="LastName"
-          header="last Name"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "LastName")}
-        ></Column>
-        <Column
-          field="Role"
-          header="Role"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "Role")}
-        ></Column>
-        <Column
-          field="Manager"
-          header="Manager"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "Manager")}
-        ></Column>
-        <Column
-          field="Team"
-          header="Team"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "Team")}
-        ></Column>
-
-        <Column
-          field="TeamCaptain"
-          header="Team Captain"
-          sortable
-          body={(obj: any) => _addTextField(obj, "TeamCaptain")}
-        ></Column>
-        <Column
-          field="TeamLeader"
-          header="Team Leader"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "TeamLeader")}
-        ></Column>
-        <Column
-          field="Cohort"
-          header="Cohort"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "Cohort")}
-        ></Column>
-        {/* <Column
+            <Column
+              field="TeamCaptain"
+              header="Team Captain"
+              sortable
+              body={(obj: any) => _addTextField(obj, "TeamCaptain")}
+            ></Column>
+            <Column
+              field="TeamLeader"
+              header="Team Leader"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "TeamLeader")}
+            ></Column>
+            <Column
+              field="Cohort"
+              header="Cohort"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "Cohort")}
+            ></Column>
+            {/* <Column
             field="Country"
             header="Country"
             sortable
             body={(obj: any) => _addTextField(obj, "Country")}
           ></Column> */}
-        <Column
-          field="DirectReports"
-          header="Direct Reports"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "DirectReports")}
-        ></Column>
-        <Column
-          field="BackingUp"
-          header="Backing Up"
-          style={{ width: "20%" }}
-          sortable
-          body={(obj: any) => _addTextField(obj, "BackingUp")}
-        ></Column>
-        <Column header="Action" body={(obj) => _action(obj)}></Column>
-      </DataTable>
+            <Column
+              field="DirectReports"
+              header="Direct Reports"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "DirectReports")}
+            ></Column>
+            <Column
+              field="BackingUp"
+              header="Backing Up"
+              style={{ width: "20%" }}
+              sortable
+              body={(obj: any) => _addTextField(obj, "BackingUp")}
+            ></Column>
+            <Column header="Action" body={(obj) => _action(obj)}></Column>
+          </DataTable>
 
-      <ConfirmDialog
-        visible={showDialog}
-        onHide={() => setShowDialog(false)}
-        message="Are you sure you want to delete?"
-        header="Confirmation"
-        icon="pi pi-exclamation-triangle"
-        acceptClassName="p-button-danger"
-        acceptLabel="Yes"
-        rejectLabel="No"
-        accept={deleteItem}
-        reject={() => setShowDialog(false)}
-      />
-    </div>
+          <ConfirmDialog
+            visible={showDialog}
+            onHide={() => setShowDialog(false)}
+            message="Are you sure you want to delete?"
+            header="Confirmation"
+            icon="pi pi-exclamation-triangle"
+            acceptClassName="p-button-danger"
+            acceptLabel="Yes"
+            rejectLabel="No"
+            accept={deleteItem}
+            reject={() => setShowDialog(false)}
+          />
+        </div>
+      )}
+    </>
   );
 };
 export default OrgChart;

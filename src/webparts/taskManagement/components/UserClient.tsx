@@ -7,6 +7,8 @@ import UserClientDB from "./UserClientDB";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import styles from "./MyTasks.module.scss";
+import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { Avatar } from "primereact/avatar";
 let MyClients = [];
 let MainTask = [];
 let MainArray = [];
@@ -18,6 +20,8 @@ export default function UserClients(props) {
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
+  const [teamCaptainData, setTeamCaptainData] = useState({ EMail: "",Title: "",});
+  const [teamTLData, setTeamTLData] = useState({ EMail: "",Title: ""});
   const [curuserId, setCuruserId] = useState({
     Id: null,
     EMail: "",
@@ -55,8 +59,8 @@ export default function UserClients(props) {
         SPServices.SPReadItems({
           Listname: "Configuration",
           Select:
-            "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
-          Expand: "BackingUp ,Name,TeamCaptain",
+            "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title,TeamLeader/EMail,TeamLeader/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
+          Expand: "BackingUp ,Name,TeamCaptain,TeamLeader",
           Filter: [
             {
               FilterKey: "Name/ID",
@@ -71,12 +75,30 @@ export default function UserClients(props) {
               EMail: "",
               Title: "",
             };
-            res.forEach((val) => {
-              x.EMail = val.BackingUp[0].EMail;
-              x.backupId = val.BackingUp[0].ID;
-              x.Title = val.BackingUp[0].Title;
+            let TCData={
+              EMail: "",
+              Title: "",
+            }
+            let TLData={
+              EMail: "",
+              Title: "",
+            }
+            res.forEach((val) => 
+            {
+              x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
+              x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
+              x.Title = val.BackingUp?val.BackingUp[0].Title:"";
+              TCData.EMail=val.TeamCaptain?val.TeamCaptain.EMail:"N/A";
+              TCData.Title=val.TeamCaptain?val.TeamCaptain.Title:"N/A";
+
+              TLData.EMail=val.TeamLeader?val.TeamLeader.EMail:"N/A";
+              TLData.Title=val.TeamLeader?val.TeamLeader.Title:"N/A";
+
+
             });
             crntUserBackup = x;
+            setTeamTLData({...TLData});
+            setTeamCaptainData({...TCData});
             setCuruserId({ ...crntUserDetails });
             setConfigure({ ...x });
           })
@@ -193,6 +215,7 @@ export default function UserClients(props) {
         if (arrFilter.length > 0) {
           getsubTask(arrFilter);
         } else {
+          MainArray=[...MainTask];
           BindData();
         }
       })
@@ -306,6 +329,10 @@ export default function UserClients(props) {
   }
 
   useEffect(() => {
+    MyClients = [];
+    MainTask = [];
+    MainArray = [];
+    SubTask = [];
     getcurUser();
   }, [props.Email]);
 
@@ -314,7 +341,7 @@ export default function UserClients(props) {
       <div className={styles.commonFilterSection}>
         <div>
           <Label className={styles.leftFilterSection}>
-            Client Tasks : {props.Email}
+           {curuserId.Title}
           </Label>
         </div>
 
@@ -341,6 +368,35 @@ export default function UserClients(props) {
           />
         </div>
       </div>
+      <div className={styles.TLTCSection}>
+        <div className={styles.TLImage}>
+        <b>TL :</b>
+        <div className={styles.avatarAndNameFlex}>
+        <Avatar
+        className={styles.avatar}
+        image={`/_layouts/15/userphoto.aspx?size=S&username=${teamTLData.EMail}`}
+          size="normal"
+          shape="circle"
+         // label={val.TeamCaptain[0].Title}
+      />
+      <span>{teamTLData.Title}</span>
+      </div>
+      </div>
+      <div className={styles.TLImage}>
+        <b>TC :</b>
+        <div className={styles.avatarAndNameFlex}>
+        <Avatar
+        className={styles.avatar}
+        image={`/_layouts/15/userphoto.aspx?size=S&username=${teamCaptainData.EMail}`}
+          size="normal"
+          shape="circle"
+         // label={val.TeamCaptain[0].Title}
+      />
+      <span>{teamCaptainData.Title}</span>
+      </div>
+      </div>
+      </div>
+      <Label className={styles.clientHeader}>Client Tasks</Label>
       <>
         {clientdata.length > 0 ? (
           <>

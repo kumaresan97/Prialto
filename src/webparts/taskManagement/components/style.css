@@ -52,7 +52,15 @@
 /* .p-row-odd > [data-pc-section="bodycell"] {
   background-color: #fff !important;
 } */
+.p-treetable-wrapper::-webkit-scrollbar {
+  height: 8px;
+  background-color: #f5f5f5;
+}
 
+.p-treetable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #a3a3a3;
+}
 /* treetable styles end */
 
 /* peoplepicker style  start*/
@@ -81,4 +89,15 @@
 .p-confirm-dialog-message {
   font-size: 20px;
 }
-/* modal styles  start*/
+/* modal styles  end*/
+
+/* datatable scroll design */
+.p-datatable-wrapper::-webkit-scrollbar {
+  height: 8px;
+  background-color: #f5f5f5;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #a3a3a3;
+}

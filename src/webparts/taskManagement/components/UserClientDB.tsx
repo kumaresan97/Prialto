@@ -4,7 +4,7 @@ import { TreeTable, TreeTableExpandedKeysType } from "primereact/treetable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Label } from "@fluentui/react";
+import { IPersonaStyles, Label } from "@fluentui/react";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { sp } from "@pnp/sp/presets/all";
@@ -31,12 +31,55 @@ const dropval = [
   { name: "Newindia", code: "Newindia" },
 ];
 
-let MyClients=[];
+let MyClients = [];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
+  // style variables
+  const cellStyle = { backgroundColor: "#fff", width: 200 };
+  // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
+  // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
+  const TaskCellStyle = { backgroundColor: "#fff", width: 265 };
+  const actionCellStyle = { backgroundColor: "#fff", width: 150 };
+  // const actionCellStyle = { backgroundColor: "#EAEEEE", width: 150 };
+  const iconbtnStyle = {
+    backgroundColor: "transparent",
+    color: "#007C81",
+    border: "1px solid #007C81",
+    height: 24,
+    width: 24,
+    borderRadius: "50%",
+  };
+  const tickIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+  };
+  const pencilIconBtnStyle = {
+    color: "#007C81",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+  };
+  const delIconBtnStyle = {
+    color: "#BF4927",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+    fontSize: "1.3rem",
+  };
+  const personaStyle: Partial<IPersonaStyles> = {
+    root: {
+      ".ms-Persona-image": {
+        borderRadius: 8,
+      },
+    },
+  };
+
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
@@ -45,8 +88,8 @@ const UserClientDB = (props): JSX.Element => {
 
   const data: IMyTasks = {
     TaskName: "",
-    ClientName:"",
-    ClientID:0,
+    ClientName: "",
+    ClientID: 0,
     DueDate: "",
     PriorityLevel: "",
     Status: "",
@@ -75,7 +118,7 @@ const UserClientDB = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
-      ClientName:"",
+      ClientName: "",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -104,7 +147,7 @@ const UserClientDB = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
-      ClientName:"",
+      ClientName: "",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -121,10 +164,30 @@ const UserClientDB = (props): JSX.Element => {
       },
     },
   };
-  
+
   const [curdata, setCurdata] = useState<IMyTasks>(data);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
+  // style function
+  const priorityLevelStyle = (PLevel) => {
+    let bgColor: string = "";
+    if (PLevel == "Urgent") {
+      bgColor = "#BF4927";
+    } else if (PLevel == "High" || PLevel == "In Progress") {
+      bgColor = "#F46906";
+    } else if (PLevel == "Normal") {
+      bgColor = "#009BA2";
+    } else if (PLevel == "New Task") {
+      bgColor = "#68BAC4";
+    } else if (PLevel == "Done") {
+      bgColor = "#007C81";
+    }
+    return (
+      <div className={styles.pLevelStyle} style={{ backgroundColor: bgColor }}>
+        {PLevel}
+      </div>
+    );
+  };
 
   //onchange values get
   const getOnchange = (key, _value) => {
@@ -132,8 +195,8 @@ const UserClientDB = (props): JSX.Element => {
     if (key == "Backup") {
       debugger;
       FormData.Backup.Id = _value.id;
-      FormData.Backup.EMail= _value.secondaryText;
-      FormData.Backup.Title=_value.text;
+      FormData.Backup.EMail = _value.secondaryText;
+      FormData.Backup.Title = _value.text;
     } else if (key == "Status" || key == "PriorityLevel") {
       FormData[key] = _value;
     }
@@ -157,7 +220,7 @@ const UserClientDB = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-plus"
-          rounded
+          style={iconbtnStyle}
           onClick={(_) => {
             _handleData("addChild", obj);
             toggleApplications(obj.key);
@@ -167,16 +230,16 @@ const UserClientDB = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-pencil"
-          rounded
+          style={pencilIconBtnStyle}
           onClick={(_) => {
             _handleData("edit", obj);
           }}
         />
         <Button
+          style={delIconBtnStyle}
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
-          rounded
           onClick={() => deleteData(obj)}
         />
       </div>
@@ -185,19 +248,19 @@ const UserClientDB = (props): JSX.Element => {
   //check,cancelbutton
   const _actionSubmit = (obj: any): JSX.Element => {
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.actionContainer}>
         <Button
           type="button"
+          style={tickIconStyle}
           icon="pi pi-check"
-          rounded
           onClick={(_) => {
             _handleDataoperation(obj);
           }}
         />
         <Button
           type="button"
+          style={delIconBtnStyle}
           icon="pi pi-times"
-          rounded
           onClick={(_) => {
             _handleData("cancel", obj);
           }}
@@ -207,9 +270,8 @@ const UserClientDB = (props): JSX.Element => {
   };
   //handle update,delete,edit
   const _handleDataoperation = (obj) => {
-
     //if (obj.isParent && obj.isEdit && obj.Id) {
-      if (obj.isEdit && obj.Id) {
+    if (obj.isEdit && obj.Id) {
       Editfunction(obj);
     } else if (obj.isParent && !obj.Id) {
       AddItem(obj);
@@ -239,84 +301,79 @@ const UserClientDB = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       AssistantId: curuserId.Id,
-      ClientId:3
+      ClientId: 3,
     };
 
     let Json = obj.isParent ? Main : sub;
 
-    
     SPServices.SPAddItem({
       Listname: ListName,
       RequestJSON: Json,
     })
       .then((res) => {
-
-        let newData=  {};
+        let newData = {};
         //Preparing Parent or Child object here.
-        if(obj.isParent)
-        {
-          newData={
-            "key": res.data.ID,
-            "Id": res.data.ID,
-            "isParent": true,
-            "isClick": false,
-            "isEdit": false,
-            "isAdd": false,
-            "data": {
-              "TaskName": Json.TaskName,
-              "ClientName": props.clientName,
-              "ClientID": props.clientId,
-              "DueDate": SPServices.displayDate(Json.DueDate),
-              "PriorityLevel": Json.PriorityLevel,
-              "Status": Json.Status,
-              "Created": moment().format("YYYY-MM-DD"),
-              "Backup": curdata.Backup.Id?curdata.Backup:configure,
-              "Creator": curdata.Creator
+        if (obj.isParent) {
+          newData = {
+            key: res.data.ID,
+            Id: res.data.ID,
+            isParent: true,
+            isClick: false,
+            isEdit: false,
+            isAdd: false,
+            data: {
+              TaskName: Json.TaskName,
+              ClientName: props.clientName,
+              ClientID: props.clientId,
+              DueDate: SPServices.displayDate(Json.DueDate),
+              PriorityLevel: Json.PriorityLevel,
+              Status: Json.Status,
+              Created: moment().format("YYYY-MM-DD"),
+              Backup: curdata.Backup.Id ? curdata.Backup : configure,
+              Creator: curdata.Creator,
             },
-            "children": []
-          }
+            children: [],
+          };
           BindAfternewData(newData);
-        }
-        else
-        {
+        } else {
           //Manipulation done here to prepare the array index and then the key of the object for childern.
-          let indexOfObj=curMyTask.findIndex(data=>data.Id==obj.subId);
-          let indexOfChildren=-1;
-          let lengthOfObject=0;
-          if(indexOfObj>=0)
-          {
-            lengthOfObject=curMyTask[indexOfObj].children.length;
-            indexOfChildren=curMyTask[indexOfObj].children.findIndex(data=>!data.Id);
-          }
-          else{
-            lengthOfObject=1;
+          let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
+          let indexOfChildren = -1;
+          let lengthOfObject = 0;
+          if (indexOfObj >= 0) {
+            lengthOfObject = curMyTask[indexOfObj].children.length;
+            indexOfChildren = curMyTask[indexOfObj].children.findIndex(
+              (data) => !data.Id
+            );
+          } else {
+            lengthOfObject = 1;
           }
 
-          newData={
-                    //key: `${obj.subId}-${lengthOfObject}`,
-                    key:obj.key,
-                    Index:lengthOfObject-1,
-                    Id: res.data.ID,
-                    subId: obj.subId,
-                    isClick: false,
-                    isParent: false,
-                    isAdd: false,
-                    isEdit: false,
-                    data: {
-                      TaskName: curdata.TaskName,
-                      ClientName:props.clientName,
-                      ClientID:props.clientId,
-                      Creator: curdata.Creator,
-                      Backup: curdata.Backup.Id?curdata.Backup:configure,
-                      DueDate: SPServices.displayDate(Json.DueDate),
-                      PriorityLevel: Json.PriorityLevel,
-                      Status: Json.Status,
-                      Created: moment().format("YYYY-MM-DD")
-              }
-           }
+          newData = {
+            //key: `${obj.subId}-${lengthOfObject}`,
+            key: obj.key,
+            Index: lengthOfObject - 1,
+            Id: res.data.ID,
+            subId: obj.subId,
+            isClick: false,
+            isParent: false,
+            isAdd: false,
+            isEdit: false,
+            data: {
+              TaskName: curdata.TaskName,
+              ClientName: props.clientName,
+              ClientID: props.clientId,
+              Creator: curdata.Creator,
+              Backup: curdata.Backup.Id ? curdata.Backup : configure,
+              DueDate: SPServices.displayDate(Json.DueDate),
+              PriorityLevel: Json.PriorityLevel,
+              Status: Json.Status,
+              Created: moment().format("YYYY-MM-DD"),
+            },
+          };
 
-           if(indexOfObj>=0)
-           BindAfternewChildData(newData,indexOfObj,indexOfChildren);
+          if (indexOfObj >= 0)
+            BindAfternewChildData(newData, indexOfObj, indexOfChildren);
         }
       })
       .catch((err) => errFunction(err));
@@ -335,7 +392,6 @@ const UserClientDB = (props): JSX.Element => {
         })
       );
 
-
     SPServices.SPDeleteItem({
       Listname: ListName,
       ID: obj.Id,
@@ -343,8 +399,7 @@ const UserClientDB = (props): JSX.Element => {
       .then((res) => {
         if (Ids.length) {
           DeleteFunction(obj);
-          for (let i: number = 0; Ids.length > i; i++) 
-          {
+          for (let i: number = 0; Ids.length > i; i++) {
             SPServices.SPDeleteItem({
               Listname: "SubTasks",
               ID: Ids[i].Id,
@@ -369,16 +424,12 @@ const UserClientDB = (props): JSX.Element => {
       });
   };
 
-  function DeleteFunction(obj)
-  {
-    if(obj.isParent){
-      BindAfterDataDelete(obj.Id)
+  function DeleteFunction(obj) {
+    if (obj.isParent) {
+      BindAfterDataDelete(obj.Id);
+    } else {
+      BindAfterChildDataDelete(obj.Id, obj.subId, obj.Index);
     }
-    else
-    {
-      BindAfterChildDataDelete(obj.Id,obj.subId,obj.Index)
-    }
-    
   }
 
   //editfunction
@@ -399,35 +450,33 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        let newData={};
-        if(obj.isParent){
-        newData=  {
-          "key": obj.Id,
-          "Id": obj.Id,
-          "isParent": true,
-          "isClick": false,
-          "isEdit": false,
-          "isAdd": false,
-          "data": {
-            "TaskName": editval.TaskName,
-            "ClientName": props.clientName,
-            "ClientID": props.clientId,
-            "DueDate": SPServices.displayDate(editval.DueDate),
-            "PriorityLevel": editval.PriorityLevel,
-            "Status": editval.Status,
-            "Created": moment().format("YYYY-MM-DD"),
-            "Backup": curdata.Backup.Id?curdata.Backup:configure,
-            "Creator": curdata.Creator
-          },
-          "children": obj.children
-        }
-        BindAfterDataEdit(newData,obj);
-        }
-        else
-        {
-          newData={
-            key:obj.key,
-            Index:obj.Index,
+        let newData = {};
+        if (obj.isParent) {
+          newData = {
+            key: obj.Id,
+            Id: obj.Id,
+            isParent: true,
+            isClick: false,
+            isEdit: false,
+            isAdd: false,
+            data: {
+              TaskName: editval.TaskName,
+              ClientName: props.clientName,
+              ClientID: props.clientId,
+              DueDate: SPServices.displayDate(editval.DueDate),
+              PriorityLevel: editval.PriorityLevel,
+              Status: editval.Status,
+              Created: moment().format("YYYY-MM-DD"),
+              Backup: curdata.Backup.Id ? curdata.Backup : configure,
+              Creator: curdata.Creator,
+            },
+            children: obj.children,
+          };
+          BindAfterDataEdit(newData, obj);
+        } else {
+          newData = {
+            key: obj.key,
+            Index: obj.Index,
             Id: res.data.ID,
             subId: obj.subId,
             isClick: false,
@@ -436,20 +485,20 @@ const UserClientDB = (props): JSX.Element => {
             isEdit: false,
             data: {
               TaskName: curdata.TaskName,
-              ClientName:props.clientName,
-              ClientID:props.clientId,
+              ClientName: props.clientName,
+              ClientID: props.clientId,
               Creator: curdata.Creator,
-              Backup: curdata.Backup.Id?curdata.Backup:configure,
+              Backup: curdata.Backup.Id ? curdata.Backup : configure,
               DueDate: SPServices.displayDate(editval.DueDate),
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
-              Created: moment().format("YYYY-MM-DD")
-      
-        }}
-        let indexOfObj=curMyTask.findIndex(data=>data.Id==obj.subId);
-        if(indexOfObj>=0)
-        BindAfternewChildData(newData,indexOfObj,obj.Index);
-      }
+              Created: moment().format("YYYY-MM-DD"),
+            },
+          };
+          let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
+          if (indexOfObj >= 0)
+            BindAfternewChildData(newData, indexOfObj, obj.Index);
+        }
       })
       .catch((err) => errFunction(err));
   };
@@ -629,11 +678,10 @@ const UserClientDB = (props): JSX.Element => {
     }
 
     setCurMyTask([..._curArray]);
-    console.log("test")
+    console.log("test");
   };
   //addtextfield
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
-    
     const data: any = val?.data;
 
     if (!val.Id && val.isAdd) {
@@ -769,7 +817,13 @@ const UserClientDB = (props): JSX.Element => {
         );
       }
       if (fieldType == "DueDate") {
-        return <Calendar value={new Date(curdata.DueDate)} onChange={(e) => getOnchange("DueDate", e.value)} showIcon />;
+        return (
+          <Calendar
+            value={new Date(curdata.DueDate)}
+            onChange={(e) => getOnchange("DueDate", e.value)}
+            showIcon
+          />
+        );
       }
 
       if (fieldType == "Creator") {
@@ -883,6 +937,8 @@ const UserClientDB = (props): JSX.Element => {
             {data[fieldType].Title}
           </span>
         );
+      } else if (fieldType == "Status" || fieldType == "PriorityLevel") {
+        return priorityLevelStyle(data[fieldType]);
       } else {
         return (
           <span
@@ -900,12 +956,10 @@ const UserClientDB = (props): JSX.Element => {
       }
     }
   };
-  
+
   const errFunction = (err) => {
     console.log(err);
   };
-
-
 
   const onSelect = (event) => {
     // x = [];
@@ -945,102 +999,82 @@ const UserClientDB = (props): JSX.Element => {
     setExpandedKeys(_expandedKeys);
   };
 
-  function BindAfternewData(newData)
-  {
-        let tempData=curMyTask;
-        let indexOfObj=tempData.findIndex(data=>!data.Id);
-        if(indexOfObj>=0)
-        {
-          tempData[indexOfObj]=newData;
-        }
-        for(let i=0;i<tempData.length;i++)
-        {
-          tempData[i].isClick=false;
-          tempData[i].isAdd=false;
-          tempData[i].isEdit=false;
-        }
-        setCurMyTask([...tempData]);
-        setMasterdata([...tempData]);
-        setCurdata({...data});
+  function BindAfternewData(newData) {
+    let tempData = curMyTask;
+    let indexOfObj = tempData.findIndex((data) => !data.Id);
+    if (indexOfObj >= 0) {
+      tempData[indexOfObj] = newData;
+    }
+    for (let i = 0; i < tempData.length; i++) {
+      tempData[i].isClick = false;
+      tempData[i].isAdd = false;
+      tempData[i].isEdit = false;
+    }
+    setCurMyTask([...tempData]);
+    setMasterdata([...tempData]);
+    setCurdata({ ...data });
   }
 
-
-  function BindAfternewChildData(newData,parentIndex,childIndex)
-  {
-        let tempData=curMyTask;
-        tempData[parentIndex].children[childIndex]=newData;
-        for(let i=0;i<tempData.length;i++)
-        {
-          tempData[i].isClick=false;
-          tempData[i].isAdd=false;
-          tempData[i].isEdit=false;
-          for(let j=0;j<tempData[i].children.length;j++)
-          {
-            tempData[i].children[j].isClick=false;
-            tempData[i].children[j].isAdd=false;
-            tempData[i].children[j].isEdit=false;
-  
-          }
-
-        }
-        setCurMyTask([...tempData]);
-        setMasterdata([...tempData]);
-        setCurdata({...data});
+  function BindAfternewChildData(newData, parentIndex, childIndex) {
+    let tempData = curMyTask;
+    tempData[parentIndex].children[childIndex] = newData;
+    for (let i = 0; i < tempData.length; i++) {
+      tempData[i].isClick = false;
+      tempData[i].isAdd = false;
+      tempData[i].isEdit = false;
+      for (let j = 0; j < tempData[i].children.length; j++) {
+        tempData[i].children[j].isClick = false;
+        tempData[i].children[j].isAdd = false;
+        tempData[i].children[j].isEdit = false;
+      }
+    }
+    setCurMyTask([...tempData]);
+    setMasterdata([...tempData]);
+    setCurdata({ ...data });
   }
 
-  function BindAfterDataEdit(newData,oldObject)
-  {
-        let tempData=curMyTask;
-        let indexOfObj=tempData.findIndex(data=>data.Id==oldObject.Id);
-        if(indexOfObj>=0)
-        {
-          tempData[indexOfObj]=newData;
-          
-        }
-        for(let i=0;i<tempData.length;i++)
-        {
-          tempData[i].isClick=false;
-          tempData[i].isAdd=false;
-          tempData[i].isEdit=false;
-          for(let j=0;j<tempData[i].children.length;j++)
-          {
-            tempData[i].children[j].isClick=false;
-            tempData[i].children[j].isAdd=false;
-            tempData[i].children[j].isEdit=false;
-          }
-
-        }
-        setCurMyTask([...tempData]);
-        setMasterdata([...tempData]);
-        setCurdata({...data});
+  function BindAfterDataEdit(newData, oldObject) {
+    let tempData = curMyTask;
+    let indexOfObj = tempData.findIndex((data) => data.Id == oldObject.Id);
+    if (indexOfObj >= 0) {
+      tempData[indexOfObj] = newData;
+    }
+    for (let i = 0; i < tempData.length; i++) {
+      tempData[i].isClick = false;
+      tempData[i].isAdd = false;
+      tempData[i].isEdit = false;
+      for (let j = 0; j < tempData[i].children.length; j++) {
+        tempData[i].children[j].isClick = false;
+        tempData[i].children[j].isAdd = false;
+        tempData[i].children[j].isEdit = false;
+      }
+    }
+    setCurMyTask([...tempData]);
+    setMasterdata([...tempData]);
+    setCurdata({ ...data });
   }
 
-  function BindAfterDataDelete(ID)
-  {
-        let tempData=curMyTask;
-        let indexOfObj=tempData.findIndex(data=>data.Id==ID);
-        if(indexOfObj>=0)
-        {
-          tempData.splice(indexOfObj,1);
-        }
-        setCurMyTask([...tempData]);
-        setMasterdata([...tempData]);
-        setCurdata({...data});
+  function BindAfterDataDelete(ID) {
+    let tempData = curMyTask;
+    let indexOfObj = tempData.findIndex((data) => data.Id == ID);
+    if (indexOfObj >= 0) {
+      tempData.splice(indexOfObj, 1);
+    }
+    setCurMyTask([...tempData]);
+    setMasterdata([...tempData]);
+    setCurdata({ ...data });
   }
 
-  function BindAfterChildDataDelete(ID,parentId,childIndex)
-  {
-        let tempData=curMyTask;
-        let indexOfObj=tempData.findIndex(data=>data.Id==parentId);
-        tempData[indexOfObj].children.splice(childIndex,1);
-        setCurMyTask([...tempData]);
-        setMasterdata([...tempData]);
-        setCurdata({...data});
+  function BindAfterChildDataDelete(ID, parentId, childIndex) {
+    let tempData = curMyTask;
+    let indexOfObj = tempData.findIndex((data) => data.Id == parentId);
+    tempData[indexOfObj].children.splice(childIndex, 1);
+    setCurMyTask([...tempData]);
+    setMasterdata([...tempData]);
+    setCurdata({ ...data });
   }
 
-  
-  useEffect(() => 
-  {
+  useEffect(() => {
     setCurMyTask([...props.mainData]);
     setMasterdata([...props.mainData]);
   }, [props.bind]);
@@ -1056,10 +1090,15 @@ const UserClientDB = (props): JSX.Element => {
           margin: "10px 0px",
         }}
       >
-        <Label>{props.clientName?props.clientName:""}</Label>
+        <Label
+          className={styles.leftFilterSection}
+          style={{ color: "#009b9f" }}
+        >
+          {props.clientName ? props.clientName : ""}
+        </Label>
         <Button
           label="New task"
-          severity="warning"
+          className={styles.btnColor}
           onClick={() => {
             _handleData("addParent", { ..._sampleParent });
           }}
@@ -1086,35 +1125,35 @@ const UserClientDB = (props): JSX.Element => {
           header="TaskName"
           expander
           sortable
-          style={{ width: "265px" }}
+          style={TaskCellStyle}
           body={(obj: any) => _addTextField(obj, "TaskName")}
         />
-        <Column style={{ width: "200px" }} body={(obj: any) => _action(obj)} />
+        <Column style={cellStyle} body={(obj: any) => _action(obj)} />
         <Column
           field="ClientName"
           header="ClientName"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
         />
         <Column
           field="Creator"
           header="Creator"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Creator")}
         />
         <Column
           field="Backup"
           header="Backup"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Backup")}
         />
         <Column
           field="DueDate"
           header="Due Date"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "DueDate")}
         />
 
@@ -1122,14 +1161,14 @@ const UserClientDB = (props): JSX.Element => {
           field="PriorityLevel"
           header=" Priority Level"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "PriorityLevel")}
         />
         <Column
           field="Status"
           header="Status"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Status")}
         />
         <Column
@@ -1140,8 +1179,8 @@ const UserClientDB = (props): JSX.Element => {
           body={(obj: any) => _addTextField(obj, "Created")}
         />
         <Column
-          style={{ width: "150px" }}
-          body={(obj: any,index) =>
+          style={actionCellStyle}
+          body={(obj: any, index) =>
             obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
           }
         />

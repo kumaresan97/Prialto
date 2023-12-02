@@ -1,5 +1,10 @@
 $btnColor: #f46906;
 .myTaskSection {
+  margin: 20px 0px 30px 0px;
+  thead > tr > th {
+    padding: 10px !important;
+  }
+
   .filterSection {
     display: flex;
     justify-content: flex-end;
@@ -13,6 +18,7 @@ $btnColor: #f46906;
   // tr :nth-child(1) {
   //   background: #747a7c33 !important;
   // }
+
   tbody > tr > td {
     padding: 8px !important;
     // background: #747a7c33 !important;
@@ -26,6 +32,10 @@ $btnColor: #f46906;
       margin: 0;
       font-weight: 700;
       color: $btnColor;
+    }
+    label {
+      font-size: 18px;
+      font-weight: 700;
     }
   }
 }
@@ -41,7 +51,7 @@ $btnColor: #f46906;
   color: #fff;
   padding: 6px 0px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 96px;
 }
 
@@ -54,4 +64,18 @@ $btnColor: #f46906;
   background-color: $btnColor;
   border: none;
   padding: 8px 12px;
+}
+
+// topContainer
+.commonFilterSection {
+  display: flex;
+  justify-content: space-between;
+  .leftFilterSection {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .rightFilterSection {
+    display: flex;
+    gap: 10px;
+  }
 }

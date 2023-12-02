@@ -28,16 +28,57 @@
 .p-button:focus {
   box-shadow: unset;
 }
+.p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: unset;
+  border-color: #000;
+}
+.pi-check,
+.pi-times {
+  font-size: 18px;
+}
 
-/* peoplepicker style */
+/* treetable styles start */
+.p-treetable-thead th {
+  background-color: #fff !important;
+  font-size: 14px;
+  font-weight: 700;
+}
+.p-treetable-tbody span {
+  font-size: 14px;
+}
+/* .p-treetable .p-treetable-tbody > tr > td {
+  background: #fff;
+} */
+/* .p-row-odd > [data-pc-section="bodycell"] {
+  background-color: #fff !important;
+} */
+
+/* treetable styles end */
+
+/* peoplepicker style  start*/
 .ms-BasePicker-text {
   border: 1px solid #ced4da !important;
   min-height: 38px;
   border-radius: 4px;
+  background-color: #fff;
 }
 .ms-BasePicker-text::after {
   border: 1px solid #000 !important;
+  content: unset;
 }
 .ms-BasePicker-text input {
   min-height: 38px;
 }
+/* peoplepicker style  end*/
+
+/* datepicker styles start */
+.p-datepicker-trigger {
+  background-color: #007c81;
+  border: none;
+}
+
+/* modal styles  start*/
+.p-confirm-dialog-message {
+  font-size: 20px;
+}
+/* modal styles  start*/

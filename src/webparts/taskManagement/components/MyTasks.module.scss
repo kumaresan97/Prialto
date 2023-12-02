@@ -1,3 +1,4 @@
+$btnColor: #f46906;
 .myTaskSection {
   .filterSection {
     display: flex;
@@ -6,6 +7,7 @@
   }
   td:nth-child(1) {
     display: flex;
+    height: 54px;
     align-items: center;
   }
   // tr :nth-child(1) {
@@ -19,7 +21,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 10px 0;
+    margin: 25px 0px 10px 0px;
+    h2 {
+      margin: 0;
+      font-weight: 700;
+      color: $btnColor;
+    }
   }
 }
 .tblTxtBox {
@@ -29,4 +36,22 @@
   display: flex;
   gap: 10px;
   justify-content: center;
+}
+.pLevelStyle {
+  color: #fff;
+  padding: 6px 0px;
+  text-align: center;
+  border-radius: 8px;
+  width: 96px;
+}
+
+.actionContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.btnColor {
+  background-color: $btnColor;
+  border: none;
+  padding: 8px 12px;
 }

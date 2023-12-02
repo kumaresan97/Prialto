@@ -19,6 +19,8 @@ import CardView from "./CardView";
 import OrgChart from "./OrgChart";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 import Sample from "./Sample";
+import Client from "./Client";
+import Loader from "./Loader";
 
 let admin: any[] = [];
 let TL: any[] = [];
@@ -308,6 +310,8 @@ const MainComponent = (props) => {
       <div style={{ width: "80%", padding: "12px 35px 0px 0px" }}>
         {value == "mytasks" ? (
           <>
+            {/* <Loader /> */}
+            {/* <Client context={props.context} /> */}
             {/* <Mytasks /> */}
             <Sample context={props.context} />
           </>

@@ -541,6 +541,7 @@ const Client = (props) => {
             </span>
           </div>
           <Button
+            icon="pi pi-file-excel"
             className={styles.btnColor}
             label="Export"
             //   onClick={() => {
@@ -559,43 +560,45 @@ const Client = (props) => {
           />
         </div>
       </div>
-      <DataTable
-        value={clientdetail}
-        sortMode="multiple"
-        tableStyle={{ minWidth: "60rem" }}
-      >
-        <Column
-          field="FirstName"
-          header="First Name"
-          sortable
-          body={(obj: any) => _addTextField(obj, "FirstName")}
-        ></Column>
-        <Column
-          field="LastName"
-          header="last Name"
-          sortable
-          body={(obj: any) => _addTextField(obj, "LastName")}
-        ></Column>
-        <Column
-          field="CompanyName"
-          header="Company Name"
-          sortable
-          body={(obj: any) => _addTextField(obj, "CompanyName")}
-        ></Column>
-        <Column
-          field="Assistant"
-          header="Assistant"
-          sortable
-          body={(obj: any) => _addTextField(obj, "Assistant")}
-        ></Column>
-        <Column
-          field="Backup"
-          header="Backup"
-          sortable
-          body={(obj: any) => _addTextField(obj, "Backup")}
-        ></Column>
-        <Column header="Action" body={(obj) => _action(obj)}></Column>
-      </DataTable>
+      <div className={styles.dataTableContainer}>
+        <DataTable
+          value={clientdetail}
+          sortMode="multiple"
+          tableStyle={{ minWidth: "60rem" }}
+        >
+          <Column
+            field="FirstName"
+            header="First Name"
+            sortable
+            body={(obj: any) => _addTextField(obj, "FirstName")}
+          ></Column>
+          <Column
+            field="LastName"
+            header="last Name"
+            sortable
+            body={(obj: any) => _addTextField(obj, "LastName")}
+          ></Column>
+          <Column
+            field="CompanyName"
+            header="Company Name"
+            sortable
+            body={(obj: any) => _addTextField(obj, "CompanyName")}
+          ></Column>
+          <Column
+            field="Assistant"
+            header="Assistant"
+            sortable
+            body={(obj: any) => _addTextField(obj, "Assistant")}
+          ></Column>
+          <Column
+            field="Backup"
+            header="Backup"
+            sortable
+            body={(obj: any) => _addTextField(obj, "Backup")}
+          ></Column>
+          <Column header="Action" body={(obj) => _action(obj)}></Column>
+        </DataTable>
+      </div>
 
       <ConfirmDialog
         visible={showDialog}

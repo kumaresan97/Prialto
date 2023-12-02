@@ -4,12 +4,16 @@ import { Label } from "@fluentui/react";
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
 import UserClientDB from "./UserClientDB";
-let MyClients:any=[];
-let MainTask:any=[];
-let MainArray:any=[];
-let SubTask:any=[];
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import styles from "./MyTasks.module.scss";
+let MyClients=[];
+let MainTask=[];
+let MainArray=[];
+let SubTask=[];
 export default function UserClients(props)
 {
+    
     const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
     const [curMyTask, setCurMyTask] = useState<any[]>([]);
     const [masterdata, setMasterdata] = useState<any[]>([]);
@@ -34,7 +38,8 @@ export default function UserClients(props)
     const getcurUser = () => {
         let user = sp.web.siteUsers.getByEmail(UserEmail).get().then((res) => 
         {
-          let crntUserDetails:any=
+          console.log(UserEmail);
+          let crntUserDetails=
           {
               Id:res.Id,
               EMail:res.Email,
@@ -105,7 +110,14 @@ function getMyClients(id)
             res.forEach((val: any) => {
                 MyClients.push({ID:val.ID,Name:val.FirstName});
             });
-            getMainTask(id);
+            if(MyClients.length>0)
+            {
+              getMainTask(id);
+            }
+            else
+            {
+              BindData();
+            }
 
         }).catch(function(error)
         {
@@ -178,7 +190,7 @@ function getMyClients(id)
                 });
             });
     
-            let arrFilter:any=[];
+            let arrFilter=[];
             for (let i = 0; i < MainTask.length; i++) {
               arrFilter.push({
                 FilterKey: "MainTaskID/ID",
@@ -186,7 +198,13 @@ function getMyClients(id)
                 Operator: "eq"
               })
             }
+            if(arrFilter.length>0){
             getsubTask(arrFilter);
+            }
+            else
+            {
+              BindData();
+            }
           })
           .catch((err) => {
             errFunction(err);
@@ -256,21 +274,21 @@ function getMyClients(id)
               count++;
     
               if (count === MainTask.length) {
-                console.log(MainArray, "MainArray");
-                let tempClient:any=[];
-                for(let i=0;i<MyClients.length;i++)
-                {
-                    tempClient.push({ClientName:MyClients[i].Name,Tasks:[]});
-                    for(let j=0;j<MainArray.length;j++)
-                    {
-                        if(MainArray[j].data.ClientID==MyClients[i].ID)
-                        tempClient[i].Tasks.push(MainArray[j]);
-                    }
-                }
-                console.log([...tempClient]);
-                setCurMyTask([...MainArray]);
-                setMasterdata([...MainArray]);
-                setClientdata([...tempClient]);
+                // console.log(MainArray, "MainArray");
+                // let tempClient=[];
+                // for(let i=0;i<MyClients.length;i++)
+                // {
+                //     tempClient.push({ClientName:MyClients[i].Name,ID:MyClients[i].ID,Tasks:[]});
+                //     for(let j=0;j<MainArray.length;j++)
+                //     {
+                //         if(MainArray[j].data.ClientID==MyClients[i].ID)
+                //         tempClient[i].Tasks.push(MainArray[j]);
+                //     }
+                // }
+                // setCurMyTask([...MainArray]);
+                // setMasterdata([...MainArray]);
+                // setClientdata([...tempClient]);
+                BindData();
               }
               /* End Of Subtaks */ 
         }
@@ -281,21 +299,64 @@ function getMyClients(id)
       });
   };
 
-useEffect(()=>
+  function BindData()
+  {
+                let tempClient=[];
+                for(let i=0;i<MyClients.length;i++)
+                {
+                    tempClient.push({ClientName:MyClients[i].Name,ID:MyClients[i].ID,Tasks:[]});
+                    for(let j=0;j<MainArray.length;j++)
+                    {
+                        if(MainArray[j].data.ClientID==MyClients[i].ID)
+                        tempClient[i].Tasks.push(MainArray[j]);
+                    }
+                }
+                setCurMyTask([...MainArray]);
+                setMasterdata([...MainArray]);
+                setClientdata([...tempClient]);
+  }
+
+    useEffect(()=>
     {
         getcurUser();
-    },[])
+    },[props.Email])
 
     return(<>
+    <div className={styles.filterSection}>
+                {/* <InputText
+                  value={search}
+                  onChange={(e: any) => SearchFilter(e.target.value)}
+                /> */}
+        
+                <span className="p-input-icon-left">
+                  <i className="pi pi-search" />
+                  <InputText
+                    placeholder="Search"
+                    value={""}
+                    //onChange={(e: any) => SearchFilter(e.target.value)}
+                  />
+                </span>
+                <Button
+                  label="Automate"
+                  severity="warning"
+                />
+                <Button
+                  label="Export"
+                  severity="warning"
+                />
+    </div>
+    <>
     {
         clientdata.length>0?<>
-        <Label>Client Tasks</Label>
+        <Label>Client Tasks For {props.Email}</Label>
         {clientdata.map((val, i) => {
             return(<>
-            <UserClientDB bind={false} clientName={val.ClientName} context={props.context} mainData={val.Tasks} crntUserData={curuserId} crntBackData={configure}/>
+            <UserClientDB bind={false} clientName={val.ClientName} clientId={val.ID} context={props.context} mainData={val.Tasks} crntUserData={curuserId} crntBackData={configure}/>
             </>)
         })}</>:
         <UserClientDB bind={false} context={props.context} mainData={masterdata} crntUserData={curuserId} crntBackData={configure}/>
     }
-    </>)
+    </>
+    </>
+    )
 }

@@ -7,43 +7,45 @@ import { Badge } from "primereact/badge";
 import { sp } from "@pnp/sp/presets/all";
 import styles from "./Cardview.module.scss";
 import { useEffect, useState } from "react";
+import Members from "./Members";
 
-const CardView = () => {
+const CardView = (props) => {
   const [Cardarr, setCardarr] = useState([]);
-  const cardview = [
-    {
-      TeamName: "Albha",
-      TeamCaptain: {
-        EMail: "devaraj@chandrudemo.onmicrosoft.com",
-        Title: "Deva",
-      },
-      TeamLeader: {
-        EMail: "devaraj@chandrudemo.onmicrosoft.com",
-        Title: "Deva",
-      },
-      Members: [
-        { id: 1, Title: "Kumar" },
-        { id: 1, Title: "Kumar" },
-        { id: 1, Title: "Kumar" },
-      ],
-    },
-    {
-      TeamName: "Albha",
-      TeamCaptain: {
-        EMail: "devaraj@chandrudemo.onmicrosoft.com",
-        Title: "Deva",
-      },
-      TeamLeader: {
-        EMail: "devaraj@chandrudemo.onmicrosoft.com",
-        Title: "Deva",
-      },
-      Members: [
-        { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
-        { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
-        { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
-      ],
-    },
-  ];
+  const [selectedMember, setSelectedmembers] = useState([]);
+  // const cardview = [
+  //   {
+  //     TeamName: "Albha",
+  //     TeamCaptain: {
+  //       EMail: "devaraj@chandrudemo.onmicrosoft.com",
+  //       Title: "Deva",
+  //     },
+  //     TeamLeader: {
+  //       EMail: "devaraj@chandrudemo.onmicrosoft.com",
+  //       Title: "Deva",
+  //     },
+  //     Members: [
+  //       { id: 1, Title: "Kumar" },
+  //       { id: 1, Title: "Kumar" },
+  //       { id: 1, Title: "Kumar" },
+  //     ],
+  //   },
+  //   {
+  //     TeamName: "Albha",
+  //     TeamCaptain: {
+  //       EMail: "devaraj@chandrudemo.onmicrosoft.com",
+  //       Title: "Deva",
+  //     },
+  //     TeamLeader: {
+  //       EMail: "devaraj@chandrudemo.onmicrosoft.com",
+  //       Title: "Deva",
+  //     },
+  //     Members: [
+  //       { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
+  //       { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
+  //       { id: 1, Title: "Kumar", EMail: "devaraj@chandrudemo.onmicrosoft.com" },
+  //     ],
+  //   },
+  // ];
 
   const getchoice = () => {
     sp.web.lists
@@ -130,105 +132,129 @@ const CardView = () => {
         console.log(err);
       });
   };
+  const memberFunction = (value) => {
+    debugger;
+    setSelectedmembers(value ? [...value] : []);
+  };
   useEffect(() => {
     getchoice();
   }, []);
   return (
-    <>
-      <h2>Team List</h2>
-      <div
-        className={styles.mainContainer}
-        // style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
-      >
-        {Cardarr.length &&
-          Cardarr.map((val: any) => {
-            return (
-              <div className={styles.cardSize}>
-                <Card style={{ width: "100%" }}>
-                  <>
-                    <div className={styles.secDivider}>
-                      <div>
-                        <Label className={styles.roleHead}>Team</Label>
-                        <Label className={styles.noPaddingLable}>
-                          {val.TeamName}
-                        </Label>
-                      </div>
-                      <div>
-                        <Label className={styles.roleHead}>Team Captain</Label>
-                        <div className={styles.teaCaptianSec}>
-                          <Avatar
-                            image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0].Email}`}
-                            size="normal"
-                            shape="circle"
-                            label={val.TeamCaptain[0].Title}
-                          />
-                          <Label
-                            className={styles.noPaddingLable}
-                            style={{ marginLeft: 6 }}
-                          >
-                            {val.TeamCaptain[0].Title}
-                          </Label>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "10px",
-                        justifyContent: "space-between",
+    <div>
+      {selectedMember.length > 0 ? (
+        <Members
+          selectedMember={selectedMember}
+          memberFunction={memberFunction}
+        />
+      ) : (
+        <div>
+          <h2>Team List</h2>
+          <div
+            className={styles.mainContainer}
+            // style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
+          >
+            {Cardarr.length &&
+              Cardarr.map((val: any) => {
+                return (
+                  <div className={styles.cardSize}>
+                    <Card
+                      style={{ width: "100%" }}
+                      onClick={() => {
+                        memberFunction(val.members);
                       }}
                     >
-                      <div>
-                        <Label className={styles.roleHead}>Team Leader</Label>
-                        <div className={styles.teaCaptianSec}>
-                          <Avatar
-                            image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
-                            size="normal"
-                            shape="circle"
-                            label={val.TeamLeader[0]?.Title}
-                          />
-                          <Label
-                            className={styles.noPaddingLable}
-                            style={{ marginLeft: 6 }}
-                          >
-                            {val.TeamLeader[0]?.Title}
-                          </Label>
-                        </div>
-                      </div>
-                      <div>
-                        <Label className={styles.roleHead}>Team Members</Label>
-                        <div style={{ display: "flex" }}>
-                          <AvatarGroup>
-                            {val.members.slice(0, 5).map((res) => {
-                              let test =
-                                "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                res.EMail;
-                              return (
-                                <Avatar
-                                  image={test}
-                                  size="normal"
-                                  shape="circle"
-                                />
-                              );
-                            })}
-                            {val.members.length > 5 && (
+                      <>
+                        <div className={styles.secDivider}>
+                          <div className={styles.leftSideContainer}>
+                            <Label className={styles.roleHead}>Team</Label>
+                            <Label className={styles.noPaddingLable}>
+                              {val.TeamName}
+                            </Label>
+                          </div>
+                          <div className={styles.rightSideContainer}>
+                            <Label className={styles.roleHead}>
+                              Team Captain
+                            </Label>
+                            <div className={styles.teaCaptianSec}>
                               <Avatar
+                                image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0].Email}`}
                                 size="normal"
                                 shape="circle"
-                                label={`+${val.members.length - 3} `}
+                                label={val.TeamCaptain[0].Title}
                               />
-                            )}
-                          </AvatarGroup>
+                              <Label
+                                className={styles.noPaddingLable}
+                                style={{ marginLeft: 6 }}
+                              >
+                                {val.TeamCaptain[0].Title}
+                              </Label>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </>
-                </Card>
-              </div>
-            );
-          })}
-      </div>
-    </>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "10px",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <div className={styles.leftSideContainer}>
+                            <Label className={styles.roleHead}>
+                              Team Leader
+                            </Label>
+                            <div className={styles.teaCaptianSec}>
+                              <Avatar
+                                image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
+                                size="normal"
+                                shape="circle"
+                                label={val.TeamLeader[0]?.Title}
+                              />
+                              <Label
+                                className={styles.noPaddingLable}
+                                style={{ marginLeft: 6 }}
+                              >
+                                {val.TeamLeader[0]?.Title}
+                              </Label>
+                            </div>
+                          </div>
+                          <div className={styles.rightSideContainer}>
+                            <Label className={styles.roleHead}>
+                              Team Members
+                            </Label>
+                            <div style={{ display: "flex" }}>
+                              <AvatarGroup>
+                                {val.members.slice(0, 5).map((res) => {
+                                  let test =
+                                    "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                    res.Email;
+                                  return (
+                                    <Avatar
+                                      image={test}
+                                      size="normal"
+                                      shape="circle"
+                                    />
+                                  );
+                                })}
+                                {val.members.length > 5 && (
+                                  <Avatar
+                                    size="normal"
+                                    shape="circle"
+                                    label={`+${val.members.length - 3} `}
+                                  />
+                                )}
+                              </AvatarGroup>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    </Card>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 export default CardView;

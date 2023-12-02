@@ -16,7 +16,7 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
-let x:any = [];
+let x = [];
 const cities = [
   { name: "New York", code: "NY" },
   { name: "Rome", code: "RM" },
@@ -43,7 +43,7 @@ const UserClientDB = (props): JSX.Element => {
 
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
-  const data: any = {
+  const data: IMyTasks = {
     TaskName: "",
     ClientName:"",
     ClientID:0,
@@ -64,9 +64,9 @@ const UserClientDB = (props): JSX.Element => {
   };
   const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
-    useState<TreeTableExpandedKeysType | any>(null);
+    useState<TreeTableExpandedKeysType | null>(null);
 
-  const _sampleParent: any = {
+  const _sampleParent: IParent = {
     key: "",
     Id: null,
     isParent: true,
@@ -94,7 +94,7 @@ const UserClientDB = (props): JSX.Element => {
     children: [],
   };
 
-  const _sampleChild: any = {
+  const _sampleChild: IChild = {
     key: "",
     Id: null,
     isParent: false,
@@ -110,9 +110,9 @@ const UserClientDB = (props): JSX.Element => {
       Status: "",
       Created: new Date().toString(),
       Backup: {
-        EMail: "",
-        Id: null,
-        Title: "",
+        EMail: configure.EMail,
+        Id: configure.backupId,
+        Title: configure.Title,
       },
       Creator: {
         EMail: curuserId.EMail,
@@ -250,46 +250,81 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: Json,
     })
       .then((res) => {
-        // props.maindata=[...curMyTask];
-        // let temptest=props.maindata;
-        // let tempObject={...obj}
-        // tempObject.data={...curdata};
-        // temptest[indexOfObj].Id=res.data.ID;
-        // temptest[indexOfObj].key=res.data.ID;
-        // temptest[indexOfObj].isClick=false;
-        // temptest[indexOfObj].isAdd=false;
-        // props.maindata=temptest;
-        //BindAfterData(temptest);
-        debugger;
-        console.log(curdata);
-        let newData=  {
-          "key": res.data.ID,
-          "Id": res.data.ID,
-          "isParent": true,
-          "isClick": false,
-          "isEdit": false,
-          "isAdd": false,
-          "data": {
-            "TaskName": Json.TaskName,
-            "ClientName": "Mksan 3",
-            "ClientID": 3,
-            "DueDate": SPServices.displayDate(Json.DueDate),
-            "PriorityLevel": Json.PriorityLevel,
-            "Status": Json.Status,
-            "Created": moment().format("YYYY-MM-DD"),
-            "Backup": curdata.Backup,
-            "Creator": curdata.Creator
-          },
-          "children": []
+
+        let newData=  {};
+        //Preparing Parent or Child object here.
+        if(obj.isParent)
+        {
+          newData={
+            "key": res.data.ID,
+            "Id": res.data.ID,
+            "isParent": true,
+            "isClick": false,
+            "isEdit": false,
+            "isAdd": false,
+            "data": {
+              "TaskName": Json.TaskName,
+              "ClientName": props.clientName,
+              "ClientID": props.clientId,
+              "DueDate": SPServices.displayDate(Json.DueDate),
+              "PriorityLevel": Json.PriorityLevel,
+              "Status": Json.Status,
+              "Created": moment().format("YYYY-MM-DD"),
+              "Backup": curdata.Backup.Id?curdata.Backup:configure,
+              "Creator": curdata.Creator
+            },
+            "children": []
+          }
+          BindAfternewData(newData);
         }
-        BindAfternewData(newData);
+        else
+        {
+          //Manipulation done here to prepare the array index and then the key of the object for childern.
+          let indexOfObj=curMyTask.findIndex(data=>data.Id==obj.subId);
+          let indexOfChildren=-1;
+          let lengthOfObject=0;
+          if(indexOfObj>=0)
+          {
+            lengthOfObject=curMyTask[indexOfObj].children.length;
+            indexOfChildren=curMyTask[indexOfObj].children.findIndex(data=>!data.Id);
+          }
+          else{
+            lengthOfObject=1;
+          }
+
+          newData={
+                    //key: `${obj.subId}-${lengthOfObject}`,
+                    key:obj.key,
+                    Index:lengthOfObject-1,
+                    Id: res.data.ID,
+                    subId: obj.subId,
+                    isClick: false,
+                    isParent: false,
+                    isAdd: false,
+                    isEdit: false,
+                    data: {
+                      TaskName: curdata.TaskName,
+                      ClientName:props.clientName,
+                      ClientID:props.clientId,
+                      Creator: curdata.Creator,
+                      Backup: curdata.Backup.Id?curdata.Backup:configure,
+                      DueDate: SPServices.displayDate(Json.DueDate),
+                      PriorityLevel: Json.PriorityLevel,
+                      Status: Json.Status,
+                      Created: moment().format("YYYY-MM-DD")
+              }
+           }
+
+           if(indexOfObj>=0)
+           BindAfternewChildData(newData,indexOfObj,indexOfChildren);
+        }
       })
       .catch((err) => errFunction(err));
   };
   //deleteitem
   const deleteData = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
-    let Ids:any = [];
+    let Ids = [];
 
     ListName === "Tasks" &&
       obj.children.length &&
@@ -307,7 +342,7 @@ const UserClientDB = (props): JSX.Element => {
     })
       .then((res) => {
         if (Ids.length) {
-          BindAfterDataDelete(obj.Id);
+          DeleteFunction(obj);
           for (let i: number = 0; Ids.length > i; i++) 
           {
             SPServices.SPDeleteItem({
@@ -326,13 +361,25 @@ const UserClientDB = (props): JSX.Element => {
           }
         } else {
           console.log("delete successfully");
-          BindAfterDataDelete(obj.Id);
+          DeleteFunction(obj);
         }
       })
       .catch((err) => {
         errFunction(err);
       });
   };
+
+  function DeleteFunction(obj)
+  {
+    if(obj.isParent){
+      BindAfterDataDelete(obj.Id)
+    }
+    else
+    {
+      BindAfterChildDataDelete(obj.Id,obj.subId,obj.Index)
+    }
+    
+  }
 
   //editfunction
   const Editfunction = (obj) => {
@@ -352,10 +399,57 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
-        setCurdata({ ...data });
-
-        //getcurUser();
+        let newData={};
+        if(obj.isParent){
+        newData=  {
+          "key": obj.Id,
+          "Id": obj.Id,
+          "isParent": true,
+          "isClick": false,
+          "isEdit": false,
+          "isAdd": false,
+          "data": {
+            "TaskName": editval.TaskName,
+            "ClientName": props.clientName,
+            "ClientID": props.clientId,
+            "DueDate": SPServices.displayDate(editval.DueDate),
+            "PriorityLevel": editval.PriorityLevel,
+            "Status": editval.Status,
+            "Created": moment().format("YYYY-MM-DD"),
+            "Backup": curdata.Backup.Id?curdata.Backup:configure,
+            "Creator": curdata.Creator
+          },
+          "children": obj.children
+        }
+        BindAfterDataEdit(newData,obj);
+        }
+        else
+        {
+          newData={
+            key:obj.key,
+            Index:obj.Index,
+            Id: res.data.ID,
+            subId: obj.subId,
+            isClick: false,
+            isParent: false,
+            isAdd: false,
+            isEdit: false,
+            data: {
+              TaskName: curdata.TaskName,
+              ClientName:props.clientName,
+              ClientID:props.clientId,
+              Creator: curdata.Creator,
+              Backup: curdata.Backup.Id?curdata.Backup:configure,
+              DueDate: SPServices.displayDate(editval.DueDate),
+              PriorityLevel: editval.PriorityLevel,
+              Status: editval.Status,
+              Created: moment().format("YYYY-MM-DD")
+      
+        }}
+        let indexOfObj=curMyTask.findIndex(data=>data.Id==obj.subId);
+        if(indexOfObj>=0)
+        BindAfternewChildData(newData,indexOfObj,obj.Index);
+      }
       })
       .catch((err) => errFunction(err));
   };
@@ -380,6 +474,7 @@ const UserClientDB = (props): JSX.Element => {
           val.children.push({
             ..._sampleChild,
             key: val.Id + "-" + (val.children.length + 1),
+            subId: val.Id,
             isAdd: true,
             isClick: true,
           });
@@ -537,7 +632,7 @@ const UserClientDB = (props): JSX.Element => {
     console.log("test")
   };
   //addtextfield
-  const _addTextField = (val: any, fieldType: string): any => {
+  const _addTextField = (val: any, fieldType: string): JSX.Element => {
     
     const data: any = val?.data;
 
@@ -858,6 +953,63 @@ const UserClientDB = (props): JSX.Element => {
         {
           tempData[indexOfObj]=newData;
         }
+        for(let i=0;i<tempData.length;i++)
+        {
+          tempData[i].isClick=false;
+          tempData[i].isAdd=false;
+          tempData[i].isEdit=false;
+        }
+        setCurMyTask([...tempData]);
+        setMasterdata([...tempData]);
+        setCurdata({...data});
+  }
+
+
+  function BindAfternewChildData(newData,parentIndex,childIndex)
+  {
+        let tempData=curMyTask;
+        tempData[parentIndex].children[childIndex]=newData;
+        for(let i=0;i<tempData.length;i++)
+        {
+          tempData[i].isClick=false;
+          tempData[i].isAdd=false;
+          tempData[i].isEdit=false;
+          for(let j=0;j<tempData[i].children.length;j++)
+          {
+            tempData[i].children[j].isClick=false;
+            tempData[i].children[j].isAdd=false;
+            tempData[i].children[j].isEdit=false;
+  
+          }
+
+        }
+        setCurMyTask([...tempData]);
+        setMasterdata([...tempData]);
+        setCurdata({...data});
+  }
+
+  function BindAfterDataEdit(newData,oldObject)
+  {
+        let tempData=curMyTask;
+        let indexOfObj=tempData.findIndex(data=>data.Id==oldObject.Id);
+        if(indexOfObj>=0)
+        {
+          tempData[indexOfObj]=newData;
+          
+        }
+        for(let i=0;i<tempData.length;i++)
+        {
+          tempData[i].isClick=false;
+          tempData[i].isAdd=false;
+          tempData[i].isEdit=false;
+          for(let j=0;j<tempData[i].children.length;j++)
+          {
+            tempData[i].children[j].isClick=false;
+            tempData[i].children[j].isAdd=false;
+            tempData[i].children[j].isEdit=false;
+          }
+
+        }
         setCurMyTask([...tempData]);
         setMasterdata([...tempData]);
         setCurdata({...data});
@@ -871,6 +1023,16 @@ const UserClientDB = (props): JSX.Element => {
         {
           tempData.splice(indexOfObj,1);
         }
+        setCurMyTask([...tempData]);
+        setMasterdata([...tempData]);
+        setCurdata({...data});
+  }
+
+  function BindAfterChildDataDelete(ID,parentId,childIndex)
+  {
+        let tempData=curMyTask;
+        let indexOfObj=tempData.findIndex(data=>data.Id==parentId);
+        tempData[indexOfObj].children.splice(childIndex,1);
         setCurMyTask([...tempData]);
         setMasterdata([...tempData]);
         setCurdata({...data});
@@ -911,7 +1073,7 @@ const UserClientDB = (props): JSX.Element => {
         onUnselect={unselect}
         expandedKeys={expandedKeys}
         onToggle={(e) => setExpandedKeys(e.value)}
-        onSelectionChange={(e:any) => {
+        onSelectionChange={(e) => {
           setSelectedNodeKeys(e.value);
         }}
         value={[...curMyTask]}

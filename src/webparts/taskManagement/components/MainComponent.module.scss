@@ -28,12 +28,18 @@
       list-style: none;
       cursor: pointer;
       padding: 10px 0;
+      .accordMember {
+        height: "100%";
+        margin-left: 51px;
+      }
     }
   }
 }
 .lefticon {
   background-color: #f46906 !important;
   border: none;
+  width: 26px;
+  height: 26px;
 }
 .lefticon > span {
   color: #fff;

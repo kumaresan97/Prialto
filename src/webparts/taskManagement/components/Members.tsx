@@ -12,6 +12,9 @@ const Member = (props) => {
     width: 30,
     fontSize: "30px",
   };
+  const ShareMember = (val) => {
+    props.handleMemberClick(val);
+  };
   return (
     <div>
       <Button
@@ -19,12 +22,12 @@ const Member = (props) => {
         style={tickIconStyle}
         icon="pi pi-arrow-left"
         onClick={() => {
-          props.memberFunction(null);
+          props.memberFunction(null, "CardView");
         }}
       />
       <div>
-        {props.selectedMember.length &&
-          props.selectedMember.map((val) => {
+        {props.selectedTeamMember.length &&
+          props.selectedTeamMember.map((val) => {
             return (
               <div
                 style={{
@@ -46,6 +49,7 @@ const Member = (props) => {
                   <p>{val?.Name}</p>
                 </div>
                 <Button
+                  onClick={() => ShareMember(val.Email)}
                   icon="pi pi-arrow-right"
                   rounded
                   className={styles.lefticon}

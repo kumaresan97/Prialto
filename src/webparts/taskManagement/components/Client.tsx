@@ -12,6 +12,7 @@ import SPServices from "../../../Global/SPServices";
 import { IClient } from "../../../Global/TaskMngmnt";
 import styles from "./TaskManagement.module.scss";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import Loader from "./Loader";
 const Client = (props) => {
   const [showDialog, setShowDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
@@ -88,6 +89,8 @@ const Client = (props) => {
       Title: "",
     },
   };
+  const [loader, setLoader] = useState(false);
+
   const [clientdetail, setClientdetail] = useState<IClient[]>([]);
   const [value, setValue] = useState(x);
   const handledata = (obj) => {
@@ -96,6 +99,7 @@ const Client = (props) => {
   };
 
   const AddItem = (obj) => {
+    setLoader(true);
     let json = {
       FirstName: value.FirstName ? value.FirstName : "",
       LastName: value.LastName ? value.LastName : "",
@@ -112,12 +116,14 @@ const Client = (props) => {
         setisAdd(false);
         setisEdit(false);
         setValue({ ...x });
+        setLoader(false);
         getdatas();
         // getcurUser();
       })
       .catch((err) => errFunction(err));
   };
   const Editfunction = (obj) => {
+    setLoader(true);
     let json = {
       FirstName: value.FirstName ? value.FirstName : "",
       LastName: value.LastName ? value.LastName : "",
@@ -134,6 +140,7 @@ const Client = (props) => {
         setisAdd(false);
         setisAdd(false);
         setValue({ ...x });
+        setLoader(false);
 
         getdatas();
       })
@@ -436,6 +443,7 @@ const Client = (props) => {
     }
   };
   const errFunction = (err) => {
+    setLoader(false);
     console.log(err);
   };
   const getdatas = () => {
@@ -469,6 +477,7 @@ const Client = (props) => {
           });
         });
         setClientdetail([...array]);
+        setLoader(false);
       })
       .catch((err) => errFunction(err));
   };
@@ -495,124 +504,132 @@ const Client = (props) => {
     // deleteItem(item)
   };
   const deleteItem = () => {
+    setLoader(true);
     if (showDialog) {
       SPServices.SPDeleteItem({
         Listname: "ClientDetails",
         ID: itemToDelete.Id,
       }).then((res) => {
         setShowDialog(false);
+        setLoader(false);
 
         getdatas();
-        console.log("delete successfully");
       });
     } else {
       setShowDialog(false);
     }
   };
   useEffect(() => {
+    setLoader(true);
     getdatas();
   }, []);
 
   return (
-    <div>
-      <div
-        // style={{
-        //   display: "flex",
-        //   justifyContent: "flex-end",
-        //   gap: "12px",
-        //   margin: "0px 0px 10px 0px",
-        // }}
-        className={styles.clientContainer}
-      >
-        <h2>Client</h2>
-        {/* <InputText
+    <>
+      {loader ? (
+        <Loader />
+      ) : (
+        <div>
+          <div
+            // style={{
+            //   display: "flex",
+            //   justifyContent: "flex-end",
+            //   gap: "12px",
+            //   margin: "0px 0px 10px 0px",
+            // }}
+            className={styles.clientContainer}
+          >
+            <h2>Client</h2>
+            {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
         /> */}
-        <div className={styles.rightSection}>
-          <div>
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                placeholder="Search"
-                // value={search}
-                // onChange={(e: any) => SearchFilter(e.target.value)}
+            <div className={styles.rightSection}>
+              <div>
+                <span className="p-input-icon-left">
+                  <i className="pi pi-search" />
+                  <InputText
+                    placeholder="Search"
+                    // value={search}
+                    // onChange={(e: any) => SearchFilter(e.target.value)}
+                  />
+                </span>
+              </div>
+              <Button
+                icon="pi pi-file-excel"
+                className={styles.btnColor}
+                label="Export"
+                //   onClick={() => {
+                //     _handleData("addParent", { ..._sampleParent });
+                //   }}
               />
-            </span>
+              <Button
+                label="Add Client"
+                className={styles.btnColor}
+                onClick={() => {
+                  setisEdit(false);
+                  setisAdd(true);
+                  setClientdetail([...clientdetail, Newdatadd]);
+                  // _handleData("addParent", { ..._sampleParent });
+                }}
+              />
+            </div>
           </div>
-          <Button
-            icon="pi pi-file-excel"
-            className={styles.btnColor}
-            label="Export"
-            //   onClick={() => {
-            //     _handleData("addParent", { ..._sampleParent });
-            //   }}
-          />
-          <Button
-            label="Add Client"
-            className={styles.btnColor}
-            onClick={() => {
-              setisEdit(false);
-              setisAdd(true);
-              setClientdetail([...clientdetail, Newdatadd]);
-              // _handleData("addParent", { ..._sampleParent });
-            }}
+          <div className={styles.dataTableContainer}>
+            <DataTable
+              value={clientdetail}
+              sortMode="multiple"
+              tableStyle={{ minWidth: "60rem" }}
+            >
+              <Column
+                field="FirstName"
+                header="First Name"
+                sortable
+                body={(obj: any) => _addTextField(obj, "FirstName")}
+              ></Column>
+              <Column
+                field="LastName"
+                header="last Name"
+                sortable
+                body={(obj: any) => _addTextField(obj, "LastName")}
+              ></Column>
+              <Column
+                field="CompanyName"
+                header="Company Name"
+                sortable
+                body={(obj: any) => _addTextField(obj, "CompanyName")}
+              ></Column>
+              <Column
+                field="Assistant"
+                header="Assistant"
+                sortable
+                body={(obj: any) => _addTextField(obj, "Assistant")}
+              ></Column>
+              <Column
+                field="Backup"
+                header="Backup"
+                sortable
+                body={(obj: any) => _addTextField(obj, "Backup")}
+              ></Column>
+              <Column header="Action" body={(obj) => _action(obj)}></Column>
+            </DataTable>
+          </div>
+
+          <ConfirmDialog
+            visible={showDialog}
+            onHide={() => setShowDialog(false)}
+            message="Are you sure you want to delete?"
+            header="Confirmation"
+            icon="pi pi-exclamation-triangle"
+            acceptClassName="p-button-danger"
+            acceptLabel="Yes"
+            rejectLabel="No"
+            accept={deleteItem}
+            reject={() => setShowDialog(false)}
           />
         </div>
-      </div>
-      <div className={styles.dataTableContainer}>
-        <DataTable
-          value={clientdetail}
-          sortMode="multiple"
-          tableStyle={{ minWidth: "60rem" }}
-        >
-          <Column
-            field="FirstName"
-            header="First Name"
-            sortable
-            body={(obj: any) => _addTextField(obj, "FirstName")}
-          ></Column>
-          <Column
-            field="LastName"
-            header="last Name"
-            sortable
-            body={(obj: any) => _addTextField(obj, "LastName")}
-          ></Column>
-          <Column
-            field="CompanyName"
-            header="Company Name"
-            sortable
-            body={(obj: any) => _addTextField(obj, "CompanyName")}
-          ></Column>
-          <Column
-            field="Assistant"
-            header="Assistant"
-            sortable
-            body={(obj: any) => _addTextField(obj, "Assistant")}
-          ></Column>
-          <Column
-            field="Backup"
-            header="Backup"
-            sortable
-            body={(obj: any) => _addTextField(obj, "Backup")}
-          ></Column>
-          <Column header="Action" body={(obj) => _action(obj)}></Column>
-        </DataTable>
-      </div>
-
-      <ConfirmDialog
-        visible={showDialog}
-        onHide={() => setShowDialog(false)}
-        message="Are you sure you want to delete?"
-        header="Confirmation"
-        icon="pi pi-exclamation-triangle"
-        acceptClassName="p-button-danger"
-        acceptLabel="Yes"
-        rejectLabel="No"
-        accept={deleteItem}
-        reject={() => setShowDialog(false)}
-      />
-    </div>
+      )}
+    </>
   );
 };
 export default Client;

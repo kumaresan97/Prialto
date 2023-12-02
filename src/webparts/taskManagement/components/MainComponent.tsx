@@ -18,9 +18,11 @@ import Tasks from "./Tasks";
 import CardView from "./CardView";
 import OrgChart from "./OrgChart";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-import Sample from "./Sample";
+import UserMyTasksDB from "./UserMyTasksDB";
+import UserClient from "./UserClient";
 import Client from "./Client";
 import Loader from "./Loader";
+import Member from "./Members";
 
 let admin: any[] = [];
 let TL: any[] = [];
@@ -36,6 +38,8 @@ const MainComponent = (props) => {
   const [selectedMember, setselectedMember] = useState(null);
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [teams, setTeams] = useState([]);
+  const [selectedTeamMember, setSelectedTeamMember] = useState([]);
+
   const navStyles: Partial<INavStyles> = {
     root: {
       width: 208,
@@ -47,27 +51,27 @@ const MainComponent = (props) => {
     },
   };
   const _curUser: string = props.context._pageContext._user.email;
-  const getAdmin = () => {
-    const users = sp.web.siteGroups
-      .getById(10)
-      .users()
-      .then((Response) => {
-        console.log(Response);
-        admin = [];
-        Response.forEach((val) => {
-          admin.push(val.Email);
-        });
-        let x = admin.some((val) => val == _curUser);
-        if (x) {
-          setParams({ ...params, admin: x });
-        } else {
-          setParams({ ...params, admin: false });
-        }
+  // const getAdmin = () => {
+  //   const users = sp.web.siteGroups
+  //     .getById(10)
+  //     .users()
+  //     .then((Response) => {
+  //       console.log(Response);
+  //       admin = [];
+  //       Response.forEach((val) => {
+  //         admin.push(val.Email);
+  //       });
+  //       let x = admin.some((val) => val == _curUser);
+  //       if (x) {
+  //         setParams({ ...params, admin: x });
+  //       } else {
+  //         setParams({ ...params, admin: false });
+  //       }
 
-        getchoice();
-        console.log(x, "x");
-      });
-  };
+  //       getchoice();
+  //       console.log(x, "x");
+  //     });
+  // };
   const Teams = [
     {
       name: "Team A",
@@ -149,28 +153,21 @@ const MainComponent = (props) => {
         });
         setTeams([...teamArr]);
         console.log(teamArr);
-
-        // sp.web.lists
-        //   .getByTitle("Configuration")
-        //   .items //   .filter(`Role eq "TL" &&  TeamLeader eq ${curUser}`)
-        //   .filter(`Name/EMail eq '${curUser}' `)
-        //   .top(5000)
-        //   .get()
-        //   .then((TeamMemberresult) => {
-        //     console.log(TeamMemberresult);
-        //   })
-        //   .catch((err123) => {
-        //     console.log(err123);
-        //   });
-        // console.log(Teamresult);
       })
       .catch((err) => {
         console.log(err);
       });
   };
+  const memberFunction = (value, taskname) => {
+    setvalue(taskname ? taskname : "");
+    console.log(value, "value");
+    console.log(taskname, "taskname");
+
+    setSelectedTeamMember(value ? [...value] : []);
+  };
 
   useEffect(() => {
-    getAdmin();
+    getchoice();
   }, []);
   return (
     <div className={styles.TaskManagementSection}>
@@ -240,19 +237,34 @@ const MainComponent = (props) => {
                 </div>
 
                 {expandedTeam === i && (
-                  <ul style={{ margin: 0 }}>
+                  <ul style={{ margin: 0, padding: 0 }}>
                     {val.members.map((member, index) => (
                       <li
-                        className={styles.accordTeamMembers}
-                        // className={
-                        //   value == "member" ? styles.activeBtn : styles.inActive
-                        // }
-                        key={index}
-                        onClick={() => {
-                          handleMemberClick(member.Name);
+                        // className={styles.accordTeamMembers}
+                        style={{
+                          padding: "10px 0px",
+                          cursor: "pointer",
+                          listStyle: "none",
+                          fontSize: "14px",
+                          color: "#fff",
+                          width: "100%",
                         }}
+                        className={
+                          value == "member" && selectedMember === member.Email
+                            ? styles.activeBtn
+                            : styles.inActive
+                        }
                       >
-                        {member.Name}
+                        <div
+                          key={index}
+                          onClick={() => {
+                            handleMemberClick(member.Email);
+                          }}
+                          style={{ height: "100%", marginLeft: "51px" }}
+                          // className={styles.accordMember}
+                        >
+                          {member.Name}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -260,7 +272,7 @@ const MainComponent = (props) => {
               </div>
             );
           })}
-          {params.admin && (
+          {true && (
             <>
               <Label
                 onClick={() => setvalue("CardView")}
@@ -302,6 +314,26 @@ const MainComponent = (props) => {
               >
                 Org Chart
               </Label>
+              <Label
+                onClick={() => setvalue("Client")}
+                styles={{
+                  root: {
+                    width: "100%",
+                    fontSize: " 16px !important",
+                    fontWeight: "400 !important",
+
+                    color: "#FFFFFF !important",
+
+                    padding: "10px 0px 10px 20px !important",
+                    cursor: "pointer !important",
+                  },
+                }}
+                className={
+                  value == "Client" ? styles.activeBtn : styles.inActive
+                }
+              >
+                Client
+              </Label>
             </>
           )}
         </div>
@@ -310,17 +342,32 @@ const MainComponent = (props) => {
       <div style={{ width: "80%", padding: "12px 35px 0px 0px" }}>
         {value == "mytasks" ? (
           <>
-            {/* <Loader /> */}
-            {/* <Client context={props.context} /> */}
-            {/* <Mytasks /> */}
-            <Sample context={props.context} />
+            <UserMyTasksDB context={props.context} />
           </>
         ) : value == "member" ? (
-          <Tasks selectedMember={selectedMember} />
+          <UserClient
+            selectedMember={selectedMember}
+            context={props.context}
+            Email={selectedMember}
+          />
         ) : value == "CardView" ? (
-          <CardView></CardView>
+          <CardView
+            context={props.context}
+            memberFunction={memberFunction}
+          ></CardView>
         ) : value == "OrgChart" ? (
           <OrgChart context={props.context}></OrgChart>
+        ) : value == "OrgChart" ? (
+          <OrgChart context={props.context}></OrgChart>
+        ) : value == "Client" ? (
+          <Client context={props.context}></Client>
+        ) : value == "TeamMembers" && selectedTeamMember.length ? (
+          <Member
+            context={props.context}
+            handleMemberClick={handleMemberClick}
+            selectedTeamMember={selectedTeamMember}
+            memberFunction={memberFunction}
+          ></Member>
         ) : (
           <></>
         )}

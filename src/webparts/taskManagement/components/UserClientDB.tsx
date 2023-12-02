@@ -301,7 +301,7 @@ const UserClientDB = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       AssistantId: curuserId.Id,
-      ClientId: 3,
+      ClientId: props.clientId,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -1077,7 +1077,7 @@ const UserClientDB = (props): JSX.Element => {
   useEffect(() => {
     setCurMyTask([...props.mainData]);
     setMasterdata([...props.mainData]);
-  }, [props.bind]);
+  }, [props.mainData]);
 
   return (
     <div className={styles.myTaskSection}>

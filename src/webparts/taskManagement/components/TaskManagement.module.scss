@@ -21,6 +21,7 @@
     background-color: #f46906;
     color: #fff;
     border: none !important;
+    padding: 8px 12px;
   }
 }
 .textOverflow {
@@ -36,4 +37,25 @@
 }
 .iconStyle span:nth-child(1) {
   font-size: 20px;
+}
+
+// data table styles
+.dataTableContainer tr > td {
+  padding: 10px;
+}
+.dataTableContainer {
+  thead {
+    th {
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+  th:hover {
+    background-color: transparent;
+  }
+  tbody {
+    span {
+      font-size: 14px;
+    }
+  }
 }

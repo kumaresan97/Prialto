@@ -4,7 +4,7 @@ import { TreeTable, TreeTableExpandedKeysType } from "primereact/treetable";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Label, Persona, PersonaSize } from "@fluentui/react";
+import { IPersonaStyles, Label, Persona, PersonaSize } from "@fluentui/react";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { sp } from "@pnp/sp/presets/all";
@@ -36,6 +36,50 @@ let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 const Sample = (props): JSX.Element => {
+  // styles variables
+  const cellStyle = { backgroundColor: "#fff", width: 200 };
+  // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
+  // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
+  const TaskCellStyle = { backgroundColor: "#fff", width: 265 };
+  const actionCellStyle = { backgroundColor: "#fff", width: 150 };
+  // const actionCellStyle = { backgroundColor: "#EAEEEE", width: 150 };
+
+  const iconbtnStyle = {
+    backgroundColor: "transparent",
+    color: "#007C81",
+    border: "1px solid #007C81",
+    height: 24,
+    width: 24,
+    borderRadius: "50%",
+  };
+  const tickIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+  };
+  const pencilIconBtnStyle = {
+    color: "#007C81",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+  };
+  const delIconBtnStyle = {
+    color: "#BF4927",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+    fontSize: "1.3rem",
+  };
+  const personaStyle: Partial<IPersonaStyles> = {
+    root: {
+      ".ms-Persona-image": {
+        borderRadius: 8,
+      },
+    },
+  };
+
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -131,6 +175,26 @@ const Sample = (props): JSX.Element => {
     DueDate: "",
   });
   const [masterdata, setMasterdata] = useState<any[]>([]);
+  // style function
+  const priorityLevelStyle = (PLevel) => {
+    let bgColor: string = "";
+    if (PLevel == "Urgent") {
+      bgColor = "#BF4927";
+    } else if (PLevel == "High" || PLevel == "In Progress") {
+      bgColor = "#F46906";
+    } else if (PLevel == "Normal") {
+      bgColor = "#009BA2";
+    } else if (PLevel == "New Task") {
+      bgColor = "#68BAC4";
+    } else if (PLevel == "Done") {
+      bgColor = "#007C81";
+    }
+    return (
+      <div className={styles.pLevelStyle} style={{ backgroundColor: bgColor }}>
+        {PLevel}
+      </div>
+    );
+  };
 
   //onchange values get
   const getOnchange = (key, _value) => {
@@ -177,8 +241,9 @@ const Sample = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-plus"
+          style={iconbtnStyle}
           onClick={(_) => {
-            console.log(_);
+            // console.log(_);
 
             _handleData("addChild", obj);
             toggleApplications(obj.key);
@@ -196,11 +261,13 @@ const Sample = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-pencil"
+          style={pencilIconBtnStyle}
           onClick={(_) => {
             _handleData("edit", obj);
           }}
         />
         <Button
+          style={delIconBtnStyle}
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
@@ -212,12 +279,13 @@ const Sample = (props): JSX.Element => {
   //check,cancelbutton
   const _actionSubmit = (obj: any): JSX.Element => {
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className={styles.actionContainer}>
         <Button
           type="button"
           icon="pi pi-check"
           disabled={error.TaskName || error.DueDate ? true : false}
-          rounded
+          // rounded
+          style={tickIconStyle}
           onClick={(_) => {
             _handleDataoperation(obj);
           }}
@@ -225,7 +293,8 @@ const Sample = (props): JSX.Element => {
         <Button
           type="button"
           icon="pi pi-times"
-          rounded
+          // rounded
+          style={delIconBtnStyle}
           onClick={(_) => {
             _handleData("cancel", obj);
           }}
@@ -577,7 +646,6 @@ const Sample = (props): JSX.Element => {
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     // console.log(val, "valtext");
     const data: any = val?.data;
-
     if (!val.Id && val.isAdd) {
       if (fieldType == "TaskName") {
         return (
@@ -837,6 +905,7 @@ const Sample = (props): JSX.Element => {
         return (
           <Persona
             size={PersonaSize.size32}
+            styles={personaStyle}
             text={data[fieldType].Title}
             imageUrl={
               curuserId.Id &&
@@ -848,12 +917,13 @@ const Sample = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status" || fieldType == "PriorityLevel") {
-        return (
-          <Tag
-            value={data[fieldType]}
-            severity={getSeverity(data[fieldType])}
-          ></Tag>
-        );
+        return priorityLevelStyle(data[fieldType]);
+        // return (
+        //   <Tag
+        //     value={data[fieldType]}
+        //     severity={getSeverity(data[fieldType])}
+        //   ></Tag>
+        // );
       } else {
         return (
           <span
@@ -876,7 +946,6 @@ const Sample = (props): JSX.Element => {
   };
   //getmaintask
   const getMainTask = (id) => {
-    debugger;
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
@@ -1113,42 +1182,25 @@ const Sample = (props): JSX.Element => {
         </span>
         <Button
           label="Automate"
-          severity="warning"
+          className={styles.btnColor}
           //   onClick={() => {
           //     _handleData("addParent", { ..._sampleParent });
           //   }}
         />
         <Button
           label="Export"
-          severity="warning"
+          icon="pi pi-file-excel"
+          className={styles.btnColor}
           onClick={() => {
             _handleData("addParent", { ..._sampleParent });
           }}
         />
       </div>
-      <div
-        className={styles.myTaskHeader}
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          margin: "10px 0px",
-        }}
-      >
-        <Label
-          styles={{
-            root: {
-              fontSize: "18px",
-              fontWeight: 600,
-              color: "orange",
-            },
-          }}
-        >
-          My Tasks
-        </Label>
+      <div className={styles.myTaskHeader}>
+        <h2>My Tasks</h2>
         <Button
           label="New task"
-          severity="warning"
+          className={styles.btnColor}
           onClick={() => {
             _handleData("addParent", { ..._sampleParent });
           }}
@@ -1176,30 +1228,34 @@ const Sample = (props): JSX.Element => {
           header="TaskName"
           expander
           sortable
-          style={{ width: "265px" }}
+          // style={{ width: "265px" }}
+          style={TaskCellStyle}
           body={(obj: any) => _addTextField(obj, "TaskName")}
         />
-        <Column style={{ width: "200px" }} body={(obj: any) => _action(obj)} />
+        <Column style={cellStyle} body={(obj: any) => _action(obj)} />
 
         <Column
           field="Creator"
           header="Creator"
           sortable
-          style={{ width: "200px" }}
+          // style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Creator")}
         />
         <Column
           field="Backup"
           header="Backup"
           sortable
-          style={{ width: "200px" }}
+          // style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Backup")}
         />
         <Column
           field="DueDate"
           header="Due Date"
           sortable
-          style={{ width: "200px" }}
+          // style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "DueDate")}
         />
 
@@ -1207,25 +1263,29 @@ const Sample = (props): JSX.Element => {
           field="PriorityLevel"
           header=" Priority Level"
           sortable
-          style={{ width: "200px" }}
+          // style={{ width: "200px" }}
+          style={cellStyle}
           body={(obj: any) => _addTextField(obj, "PriorityLevel")}
         />
         <Column
           field="Status"
           header="Status"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
+          // style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Status")}
         />
         <Column
           field="Created"
           header="Created"
           sortable
-          style={{ width: "200px" }}
+          style={cellStyle}
+          // style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Created")}
         />
         <Column
-          style={{ width: "150px" }}
+          // style={{ width: "150px" }}
+          style={actionCellStyle}
           body={(obj: any) =>
             obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
           }

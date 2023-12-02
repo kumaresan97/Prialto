@@ -11,6 +11,7 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import SPServices from "../../../Global/SPServices";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import styles from "./TaskManagement.module.scss";
 
 interface clinet {
   Id: number;
@@ -58,6 +59,21 @@ let team = [
 ];
 
 const OrgChart = (props) => {
+  // style variables
+  const multiPeoplePickerStyle = {
+    root: {
+      minWidth: 200,
+      background: "rgba(218, 218, 218, 0.29)",
+      ".ms-BasePicker-text": {
+        minHeigth: 36,
+        maxHeight: 50,
+        overflowX: "hidden",
+        padding: "3px 5px",
+        background: "#fff",
+      },
+    },
+  };
+
   const [showDialog, setShowDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
 
@@ -241,6 +257,7 @@ const OrgChart = (props) => {
             placeholder="Role"
             optionLabel="name"
             value={curobj.Role}
+            style={{ width: "100%" }}
             onChange={(e: any) => getOnchange("Role", e.value)}
             // className="w-full md:w-14rem"
           />
@@ -254,6 +271,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -286,6 +304,7 @@ const OrgChart = (props) => {
             placeholder="Team"
             optionLabel="name"
             value={curobj.Team}
+            style={{ width: "100%" }}
             onChange={(e: any) => getOnchange("Team", e.value)}
             // className="w-full md:w-14rem"
           />
@@ -298,6 +317,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -329,6 +349,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -369,6 +390,7 @@ const OrgChart = (props) => {
             personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -409,6 +431,7 @@ const OrgChart = (props) => {
             personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -478,6 +501,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -522,6 +546,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -552,6 +577,7 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -592,6 +618,7 @@ const OrgChart = (props) => {
             personSelectionLimit={3}
             groupName={""}
             showtooltip={true}
+            styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -625,6 +652,7 @@ const OrgChart = (props) => {
           <PeoplePicker
             context={props.context}
             personSelectionLimit={3}
+            styles={multiPeoplePickerStyle}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -875,7 +903,7 @@ const OrgChart = (props) => {
     return (
       <div>
         {edit == false && add == false && (
-          <div style={{ display: "flex", gap: "10px" }}>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
             <Button
               type="button"
               icon="pi pi-pencil"
@@ -1141,38 +1169,34 @@ const OrgChart = (props) => {
   }, []);
   return (
     <div>
-      <div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "12px",
-            margin: "0px 0px 10px 0px",
-          }}
-        >
-          {/* <InputText
+      <div className={styles.clientContainer}>
+        <h2>Org Chart</h2>
+        {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
         /> */}
-
-          <span className="p-input-icon-left">
-            <i className="pi pi-search" />
-            <InputText
-              placeholder="Search"
-              value={search}
-              onChange={(e: any) => SearchFilter(e.target.value)}
-            />
-          </span>
+        <div className={styles.rightSection}>
+          <div>
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                placeholder="Search"
+                value={search}
+                onChange={(e: any) => SearchFilter(e.target.value)}
+              />
+            </span>
+          </div>
           <Button
             label="Export"
-            severity="warning"
+            icon="pi pi-file-excel"
+            className={styles.btnColor}
             //   onClick={() => {
             //     _handleData("addParent", { ..._sampleParent });
             //   }}
           />
           <Button
             label="Add Client"
-            severity="warning"
+            className={styles.btnColor}
             onClick={() => {
               setEdit(false);
               setAdd(true);
@@ -1182,90 +1206,91 @@ const OrgChart = (props) => {
             }}
           />
         </div>
-        <DataTable
-          value={value}
-          sortMode="multiple"
-          tableStyle={{ minWidth: "60rem" }}
-        >
-          <Column
-            field="FirstName"
-            header="First Name"
-            sortable
-            style={{ width: "20%" }}
-            body={(obj: any) => _addTextField(obj, "FirstName")}
-          ></Column>
-          <Column
-            field="LastName"
-            header="last Name"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "LastName")}
-          ></Column>
-          <Column
-            field="Role"
-            header="Role"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "Role")}
-          ></Column>
-          <Column
-            field="Manager"
-            header="Manager"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "Manager")}
-          ></Column>
-          <Column
-            field="Team"
-            header="Team"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "Team")}
-          ></Column>
+      </div>
+      <DataTable
+        value={value}
+        sortMode="multiple"
+        className={styles.dataTableContainer}
+        tableStyle={{ minWidth: "60rem" }}
+      >
+        <Column
+          field="FirstName"
+          header="First Name"
+          sortable
+          style={{ width: "20%" }}
+          body={(obj: any) => _addTextField(obj, "FirstName")}
+        ></Column>
+        <Column
+          field="LastName"
+          header="last Name"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "LastName")}
+        ></Column>
+        <Column
+          field="Role"
+          header="Role"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "Role")}
+        ></Column>
+        <Column
+          field="Manager"
+          header="Manager"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "Manager")}
+        ></Column>
+        <Column
+          field="Team"
+          header="Team"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "Team")}
+        ></Column>
 
-          <Column
-            field="TeamCaptain"
-            header="Team Captain"
-            sortable
-            body={(obj: any) => _addTextField(obj, "TeamCaptain")}
-          ></Column>
-          <Column
-            field="TeamLeader"
-            header="Team Leader"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "TeamLeader")}
-          ></Column>
-          <Column
-            field="Cohort"
-            header="Cohort"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "Cohort")}
-          ></Column>
-          {/* <Column
+        <Column
+          field="TeamCaptain"
+          header="Team Captain"
+          sortable
+          body={(obj: any) => _addTextField(obj, "TeamCaptain")}
+        ></Column>
+        <Column
+          field="TeamLeader"
+          header="Team Leader"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "TeamLeader")}
+        ></Column>
+        <Column
+          field="Cohort"
+          header="Cohort"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "Cohort")}
+        ></Column>
+        {/* <Column
             field="Country"
             header="Country"
             sortable
             body={(obj: any) => _addTextField(obj, "Country")}
           ></Column> */}
-          <Column
-            field="DirectReports"
-            header="Direct Reports"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "DirectReports")}
-          ></Column>
-          <Column
-            field="BackingUp"
-            header="Backing Up"
-            style={{ width: "20%" }}
-            sortable
-            body={(obj: any) => _addTextField(obj, "BackingUp")}
-          ></Column>
-          <Column header="Action" body={(obj) => _action(obj)}></Column>
-        </DataTable>
-      </div>
+        <Column
+          field="DirectReports"
+          header="Direct Reports"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "DirectReports")}
+        ></Column>
+        <Column
+          field="BackingUp"
+          header="Backing Up"
+          style={{ width: "20%" }}
+          sortable
+          body={(obj: any) => _addTextField(obj, "BackingUp")}
+        ></Column>
+        <Column header="Action" body={(obj) => _action(obj)}></Column>
+      </DataTable>
 
       <ConfirmDialog
         visible={showDialog}

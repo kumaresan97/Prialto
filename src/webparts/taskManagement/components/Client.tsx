@@ -10,7 +10,31 @@ import {
 import { InputText } from "primereact/inputtext";
 import SPServices from "../../../Global/SPServices";
 import { IClient } from "../../../Global/TaskMngmnt";
+import styles from "./TaskManagement.module.scss";
 const Client = (props) => {
+  // style variables
+  const editIconStyle = {
+    backgroundColor: "transparent",
+    color: "#007C81",
+    border: "none",
+    // height: 26,
+    // width: 26,
+  };
+  const tickIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+    height: 26,
+    width: 26,
+  };
+  const delIconBtnStyle = {
+    color: "#BF4927",
+    border: "none",
+    backgroundColor: "transparent",
+    height: 26,
+    width: 26,
+    fontSize: "1.3rem",
+  };
   const [isadd, setisAdd] = useState(false);
   const [isedit, setisEdit] = useState(false);
   let products: IClient = {
@@ -50,14 +74,9 @@ const Client = (props) => {
   const handledata = (obj) => {
     setisAdd(false);
     setValue({ ...obj });
-
-    console.log(obj, "edit");
   };
 
   const AddItem = (obj) => {
-    debugger;
-    console.log(obj, "obj");
-
     let json = {
       FirstName: value.FirstName ? value.FirstName : "",
       LastName: value.LastName ? value.LastName : "",
@@ -75,7 +94,6 @@ const Client = (props) => {
         setisEdit(false);
         setValue({ ...x });
         // getcurUser();
-        console.log(res, "success");
       })
       .catch((err) => errFunction(err));
   };
@@ -93,7 +111,6 @@ const Client = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
         setisAdd(false);
         setisAdd(false);
         setValue({ ...x });
@@ -104,9 +121,6 @@ const Client = (props) => {
   };
 
   const _handleDataoperation = (key, obj) => {
-    debugger;
-    console.log(obj, "obj");
-
     if (isedit && obj.Id) {
       Editfunction(obj);
     } else if (!obj.Id && isadd) {
@@ -133,6 +147,7 @@ const Client = (props) => {
           <Button
             type="button"
             icon="pi pi-pencil"
+            style={editIconStyle}
             onClick={(_) => {
               handledata(obj);
               setisEdit(true);
@@ -142,17 +157,21 @@ const Client = (props) => {
         {((isadd && obj.Id == value.Id) || (isedit && obj.Id == value.Id)) && (
           <div style={{ display: "flex", gap: "10px" }}>
             <Button
+              className={styles.iconStyle}
               type="button"
               icon="pi pi-check"
               rounded
+              style={tickIconStyle}
               onClick={(_) => {
                 _handleDataoperation("check", obj);
               }}
             />
             <Button
+              className={styles.iconStyle}
               type="button"
               icon="pi pi-times"
               rounded
+              style={delIconBtnStyle}
               onClick={(_) => {
                 _handleDataoperation("cancel", obj);
               }}
@@ -169,12 +188,15 @@ const Client = (props) => {
     if (!val.Id && isadd) {
       if (fieldType == "FirstName") {
         return (
-          <InputText
-            type="text"
-            placeholder="TaskName"
-            value={value.FirstName}
-            onChange={(e) => getOnchange("FirstName", e.target.value)}
-          />
+          <>
+            <InputText
+              type="text"
+              placeholder="TaskName"
+              value={value.FirstName}
+              onChange={(e) => getOnchange("FirstName", e.target.value)}
+            />
+            {/* <p>Error</p> */}
+          </>
         );
       }
       if (fieldType == "LastName") {
@@ -197,14 +219,13 @@ const Client = (props) => {
           />
         );
       }
-
       if (fieldType == "Assistant") {
         return (
           <PeoplePicker
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
-            showtooltip={true}
+            showtooltip={false}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -234,8 +255,9 @@ const Client = (props) => {
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
-            showtooltip={true}
+            showtooltip={false}
             // required={true}
+
             placeholder="Enter Email"
             ensureUser={true}
             // showHiddenInUI={false}
@@ -263,123 +285,116 @@ const Client = (props) => {
     } else if (val.Id && isedit && val.Id === value.Id) {
       if (fieldType == "FirstName") {
         return (
-          <InputText
-            type="text"
-            placeholder="TaskName"
-            value={value.FirstName}
-            onChange={(e) => getOnchange("FirstName", e.target.value)}
-          />
+          <>
+            <InputText
+              type="text"
+              placeholder="TaskName"
+              value={value.FirstName}
+              onChange={(e) => getOnchange("FirstName", e.target.value)}
+            />
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
         );
       }
       if (fieldType == "LastName") {
         return (
-          <InputText
-            type="text"
-            placeholder="TaskName"
-            value={value.LastName}
-            onChange={(e) => getOnchange("LastName", e.target.value)}
-          />
+          <>
+            <InputText
+              type="text"
+              placeholder="TaskName"
+              value={value.LastName}
+              onChange={(e) => getOnchange("LastName", e.target.value)}
+            />
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
         );
       }
       if (fieldType == "CompanyName") {
         return (
-          <InputText
-            type="text"
-            placeholder="TaskName"
-            value={value.CompanyName}
-            onChange={(e) => getOnchange("CompanyName", e.target.value)}
-          />
+          <>
+            <InputText
+              type="text"
+              placeholder="TaskName"
+              value={value.CompanyName}
+              onChange={(e) => getOnchange("CompanyName", e.target.value)}
+            />
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
         );
       }
 
       if (fieldType == "Assistant") {
         return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            // required={true}
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              value.Assistant.EMail ? [value.Assistant.EMail] : []
-            }
-            // defaultSelectedUsers={[]}
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("Assistant", selectedItem.id);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("Assistant", null);
+          <>
+            <PeoplePicker
+              context={props.context}
+              personSelectionLimit={1}
+              groupName={""}
+              showtooltip={true}
+              // required={true}
+              ensureUser={true}
+              // showHiddenInUI={false}
+              showHiddenInUI={true}
+              principalTypes={[PrincipalType.User]}
+              defaultSelectedUsers={
+                value.Assistant.EMail ? [value.Assistant.EMail] : []
               }
-            }}
-          />
+              // defaultSelectedUsers={[]}
+              resolveDelay={1000}
+              onChange={(items: any[]) => {
+                if (items.length > 0) {
+                  const selectedItem = items[0];
+                  getOnchange("Assistant", selectedItem.id);
+                  // getonChange("PeopleEmail", selectedItem.secondaryText);
+                } else {
+                  // No selection, pass null or handle as needed
+                  getOnchange("Assistant", null);
+                }
+              }}
+            />
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
         );
       }
       if (fieldType == "Backup") {
         return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            // required={true}
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              value.Backup.EMail ? [value.Backup.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("Backup", selectedItem.id);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("Backup", null);
+          <>
+            <PeoplePicker
+              context={props.context}
+              personSelectionLimit={1}
+              groupName={""}
+              showtooltip={true}
+              // required={true}
+              ensureUser={true}
+              // showHiddenInUI={false}
+              showHiddenInUI={true}
+              principalTypes={[PrincipalType.User]}
+              defaultSelectedUsers={
+                value.Backup.EMail ? [value.Backup.EMail] : []
               }
-            }}
-          />
+              resolveDelay={1000}
+              onChange={(items: any[]) => {
+                if (items.length > 0) {
+                  const selectedItem = items[0];
+                  getOnchange("Backup", selectedItem.id);
+                  // getonChange("PeopleEmail", selectedItem.secondaryText);
+                } else {
+                  // No selection, pass null or handle as needed
+                  getOnchange("Backup", null);
+                }
+              }}
+            />{" "}
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
         );
       }
     } else {
       if (fieldType == "Assistant" || fieldType == "Backup") {
         return (
-          <span
-            style={{
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              display: "block",
-              width: "160px",
-            }}
-          >
-            {data[fieldType].Title}
-          </span>
+          <span className={styles.textOverflow}>{data[fieldType].Title}</span>
         );
       }
-      return (
-        <span
-          style={{
-            textOverflow: "ellipsis",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            display: "block",
-            width: "160px",
-          }}
-        >
-          {data[fieldType]}
-        </span>
-      );
+      return <span className={styles.textOverflow}>{data[fieldType]}</span>;
     }
   };
   const errFunction = (err) => {
@@ -432,8 +447,6 @@ const Client = (props) => {
       FormData[key] = _value;
     }
 
-    console.log(FormData, "formdata");
-
     setValue({ ...FormData });
   };
   useEffect(() => {
@@ -443,43 +456,48 @@ const Client = (props) => {
   return (
     <div>
       <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "12px",
-          margin: "0px 0px 10px 0px",
-        }}
+        // style={{
+        //   display: "flex",
+        //   justifyContent: "flex-end",
+        //   gap: "12px",
+        //   margin: "0px 0px 10px 0px",
+        // }}
+        className={styles.clientContainer}
       >
+        <h2>Client</h2>
         {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
         /> */}
-
-        <span className="p-input-icon-left">
-          <i className="pi pi-search" />
-          <InputText
-            placeholder="Search"
-            // value={search}
-            // onChange={(e: any) => SearchFilter(e.target.value)}
+        <div className={styles.rightSection}>
+          <div>
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                placeholder="Search"
+                // value={search}
+                // onChange={(e: any) => SearchFilter(e.target.value)}
+              />
+            </span>
+          </div>
+          <Button
+            className={styles.btnColor}
+            label="Export"
+            //   onClick={() => {
+            //     _handleData("addParent", { ..._sampleParent });
+            //   }}
           />
-        </span>
-        <Button
-          label="Export"
-          severity="warning"
-          //   onClick={() => {
-          //     _handleData("addParent", { ..._sampleParent });
-          //   }}
-        />
-        <Button
-          label="Add Client"
-          severity="warning"
-          onClick={() => {
-            setisEdit(false);
-            setisAdd(true);
-            setClientdetail([...clientdetail, x]);
-            // _handleData("addParent", { ..._sampleParent });
-          }}
-        />
+          <Button
+            label="Add Client"
+            className={styles.btnColor}
+            onClick={() => {
+              setisEdit(false);
+              setisAdd(true);
+              setClientdetail([...clientdetail, x]);
+              // _handleData("addParent", { ..._sampleParent });
+            }}
+          />
+        </div>
       </div>
       <DataTable
         value={clientdetail}

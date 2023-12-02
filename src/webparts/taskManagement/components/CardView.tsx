@@ -5,6 +5,7 @@ import { Avatar } from "primereact/avatar";
 import { AvatarGroup } from "primereact/avatargroup";
 import { Badge } from "primereact/badge";
 import { sp } from "@pnp/sp/presets/all";
+import styles from "./Cardview.module.scss";
 import { useEffect, useState } from "react";
 
 const CardView = () => {
@@ -133,103 +134,101 @@ const CardView = () => {
     getchoice();
   }, []);
   return (
-    <div
-      style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
-    >
-      {Cardarr.length &&
-        Cardarr.map((val: any) => {
-          return (
-            <div style={{ width: "33.33%" }}>
-              <Card style={{ width: "100%" }}>
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <Label>Team</Label>
-                      <Label>{val.TeamName}</Label>
-                    </div>
-                    <div>
-                      <Label>Team Captain</Label>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "2px",
-                        }}
-                      >
-                        <Avatar
-                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0]?.Email}`}
-                          size="normal"
-                          shape="circle"
-                          label={val.TeamCaptain[0]?.Title}
-                        />
-                        <span>{val.TeamCaptain[0]?.Title}</span>
+    <>
+      <h2>Team List</h2>
+      <div
+        className={styles.mainContainer}
+        // style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
+      >
+        {Cardarr.length &&
+          Cardarr.map((val: any) => {
+            return (
+              <div className={styles.cardSize}>
+                <Card style={{ width: "100%" }}>
+                  <>
+                    <div className={styles.secDivider}>
+                      <div>
+                        <Label className={styles.roleHead}>Team</Label>
+                        <Label className={styles.noPaddingLable}>
+                          {val.TeamName}
+                        </Label>
+                      </div>
+                      <div>
+                        <Label className={styles.roleHead}>Team Captain</Label>
+                        <div className={styles.teaCaptianSec}>
+                          <Avatar
+                            image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0].Email}`}
+                            size="normal"
+                            shape="circle"
+                            label={val.TeamCaptain[0].Title}
+                          />
+                          <Label
+                            className={styles.noPaddingLable}
+                            style={{ marginLeft: 6 }}
+                          >
+                            {val.TeamCaptain[0].Title}
+                          </Label>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
-                      <Label>Team Leader</Label>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "2px",
-                        }}
-                      >
-                        <Avatar
-                          image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
-                          size="normal"
-                          shape="circle"
-                          label={val.TeamLeader[0]?.Title}
-                        />
-                        <span>{val.TeamLeader[0]?.Title}</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "10px",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div>
+                        <Label className={styles.roleHead}>Team Leader</Label>
+                        <div className={styles.teaCaptianSec}>
+                          <Avatar
+                            image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
+                            size="normal"
+                            shape="circle"
+                            label={val.TeamLeader[0]?.Title}
+                          />
+                          <Label
+                            className={styles.noPaddingLable}
+                            style={{ marginLeft: 6 }}
+                          >
+                            {val.TeamLeader[0]?.Title}
+                          </Label>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <Label>Team Member</Label>
-                      <div style={{ display: "flex" }}>
-                        <AvatarGroup>
-                          {val.members.slice(0, 5).map((res) => {
-                            let test =
-                              "/_layouts/15/userphoto.aspx?size=S&username=" +
-                              res.EMail;
-                            return (
+                      <div>
+                        <Label className={styles.roleHead}>Team Members</Label>
+                        <div style={{ display: "flex" }}>
+                          <AvatarGroup>
+                            {val.members.slice(0, 5).map((res) => {
+                              let test =
+                                "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                res.EMail;
+                              return (
+                                <Avatar
+                                  image={test}
+                                  size="normal"
+                                  shape="circle"
+                                />
+                              );
+                            })}
+                            {val.members.length > 5 && (
                               <Avatar
-                                image={test}
                                 size="normal"
                                 shape="circle"
+                                label={`+${val.members.length - 3} `}
                               />
-                            );
-                          })}
-                          {val.members.length > 5 && (
-                            <Avatar
-                              size="normal"
-                              shape="circle"
-                              label={`+${val.members.length - 3} `}
-                            />
-                          )}
-                        </AvatarGroup>
+                            )}
+                          </AvatarGroup>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              </Card>
-            </div>
-          );
-        })}
-    </div>
+                  </>
+                </Card>
+              </div>
+            );
+          })}
+      </div>
+    </>
   );
 };
 export default CardView;

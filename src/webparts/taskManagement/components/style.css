@@ -11,3 +11,33 @@
 .report-style-class {
   height: 100vh;
 }
+.p-card-body {
+  padding: 10px 20px 14px 20px;
+}
+.p-card .p-card-content {
+  padding: 0;
+}
+.p-avatar-image {
+  width: 26px;
+  height: 26px;
+}
+.p-inputtext:focus {
+  box-shadow: unset;
+  border-color: #000;
+}
+.p-button:focus {
+  box-shadow: unset;
+}
+
+/* peoplepicker style */
+.ms-BasePicker-text {
+  border: 1px solid #ced4da !important;
+  min-height: 38px;
+  border-radius: 4px;
+}
+.ms-BasePicker-text::after {
+  border: 1px solid #000 !important;
+}
+.ms-BasePicker-text input {
+  min-height: 38px;
+}

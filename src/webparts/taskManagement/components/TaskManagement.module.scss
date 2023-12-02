@@ -5,3 +5,35 @@
 .inActive {
   background: none !important;
 }
+
+// client styles
+.clientContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0px 0px 10px 0px;
+  .rightSection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .btnColor {
+    background-color: #f46906;
+    color: #fff;
+    border: none !important;
+  }
+}
+.textOverflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  width: 160px;
+}
+.errMsg {
+  color: red;
+  margin: 0px;
+}
+.iconStyle span:nth-child(1) {
+  font-size: 20px;
+}

@@ -906,7 +906,6 @@ const OrgChart = (props) => {
         }
       });
     }
-    debugger;
     let json = {
       // FirstName: curobj.FirstName ? curobj.FirstName : "",
       // LastName: curobj.LastName ? curobj.LastName : "",
@@ -960,9 +959,10 @@ const OrgChart = (props) => {
       } else {
         // If the item doesn't have an Id (new item), remove it
         const updatedClientDetail = value.filter((val) => val.Id !== null);
+
+        setValue(updatedClientDetail);
         setAdd(false);
         setEdit(false);
-        setValue(updatedClientDetail);
       }
     }
   };
@@ -1095,7 +1095,7 @@ const OrgChart = (props) => {
     })
       .then((res) => {
         setAdd(false);
-        setAdd(false);
+        setEdit(false);
         setcurobj({ ...addparent });
         setLoader(false);
 
@@ -1210,22 +1210,47 @@ const OrgChart = (props) => {
         "TeamCaptain",
         "TeamLeader",
       ];
-
       return searchableFields.some((field) => {
-        if (typeof item[field] === "object") {
-          // Search within nested object fields
-          const nestedObject = item[field] as {
-            [key: string]: string | number | null;
-          };
-          return Object.values(nestedObject).some(
-            (value) =>
-              value && value.toString().toLowerCase().includes(e.toLowerCase())
-          );
-        } else {
-          // Search within regular string fields
-          return item[field].toString().toLowerCase().includes(e.toLowerCase());
+        const fieldValue = item[field];
+
+        if (fieldValue !== undefined && fieldValue !== null) {
+          if (typeof fieldValue === "object") {
+            const nestedObject = fieldValue as {
+              [key: string]: string | number | null;
+            };
+            return Object.values(nestedObject).some(
+              (value) =>
+                value &&
+                value.toString().toLowerCase().includes(e.toLowerCase())
+            );
+          } else {
+            return (
+              fieldValue
+                // ?.toString()
+                .toLowerCase()
+                .includes(e.toLowerCase())
+            );
+          }
         }
+
+        return false; // Return false for undefined or null fields
       });
+
+      // return searchableFields.some((field) => {
+      //   if (typeof item[field] === "object") {
+      //     // Search within nested object fields
+      //     const nestedObject = item[field] as {
+      //       [key: string]: string | number | null;
+      //     };
+      //     return Object.values(nestedObject).some(
+      //       (value) =>
+      //         value && value.toString().toLowerCase().includes(e.toLowerCase())
+      //     );
+      //   } else {
+      //     // Search within regular string fields
+      //     return item[field].toString().toLowerCase().includes(e.toLowerCase());
+      //   }
+      // });
     });
 
     setValue([...filteredData]);

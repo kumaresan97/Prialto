@@ -19,6 +19,8 @@ import CardView from "./CardView";
 import OrgChart from "./OrgChart";
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
 import UserMyTasksDB from "./UserMyTasksDB";
+import UserDashboard from "./UserDashboard";
+import MyTaskDBNew from "./MyTaskDBNew";
 import UserClient from "./UserClient";
 import Client from "./Client";
 import Loader from "./Loader";
@@ -342,14 +344,19 @@ const MainComponent = (props) => {
       <div style={{ width: "80%", padding: "12px 35px 0px 0px" }}>
         {value == "mytasks" ? (
           <>
-            <UserMyTasksDB context={props.context} />
+            <MyTaskDBNew context={props.context} />
           </>
         ) : value == "member" ? (
-          <UserClient
-            selectedMember={selectedMember}
-            context={props.context}
-            Email={selectedMember}
-          />
+          // <UserClient
+          //   selectedMember={selectedMember}
+          //   context={props.context}
+          //   Email={selectedMember}
+          // />
+          <UserDashboard
+          selectedMember={selectedMember}
+          context={props.context}
+          Email={selectedMember}
+        />
         ) : value == "CardView" ? (
           <CardView
             context={props.context}

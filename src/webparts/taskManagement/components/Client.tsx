@@ -98,7 +98,9 @@ const Client = (props) => {
   const [search, setSearch] = useState("");
 
   const handledata = (obj) => {
+    setisEdit(true);
     setisAdd(false);
+
     setValue({ ...obj });
   };
 
@@ -156,23 +158,42 @@ const Client = (props) => {
       Editfunction(obj);
     } else if (!obj.Id && isadd && key == "check") {
       AddItem(obj);
-    } else if (key == "cancel") {
-      if (obj.Id) {
-        // If the item has an Id (existing item), do nothing
-        setisAdd(false);
-        setisEdit(false);
-      } else {
-        // If the item doesn't have an Id (new item), remove it
-        const updatedClientDetail = clientdetail.filter(
-          (val) => val.Id !== null
-        );
-
-        setClientdetail(updatedClientDetail);
-        setisAdd(false);
-        setisEdit(false);
-      }
     }
+    //else if (key == "cancel") {
+    //   if (obj.Id) {
+    //     // If the item has an Id (existing item), do nothing
+    //     setisAdd(false);
+    //     setisEdit(false);
+    //   } else {
+    //     // If the item doesn't have an Id (new item), remove it
+    //     const updatedClientDetail = clientdetail.filter(
+    //       (val) => val.Id !== null
+    //     );
+
+    //     setClientdetail(updatedClientDetail);
+    //     setisAdd(false);
+    //     setisEdit(false);
+    //   }
+    // }
   };
+
+  function _handleDataoperationNew(key, obj) {
+    debugger;
+    if (obj.Id) {
+      // If the item has an Id (existing item), do nothing
+      setisAdd(false);
+      setisEdit(false);
+      setValue({ ...Data });
+    } else {
+      // If the item doesn't have an Id (new item), remove it
+      const updatedClientDetail = clientdetail.filter((val) => val.Id !== null);
+
+      setClientdetail(updatedClientDetail);
+      // setValue({ ...Data });
+      setisAdd(false);
+      setisEdit(false);
+    }
+  }
 
   const _action = (obj: any): JSX.Element => {
     return (
@@ -184,8 +205,10 @@ const Client = (props) => {
               icon="pi pi-pencil"
               style={editIconStyle}
               onClick={(_) => {
-                handledata(obj);
                 setisEdit(true);
+
+                setisAdd(false);
+                handledata(obj);
               }}
             />
             <Button
@@ -219,11 +242,7 @@ const Client = (props) => {
               rounded
               style={delIconBtnStyle}
               onClick={(_) => {
-                let falsevalue = false;
-                setisEdit(falsevalue);
-
-                setisAdd(falsevalue);
-                _handleDataoperation("cancel", obj);
+                _handleDataoperationNew("cancel", obj);
               }}
             />
           </div>
@@ -644,9 +663,12 @@ const Client = (props) => {
                 label="Add Client"
                 className={styles.btnColor}
                 onClick={() => {
-                  setisEdit(false);
                   setisAdd(true);
+
+                  setisEdit(false);
                   setClientdetail([...clientdetail, Newdatadd]);
+
+                  setValue({ ...Data });
                   // _handleData("addParent", { ..._sampleParent });
                 }}
               />

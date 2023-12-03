@@ -14,7 +14,7 @@ let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-export default function UserClients(props) {
+export default function UserTasks(props) {
   const UserEmail = !props.Email
     ? ""
     : props.Email;
@@ -349,65 +349,7 @@ export default function UserClients(props) {
   return (
     <>
       {loader?<Loader />:(<>
-      <div className={styles.commonFilterSection}>
-        <div>
-          <Label className={styles.leftFilterSection}>
-           {curuserId.Title}
-          </Label>
-        </div>
-
-        {/* <InputText
-                  value={search}
-                  onChange={(e: any) => SearchFilter(e.target.value)}
-                /> */}
-        <div className={styles.rightFilterSection}>
-          <div>
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                placeholder="Search"
-                value={""}
-                //onChange={(e: any) => SearchFilter(e.target.value)}
-              />
-            </span>
-          </div>
-          <Button className={styles.btnColor} label="Automate" />
-          <Button
-            className={styles.btnColor}
-            label="Export"
-            icon="pi pi-file-excel"
-          />
-        </div>
-      </div>
-      <div className={styles.TLTCSection}>
-        <div className={styles.TLImage}>
-        <b>TL :</b>
-        <div className={styles.avatarAndNameFlex}>
-        <Avatar
-        className={styles.avatar}
-        image={`/_layouts/15/userphoto.aspx?size=S&username=${teamTLData.EMail}`}
-          size="normal"
-          shape="circle"
-         // label={val.TeamCaptain[0].Title}
-      />
-      <span>{teamTLData.Title}</span>
-      </div>
-      </div>
-      <div className={styles.TLImage}>
-        <b>TC :</b>
-        <div className={styles.avatarAndNameFlex}>
-        <Avatar
-        className={styles.avatar}
-        image={`/_layouts/15/userphoto.aspx?size=S&username=${teamCaptainData.EMail}`}
-          size="normal"
-          shape="circle"
-         // label={val.TeamCaptain[0].Title}
-      />
-      <span>{teamCaptainData.Title}</span>
-      </div>
-      </div>
-      </div>
-      <Label className={styles.clientHeader}>Client Tasks</Label>
+      <Label className={styles.clientHeader}>Client Tasks {props.Email}</Label>
       <>
         {clientdata.length > 0 ? (
           <>

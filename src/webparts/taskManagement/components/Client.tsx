@@ -15,6 +15,8 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import Loader from "./Loader";
 const Client = (props) => {
   const [showDialog, setShowDialog] = useState(false);
+  const [mastedata, setMasterdata] = useState([]);
+
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   // style variables
   const editIconStyle = {
@@ -57,7 +59,7 @@ const Client = (props) => {
       Title: "raj",
     },
   };
-  let x: IClient = {
+  let Data: IClient = {
     Id: null,
     FirstName: "",
     LastName: "",
@@ -92,7 +94,9 @@ const Client = (props) => {
   const [loader, setLoader] = useState(false);
 
   const [clientdetail, setClientdetail] = useState<IClient[]>([]);
-  const [value, setValue] = useState(x);
+  const [value, setValue] = useState(Data);
+  const [search, setSearch] = useState("");
+
   const handledata = (obj) => {
     setisAdd(false);
     setValue({ ...obj });
@@ -115,7 +119,7 @@ const Client = (props) => {
       .then((res) => {
         setisAdd(false);
         setisEdit(false);
-        setValue({ ...x });
+        setValue({ ...Data });
         setLoader(false);
         getdatas();
         // getcurUser();
@@ -138,8 +142,8 @@ const Client = (props) => {
     })
       .then((res) => {
         setisAdd(false);
-        setisAdd(false);
-        setValue({ ...x });
+        setisEdit(false);
+        setValue({ ...Data });
         setLoader(false);
 
         getdatas();
@@ -162,9 +166,10 @@ const Client = (props) => {
         const updatedClientDetail = clientdetail.filter(
           (val) => val.Id !== null
         );
+
+        setClientdetail(updatedClientDetail);
         setisAdd(false);
         setisEdit(false);
-        setClientdetail(updatedClientDetail);
       }
     }
   };
@@ -236,7 +241,7 @@ const Client = (props) => {
           <>
             <InputText
               type="text"
-              placeholder="TaskName"
+              placeholder="FirstName"
               value={value.FirstName}
               onChange={(e) => getOnchange("FirstName", e.target.value)}
             />
@@ -248,7 +253,7 @@ const Client = (props) => {
         return (
           <InputText
             type="text"
-            placeholder="TaskName"
+            placeholder="LastName"
             value={value.LastName}
             onChange={(e) => getOnchange("LastName", e.target.value)}
           />
@@ -258,7 +263,7 @@ const Client = (props) => {
         return (
           <InputText
             type="text"
-            placeholder="TaskName"
+            placeholder="CompanyName"
             value={value.CompanyName}
             onChange={(e) => getOnchange("CompanyName", e.target.value)}
           />
@@ -333,7 +338,7 @@ const Client = (props) => {
           <>
             <InputText
               type="text"
-              placeholder="TaskName"
+              // placeholder="TaskName"
               value={value.FirstName}
               onChange={(e) => getOnchange("FirstName", e.target.value)}
             />
@@ -346,7 +351,7 @@ const Client = (props) => {
           <>
             <InputText
               type="text"
-              placeholder="TaskName"
+              // placeholder="TaskName"
               value={value.LastName}
               onChange={(e) => getOnchange("LastName", e.target.value)}
             />
@@ -359,7 +364,7 @@ const Client = (props) => {
           <>
             <InputText
               type="text"
-              placeholder="TaskName"
+              // placeholder="TaskName"
               value={value.CompanyName}
               onChange={(e) => getOnchange("CompanyName", e.target.value)}
             />
@@ -477,6 +482,7 @@ const Client = (props) => {
           });
         });
         setClientdetail([...array]);
+        setMasterdata([...array]);
         setLoader(false);
       })
       .catch((err) => errFunction(err));
@@ -519,6 +525,77 @@ const Client = (props) => {
       setShowDialog(false);
     }
   };
+
+  const SearchFilter = (e) => {
+    setSearch(e);
+
+    // const filteredData = mastedata.filter((item) => {
+    //   const searchableFields = [
+    //     "First Name",
+    //     "Last Name",
+    //     "Assistant",
+    //     "Company Name",
+    //     "Backup",
+    //   ];
+
+    //   return searchableFields.some((field) => {
+    //     if (typeof item[field] === "object") {
+    //       const nestedObject = item[field] as {
+    //         [key: string]: string | number | null;
+    //       };
+    //       return Object.values(nestedObject).some(
+    //         (value) =>
+    //           value && value.toString().toLowerCase().includes(e.toLowerCase())
+    //       );
+    //     } else {
+    //       return (
+    //         item[field]
+    //           // ?.toString()
+    //           .toLowerCase()
+    //           .includes(e.toLowerCase())
+    //       );
+    //     }
+    //   });
+    // });
+
+    const filteredData = mastedata.filter((item) => {
+      const searchableFields = [
+        "FirstName",
+        "LastName",
+        "Assistant",
+        "CompanyName",
+        "Backup",
+      ];
+
+      return searchableFields.some((field) => {
+        const fieldValue = item[field];
+
+        if (fieldValue !== undefined && fieldValue !== null) {
+          if (typeof fieldValue === "object") {
+            const nestedObject = fieldValue as {
+              [key: string]: string | number | null;
+            };
+            return Object.values(nestedObject).some(
+              (value) =>
+                value &&
+                value.toString().toLowerCase().includes(e.toLowerCase())
+            );
+          } else {
+            return (
+              fieldValue
+                // ?.toString()
+                .toLowerCase()
+                .includes(e.toLowerCase())
+            );
+          }
+        }
+
+        return false; // Return false for undefined or null fields
+      });
+    });
+
+    setClientdetail([...filteredData]);
+  };
   useEffect(() => {
     setLoader(true);
     getdatas();
@@ -550,8 +627,8 @@ const Client = (props) => {
                   <i className="pi pi-search" />
                   <InputText
                     placeholder="Search"
-                    // value={search}
-                    // onChange={(e: any) => SearchFilter(e.target.value)}
+                    value={search}
+                    onChange={(e: any) => SearchFilter(e.target.value)}
                   />
                 </span>
               </div>
@@ -589,7 +666,7 @@ const Client = (props) => {
               ></Column>
               <Column
                 field="LastName"
-                header="last Name"
+                header="Last Name"
                 sortable
                 body={(obj: any) => _addTextField(obj, "LastName")}
               ></Column>

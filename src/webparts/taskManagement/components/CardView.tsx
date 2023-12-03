@@ -13,8 +13,8 @@ import Loader from "./Loader";
 const CardView = (props) => {
   const [Cardarr, setCardarr] = useState([]);
   const [loader, setLoader] = useState(false);
-  const [selectedMember, setSelectedmembers] = useState([]);
-  // const cardview = [
+  // const [selectedMember, setSelectedmembers] = useState([]);
+
   //   {
   //     TeamName: "Albha",
   //     TeamCaptain: {
@@ -112,21 +112,6 @@ const CardView = (props) => {
         });
 
         setCardarr([...teamArr]);
-        // setTeams([...teamArr]);
-
-        // sp.web.lists
-        //   .getByTitle("Configuration")
-        //   .items //   .filter(`Role eq "TL" &&  TeamLeader eq ${curUser}`)
-        //   .filter(`Name/EMail eq '${curUser}' `)
-        //   .top(5000)
-        //   .get()
-        //   .then((TeamMemberresult) => {
-        //     console.log(TeamMemberresult);
-        //   })
-        //   .catch((err123) => {
-        //     console.log(err123);
-        //   });
-        // console.log(Teamresult);
 
         setLoader(false);
       })
@@ -164,7 +149,7 @@ const CardView = (props) => {
               className={styles.mainContainer}
               // style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
             >
-              {Cardarr.length &&
+              {Cardarr.length > 0 &&
                 Cardarr.map((val: any) => {
                   return (
                     <div className={styles.cardSize}>
@@ -188,16 +173,16 @@ const CardView = (props) => {
                               </Label>
                               <div className={styles.teaCaptianSec}>
                                 <Avatar
-                                  image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0].Email}`}
+                                  image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0]?.Email}`}
                                   size="normal"
                                   shape="circle"
-                                  label={val.TeamCaptain[0].Title}
+                                  label={val.TeamCaptain[0]?.Title}
                                 />
                                 <Label
                                   className={styles.noPaddingLable}
                                   style={{ marginLeft: 6 }}
                                 >
-                                  {val.TeamCaptain[0].Title}
+                                  {val.TeamCaptain[0]?.Title}
                                 </Label>
                               </div>
                             </div>
@@ -234,18 +219,19 @@ const CardView = (props) => {
                               </Label>
                               <div style={{ display: "flex" }}>
                                 <AvatarGroup>
-                                  {val.members.slice(0, 5).map((res) => {
-                                    let test =
-                                      "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                      res.Email;
-                                    return (
-                                      <Avatar
-                                        image={test}
-                                        size="normal"
-                                        shape="circle"
-                                      />
-                                    );
-                                  })}
+                                  {val.members.length &&
+                                    val.members.slice(0, 5).map((res) => {
+                                      let test =
+                                        "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                        res?.Email;
+                                      return (
+                                        <Avatar
+                                          image={test}
+                                          size="normal"
+                                          shape="circle"
+                                        />
+                                      );
+                                    })}
                                   {val.members.length > 5 && (
                                     <Avatar
                                       size="normal"

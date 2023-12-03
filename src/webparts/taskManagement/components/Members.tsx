@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import * as React from "react";
 import styles from "./MainComponent.module.scss";
 const Member = (props) => {
-  console.log(props.selectedMember);
+  // console.log(props.selectedMember);
   const tickIconStyle = {
     backgroundColor: "transparent",
     border: "transparent",

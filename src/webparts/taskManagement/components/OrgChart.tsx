@@ -951,21 +951,40 @@ const OrgChart = (props) => {
       Editfunction(obj);
     } else if (!obj.Id && add && key == "check") {
       AddItem(obj);
-    } else if (key == "cancel") {
-      if (obj.Id) {
-        // If the item has an Id (existing item), do nothing
-        setAdd(false);
-        setEdit(false);
-      } else {
-        // If the item doesn't have an Id (new item), remove it
-        const updatedClientDetail = value.filter((val) => val.Id !== null);
-
-        setValue(updatedClientDetail);
-        setAdd(false);
-        setEdit(false);
-      }
     }
+
+    // else if (key == "cancel") {
+    //   if (obj.Id) {
+    //     // If the item has an Id (existing item), do nothing
+    //     setAdd(false);
+    //     setEdit(false);
+    //   } else {
+    //     // If the item doesn't have an Id (new item), remove it
+    //     const updatedClientDetail = value.filter((val) => val.Id !== null);
+
+    //     setValue(updatedClientDetail);
+    //     setAdd(false);
+    //     setEdit(false);
+    //   }
+    // }
   };
+  function _handleDataoperationNew(key, obj) {
+    debugger;
+    if (obj.Id) {
+      // If the item has an Id (existing item), do nothing
+      setAdd(false);
+      setEdit(false);
+      setcurobj({ ...addparent });
+    } else {
+      // If the item doesn't have an Id (new item), remove it
+      const updatedClientDetail = value.filter((val) => val.Id !== null);
+
+      setValue(updatedClientDetail);
+      // setValue({ ...Data });
+      setAdd(false);
+      setEdit(false);
+    }
+  }
 
   const handledata = (obj) => {
     setAdd(false);
@@ -1028,7 +1047,7 @@ const OrgChart = (props) => {
               onClick={(_) => {
                 setAdd(false);
                 setEdit(false);
-                _handleDataoperation("cancel", obj);
+                _handleDataoperationNew("cancel", obj);
               }}
             />
           </div>

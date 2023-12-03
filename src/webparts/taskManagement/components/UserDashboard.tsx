@@ -20,7 +20,7 @@ export default function UserDashboard(props)
     : props.Email;
 
   const [loader, setLoader] = useState(false);
-
+  const [bind,setBind]= useState(false);
   const [teamCaptainData, setTeamCaptainData] = useState({ EMail: "",Title: "",});
   const [teamTLData, setTeamTLData] = useState({ EMail: "",Title: ""});
   const [curuserId, setCuruserId] = useState({
@@ -132,9 +132,15 @@ export default function UserDashboard(props)
         ],
       }).then(function(data:any)
       {
-            if(data.length>0)
+        let backUpUserEmail="";    
+        if(data.length>0)
             {
-                let backUpUserEmail=data[0].Name?data[0].Name.EMail:"";
+                backUpUserEmail=data[0].Name?data[0].Name.EMail:"";
+                setUser(UserEmail)
+                setBackUpUser(backUpUserEmail);
+            }
+            else
+            {
                 setUser(UserEmail)
                 setBackUpUser(backUpUserEmail);
             }
@@ -211,8 +217,8 @@ export default function UserDashboard(props)
       </div>
       </div>
       </div>
-      <UserTasks context={props.context} Email={curuserId.EMail}/>
-      <UserBackUpTasks context={props.context} Email={backUpUser}/>
+        <UserTasks context={props.context} Email={user}/>
+        <UserBackUpTasks context={props.context} Email={backUpUser}/>
       </>)}
     </>
   );

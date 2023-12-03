@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Label } from "@fluentui/react";
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
-import UserClientDB from "./UserClientDB";
+import MyTaskData from "./MyTaskData";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import styles from "./MyTasks.module.scss";
@@ -14,11 +14,10 @@ let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-export default function UserTasks(props) {
-  const UserEmail = !props.Email
-    ? ""
-    : props.Email;
+export default function UserClients(props) {
+  const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [loader, setLoader] = useState(false);
+  const [search, setSearch] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -130,19 +129,21 @@ export default function UserTasks(props) {
           FilterKey: "Assistant/ID",
           Operator: "eq",
           FilterValue: id,
-        },
+        }
       ],
+      FilterCondition:"and"
     })
       .then((res) => {
         MyClients = [];
         res.forEach((val: any) => {
           MyClients.push({ ID: val.ID, Name: val.FirstName });
         });
-        if (MyClients.length > 0) {
-          getMainTask(id);
-        } else {
-          BindData();
-        }
+        // if (MyClients.length > 0) {
+        //   getMainTask(id);
+        // } else {
+        //   BindData();
+        // }
+        getMainTask(id);
       })
       .catch(function (error) {
         errFunction(error);
@@ -157,14 +158,19 @@ export default function UserTasks(props) {
         Operator: "eq",
         FilterValue: id,
       },
+      // {
+      //   FilterKey: "Client/ID",
+      //   Operator: "eq",
+      //   FilterValue: "",
+      // }
     ];
-    MyClients.forEach((val: any) => {
-      Filter.push({
-        FilterKey: "Client/ID",
-        Operator: "eq",
-        FilterValue: val.ID,
-      });
-    });
+    // MyClients.forEach((val: any) => {
+    //   Filter.push({
+    //     FilterKey: "Client/ID",
+    //     Operator: "eq",
+    //     FilterValue: val.ID,
+    //   });
+    // });
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
@@ -174,12 +180,13 @@ export default function UserTasks(props) {
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
-      FilterCondition: "or",
+      FilterCondition: "and",
     })
       .then((res) => {
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId &&
+           if(!val.ClientId){
+            console.log(val.Id);
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -210,6 +217,7 @@ export default function UserTasks(props) {
               },
               children: [],
             });
+          }
         });
 
         let arrFilter = [];
@@ -337,6 +345,28 @@ export default function UserTasks(props) {
     setLoader(false);
   }
 
+  const SearchFilter = (e) => {
+    setSearch(e);
+
+    let filteredResults = masterdata.filter((item) => {
+      if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
+        return true;
+      }
+
+      const childMatches = item.children.filter((child) =>
+        child.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())
+      );
+
+      if (childMatches.length > 0) {
+        return true;
+      }
+
+      return false;
+    });
+
+    setCurMyTask([...filteredResults]);
+  };
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -346,38 +376,60 @@ export default function UserTasks(props) {
     getcurUser();
   }, [props.Email]);
 
+  function onSpinner()
+  {
+    //setLoader(true);
+  }
+
+  function offSpinner()
+  {
+    //setLoader(false);
+  }
+
   return (
     <>
       {loader?<Loader />:(<>
-      <Label className={styles.clientHeader}>Client Tasks</Label>
+      <div className={styles.commonFilterSection}>
+        <div>
+          <Label className={styles.leftFilterSection}>
+          </Label>
+        </div>
+
+        {/* <InputText
+                  value={search}
+                  onChange={(e: any) => SearchFilter(e.target.value)}
+                /> */}
+        <div className={styles.rightFilterSection}>
+          <div>
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                placeholder="Search"
+                value={search}
+                onChange={(e: any) => SearchFilter(e.target.value)}
+              />
+            </span>
+          </div>
+          <Button className={styles.btnColor} label="Automate" />
+          <Button
+            className={styles.btnColor}
+            label="Export"
+            icon="pi pi-file-excel"
+          />
+        </div>
+      </div>
       <>
-        {clientdata.length > 0 ? (
-          <>
-            {clientdata.map((val, i) => {
-              return (
-                <>
-                  <UserClientDB
-                    bind={false}
-                    clientName={val.ClientName}
-                    clientId={val.ID}
-                    context={props.context}
-                    mainData={val.Tasks}
-                    crntUserData={curuserId}
-                    crntBackData={configure}
-                  />
-                </>
-              );
-            })}
-          </>
-        ) : (
-          <UserClientDB
+      <MyTaskData
             bind={false}
+            clientName={""}
+            clientId={""}
+            onspinner={onSpinner}
+            offspinner={offSpinner}
             context={props.context}
-            mainData={masterdata}
+            mainData={curMyTask}
             crntUserData={curuserId}
             crntBackData={configure}
           />
-        )}
       </>
       </>)}
     </>

@@ -31,10 +31,24 @@ const dropval = [
   { name: "Urgent", code: "Normal" }
 ];
 
+// const dropStatus = [
+//   { name: "Pending", code: "Pending" },
+//   { name: "InProgress", code: "InProgress" },
+//   { name: "Completed", code: "Completed" }
+// ];
+
+const dropStatus = [
+  { name: "High", code: "High" },
+  { name: "Normal", code: "Urgent" },
+  { name: "Urgent", code: "Normal" }
+];
+
 let MyClients = [];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
+
+import { Toast } from 'primereact/toast';
 
 const MyTaskData = (props): JSX.Element => {
   // style variables
@@ -168,6 +182,7 @@ const MyTaskData = (props): JSX.Element => {
   const [curdata, setCurdata] = useState<IMyTasks>(data);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
+  const toastTopRight = React.useRef(null);
   // style function
   const priorityLevelStyle = (PLevel) => {
     let bgColor: string = "";
@@ -253,7 +268,15 @@ const MyTaskData = (props): JSX.Element => {
           style={tickIconStyle}
           icon="pi pi-check"
           onClick={(_) => {
-            _handleDataoperation(obj);
+             if(validation())
+             {
+              _handleDataoperation(obj);
+             }
+             else
+             {
+              showMessage("Please fill mandatory fields", toastTopRight, 'warn');
+             }
+            
           }}
         />
         <Button
@@ -686,23 +709,37 @@ const MyTaskData = (props): JSX.Element => {
 
     if (!val.Id && val.isAdd) {
       if (fieldType == "TaskName") {
+        let clsValid="";
+        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
         return (
           <InputText
             type="text"
             placeholder="TaskName"
             value={curdata.TaskName}
-            className={styles.tblTxtBox}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
           />
         );
       }
       if (fieldType == "DueDate") {
+        let clsValid="";
+        if(!curdata.DueDate)
+        {
+          clsValid="md:w-20rem w-full p-invalid"
+          curdata.DueDate=moment().format();
+        }
+        else
+        {
+          clsValid=""
+        }
+
         return (
           <Calendar
             placeholder="Date"
             value={new Date(curdata.DueDate)}
             onChange={(e) => getOnchange("DueDate", e.value)}
             showIcon
+            className={`${styles.tblTxtBox}`}
           />
         );
       }
@@ -712,6 +749,7 @@ const MyTaskData = (props): JSX.Element => {
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             showtooltip={true}
             placeholder="Enter Email"
             // required={true}
@@ -771,24 +809,36 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "PriorityLevel") {
+        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
+        indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.PriorityLevel.name)
+        {
+          curdata.PriorityLevel=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
             placeholder="priority level"
             optionLabel="name"
-            value={curdata.PriorityLevel || null}
+            value={dropval[indexOfDrop]}
             onChange={(e: any) => getOnchange("PriorityLevel", e.value)}
             // className="w-full md:w-14rem"
           />
         );
       }
       if (fieldType == "Status") {
+        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
+        indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.Status.name)
+        {
+          curdata.Status=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
-            options={dropval}
+            options={dropStatus}
             placeholder="Select a status"
             optionLabel="name"
-            value={curdata.Status || null}
+            value={dropStatus[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -808,19 +858,33 @@ const MyTaskData = (props): JSX.Element => {
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && val.isEdit) {
       if (fieldType == "TaskName") {
+        let clsValid="";
+        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
         return (
           <InputText
             type="text"
             value={curdata.TaskName}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
           />
         );
       }
       if (fieldType == "DueDate") {
+        let clsValid="";
+        if(!curdata.DueDate)
+        {
+          clsValid="md:w-20rem w-full p-invalid"
+          curdata.DueDate=moment().format();
+        }
+        else
+        {
+          clsValid=""
+        }
         return (
           <Calendar
             value={new Date(curdata.DueDate)}
             onChange={(e) => getOnchange("DueDate", e.value)}
+            className={`${styles.tblTxtBox}`}
             showIcon
           />
         );
@@ -893,6 +957,10 @@ const MyTaskData = (props): JSX.Element => {
       if (fieldType == "PriorityLevel") {
         let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.PriorityLevel.name)
+        {
+          curdata.PriorityLevel=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
@@ -905,14 +973,18 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status") {
-        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
+        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.Status.name)
+        {
+          curdata.Status=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
-            options={dropval}
+            options={dropStatus}
             placeholder="Select a status"
             optionLabel="name"
-            value={dropval[indexOfDrop]}
+            value={dropStatus[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -1083,6 +1155,22 @@ const MyTaskData = (props): JSX.Element => {
     
   }
 
+  const showMessage = (event, ref, severity) => {
+    const label = event;
+
+    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
+  };
+
+  function validation()
+  {
+      let isAllValueFilled=true;
+      if(!curdata.TaskName)
+      {
+        isAllValueFilled=false;
+      }
+      return isAllValueFilled;
+  }
+
   useEffect(() => {
     setCurMyTask([...props.mainData]);
     setMasterdata([...props.mainData]);
@@ -1090,6 +1178,7 @@ const MyTaskData = (props): JSX.Element => {
 
   return (
     <div className={styles.myTaskSection}>
+      <Toast ref={toastTopRight} position="top-right" />
       <div
         className={styles.myTaskHeader}
         style={{
@@ -1108,7 +1197,7 @@ const MyTaskData = (props): JSX.Element => {
         <Button
           label="New task"
           className={styles.btnColor}
-          onClick={() => {
+          onClick={(e) => {
             _handleData("addParent", { ..._sampleParent });
           }}
         />
@@ -1145,8 +1234,8 @@ const MyTaskData = (props): JSX.Element => {
           style={cellStyle}
         /> */}
         <Column
-          field="Creator"
-          header="Creator"
+          field="Assitant"
+          header="Assitant"
           sortable
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Creator")}

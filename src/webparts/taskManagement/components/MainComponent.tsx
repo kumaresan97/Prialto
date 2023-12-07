@@ -35,6 +35,9 @@ const MainComponent = (props) => {
   const [params, setParams] = useState({
     admin: false,
     currentUser: "",
+    TL: false,
+    TC: false,
+    PA: false,
   });
   const [value, setvalue] = useState("mytasks");
   const [selectedMember, setselectedMember] = useState(null);
@@ -91,11 +94,118 @@ const MainComponent = (props) => {
     setvalue("member");
     setselectedMember(member);
   };
-  const getchoice = () => {
+  // const getchoice = () => {
+  //   sp.web.lists
+  //     .getByTitle("Configuration")
+  //     .items.select(
+  //       "*,Name/EMail,Name/Title ,TeamCaptain/EMail,TeamCaptain/Title"
+  //     )
+  //     .expand("Name,TeamCaptain")
+  //     .top(5000)
+  //     .get()
+  //     .then((configArr) => {
+  //       console.log(configArr, "config");
+
+  //       let uniqueTeams = [];
+  //       let teamArr = [];
+  //       TL = [];
+  //       TC = [];
+  //       TA = [];
+
+  //       configArr.forEach((config) => {
+  //         // console.log(config, "config1");
+
+  //         if (config.Name.EMail == _curUser) {
+  //           if (config.Role == "PA") {
+
+  //           }
+  //         }
+  //         if (config.Role == "TL") {
+  //           TL.push(config.Name?.EMail);
+  //         }
+  //         if (config.Role == "TC") {
+  //           TC.push(config.Name?.EMail);
+  //         }
+  //         if (config.Role == "PA") {
+  //           TA.push(config.Name?.EMail);
+  //         }
+
+  //         if (
+  //           uniqueTeams.findIndex((arr) => {
+  //             return arr == config.Team;
+  //           }) == -1
+  //         ) {
+  //           uniqueTeams.push(config.Team);
+  //         }
+  //       });
+  //       console.log(TL, "TL");
+  //       console.log(TC, "TC");
+  //       console.log(TA, "TA");
+
+  //       const isTL = TL.some((val) => val == _curUser);
+  //       const isTC = TC.some((val) => val == _curUser);
+  //       const isTA = TA.some((val) => val == _curUser);
+
+  //       debugger;
+  //       setParams({
+  //         admin: false,
+  //         currentUser: _curUser,
+  //         TL: isTL,
+  //         TC: isTC,
+  //         PA: isTA,
+  //       });
+
+  //       uniqueTeams.forEach((team) => {
+  //         let tempArr = configArr.filter((arr) => {
+  //           return arr.Team == team;
+  //         });
+  //         let teamMembers = [];
+  //         tempArr.forEach((arr) => {
+  //           console.log(arr, "arr");
+
+  //           if (arr.NameId) {
+  //             teamMembers.push({
+  //               Name: arr.Name?.Title,
+  //               Email: arr.Name?.EMail,
+  //               Id: arr.NameId,
+  //             });
+  //           }
+  //         });
+  //         teamArr.push({
+  //           team: team,
+  //           members: teamMembers,
+  //         });
+  //       });
+
+  //       let userTeams = [];
+
+  //       // if (isTL) {
+  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
+  //       // } else if (isTC) {
+  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
+  //       // } else if (isTA) {
+  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
+  //       // }
+  //       setTeams([...teamArr]);
+  //       console.log(userTeams, "userTeam");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  const memberFunction = (value, taskname) => {
+    setvalue(taskname ? taskname : "");
+    console.log(value, "value");
+    console.log(taskname, "taskname");
+
+    setSelectedTeamMember(value ? [...value] : []);
+  };
+
+  const getChoice = () => {
     sp.web.lists
       .getByTitle("Configuration")
       .items.select(
-        "*,Name/EMail,Name/Title ,TeamCaptain/EMail,TeamCaptain/Title"
+        "*,Name/EMail,Name/Title,TeamCaptain/EMail,TeamCaptain/Title"
       )
       .expand("Name,TeamCaptain")
       .top(5000)
@@ -105,71 +215,59 @@ const MainComponent = (props) => {
 
         let uniqueTeams = [];
         let teamArr = [];
-        TL = [];
-        TC = [];
-        TA = [];
+        let isPA = false;
+        let isTC = false;
+        let isTL = false;
 
         configArr.forEach((config) => {
-          console.log(config, "config1");
-          if (config.Role == "TL") {
-            TL.push(config.Name?.EMail);
-          }
-          if (config.Role == "TC") {
-            TC.push(config.Name?.EMail);
-          }
-          if (config.Role == "PA") {
-            TA.push(config.Name?.EMail);
-          }
-          console.log(TL, "TL");
-          console.log(TC, "TC");
-          console.log(TA, "TA");
-
-          if (
-            uniqueTeams.findIndex((arr) => {
-              return arr == config.Team;
-            }) == -1
-          ) {
-            uniqueTeams.push(config.Team);
-          }
-        });
-        uniqueTeams.forEach((team) => {
-          let tempArr = configArr.filter((arr) => {
-            return arr.Team == team;
-          });
-          let teamMembers = [];
-          tempArr.forEach((arr) => {
-            console.log(arr, "arr");
-
-            if (arr.NameId) {
-              teamMembers.push({
-                Name: arr.Name?.Title,
-                Email: arr.Name?.EMail,
-                Id: arr.NameId,
-              });
+          if (config.Name.EMail === _curUser) {
+            if (config.Role === "PA") {
+              isPA = true;
+            } else if (config.Role === "TC") {
+              isTC = true;
+            } else if (config.Role === "TL") {
+              isTL = true;
             }
-          });
-          teamArr.push({
-            team: team,
-            members: teamMembers,
-          });
+            if (!uniqueTeams.includes(config.Team)) {
+              uniqueTeams.push(config.Team);
+            }
+          }
         });
-        setTeams([...teamArr]);
-        console.log(teamArr);
+
+        teamArr = configArr.filter((config) =>
+          uniqueTeams.includes(config.Team)
+        );
+
+        let userTeams = [];
+
+        if (isPA) {
+          userTeams = teamArr.filter((team) => team.Role === "PA");
+        } else if (isTC) {
+          userTeams = teamArr.filter((team) => team.Role === "TC");
+        } else if (isTL) {
+          userTeams = teamArr.filter((team) => team.Role === "TL");
+        }
+
+        const formattedUserTeams = userTeams.map((team) => ({
+          team: team.Team,
+          members: [
+            {
+              Name: team.Name?.Title,
+              Email: team.Name?.EMail,
+              Id: team.NameId,
+            },
+          ],
+        }));
+        setTeams([...formattedUserTeams]);
+        console.log(formattedUserTeams, "formatteams");
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  const memberFunction = (value, taskname) => {
-    setvalue(taskname ? taskname : "");
-    console.log(value, "value");
-    console.log(taskname, "taskname");
-
-    setSelectedTeamMember(value ? [...value] : []);
-  };
 
   useEffect(() => {
-    getchoice();
+    getChoice();
   }, []);
   return (
     <div className={styles.TaskManagementSection}>
@@ -353,10 +451,10 @@ const MainComponent = (props) => {
           //   Email={selectedMember}
           // />
           <UserDashboard
-          selectedMember={selectedMember}
-          context={props.context}
-          Email={selectedMember}
-        />
+            selectedMember={selectedMember}
+            context={props.context}
+            Email={selectedMember}
+          />
         ) : value == "CardView" ? (
           <CardView
             context={props.context}

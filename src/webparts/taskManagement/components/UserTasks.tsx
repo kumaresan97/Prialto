@@ -19,6 +19,7 @@ export default function UserTasks(props) {
     ? ""
     : props.Email;
   const [loader, setLoader] = useState(false);
+  const [search, setSearch] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -337,6 +338,10 @@ export default function UserTasks(props) {
     setLoader(false);
   }
 
+  useEffect(()=>{
+    setSearch(props.searchValue);
+  },[props.searchValue])
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -358,6 +363,7 @@ export default function UserTasks(props) {
                 <>
                   <UserClientDB
                     bind={false}
+                    searchValue={props.searchValue}
                     clientName={val.ClientName}
                     clientId={val.ID}
                     context={props.context}
@@ -372,6 +378,7 @@ export default function UserTasks(props) {
         ) : (
           <UserClientDB
             bind={false}
+            searchValue={props.searchValue}
             context={props.context}
             mainData={masterdata}
             crntUserData={curuserId}

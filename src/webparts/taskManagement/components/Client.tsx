@@ -13,6 +13,7 @@ import { IClient } from "../../../Global/TaskMngmnt";
 import styles from "./TaskManagement.module.scss";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import Loader from "./Loader";
+import exportToExcel from "../../../Global/ExportExcel";
 const Client = (props) => {
   const [showDialog, setShowDialog] = useState(false);
   const [mastedata, setMasterdata] = useState([]);
@@ -615,6 +616,18 @@ const Client = (props) => {
 
     setClientdetail([...filteredData]);
   };
+
+  let columns = [
+    { header: "First Name", key: "FirstName", width: 15 },
+    { header: "First Name", key: "LastName", width: 25 },
+    { header: "Company Name", key: "CompanyName", width: 25 },
+    { header: "Assistant", key: "Assistant", width: 25 },
+
+    { header: "Backup", key: "Backup", width: 25 },
+  ];
+  const exportExcel = () => {
+    exportToExcel(clientdetail, columns, "Client");
+  };
   useEffect(() => {
     setLoader(true);
     getdatas();
@@ -629,7 +642,7 @@ const Client = (props) => {
           <div
             // style={{
             //   display: "flex",
-            //   justifyContent: "flex-end",
+            //   justifyContent: "flex-end",header
             //   gap: "12px",
             //   margin: "0px 0px 10px 0px",
             // }}
@@ -655,6 +668,9 @@ const Client = (props) => {
                 icon="pi pi-file-excel"
                 className={styles.btnColor}
                 label="Export"
+                onClick={() => {
+                  exportExcel();
+                }}
                 //   onClick={() => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}

@@ -13,6 +13,10 @@ import SPServices from "../../../Global/SPServices";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import styles from "./TaskManagement.module.scss";
 import Loader from "./Loader";
+import * as moment from "moment";
+import * as Excel from "exceljs/dist/exceljs.min.js";
+import * as FileSaver from "file-saver";
+import exportToExcel from "../../../Global/ExportExcel";
 
 interface clinet {
   Id: number;
@@ -1303,6 +1307,214 @@ const OrgChart = (props) => {
       setShowDialog(false);
     }
   };
+
+  //dummy mytaskheader
+  let columns = [
+    { header: "name", key: "name", width: 15 },
+    { header: "size", key: "size", width: 25 },
+    { header: "type", key: "type", width: 25 },
+  ];
+  const arrNodes = [
+    {
+      key: "0",
+      data: {
+        name: "Applications",
+        size: "100kb",
+        type: "Folder",
+      },
+      children: [
+        {
+          key: "0-0",
+          data: {
+            name: "React",
+            size: "25kb",
+            type: "Folder",
+          },
+        },
+        {
+          key: "0-1",
+          data: {
+            name: "editor.app",
+            size: "25kb",
+            type: "Application",
+          },
+        },
+        {
+          key: "0-2",
+          data: {
+            name: "settings.app",
+            size: "50kb",
+            type: "Application",
+          },
+        },
+      ],
+    },
+    {
+      key: "1",
+      data: {
+        name: "App2",
+        size: "100kb",
+        type: "Folder",
+      },
+      children: [
+        {
+          key: "0-1",
+          data: {
+            name: "React",
+            size: "2500kb",
+            type: "Folder",
+          },
+        },
+        {
+          key: "0-2",
+          data: {
+            name: "editor",
+            size: "250kb",
+            type: "Application",
+          },
+        },
+        {
+          key: "0-3",
+          data: {
+            name: "settings",
+            size: "590kb",
+            type: "Application",
+          },
+        },
+      ],
+    },
+  ];
+
+  // let columns = [
+  //   { header: "Name", key: "Name", width: 15 },
+  //   { header: "Role", key: "Role", width: 25 },
+  //   { header: "Team", key: "Team", width: 25 },
+  //   { header: "Cohort", key: "Cohort", width: 25 },
+
+  //   { header: "Manager", key: "Manager", width: 25 },
+
+  //   { header: "Team Captain", key: "TeamCaptain", width: 25 },
+  //   { header: "Team Leader", key: "TeamLeader", width: 25 },
+  //   { header: "Direct Reports", key: "DirectReports", width: 25 },
+  //   { header: "Backing Up", key: "BackingUp", width: 25 },
+  // ];
+
+  const ExportExcel = async () => {
+    setLoader(true);
+    try {
+      await exportToExcel(arrNodes, columns, "MyTask");
+      setLoader(false); // Set loader to false after export is done
+    } catch (err) {
+      setLoader(false); // Handle error by setting loader to false
+      console.error("Export error:", err);
+      // Add additional error handling if required
+    }
+  };
+
+  // const ExportExcel = (data) => {
+  //   setLoader(true);
+  //   try{}
+  //   exportToExcel(data, columns, "OrgChart").then((res) => {
+  //     setLoader(false);
+  //   }).catch((err)=>{
+  //     setLoader(false)
+  //   });
+  //   let _arrExport = [...data];
+  //   const workbook: any = new Excel.Workbook();
+  //   const worksheet: any = workbook.addWorksheet("OrgChart");
+  //   // worksheet.columns = [
+  //   //   { header: "ID", key: "ID", width: 15 },
+  //   //   { header: "Area", key: "Area", width: 25 },
+  //   //   { header: "Year", key: "Year", width: 25 },
+  //   //   { header: "Category", key: "Category", width: 25 },
+  //   //   { header: "Country", key: "Country", width: 25 },
+  //   //   { header: "Type", key: "Type", width: 25 },
+  //   //   { header: "Total", key: "Total", width: 25 },
+  //   // ];
+  //   worksheet.columns = [
+  //     { header: "Name", key: "Name", width: 15 },
+  //     { header: "Role", key: "Role", width: 25 },
+  //     { header: "Team", key: "Team", width: 25 },
+  //     { header: "Cohort", key: "Cohort", width: 25 },
+
+  //     { header: "Manager", key: "Manager", width: 25 },
+
+  //     { header: "Team Captain", key: "TeamCaptain", width: 25 },
+  //     { header: "Team Leader", key: "TeamLeader", width: 25 },
+  //     { header: "Direct Reports", key: "DirectReports", width: 25 },
+  //     { header: "Backing Up", key: "BackingUp", width: 25 },
+  //   ];
+
+  //   _arrExport.forEach((item) => {
+  //     // worksheet.addRow({
+  //     //   ID: 23,
+  //     //   Year: "2025",
+  //     //   Category: "214125",
+  //     //   Country: "3523",
+  //     //   Type: "125125",
+  //     //   Total: "125125",
+  //     //   Area: "125125125",
+  //     // });
+  //     worksheet.addRow({
+  //       Name: item.Name?.Title,
+  //       Role: item.Role,
+
+  //       Team: item.Team,
+  //       Cohort: item.Cohort,
+  //       Manager: item.Manager?.Title,
+
+  //       TeamCaptain: item.TeamCaptain?.Title,
+  //       TeamLeader: item.TeamLeader?.Title,
+  //       DirectReports: item.DirectReports[0]?.Title,
+  //       BackingUp: item.BackingUp[0]?.Title,
+  //     });
+  //   });
+  //   /* for Filter */
+  //   // worksheet.autoFilter = {
+  //   //   from: "A1",
+  //   //   to: "G1",
+  //   // };
+
+  //   /* Header color change */
+  //   //const headerRows: string[] = ["A1", "B1", "C1", "D1", "E1", "F1", "G1"];
+  //   // headerRows.map((key: any) => {
+  //   //   worksheet.getCell(key).fill = {
+  //   //     type: "pattern",
+  //   //     pattern: "solid",
+  //   //     fgColor: { argb: "4194c5" },
+  //   //     bold: true,
+  //   //   };
+  //   // });
+  //   // headerRows.map((key: any) => {
+  //   //   worksheet.getCell(key).font = {
+  //   //     bold: true,
+  //   //     color: { argb: "FFFFFF" },
+  //   //   };
+  //   // });
+  //   // headerRows.map((key: any) => {
+  //   //   worksheet.getCell(key).alignment = {
+  //   //     vertical: "middle  ",
+  //   //     horizontal: "center",
+  //   //   };
+  //   // });
+
+  //   /* make columns readonly */
+  //   // const readOnlyRows = ["B1", "C1", "D1", "E1", "F1"];
+  //   // readOnlyRows.map((key: any) => {
+  //   //   worksheet.getCell(key).protection = { locked: true };
+  //   // });
+  //   workbook.xlsx
+  //     .writeBuffer()
+  //     .then((buffer: any) =>
+  //       FileSaver.saveAs(
+  //         new Blob([buffer]),
+  //         `Prialto-${moment().format("MM_DD_YYYY")}.xlsx`
+  //       )
+  //     )
+  //     .catch((err: any) => {
+  //       alert("Something went wrong. Please contact system admin.");
+  //     });
+  // };
   useEffect(() => {
     setLoader(true);
     getdatas();
@@ -1333,6 +1545,7 @@ const OrgChart = (props) => {
               <Button
                 label="Export"
                 icon="pi pi-file-excel"
+                onClick={() => ExportExcel()}
                 className={styles.btnColor}
                 //   onClick={() => {
                 //     _handleData("addParent", { ..._sampleParent });

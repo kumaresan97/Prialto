@@ -10,19 +10,25 @@ import styles from "./MyTasks.module.scss";
 import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
+import exportToExcel from "../../../Global/ExportExcel";
 let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 export default function UserClients(props) {
-  const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
+  const UserEmail = !props.Email
+    ? props.context.pageContext.user.email
+    : props.Email;
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
-  const [teamCaptainData, setTeamCaptainData] = useState({ EMail: "",Title: "",});
-  const [teamTLData, setTeamTLData] = useState({ EMail: "",Title: ""});
+  const [teamCaptainData, setTeamCaptainData] = useState({
+    EMail: "",
+    Title: "",
+  });
+  const [teamTLData, setTeamTLData] = useState({ EMail: "", Title: "" });
   const [curuserId, setCuruserId] = useState({
     Id: null,
     EMail: "",
@@ -42,75 +48,72 @@ export default function UserClients(props) {
 
   //getcuruser
   const getcurUser = () => {
-    if(UserEmail){
-    let user = sp.web.siteUsers
-      .getByEmail(UserEmail)
-      .get()
-      .then((res) => {
-        console.log(UserEmail);
-        let crntUserDetails = {
-          Id: res.Id,
-          EMail: res.Email,
-          Title: res.Title,
-        };
+    if (UserEmail) {
+      let user = sp.web.siteUsers
+        .getByEmail(UserEmail)
+        .get()
+        .then((res) => {
+          console.log(UserEmail);
+          let crntUserDetails = {
+            Id: res.Id,
+            EMail: res.Email,
+            Title: res.Title,
+          };
 
-        let crntUserBackup = {
-          backupId: null,
-          EMail: "",
-          Title: "",
-        };
+          let crntUserBackup = {
+            backupId: null,
+            EMail: "",
+            Title: "",
+          };
 
-        SPServices.SPReadItems({
-          Listname: "Configuration",
-          Select:
-            "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title,TeamLeader/EMail,TeamLeader/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
-          Expand: "BackingUp ,Name,TeamCaptain,TeamLeader",
-          Filter: [
-            {
-              FilterKey: "Name/ID",
-              FilterValue: res.Id.toString(),
-              Operator: "eq",
-            },
-          ],
-        })
-          .then((res: any) => {
-            let x = {
-              backupId: null,
-              EMail: "",
-              Title: "",
-            };
-            let TCData={
-              EMail: "",
-              Title: "",
-            }
-            let TLData={
-              EMail: "",
-              Title: "",
-            }
-            res.forEach((val) => 
-            {
-              x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
-              x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
-              x.Title = val.BackingUp?val.BackingUp[0].Title:"";
-              TCData.EMail=val.TeamCaptain?val.TeamCaptain.EMail:"N/A";
-              TCData.Title=val.TeamCaptain?val.TeamCaptain.Title:"N/A";
-
-              TLData.EMail=val.TeamLeader?val.TeamLeader.EMail:"N/A";
-              TLData.Title=val.TeamLeader?val.TeamLeader.Title:"N/A";
-
-
-            });
-            crntUserBackup = x;
-            setTeamTLData({...TLData});
-            setTeamCaptainData({...TCData});
-            setCuruserId({ ...crntUserDetails });
-            setConfigure({ ...x });
+          SPServices.SPReadItems({
+            Listname: "Configuration",
+            Select:
+              "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title,TeamLeader/EMail,TeamLeader/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
+            Expand: "BackingUp ,Name,TeamCaptain,TeamLeader",
+            Filter: [
+              {
+                FilterKey: "Name/ID",
+                FilterValue: res.Id.toString(),
+                Operator: "eq",
+              },
+            ],
           })
-          .catch((err) => errFunction(err));
+            .then((res: any) => {
+              let x = {
+                backupId: null,
+                EMail: "",
+                Title: "",
+              };
+              let TCData = {
+                EMail: "",
+                Title: "",
+              };
+              let TLData = {
+                EMail: "",
+                Title: "",
+              };
+              res.forEach((val) => {
+                x.EMail = val.BackingUp ? val.BackingUp[0].EMail : "";
+                x.backupId = val.BackingUp ? val.BackingUp[0].ID : "";
+                x.Title = val.BackingUp ? val.BackingUp[0].Title : "";
+                TCData.EMail = val.TeamCaptain ? val.TeamCaptain.EMail : "N/A";
+                TCData.Title = val.TeamCaptain ? val.TeamCaptain.Title : "N/A";
+
+                TLData.EMail = val.TeamLeader ? val.TeamLeader.EMail : "N/A";
+                TLData.Title = val.TeamLeader ? val.TeamLeader.Title : "N/A";
+              });
+              crntUserBackup = x;
+              setTeamTLData({ ...TLData });
+              setTeamCaptainData({ ...TCData });
+              setCuruserId({ ...crntUserDetails });
+              setConfigure({ ...x });
+            })
+            .catch((err) => errFunction(err));
           getMyClients(res.Id);
-      }).catch((err) => errFunction(err));
-    }else
-    {
+        })
+        .catch((err) => errFunction(err));
+    } else {
       BindData();
     }
   };
@@ -129,9 +132,9 @@ export default function UserClients(props) {
           FilterKey: "Assistant/ID",
           Operator: "eq",
           FilterValue: id,
-        }
+        },
       ],
-      FilterCondition:"and"
+      FilterCondition: "and",
     })
       .then((res) => {
         MyClients = [];
@@ -185,7 +188,7 @@ export default function UserClients(props) {
       .then((res) => {
         MainTask = [];
         res.forEach((val: any, index) => {
-           if(!val.ClientId){
+          if (!val.ClientId) {
             console.log(val.Id);
             MainTask.push({
               key: val.Id,
@@ -231,7 +234,7 @@ export default function UserClients(props) {
         if (arrFilter.length > 0) {
           getsubTask(arrFilter);
         } else {
-          MainArray=[...MainTask];
+          MainArray = [...MainTask];
           BindData();
         }
       })
@@ -367,6 +370,21 @@ export default function UserClients(props) {
     setCurMyTask([...filteredResults]);
   };
 
+  let columns = [
+    { header: "Task Name", key: "TaskName", width: 15 },
+    { header: "Creator", key: "Creator", width: 25 },
+    { header: "Backup", key: "Backup", width: 25 },
+    { header: "DueDate", key: "DueDate", width: 25 },
+
+    { header: "Priority Level", key: "PriorityLevel", width: 25 },
+    { header: "Status", key: "Status", width: 25 },
+    { header: "Created", key: "Created", width: 25 },
+  ];
+
+  const exportData = () => {
+    exportToExcel(curMyTask, columns, "MyTask");
+  };
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -376,62 +394,64 @@ export default function UserClients(props) {
     getcurUser();
   }, [props.Email]);
 
-  function onSpinner()
-  {
+  function onSpinner() {
     //setLoader(true);
   }
 
-  function offSpinner()
-  {
+  function offSpinner() {
     //setLoader(false);
   }
 
   return (
     <>
-      {loader?<Loader />:(<>
-      <div className={styles.commonFilterSection}>
-        <div>
-          <Label className={styles.leftFilterSection}>
-          </Label>
-        </div>
+      {loader ? (
+        <Loader />
+      ) : (
+        <>
+          <div className={styles.commonFilterSection}>
+            <div>
+              <Label className={styles.leftFilterSection}></Label>
+            </div>
 
-        {/* <InputText
+            {/* <InputText
                   value={search}
                   onChange={(e: any) => SearchFilter(e.target.value)}
                 /> */}
-        <div className={styles.rightFilterSection}>
-          <div>
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                placeholder="Search"
-                value={search}
-                onChange={(e: any) => SearchFilter(e.target.value)}
+            <div className={styles.rightFilterSection}>
+              <div>
+                <span className="p-input-icon-left">
+                  <i className="pi pi-search" />
+                  <InputText
+                    placeholder="Search"
+                    value={search}
+                    onChange={(e: any) => SearchFilter(e.target.value)}
+                  />
+                </span>
+              </div>
+              <Button className={styles.btnColor} label="Automate" />
+              <Button
+                className={styles.btnColor}
+                label="Export"
+                onClick={() => exportData()}
+                icon="pi pi-file-excel"
               />
-            </span>
+            </div>
           </div>
-          <Button className={styles.btnColor} label="Automate" />
-          <Button
-            className={styles.btnColor}
-            label="Export"
-            icon="pi pi-file-excel"
-          />
-        </div>
-      </div>
-      <>
-      <MyTaskData
-            bind={false}
-            clientName={""}
-            clientId={""}
-            onspinner={onSpinner}
-            offspinner={offSpinner}
-            context={props.context}
-            mainData={curMyTask}
-            crntUserData={curuserId}
-            crntBackData={configure}
-          />
-      </>
-      </>)}
+          <>
+            <MyTaskData
+              bind={false}
+              clientName={""}
+              clientId={""}
+              onspinner={onSpinner}
+              offspinner={offSpinner}
+              context={props.context}
+              mainData={curMyTask}
+              crntUserData={curuserId}
+              crntBackData={configure}
+            />
+          </>
+        </>
+      )}
     </>
   );
 }

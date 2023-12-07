@@ -16,6 +16,7 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
+import Loader from "./Loader";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -27,8 +28,7 @@ const cities = [
 const dropval = [
   { name: "High", code: "High" },
   { name: "Normal", code: "Urgent" },
-  { name: "Urgent", code: "Normal" },
-  { name: "Newindia", code: "Newindia" },
+  { name: "Urgent", code: "Normal" }
 ];
 
 let MyClients = [];
@@ -83,6 +83,7 @@ const UserClientDB = (props): JSX.Element => {
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
@@ -270,6 +271,7 @@ const UserClientDB = (props): JSX.Element => {
   };
   //handle update,delete,edit
   const _handleDataoperation = (obj) => {
+    setLoader(true);
     //if (obj.isParent && obj.isEdit && obj.Id) {
     if (obj.isEdit && obj.Id) {
       Editfunction(obj);
@@ -380,6 +382,7 @@ const UserClientDB = (props): JSX.Element => {
   };
   //deleteitem
   const deleteData = (obj) => {
+    setLoader(true);
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let Ids = [];
 
@@ -771,24 +774,28 @@ const UserClientDB = (props): JSX.Element => {
         );
       }
       if (fieldType == "PriorityLevel") {
+        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
+        indexOfDrop<0?indexOfDrop=0:"";
         return (
           <Dropdown
             options={dropval}
             placeholder="priority level"
             optionLabel="name"
-            value={curdata.PriorityLevel || null}
+            value={dropval[indexOfDrop]}
             onChange={(e: any) => getOnchange("PriorityLevel", e.value)}
             // className="w-full md:w-14rem"
           />
         );
       }
       if (fieldType == "Status") {
+        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
+        indexOfDrop<0?indexOfDrop=0:"";
         return (
           <Dropdown
             options={dropval}
             placeholder="Select a status"
             optionLabel="name"
-            value={curdata.Status || null}
+            value={dropval[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -889,24 +896,28 @@ const UserClientDB = (props): JSX.Element => {
         );
       }
       if (fieldType == "PriorityLevel") {
+        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
+        indexOfDrop<0?indexOfDrop=0:"";
         return (
           <Dropdown
             options={dropval}
             placeholder="Select a priority level"
             optionLabel="name"
-            value={curdata.PriorityLevel}
+            value={dropval[indexOfDrop]}
             onChange={(e: any) => getOnchange("PriorityLevel", e.value)}
             // className="w-full md:w-14rem"
           />
         );
       }
       if (fieldType == "Status") {
+        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
+        indexOfDrop<0?indexOfDrop=0:"";
         return (
           <Dropdown
             options={dropval}
             placeholder="Select a status"
             optionLabel="name"
-            value={curdata.Status}
+            value={dropval[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -959,6 +970,7 @@ const UserClientDB = (props): JSX.Element => {
 
   const errFunction = (err) => {
     console.log(err);
+    setLoader(false);
   };
 
   const onSelect = (event) => {
@@ -970,6 +982,7 @@ const UserClientDB = (props): JSX.Element => {
       return removeId != event.node.Id;
     });
   };
+
   const SearchFilter = (e) => {
     setSearch(e);
 
@@ -991,6 +1004,7 @@ const UserClientDB = (props): JSX.Element => {
 
     setCurMyTask([...filteredResults]);
   };
+
   const toggleApplications = (key) => {
     let _expandedKeys = { ...expandedKeys };
 
@@ -1013,6 +1027,7 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfternewChildData(newData, parentIndex, childIndex) {
@@ -1031,6 +1046,7 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfterDataEdit(newData, oldObject) {
@@ -1052,6 +1068,7 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfterDataDelete(ID) {
@@ -1063,6 +1080,7 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfterChildDataDelete(ID, parentId, childIndex) {
@@ -1072,7 +1090,12 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
+
+  useEffect(()=>{
+    SearchFilter(props.searchValue)
+  },[props.searchValue])
 
   useEffect(() => {
     setCurMyTask([...props.mainData]);
@@ -1080,6 +1103,8 @@ const UserClientDB = (props): JSX.Element => {
   }, [props.mainData]);
 
   return (
+    <>
+    {loader?<Loader/>:
     <div className={styles.myTaskSection}>
       <div
         className={styles.myTaskHeader}
@@ -1098,6 +1123,7 @@ const UserClientDB = (props): JSX.Element => {
         </Label>
         <Button
           label="New task"
+          visible={props.clientName?true:false}
           className={styles.btnColor}
           onClick={() => {
             _handleData("addParent", { ..._sampleParent });
@@ -1110,6 +1136,7 @@ const UserClientDB = (props): JSX.Element => {
         selectionKeys={selectedNodeKeys}
         onSelect={onSelect}
         onUnselect={unselect}
+        disabled={true}
         expandedKeys={expandedKeys}
         onToggle={(e) => setExpandedKeys(e.value)}
         onSelectionChange={(e) => {
@@ -1136,8 +1163,8 @@ const UserClientDB = (props): JSX.Element => {
           style={cellStyle}
         />
         <Column
-          field="Creator"
-          header="Creator"
+          field="Assitant"
+          header="Assitant"
           sortable
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Creator")}
@@ -1171,13 +1198,13 @@ const UserClientDB = (props): JSX.Element => {
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Status")}
         />
-        <Column
+        {/* <Column
           field="Created"
           header="Created"
           sortable
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Created")}
-        />
+        /> */}
         <Column
           style={actionCellStyle}
           body={(obj: any, index) =>
@@ -1185,7 +1212,8 @@ const UserClientDB = (props): JSX.Element => {
           }
         />
       </TreeTable>
-    </div>
+    </div>}
+    </>
   );
 };
 

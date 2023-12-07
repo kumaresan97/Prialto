@@ -20,6 +20,7 @@ export default function UserDashboard(props)
     : props.Email;
 
   const [loader, setLoader] = useState(false);
+  const [search, setSearch] = useState("");
   const [bind,setBind]= useState(false);
   const [teamCaptainData, setTeamCaptainData] = useState({ EMail: "",Title: "",});
   const [teamTLData, setTeamTLData] = useState({ EMail: "",Title: ""});
@@ -150,6 +151,11 @@ export default function UserDashboard(props)
       })
   }
 
+  function SearchFilter(e)
+  {
+      setSearch(e);
+  }
+
   useEffect(() => {
     setLoader(true);
     getcurUser();
@@ -175,9 +181,9 @@ export default function UserDashboard(props)
             <span className="p-input-icon-left">
               <i className="pi pi-search" />
               <InputText
-                placeholder="Working on it.."
-                value={""}
-                //onChange={(e: any) => SearchFilter(e.target.value)}
+                placeholder="Search"
+                value={search}
+                onChange={(e: any) => SearchFilter(e.target.value)}
               />
             </span>
           </div>
@@ -217,8 +223,8 @@ export default function UserDashboard(props)
       </div>
       </div>
       </div>
-        <UserTasks context={props.context} Email={user}/>
-        <UserBackUpTasks context={props.context} Email={backUpUser}/>
+        <UserTasks searchValue={search} context={props.context} Email={user}/>
+        <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/>
       </>)}
     </>
   );

@@ -19,6 +19,7 @@ export default function UserBackUpTasks(props) {
     ? ""
     : props.Email;
   const [loader, setLoader] = useState(false);
+  const [search, setSearch] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -337,6 +338,49 @@ export default function UserBackUpTasks(props) {
     setLoader(false);
   }
 
+  // function BindDataAfterSearch(FilterData) {
+  //   let tempClient = [];
+  //   for (let i = 0; i < MyClients.length; i++) {
+  //     tempClient.push({
+  //       ClientName: MyClients[i].Name,
+  //       ID: MyClients[i].ID,
+  //       Tasks: [],
+  //     });
+  //     for (let j = 0; j < FilterData.length; j++) {
+  //       if (FilterData[j].data.ClientID == MyClients[i].ID)
+  //         tempClient[i].Tasks.push(FilterData[j]);
+  //     }
+  //   }
+  //   setClientdata([...tempClient]);
+  //   setLoader(false);
+  // }
+
+  // const SearchFilter = (e) => {
+  //   setSearch(e);
+
+  //   let filteredResults = curMyTask.filter((item) => {
+  //     if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
+  //       return true;
+  //     }
+
+  //     const childMatches = item.children.filter((child) =>
+  //       child.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())
+  //     );
+
+  //     if (childMatches.length > 0) {
+  //       return true;
+  //     }
+
+  //     return false;
+  //   });
+  //   BindDataAfterSearch([...filteredResults]);
+  //   //setCurMyTask([...filteredResults]);
+  // };
+
+  useEffect(()=>{
+    setSearch(props.searchValue);
+  },[props.searchValue])
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -358,6 +402,7 @@ export default function UserBackUpTasks(props) {
                 <>
                   <UserClientDB
                     bind={false}
+                    searchValue={props.searchValue}
                     clientName={val.ClientName}
                     clientId={val.ID}
                     context={props.context}
@@ -372,6 +417,7 @@ export default function UserBackUpTasks(props) {
         ) : (
           <UserClientDB
             bind={false}
+            searchValue={props.searchValue}
             context={props.context}
             mainData={masterdata}
             crntUserData={curuserId}

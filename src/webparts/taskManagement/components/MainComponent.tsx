@@ -2,14 +2,12 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import "./style.css";
 import { sp } from "@pnp/sp/presets/all";
-
 import {
   Nav,
   INavLink,
   INavStyles,
   INavLinkGroup,
 } from "@fluentui/react/lib/Nav";
-
 import Mytasks from "./Mytasks";
 // import styles from "./TaskManagement.module.scss";
 import styles from "./MainComponent.module.scss";
@@ -26,12 +24,38 @@ import Client from "./Client";
 import Loader from "./Loader";
 import Member from "./Members";
 
+// Global Variables creation
+let _masterArray: any[] = [];
+let _curUserDetailsArray: any[] = [];
+let uniqueTeams: any[] = [];
+let teamArr: any[] = [];
+let userTeams: any[] = [];
+let _formattedData: any[] = [];
+let _curArray: any[] = [];
+let _isAdmin: boolean = false;
+let _isTL: boolean = false;
+let _isTC: boolean = false;
+let _isPA: boolean = false;
 let admin: any[] = [];
 let TL: any[] = [];
 let TC: any[] = [];
 let TA: any[] = [];
 
-const MainComponent = (props) => {
+const MainComponent = (props: any): JSX.Element => {
+  // Local Variables creation
+  const _curUser: string = props.context._pageContext._user.email;
+  const Teams = [
+    {
+      name: "Team A",
+      members: ["arul", "Kumar", "Raj"],
+    },
+    {
+      name: "Team B",
+      members: ["arul", "Kumar", "Raj"],
+    },
+  ];
+
+  // State creation
   const [params, setParams] = useState({
     admin: false,
     currentUser: "",
@@ -45,6 +69,7 @@ const MainComponent = (props) => {
   const [teams, setTeams] = useState([]);
   const [selectedTeamMember, setSelectedTeamMember] = useState([]);
 
+  // Styles creation
   const navStyles: Partial<INavStyles> = {
     root: {
       width: 208,
@@ -55,153 +80,29 @@ const MainComponent = (props) => {
       backgroundColor: "#4ea0b5",
     },
   };
-  const _curUser: string = props.context._pageContext._user.email;
-  // const getAdmin = () => {
-  //   const users = sp.web.siteGroups
-  //     .getById(10)
-  //     .users()
-  //     .then((Response) => {
-  //       console.log(Response);
-  //       admin = [];
-  //       Response.forEach((val) => {
-  //         admin.push(val.Email);
-  //       });
-  //       let x = admin.some((val) => val == _curUser);
-  //       if (x) {
-  //         setParams({ ...params, admin: x });
-  //       } else {
-  //         setParams({ ...params, admin: false });
-  //       }
 
-  //       getchoice();
-  //       console.log(x, "x");
-  //     });
-  // };
-  const Teams = [
-    {
-      name: "Team A",
-      members: ["arul", "Kumar", "Raj"],
-    },
-    {
-      name: "Team B",
-      members: ["arul", "Kumar", "Raj"],
-    },
-  ];
-  const toggleTeam = (index) => {
-    setExpandedTeam((prev) => (prev === index ? null : index));
-  };
-  const handleMemberClick = (member) => {
-    setvalue("member");
-    setselectedMember(member);
-  };
-  // const getchoice = () => {
-  //   sp.web.lists
-  //     .getByTitle("Configuration")
-  //     .items.select(
-  //       "*,Name/EMail,Name/Title ,TeamCaptain/EMail,TeamCaptain/Title"
-  //     )
-  //     .expand("Name,TeamCaptain")
-  //     .top(5000)
-  //     .get()
-  //     .then((configArr) => {
-  //       console.log(configArr, "config");
-
-  //       let uniqueTeams = [];
-  //       let teamArr = [];
-  //       TL = [];
-  //       TC = [];
-  //       TA = [];
-
-  //       configArr.forEach((config) => {
-  //         // console.log(config, "config1");
-
-  //         if (config.Name.EMail == _curUser) {
-  //           if (config.Role == "PA") {
-
-  //           }
-  //         }
-  //         if (config.Role == "TL") {
-  //           TL.push(config.Name?.EMail);
-  //         }
-  //         if (config.Role == "TC") {
-  //           TC.push(config.Name?.EMail);
-  //         }
-  //         if (config.Role == "PA") {
-  //           TA.push(config.Name?.EMail);
-  //         }
-
-  //         if (
-  //           uniqueTeams.findIndex((arr) => {
-  //             return arr == config.Team;
-  //           }) == -1
-  //         ) {
-  //           uniqueTeams.push(config.Team);
-  //         }
-  //       });
-  //       console.log(TL, "TL");
-  //       console.log(TC, "TC");
-  //       console.log(TA, "TA");
-
-  //       const isTL = TL.some((val) => val == _curUser);
-  //       const isTC = TC.some((val) => val == _curUser);
-  //       const isTA = TA.some((val) => val == _curUser);
-
-  //       debugger;
-  //       setParams({
-  //         admin: false,
-  //         currentUser: _curUser,
-  //         TL: isTL,
-  //         TC: isTC,
-  //         PA: isTA,
-  //       });
-
-  //       uniqueTeams.forEach((team) => {
-  //         let tempArr = configArr.filter((arr) => {
-  //           return arr.Team == team;
-  //         });
-  //         let teamMembers = [];
-  //         tempArr.forEach((arr) => {
-  //           console.log(arr, "arr");
-
-  //           if (arr.NameId) {
-  //             teamMembers.push({
-  //               Name: arr.Name?.Title,
-  //               Email: arr.Name?.EMail,
-  //               Id: arr.NameId,
-  //             });
-  //           }
-  //         });
-  //         teamArr.push({
-  //           team: team,
-  //           members: teamMembers,
-  //         });
-  //       });
-
-  //       let userTeams = [];
-
-  //       // if (isTL) {
-  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
-  //       // } else if (isTC) {
-  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
-  //       // } else if (isTA) {
-  //       //   userTeams = teamArr.filter((team) => uniqueTeams.includes(team.team));
-  //       // }
-  //       setTeams([...teamArr]);
-  //       console.log(userTeams, "userTeam");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-  const memberFunction = (value, taskname) => {
-    setvalue(taskname ? taskname : "");
-    console.log(value, "value");
-    console.log(taskname, "taskname");
-
-    setSelectedTeamMember(value ? [...value] : []);
+  // Functions creation
+  const _getErrorFunction = (err: any): void => {
+    console.log("Error Message : ", err);
   };
 
-  const getChoice = () => {
+  const _getPrialtoAdmin = (): void => {
+    sp.web.siteGroups
+      .getByName("AdminGroup")
+      .users.get()
+      .then((res: any) => {
+        _isAdmin = res.some(
+          (val: any) => val.Email.toLowerCase() === _curUser.toLowerCase()
+        );
+
+        _getConfigurationDatas();
+      })
+      .catch((err: any) => {
+        _getErrorFunction("Admin group users get issue.");
+      });
+  };
+
+  const _getConfigurationDatas = (): void => {
     sp.web.lists
       .getByTitle("Configuration")
       .items.select(
@@ -210,65 +111,144 @@ const MainComponent = (props) => {
       .expand("Name,TeamCaptain")
       .top(5000)
       .get()
-      .then((configArr) => {
-        console.log(configArr, "config");
-
-        let uniqueTeams = [];
-        let teamArr = [];
-        let isPA = false;
-        let isTC = false;
-        let isTL = false;
-
-        configArr.forEach((config) => {
-          if (config.Name.EMail === _curUser) {
-            if (config.Role === "PA") {
-              isPA = true;
-            } else if (config.Role === "TC") {
-              isTC = true;
-            } else if (config.Role === "TL") {
-              isTL = true;
-            }
-            if (!uniqueTeams.includes(config.Team)) {
-              uniqueTeams.push(config.Team);
-            }
-          }
-        });
-
-        teamArr = configArr.filter((config) =>
-          uniqueTeams.includes(config.Team)
+      .then((res: any) => {
+        _masterArray = res;
+        _curUserDetailsArray = res.filter(
+          (data: any) =>
+            data.NameId &&
+            data.Name.EMail.toLowerCase() === _curUser.toLowerCase()
         );
 
-        let userTeams = [];
-
-        if (isPA) {
-          userTeams = teamArr.filter((team) => team.Role === "PA");
-        } else if (isTC) {
-          userTeams = teamArr.filter((team) => team.Role === "TC");
-        } else if (isTL) {
-          userTeams = teamArr.filter((team) => team.Role === "TL");
-        }
-
-        const formattedUserTeams = userTeams.map((team) => ({
-          team: team.Team,
-          members: [
-            {
-              Name: team.Name?.Title,
-              Email: team.Name?.EMail,
-              Id: team.NameId,
-            },
-          ],
-        }));
-        setTeams([...formattedUserTeams]);
-        console.log(formattedUserTeams, "formatteams");
+        _masterArray.length
+          ? _isAdmin
+            ? _prepareFilteredData()
+            : _curUserDetail()
+          : setTeams([]);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((err: any) => {
+        _getErrorFunction("Configuration List Nave Details get issue.");
       });
   };
 
+  const _curUserDetail = (): void => {
+    _isTL = false;
+    _isTC = false;
+    _isPA = false;
+
+    _curUserDetailsArray.length
+      ? _curUserDetailsArray.forEach((val: any) => {
+          if (val.Role === "TL") {
+            _isTL = true;
+          } else if (val.Role === "TC") {
+            _isTC = true;
+          } else if (val.Role === "PA") {
+            _isPA = true;
+          }
+        })
+      : (_isPA = true);
+
+    _prepareFilteredData();
+  };
+
+  const _prepareFilteredData = (): void => {
+    let _TLArray: any[] = [];
+    let _TCArray: any[] = [];
+    let _PAArray: any[] = [];
+    _curArray = [];
+    uniqueTeams = [];
+    teamArr = [];
+    userTeams = [];
+
+    if (_isAdmin) {
+      _masterArray.forEach((val: any) => {
+        if (!uniqueTeams.includes(val.Team)) {
+          uniqueTeams.push(val.Team);
+        }
+      });
+    } else {
+      _curUserDetailsArray.forEach((val: any) => {
+        if (!uniqueTeams.includes(val.Team)) {
+          uniqueTeams.push(val.Team);
+        }
+      });
+    }
+
+    teamArr =
+      _masterArray.length &&
+      _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
+
+    if (_isAdmin) {
+      userTeams = teamArr;
+    } else {
+      if (_isTL) {
+        _TLArray = teamArr.filter((team) => team.Role === "TL");
+      }
+      if (_isTC) {
+        _TCArray = teamArr.filter((team) => team.Role === "TC");
+      }
+      if (_isPA) {
+        _PAArray = teamArr.filter((team) => team.Role === "PA");
+      }
+
+      userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
+    }
+
+    _curArray = userTeams.map((data: any) => ({
+      team: data.Team,
+      members: [
+        {
+          Name: data.Name?.Title,
+          Email: data.Name?.EMail,
+          Id: data.NameId,
+        },
+      ],
+    }));
+
+    _prepareNaveData();
+  };
+
+  const _prepareNaveData = (): void => {
+    let _curMembers: any[] = [];
+    _formattedData = [];
+
+    for (let i: number = 0; uniqueTeams.length > i; i++) {
+      _curMembers = [];
+
+      for (let j: number = 0; _curArray.length > j; j++) {
+        if (uniqueTeams[i] === _curArray[j].team) {
+          _curMembers.push(..._curArray[j].members);
+        }
+
+        if (_curArray.length === j + 1) {
+          _formattedData.push({
+            team: uniqueTeams[i],
+            members: [..._curMembers],
+          });
+        }
+      }
+    }
+
+    setTeams([..._formattedData]);
+  };
+
+  const toggleTeam = (index) => {
+    setExpandedTeam((prev) => (prev === index ? null : index));
+  };
+
+  const handleMemberClick = (member) => {
+    setvalue("member");
+    setselectedMember(member);
+  };
+
+  const memberFunction = (value, taskname) => {
+    setvalue(taskname ? taskname : "");
+    setSelectedTeamMember(value ? [...value] : []);
+  };
+
   useEffect(() => {
-    getChoice();
+    _getPrialtoAdmin();
   }, []);
+
   return (
     <div className={styles.TaskManagementSection}>
       <div className={styles.leftNav}>

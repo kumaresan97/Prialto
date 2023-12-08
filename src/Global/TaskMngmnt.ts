@@ -1,8 +1,8 @@
 export interface IMyTasks {
   Id?: number;
   TaskName: string;
-  ClientName?:string;
-  ClientID?:number;
+  ClientName?: string;
+  ClientID?: number;
   Creator: IPeoplePicker;
   Backup: IPeoplePicker;
   DueDate: string;
@@ -20,7 +20,7 @@ export interface IPeoplePicker {
 export interface IParent {
   key: string;
   Id: number;
-  ClientName?:string;
+  ClientName?: string;
   isParent: boolean;
   isClick: boolean;
   isEdit: boolean;
@@ -45,5 +45,5 @@ export interface IClient {
   LastName: string;
   CompanyName: string;
   Assistant: IPeoplePicker;
-  Backup: IPeoplePicker;
+  // Backup: IPeoplePicker;
 }

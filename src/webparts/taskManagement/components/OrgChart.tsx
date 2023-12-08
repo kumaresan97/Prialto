@@ -642,6 +642,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -693,6 +694,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -726,6 +728,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -774,6 +777,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -812,6 +816,7 @@ const OrgChart = (props) => {
             context={props.context}
             personSelectionLimit={3}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -1336,7 +1341,6 @@ const OrgChart = (props) => {
     teamArr =
       _masterArray.length &&
       _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
-    console.log(teamArr, "teamArr");
 
     if (_isAdmin) {
       userTeams = teamArr;
@@ -1354,8 +1358,7 @@ const OrgChart = (props) => {
       // userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
       userTeams = [..._TLArray];
     }
-    console.log(userTeams, "userteam");
-    console.log(_isAdmin, "isadmin");
+
     let orgcgart = [];
     userTeams.forEach((val) => {
       orgcgart.push({
@@ -1416,7 +1419,6 @@ const OrgChart = (props) => {
           : [],
       });
     });
-    console.log("orgchart,", orgcgart);
 
     // _curArray = userTeams.map((data: any) => ({
     //   team: data.Team,
@@ -1628,100 +1630,25 @@ const OrgChart = (props) => {
   };
 
   //dummy mytaskheader
+
   let columns = [
-    { header: "name", key: "name", width: 15 },
-    { header: "size", key: "size", width: 25 },
-    { header: "type", key: "type", width: 25 },
+    { header: "Name", key: "Name", width: 15 },
+    { header: "Role", key: "Role", width: 25 },
+    { header: "Team", key: "Team", width: 25 },
+    { header: "Cohort", key: "Cohort", width: 25 },
+
+    { header: "Manager", key: "Manager", width: 25 },
+
+    { header: "Team Captain", key: "TeamCaptain", width: 25 },
+    { header: "Team Leader", key: "TeamLeader", width: 25 },
+    { header: "Direct Reports", key: "DirectReports", width: 25 },
+    { header: "Backing Up", key: "BackingUp", width: 25 },
   ];
-  const arrNodes = [
-    {
-      key: "0",
-      data: {
-        name: "Applications",
-        size: "100kb",
-        type: "Folder",
-      },
-      children: [
-        {
-          key: "0-0",
-          data: {
-            name: "React",
-            size: "25kb",
-            type: "Folder",
-          },
-        },
-        {
-          key: "0-1",
-          data: {
-            name: "editor.app",
-            size: "25kb",
-            type: "Application",
-          },
-        },
-        {
-          key: "0-2",
-          data: {
-            name: "settings.app",
-            size: "50kb",
-            type: "Application",
-          },
-        },
-      ],
-    },
-    {
-      key: "1",
-      data: {
-        name: "App2",
-        size: "100kb",
-        type: "Folder",
-      },
-      children: [
-        {
-          key: "0-1",
-          data: {
-            name: "React",
-            size: "2500kb",
-            type: "Folder",
-          },
-        },
-        {
-          key: "0-2",
-          data: {
-            name: "editor",
-            size: "250kb",
-            type: "Application",
-          },
-        },
-        {
-          key: "0-3",
-          data: {
-            name: "settings",
-            size: "590kb",
-            type: "Application",
-          },
-        },
-      ],
-    },
-  ];
-
-  // let columns = [
-  //   { header: "Name", key: "Name", width: 15 },
-  //   { header: "Role", key: "Role", width: 25 },
-  //   { header: "Team", key: "Team", width: 25 },
-  //   { header: "Cohort", key: "Cohort", width: 25 },
-
-  //   { header: "Manager", key: "Manager", width: 25 },
-
-  //   { header: "Team Captain", key: "TeamCaptain", width: 25 },
-  //   { header: "Team Leader", key: "TeamLeader", width: 25 },
-  //   { header: "Direct Reports", key: "DirectReports", width: 25 },
-  //   { header: "Backing Up", key: "BackingUp", width: 25 },
-  // ];
 
   const ExportExcel = async () => {
     setLoader(true);
     try {
-      await exportToExcel(arrNodes, columns, "MyTask");
+      await exportToExcel(value, columns, "OrgChart");
       setLoader(false); // Set loader to false after export is done
     } catch (err) {
       setLoader(false); // Handle error by setting loader to false
@@ -1855,6 +1782,7 @@ const OrgChart = (props) => {
       !curobj.Role ||
       !curobj.Team ||
       !curobj.TeamCaptain.Id ||
+      !curobj.TeamLeader.Id ||
       !curobj.DirectReports[0].Id ||
       !curobj.BackingUp[0].Id
     ) {

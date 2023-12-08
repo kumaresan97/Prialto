@@ -56,11 +56,11 @@ const Client = (props) => {
       EMail: "",
       Title: "Kumaresan",
     },
-    Backup: {
-      Id: null,
-      EMail: "",
-      Title: "raj",
-    },
+    // Backup: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "raj",
+    // },
   };
   let Data: IClient = {
     Id: null,
@@ -72,11 +72,11 @@ const Client = (props) => {
       EMail: "",
       Title: "",
     },
-    Backup: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
+    // Backup: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
   };
   let Newdatadd: IClient = {
     Id: null,
@@ -88,11 +88,11 @@ const Client = (props) => {
       EMail: "",
       Title: "",
     },
-    Backup: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
+    // Backup: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
   };
   const [loader, setLoader] = useState(false);
 
@@ -114,7 +114,7 @@ const Client = (props) => {
       LastName: value.LastName ? value.LastName : "",
       CompanyName: value.CompanyName ? value.CompanyName : "",
       AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
-      BackupId: value.Backup.Id ? value.Backup.Id : null,
+      // BackupId: value.Backup.Id ? value.Backup.Id : null,
     };
 
     SPServices.SPAddItem({
@@ -138,7 +138,7 @@ const Client = (props) => {
       LastName: value.LastName ? value.LastName : "",
       CompanyName: value.CompanyName ? value.CompanyName : "",
       AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
-      BackupId: value.Backup.Id ? value.Backup.Id : null,
+      // BackupId: value.Backup.Id ? value.Backup.Id : null,
     };
     SPServices.SPUpdateItem({
       Listname: "ClientDetails",
@@ -341,39 +341,39 @@ const Client = (props) => {
           />
         );
       }
-      if (fieldType == "Backup") {
-        let clsValid = "";
-        !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={false}
-            // required={true}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
-            placeholder="Enter Email"
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              value.Backup.EMail ? [value.Backup.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("Backup", selectedItem.id);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("Backup", null);
-              }
-            }}
-          />
-        );
-      }
+      // if (fieldType == "Backup") {
+      //   let clsValid = "";
+      //   !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+      //   return (
+      //     <PeoplePicker
+      //       context={props.context}
+      //       personSelectionLimit={1}
+      //       groupName={""}
+      //       showtooltip={false}
+      //       // required={true}
+      //       peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+      //       placeholder="Enter Email"
+      //       ensureUser={true}
+      //       // showHiddenInUI={false}
+      //       showHiddenInUI={true}
+      //       principalTypes={[PrincipalType.User]}
+      //       defaultSelectedUsers={
+      //         value.Backup.EMail ? [value.Backup.EMail] : []
+      //       }
+      //       resolveDelay={1000}
+      //       onChange={(items: any[]) => {
+      //         if (items.length > 0) {
+      //           const selectedItem = items[0];
+      //           getOnchange("Backup", selectedItem.id);
+      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         } else {
+      //           // No selection, pass null or handle as needed
+      //           getOnchange("Backup", null);
+      //         }
+      //       }}
+      //     />
+      //   );
+      // }
 
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && isedit && val.Id === value.Id) {
@@ -460,43 +460,43 @@ const Client = (props) => {
           </>
         );
       }
-      if (fieldType == "Backup") {
-        let clsValid = "";
-        !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
-        return (
-          <>
-            <PeoplePicker
-              context={props.context}
-              personSelectionLimit={1}
-              peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
-              groupName={""}
-              showtooltip={true}
-              // required={true}
-              ensureUser={true}
-              // showHiddenInUI={false}
-              showHiddenInUI={true}
-              principalTypes={[PrincipalType.User]}
-              defaultSelectedUsers={
-                value.Backup.EMail ? [value.Backup.EMail] : []
-              }
-              resolveDelay={1000}
-              onChange={(items: any[]) => {
-                if (items.length > 0) {
-                  const selectedItem = items[0];
-                  getOnchange("Backup", selectedItem.id);
-                  // getonChange("PeopleEmail", selectedItem.secondaryText);
-                } else {
-                  // No selection, pass null or handle as needed
-                  getOnchange("Backup", null);
-                }
-              }}
-            />{" "}
-            {/* <p className={styles.errMsg}>error</p> */}
-          </>
-        );
-      }
+      // if (fieldType == "Backup") {
+      //   let clsValid = "";
+      //   !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+      //   return (
+      //     <>
+      //       <PeoplePicker
+      //         context={props.context}
+      //         personSelectionLimit={1}
+      //         peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+      //         groupName={""}
+      //         showtooltip={true}
+      //         // required={true}
+      //         ensureUser={true}
+      //         // showHiddenInUI={false}
+      //         showHiddenInUI={true}
+      //         principalTypes={[PrincipalType.User]}
+      //         defaultSelectedUsers={
+      //           value.Backup.EMail ? [value.Backup.EMail] : []
+      //         }
+      //         resolveDelay={1000}
+      //         onChange={(items: any[]) => {
+      //           if (items.length > 0) {
+      //             const selectedItem = items[0];
+      //             getOnchange("Backup", selectedItem.id);
+      //             // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //           } else {
+      //             // No selection, pass null or handle as needed
+      //             getOnchange("Backup", null);
+      //           }
+      //         }}
+      //       />{" "}
+      //       {/* <p className={styles.errMsg}>error</p> */}
+      //     </>
+      //   );
+      // }
     } else {
-      if (fieldType == "Assistant" || fieldType == "Backup") {
+      if (fieldType == "Assistant") {
         return (
           <span className={styles.textOverflow}>{data[fieldType].Title}</span>
         );
@@ -531,11 +531,12 @@ const Client = (props) => {
               EMail: val.Assistant?.EMail,
               Title: val.Assistant?.Title,
             },
-            Backup: {
-              Id: val.Backup?.ID,
-              EMail: val.Backup?.EMail,
-              Title: val.Backup?.Title,
-            },
+
+            // Backup: {
+            //   Id: val.Backup?.ID,
+            //   EMail: val.Backup?.EMail,
+            //   Title: val.Backup?.Title,
+            // },
           });
         });
         setClientdetail([...array]);
@@ -551,9 +552,11 @@ const Client = (props) => {
 
     if (key == "Assistant") {
       FormData.Assistant.Id = _value;
-    } else if (key == "Backup") {
-      FormData.Backup.Id = _value;
-    } else {
+    }
+    // else if (key == "Backup") {
+    //   FormData.Backup.Id = _value;
+    // }
+    else {
       FormData[key] = _value;
     }
 
@@ -660,7 +663,7 @@ const Client = (props) => {
     { header: "Company Name", key: "CompanyName", width: 25 },
     { header: "Assistant", key: "Assistant", width: 25 },
 
-    { header: "Backup", key: "Backup", width: 25 },
+    // { header: "Backup", key: "Backup", width: 25 },
   ];
   const exportExcel = () => {
     exportToExcel(clientdetail, columns, "Client");
@@ -683,7 +686,7 @@ const Client = (props) => {
       !value.FirstName ||
       !value.LastName ||
       !value.CompanyName ||
-      !value.Backup.Id ||
+      // !value.Backup.Id ||
       !value.Assistant.Id
     ) {
       isAllValueFilled = false;
@@ -784,12 +787,12 @@ const Client = (props) => {
                 sortable
                 body={(obj: any) => _addTextField(obj, "Assistant")}
               ></Column>
-              <Column
+              {/* <Column
                 field="Backup"
                 header="Backup"
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
-              ></Column>
+              ></Column> */}
               <Column header="Action" body={(obj) => _action(obj)}></Column>
             </DataTable>
           </div>

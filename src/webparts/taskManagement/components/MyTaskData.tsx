@@ -17,6 +17,10 @@ import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
 import { findIndex } from "office-ui-fabric-react";
+import Loader from "./Loader";
+
+import { Toast } from 'primereact/toast';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -48,7 +52,6 @@ let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
-import { Toast } from 'primereact/toast';
 
 const MyTaskData = (props): JSX.Element => {
   // style variables
@@ -97,6 +100,9 @@ const MyTaskData = (props): JSX.Element => {
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [deleteObj,setDeleteObj]= useState<any>({});
 
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
@@ -254,7 +260,12 @@ const MyTaskData = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
-          onClick={() => deleteData(obj)}
+          onClick={() => 
+          {
+            setDeleteObj(obj);
+            setVisible(true);
+            //deleteData(obj);
+          }}
         />
       </div>
     );
@@ -285,6 +296,7 @@ const MyTaskData = (props): JSX.Element => {
           icon="pi pi-times"
           onClick={(_) => {
             _handleData("cancel", obj);
+            setCurdata({...data});
           }}
         />
       </div>
@@ -292,6 +304,7 @@ const MyTaskData = (props): JSX.Element => {
   };
   //handle update,delete,edit
   const _handleDataoperation = (obj) => {
+    setLoader(true);
     //if (obj.isParent && obj.isEdit && obj.Id) {
     if (obj.isEdit && obj.Id) {
       Editfunction(obj);
@@ -306,7 +319,8 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      //AssistantId:curuserId.Id,
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -316,7 +330,7 @@ const MyTaskData = (props): JSX.Element => {
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -402,6 +416,7 @@ const MyTaskData = (props): JSX.Element => {
   };
   //deleteitem
   const deleteData = (obj) => {
+    setLoader(true);
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let Ids = [];
 
@@ -460,7 +475,7 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let editval = {
       TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id,
+      BackupId: curdata.Backup.Id?curdata.Backup.Id:null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -701,7 +716,6 @@ const MyTaskData = (props): JSX.Element => {
     }
 
     setCurMyTask([..._curArray]);
-    console.log("test");
   };
   //addtextfield
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
@@ -749,7 +763,8 @@ const MyTaskData = (props): JSX.Element => {
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            disabled={true}
+            peoplePickerCntrlclassName={curuserId.EMail?"":styles.peoplepickerErrStyle}
             showtooltip={true}
             placeholder="Enter Email"
             // required={true}
@@ -1037,7 +1052,8 @@ const MyTaskData = (props): JSX.Element => {
 
   const errFunction = (err) => {
     console.log(err);
-    
+    setLoader(false);
+    showMessage("Something went wrong, Please contact system admin", toastTopRight, 'error');
   };
 
   const onSelect = (event) => {
@@ -1052,7 +1068,7 @@ const MyTaskData = (props): JSX.Element => {
   const SearchFilter = (e) => {
     setSearch(e);
 
-    let filteredResults = masterdata.filter((item) => {
+    let filteredResults = curMyTask.filter((item) => {
       if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
         return true;
       }
@@ -1092,6 +1108,7 @@ const MyTaskData = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfternewChildData(newData, parentIndex, childIndex) {
@@ -1110,6 +1127,7 @@ const MyTaskData = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfterDataEdit(newData, oldObject) {
@@ -1131,6 +1149,7 @@ const MyTaskData = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
   }
 
   function BindAfterDataDelete(ID) {
@@ -1142,6 +1161,7 @@ const MyTaskData = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
     
   }
 
@@ -1152,6 +1172,7 @@ const MyTaskData = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    setLoader(false);
     
   }
 
@@ -1171,14 +1192,37 @@ const MyTaskData = (props): JSX.Element => {
       return isAllValueFilled;
   }
 
+  function accept()
+  {
+      deleteData(deleteObj);
+      setVisible(false);
+      setDeleteObj({});
+  }
+
+  function reject()
+  {
+      setVisible(false);
+      setDeleteObj({});
+  }
+
+  // useEffect(()=>{
+  //   SearchFilter(props.searchValue)
+  // },[props.searchValue])
+
   useEffect(() => {
     setCurMyTask([...props.mainData]);
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
 
   return (
+    <>{loader?<Loader/>:
     <div className={styles.myTaskSection}>
       <Toast ref={toastTopRight} position="top-right" />
+      <ConfirmDialog visible={visible} onHide={() => setVisible(false)} message="Are you sure you want to delete?"
+                    header="Confirmation" icon="pi pi-exclamation-triangle" 
+                    accept={accept} 
+                    reject={reject}
+                    />
       <div
         className={styles.myTaskHeader}
         style={{
@@ -1240,13 +1284,13 @@ const MyTaskData = (props): JSX.Element => {
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Creator")}
         />
-        <Column
+        {/* <Column
           field="Backup"
           header="Backup"
           sortable
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Backup")}
-        />
+        /> */}
         <Column
           field="DueDate"
           header="Due Date"
@@ -1283,7 +1327,8 @@ const MyTaskData = (props): JSX.Element => {
           }
         />
       </TreeTable>
-    </div>
+    </div>}
+    </>
   );
 };
 

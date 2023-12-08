@@ -58,9 +58,9 @@ export default function UserBackUpTasksNew(props) {
         };
 
         let crntUserBackup = {
-          backupId: null,
-          EMail: "",
-          Title: "",
+          backupId: res.Id,
+          EMail: res.Email,
+          Title: res.Title,
         };
 
         SPServices.SPReadItems({
@@ -92,9 +92,10 @@ export default function UserBackUpTasksNew(props) {
             }
             res.forEach((val) => 
             {
-              x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
-              x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
-              x.Title = val.BackingUp?val.BackingUp[0].Title:"";
+              // x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
+              // x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
+              // x.Title = val.BackingUp?val.BackingUp[0].Title:"";
+              
               TCData.EMail=val.TeamCaptain?val.TeamCaptain.EMail:"N/A";
               TCData.Title=val.TeamCaptain?val.TeamCaptain.Title:"N/A";
 
@@ -103,11 +104,11 @@ export default function UserBackUpTasksNew(props) {
 
 
             });
-            crntUserBackup = x;
+            //crntUserBackup = x;
             setTeamTLData({...TLData});
             setTeamCaptainData({...TCData});
             setCuruserId({ ...crntUserDetails });
-            setConfigure({ ...x });
+            setConfigure({ ...crntUserBackup });
           })
           .catch((err) => errFunction(err));
           //getMyClients(res.Id);
@@ -159,6 +160,11 @@ export default function UserBackUpTasksNew(props) {
         FilterKey: "Backup/ID",
         Operator: "eq",
         FilterValue: id,
+      },
+      {
+        FilterKey: "Client/ID",
+        Operator: "gt",
+        FilterValue: 0,
       }
     ];
     SPServices.SPReadItems({
@@ -170,6 +176,7 @@ export default function UserBackUpTasksNew(props) {
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
+      FilterCondition:"and"
     })
       .then((res) => {
         MyTaskIds = [];
@@ -209,6 +216,10 @@ export default function UserBackUpTasksNew(props) {
           MyTaskIds.push({ ID: val.MainTaskID.ID});
         });
 
+        const ids = MyTaskIds.map(({ ID }) => ID);
+        const filtered = MyTaskIds.filter(({ ID }, index) => !ids.includes(ID, index + 1));
+        
+        MyTaskIds=filtered;
         if(MyTaskIds.length<0)
           {
             BindData();
@@ -223,16 +234,29 @@ export default function UserBackUpTasksNew(props) {
       });
   }
 
+
   //getmaintask
   const getMainTask = (id) => {
     let Filter = [];
-    MyTaskIds.forEach((val: any) => {
+    if(MyTaskIds.length>0)
+    {
+      MyTaskIds.forEach((val: any) => {
+        Filter.push({
+          FilterKey: "ID",
+          Operator: "eq",
+          FilterValue: val.ID,
+        });
+      });
+    }
+    else
+    {
       Filter.push({
         FilterKey: "ID",
         Operator: "eq",
-        FilterValue: val.ID,
+        FilterValue: 0,
       });
-    });
+    }
+    
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
@@ -262,9 +286,9 @@ export default function UserBackUpTasksNew(props) {
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
                 Creator: {
-                  Id: val.Author.ID,
-                  EMail: val.Author.EMail,
-                  Title: val.Author.Title,
+                  Id: val.Assistant.ID,
+                  EMail: val.Assistant.EMail,
+                  Title: val.Assistant.Title,
                 },
                 Backup: {
                   Id: val.Backup?.ID,
@@ -283,7 +307,18 @@ export default function UserBackUpTasksNew(props) {
         let arrFilter = [];
         MyClients=[];
         for (let i = 0; i < MainTask.length; i++) {
-          MyClients.push({ ID: MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "", Name: MainTask[i].data.ClientName?MainTask[i].data.ClientName:"" });
+
+          let IDtoCompare=MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "";
+          let duplicate=MyClients.some(person => person.ID === IDtoCompare)
+          if(!duplicate){
+          MyClients.push({ ID: MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "", Name: MainTask[i].data.ClientName?MainTask[i].data.ClientName:"", Assistant:
+          {
+            Id: MainTask[i].data.Creator?MainTask[i].data.Creator.Id:"",
+            EMail: MainTask[i].data.Creator?MainTask[i].data.Creator.EMail:"",
+            Title: MainTask[i].data.Creator?MainTask[i].data.Creator.Title:""
+          } });
+        }
+
           arrFilter.push({
             FilterKey: "MainTaskID/ID",
             FilterValue: MainTask[i].Id.toString(),
@@ -308,8 +343,8 @@ export default function UserBackUpTasksNew(props) {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*,  Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
-      Expand: "MainTaskID, Backup, Author",
+        "*,  Backup/ID, Backup/EMail, Backup/Title,Assistant/ID, Assistant/EMail, Assistant/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
+      Expand: "MainTaskID, Backup, Author,Assistant",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: FilterValue,
@@ -339,9 +374,9 @@ export default function UserBackUpTasksNew(props) {
                   ClientName: MainTask[i].data.ClientName,
                   ClientID: MainTask[i].data.ClientID,
                   Creator: {
-                    Id: val.Author.ID,
-                    EMail: val.Author.EMail,
-                    Title: val.Author.Title,
+                    Id: val.Assistant?.ID,
+                    EMail: val.Assistant?.EMail,
+                    Title: val.Assistant?.Title,
                   },
                   Backup: {
                     Id: val.Backup?.ID,
@@ -393,6 +428,7 @@ export default function UserBackUpTasksNew(props) {
       tempClient.push({
         ClientName: MyClients[i].Name,
         ID: MyClients[i].ID,
+        Assistant:MyClients[i].Assistant,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
@@ -461,7 +497,7 @@ export default function UserBackUpTasksNew(props) {
   return (
     <>
       {loader?<Loader />:(<>
-      <Label className={styles.clientHeader}>Backup Tasks</Label>
+      <Label className={styles.clientHeader}>Backup Tasks {props.Email}</Label>
       <>
         {clientdata.length > 0 ? (
           <>
@@ -475,6 +511,7 @@ export default function UserBackUpTasksNew(props) {
                     clientId={val.ID}
                     context={props.context}
                     mainData={val.Tasks}
+                    assistant={val.Assistant?val.Assistant:curuserId}
                     crntUserData={curuserId}
                     crntBackData={configure}
                   />
@@ -487,6 +524,7 @@ export default function UserBackUpTasksNew(props) {
             bind={false}
             searchValue={props.searchValue}
             context={props.context}
+            assistant={curuserId}
             mainData={masterdata}
             crntUserData={curuserId}
             crntBackData={configure}

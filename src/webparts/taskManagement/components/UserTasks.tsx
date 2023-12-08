@@ -49,7 +49,6 @@ export default function UserTasks(props) {
       .getByEmail(UserEmail)
       .get()
       .then((res) => {
-        console.log(UserEmail);
         let crntUserDetails = {
           Id: res.Id,
           EMail: res.Email,
@@ -91,9 +90,11 @@ export default function UserTasks(props) {
             }
             res.forEach((val) => 
             {
+              
               x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
               x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
               x.Title = val.BackingUp?val.BackingUp[0].Title:"";
+
               TCData.EMail=val.TeamCaptain?val.TeamCaptain.EMail:"N/A";
               TCData.Title=val.TeamCaptain?val.TeamCaptain.Title:"N/A";
 
@@ -200,9 +201,9 @@ export default function UserTasks(props) {
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
                 Creator: {
-                  Id: val.Author.ID,
-                  EMail: val.Author.EMail,
-                  Title: val.Author.Title,
+                  Id: val.Assistant.ID,
+                  EMail: val.Assistant.EMail,
+                  Title: val.Assistant.Title,
                 },
                 Backup: {
                   Id: val.Backup?.ID,
@@ -244,8 +245,8 @@ export default function UserTasks(props) {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*,  Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
-      Expand: "MainTaskID, Backup, Author",
+        "*,  Assistant/ID, Assistant/EMail, Assistant/Title,Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
+      Expand: "MainTaskID, Backup, Author,Assistant",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: FilterValue,
@@ -276,9 +277,9 @@ export default function UserTasks(props) {
                   ClientName: MainTask[i].data.ClientName,
                   ClientID: MainTask[i].data.ClientID,
                   Creator: {
-                    Id: val.Author.ID,
-                    EMail: val.Author.EMail,
-                    Title: val.Author.Title,
+                    Id: val.Assistant?.ID,
+                    EMail: val.Assistant?.EMail,
+                    Title: val.Assistant?.Title,
                   },
                   Backup: {
                     Id: val.Backup?.ID,

@@ -16,7 +16,22 @@ import Loader from "./Loader";
 import * as moment from "moment";
 import * as Excel from "exceljs/dist/exceljs.min.js";
 import * as FileSaver from "file-saver";
+import { Toast } from "primereact/toast";
+
 import exportToExcel from "../../../Global/ExportExcel";
+import { sp } from "@pnp/sp/presets/all";
+
+let _masterArray: any[] = [];
+let _curUserDetailsArray: any[] = [];
+let uniqueTeams: any[] = [];
+let teamArr: any[] = [];
+let userTeams: any[] = [];
+let _formattedData: any[] = [];
+let _curArray: any[] = [];
+let _isAdmin: boolean = false;
+let _isTL: boolean = false;
+let _isTC: boolean = false;
+let _isPA: boolean = false;
 
 interface clinet {
   Id: number;
@@ -27,13 +42,13 @@ interface clinet {
     EMail: string;
     Title: string;
   };
-  Role: string;
+  Role: any;
   Manager: {
     Id: number;
     EMail: string;
     Title: string;
   };
-  Team: string;
+  Team: any;
   TeamCaptain: {
     Id: number;
     EMail: string;
@@ -87,6 +102,7 @@ const OrgChart = (props) => {
 
   const [showDialog, setShowDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
+  const toastTopRight = React.useRef(null);
 
   // let products: clinet[] = [
   //   {
@@ -138,13 +154,13 @@ const OrgChart = (props) => {
       EMail: "",
       Title: "",
     },
-    Role: "",
+    Role: role[0],
     Manager: {
       Id: null,
       EMail: "",
       Title: "",
     },
-    Team: "",
+    Team: team[0],
     TeamCaptain: {
       Id: null,
       EMail: "",
@@ -181,13 +197,13 @@ const OrgChart = (props) => {
       EMail: "",
       Title: "",
     },
-    Role: "",
+    Role: role[0].name,
     Manager: {
       Id: null,
       EMail: "",
       Title: "",
     },
-    Team: "",
+    Team: team[0].name,
     TeamCaptain: {
       Id: null,
       EMail: "",
@@ -246,6 +262,7 @@ const OrgChart = (props) => {
   const [search, setSearch] = useState("");
 
   const [edit, setEdit] = useState(false);
+  const _curUser: string = props.context._pageContext._user.email;
 
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     const data: any = val;
@@ -273,6 +290,8 @@ const OrgChart = (props) => {
       // }
 
       if (fieldType == "Name") {
+        let clsValid = "";
+        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -280,6 +299,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -303,11 +323,14 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "Role") {
+        let clsValid = "";
+        !curobj.Role ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <Dropdown
             options={role}
             placeholder="Role"
             optionLabel="name"
+            // defaultValue={role}
             value={curobj.Role}
             style={{ width: "100%" }}
             onChange={(e: any) => getOnchange("Role", e.value)}
@@ -317,6 +340,8 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Manager") {
+        let clsValid = "";
+        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -324,6 +349,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -350,6 +376,8 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Team") {
+        let clsValid = "";
+        !curobj.Team ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <Dropdown
             options={team}
@@ -363,12 +391,17 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "TeamCaptain") {
+        let clsValid = "";
+        !curobj.TeamCaptain.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
@@ -395,6 +428,8 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "TeamLeader") {
+        let clsValid = "";
+        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -402,6 +437,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -426,16 +462,23 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "Cohort") {
+        let clsValid = "";
+        !curobj.Cohort ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
             placeholder="Cohort"
             value={curobj.Cohort}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("Cohort", e.target.value)}
           />
         );
       }
       if (fieldType == "DirectReports") {
+        let clsValid = "";
+        !curobj.DirectReports[0].Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -443,6 +486,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -477,6 +521,11 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "BackingUp") {
+        let clsValid = "";
+        !curobj.BackingUp[0].Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
+
         return (
           <PeoplePicker
             context={props.context}
@@ -484,6 +533,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -535,6 +585,8 @@ const OrgChart = (props) => {
       // }
 
       if (fieldType == "Name") {
+        let clsValid = "";
+        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -542,6 +594,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -565,6 +618,8 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "Role") {
+        let clsValid = "";
+        !curobj.Role ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <Dropdown
             options={role}
@@ -578,6 +633,8 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Manager") {
+        let clsValid = "";
+        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -611,6 +668,8 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Team") {
+        let clsValid = "";
+        !curobj.Team ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <Dropdown
             options={team}
@@ -623,6 +682,10 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "TeamCaptain") {
+        let clsValid = "";
+        !curobj.TeamCaptain.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -654,6 +717,8 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "TeamLeader") {
+        let clsValid = "";
+        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -685,16 +750,23 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "Cohort") {
+        let clsValid = "";
+        !curobj.Cohort ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
             placeholder="Cohort"
             value={curobj.Cohort}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("Cohort", e.target.value)}
           />
         );
       }
       if (fieldType == "DirectReports") {
+        let clsValid = "";
+        !curobj.DirectReports[0].Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -731,6 +803,10 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "BackingUp") {
+        let clsValid = "";
+        !curobj.BackingUp[0].Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -1040,7 +1116,15 @@ const OrgChart = (props) => {
               style={tickIconStyle}
               rounded
               onClick={(_) => {
-                _handleDataoperation("check", obj);
+                if (validation()) {
+                  _handleDataoperation("check", obj);
+                } else {
+                  showMessage(
+                    "Please fill mandatory fields",
+                    toastTopRight,
+                    "warn"
+                  );
+                }
               }}
             />
             <Button
@@ -1127,6 +1211,53 @@ const OrgChart = (props) => {
       .catch((err) => errFunction("Configuration json", err));
   };
 
+  //get admin
+
+  const _getPrialtoAdmin = (): void => {
+    sp.web.siteGroups
+      .getByName("AdminGroup")
+      .users.get()
+      .then((res: any) => {
+        _isAdmin = res.some(
+          (val: any) => val.Email.toLowerCase() === _curUser.toLowerCase()
+        );
+
+        // _getConfigurationDatas();
+        getdatas();
+      })
+      .catch((err: any) => {
+        errFunction("", "Admin group users get issue.");
+      });
+  };
+
+  // const _getConfigurationDatas = (): void => {
+  //   sp.web.lists
+  //     .getByTitle("Configuration")
+  //     .items.select(
+  //       "*,Name/EMail,Name/Title,TeamCaptain/EMail,TeamCaptain/Title"
+  //     )
+  //     .expand("Name,TeamCaptain")
+  //     .top(5000)
+  //     .get()
+  //     .then((res: any) => {
+  //       _masterArray = res;
+  //       _curUserDetailsArray = res.filter(
+  //         (data: any) =>
+  //           data.NameId &&
+  //           data.Name.EMail.toLowerCase() === _curUser.toLowerCase()
+  //       );
+
+  //       _masterArray.length
+  //         ? _isAdmin
+  //           ? _prepareFilteredData()
+  //           : _curUserDetail()
+  //         : setTeams([]);
+  //     })
+  //     .catch((err: any) => {
+  //       _getErrorFunction("Configuration List Nave Details get issue.");
+  //     });
+  // };
+
   const getdatas = () => {
     SPServices.SPReadItems({
       Listname: "Configuration",
@@ -1137,75 +1268,263 @@ const OrgChart = (props) => {
       Orderby: "Created",
       Orderbydecorasc: false,
     })
-      .then((res) => {
-        let array: clinet[] = [];
-        res.forEach((val: any) => {
-          array.push({
-            Id: val.Id,
-            // FirstName: val.FirstName ? val.FirstName : "",
-            // LastName: val.LastName ? val.LastName : "",
-            Name: {
-              Id: val.Name?.ID,
-              EMail: val.Name?.EMail,
-              Title: val.Name?.Title,
-            },
-            Role: val.Role ? val.Role : "",
-            Team: val.Team ? val.Team : "",
-            Cohort: val.Cohort ? val.Cohort : "",
-            Manager: {
-              Id: val.Manager?.ID,
-              EMail: val.Manager?.EMail,
-              Title: val.Manager?.Title,
-            },
-            TeamCaptain: {
-              Id: val.TeamCaptain?.ID,
-              EMail: val.TeamCaptain?.EMail,
-              Title: val.TeamCaptain?.Title,
-            },
-            TeamLeader: {
-              Id: val.TeamLeader?.ID,
-              EMail: val.TeamLeader?.EMail,
-              Title: val.TeamLeader?.Title,
-            },
-            // DirectReports:
-            //   val.DirectReports.length &&
-            //   val.DirectReports.map((response) => ({
-            //     Id: response?.ID,
-            //     EMail: response?.EMail,
-            //     Title: response?.Title,
-            //   })),
-            DirectReports: Array.isArray(val.DirectReports)
-              ? val.DirectReports.map((response) => ({
-                  Id: response?.ID,
-                  EMail: response?.EMail,
-                  Title: response?.Title,
-                }))
-              : [],
+      .then((res: any) => {
+        _masterArray = res;
+        _curUserDetailsArray = res.filter(
+          (data: any) =>
+            data.NameId &&
+            data.Name.EMail.toLowerCase() === _curUser.toLowerCase()
+        );
 
-            // BackingUp: [
-            //   {
-            //     Id: val.BackingUp?.ID,
-            //     EMail: val.BackingUp?.EMail,
-            //     Title: val.BackingUp?.Title,
-            //   },
-            // ],
-            BackingUp: Array.isArray(val.BackingUp)
-              ? val.BackingUp.map((response) => ({
-                  Id: response?.ID,
-                  EMail: response?.EMail,
-                  Title: response?.Title,
-                }))
-              : [],
-          });
-        });
-        setValue([...array]);
-        setMasterdata([...array]);
-        setAdd(false);
-        setEdit(false);
+        _masterArray.length
+          ? _isAdmin
+            ? _prepareFilteredData()
+            : _curUserDetail()
+          : setValue([]);
         setLoader(false);
       })
-      .catch((err) => errFunction("Configuration get all data", err));
+      .catch((err: any) => {
+        errFunction("Configuration List Nave Details get issue.", "");
+      });
   };
+
+  const _curUserDetail = (): void => {
+    debugger;
+    _isTL = false;
+    _isTC = false;
+    _isPA = false;
+
+    _curUserDetailsArray.length &&
+      _curUserDetailsArray.forEach((val: any) => {
+        if (val.Role === "TL") {
+          _isTL = true;
+        } else if (val.Role === "TC") {
+          _isTC = true;
+        } else if (val.Role === "PA") {
+          _isPA = true;
+        }
+      });
+    // : (_isPA = true);
+
+    _prepareFilteredData();
+  };
+
+  const _prepareFilteredData = (): void => {
+    debugger;
+    let _TLArray: any[] = [];
+    let _TCArray: any[] = [];
+    let _PAArray: any[] = [];
+    _curArray = [];
+    uniqueTeams = [];
+    teamArr = [];
+    userTeams = [];
+
+    if (_isAdmin) {
+      _masterArray.forEach((val: any) => {
+        // if (!uniqueTeams.includes(val.Team)) {
+        uniqueTeams.push(val.Team);
+        // }
+      });
+    } else {
+      _curUserDetailsArray.forEach((val: any) => {
+        // if (!uniqueTeams.includes(val.Team)) {
+        uniqueTeams.push(val.Team);
+        // }
+      });
+    }
+
+    teamArr =
+      _masterArray.length &&
+      _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
+    console.log(teamArr, "teamArr");
+
+    if (_isAdmin) {
+      userTeams = teamArr;
+    } else {
+      if (_isTL) {
+        _TLArray = teamArr.filter((team) => team.Role === "TL");
+      }
+      // if (_isTC) {
+      //   _TCArray = teamArr.filter((team) => team.Role === "TC");
+      // }
+      // if (_isPA) {
+      //   _PAArray = teamArr.filter((team) => team.Role === "PA");
+      // }
+
+      // userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
+      userTeams = [..._TLArray];
+    }
+    console.log(userTeams, "userteam");
+    console.log(_isAdmin, "isadmin");
+    let orgcgart = [];
+    userTeams.forEach((val) => {
+      orgcgart.push({
+        Id: val.Id,
+        // FirstName: val.FirstName ? val.FirstName : "",
+        // LastName: val.LastName ? val.LastName : "",
+        Name: {
+          Id: val.Name?.ID,
+          EMail: val.Name?.EMail,
+          Title: val.Name?.Title,
+        },
+        Role: val.Role ? val.Role : "",
+        Team: val.Team ? val.Team : "",
+        Cohort: val.Cohort ? val.Cohort : "",
+        Manager: {
+          Id: val.Manager?.ID,
+          EMail: val.Manager?.EMail,
+          Title: val.Manager?.Title,
+        },
+        TeamCaptain: {
+          Id: val.TeamCaptain?.ID,
+          EMail: val.TeamCaptain?.EMail,
+          Title: val.TeamCaptain?.Title,
+        },
+        TeamLeader: {
+          Id: val.TeamLeader?.ID,
+          EMail: val.TeamLeader?.EMail,
+          Title: val.TeamLeader?.Title,
+        },
+        // DirectReports:
+        //   val.DirectReports.length &&
+        //   val.DirectReports.map((response) => ({
+        //     Id: response?.ID,
+        //     EMail: response?.EMail,
+        //     Title: response?.Title,
+        //   })),
+        DirectReports: Array.isArray(val.DirectReports)
+          ? val.DirectReports.map((response) => ({
+              Id: response?.ID,
+              EMail: response?.EMail,
+              Title: response?.Title,
+            }))
+          : [],
+
+        // BackingUp: [
+        //   {
+        //     Id: val.BackingUp?.ID,
+        //     EMail: val.BackingUp?.EMail,
+        //     Title: val.BackingUp?.Title,
+        //   },
+        // ],
+        BackingUp: Array.isArray(val.BackingUp)
+          ? val.BackingUp.map((response) => ({
+              Id: response?.ID,
+              EMail: response?.EMail,
+              Title: response?.Title,
+            }))
+          : [],
+      });
+    });
+    console.log("orgchart,", orgcgart);
+
+    // _curArray = userTeams.map((data: any) => ({
+    //   team: data.Team,
+    //   members: [
+    //     {
+    //       Name: data.Name?.Title,
+    //       Email: data.Name?.EMail,
+    //       Id: data.NameId,
+    //     },
+    //   ],
+    // }));
+    setValue([...orgcgart]);
+    setMasterdata([...orgcgart]);
+    setLoader(false);
+
+    // _prepareNaveData();
+  };
+
+  // const getdatas = () => {
+  //   SPServices.SPReadItems({
+  //     Listname: "Configuration",
+  //     Select:
+  //       "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title",
+
+  //     Expand: "Name,Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp",
+  //     Orderby: "Created",
+  //     Orderbydecorasc: false,
+  //   })
+  //     .then((res) => {
+  //       let array: clinet[] = [];
+  //       res.forEach((val: any) => {
+
+  //         _masterArray = val;
+  //         _curUserDetailsArray = val.filter(
+  //           (data: any) =>
+  //             data.NameId &&
+  //             data.Name.EMail.toLowerCase() === _curUser.toLowerCase()
+  //         );
+
+  //         if(_isAdmin){
+
+  //         }
+  //         array.push({
+  //           Id: val.Id,
+  //           // FirstName: val.FirstName ? val.FirstName : "",
+  //           // LastName: val.LastName ? val.LastName : "",
+  //           Name: {
+  //             Id: val.Name?.ID,
+  //             EMail: val.Name?.EMail,
+  //             Title: val.Name?.Title,
+  //           },
+  //           Role: val.Role ? val.Role : "",
+  //           Team: val.Team ? val.Team : "",
+  //           Cohort: val.Cohort ? val.Cohort : "",
+  //           Manager: {
+  //             Id: val.Manager?.ID,
+  //             EMail: val.Manager?.EMail,
+  //             Title: val.Manager?.Title,
+  //           },
+  //           TeamCaptain: {
+  //             Id: val.TeamCaptain?.ID,
+  //             EMail: val.TeamCaptain?.EMail,
+  //             Title: val.TeamCaptain?.Title,
+  //           },
+  //           TeamLeader: {
+  //             Id: val.TeamLeader?.ID,
+  //             EMail: val.TeamLeader?.EMail,
+  //             Title: val.TeamLeader?.Title,
+  //           },
+  //           // DirectReports:
+  //           //   val.DirectReports.length &&
+  //           //   val.DirectReports.map((response) => ({
+  //           //     Id: response?.ID,
+  //           //     EMail: response?.EMail,
+  //           //     Title: response?.Title,
+  //           //   })),
+  //           DirectReports: Array.isArray(val.DirectReports)
+  //             ? val.DirectReports.map((response) => ({
+  //                 Id: response?.ID,
+  //                 EMail: response?.EMail,
+  //                 Title: response?.Title,
+  //               }))
+  //             : [],
+
+  //           // BackingUp: [
+  //           //   {
+  //           //     Id: val.BackingUp?.ID,
+  //           //     EMail: val.BackingUp?.EMail,
+  //           //     Title: val.BackingUp?.Title,
+  //           //   },
+  //           // ],
+  //           BackingUp: Array.isArray(val.BackingUp)
+  //             ? val.BackingUp.map((response) => ({
+  //                 Id: response?.ID,
+  //                 EMail: response?.EMail,
+  //                 Title: response?.Title,
+  //               }))
+  //             : [],
+  //         });
+  //       });
+  //       setValue([...array]);
+  //       setMasterdata([...array]);
+  //       setAdd(false);
+  //       setEdit(false);
+  //       setLoader(false);
+  //     })
+  //     .catch((err) => errFunction("Configuration get all data", err));
+  // };
 
   const SearchFilter = (e) => {
     setSearch(e);
@@ -1515,12 +1834,43 @@ const OrgChart = (props) => {
   //       alert("Something went wrong. Please contact system admin.");
   //     });
   // };
+
+  const showMessage = (event, ref, severity) => {
+    const label = event;
+
+    ref.current.show({
+      severity: severity,
+      summary: label,
+      detail: label,
+      life: 3000,
+    });
+  };
+
+  function validation() {
+    let isAllValueFilled = true;
+    if (
+      !curobj.Name.Id ||
+      !curobj.Manager.Id ||
+      !curobj.Cohort ||
+      !curobj.Role ||
+      !curobj.Team ||
+      !curobj.TeamCaptain.Id ||
+      !curobj.DirectReports[0].Id ||
+      !curobj.BackingUp[0].Id
+    ) {
+      isAllValueFilled = false;
+    }
+    return isAllValueFilled;
+  }
   useEffect(() => {
     setLoader(true);
-    getdatas();
+    // getdatas();
+    _getPrialtoAdmin();
   }, []);
   return (
     <>
+      <Toast ref={toastTopRight} position="top-right" />
+
       {loader ? (
         <Loader />
       ) : (

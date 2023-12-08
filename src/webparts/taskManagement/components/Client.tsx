@@ -14,9 +14,11 @@ import styles from "./TaskManagement.module.scss";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import Loader from "./Loader";
 import exportToExcel from "../../../Global/ExportExcel";
+import { Toast } from "primereact/toast";
 const Client = (props) => {
   const [showDialog, setShowDialog] = useState(false);
   const [mastedata, setMasterdata] = useState([]);
+  const toastTopRight = React.useRef(null);
 
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   // style variables
@@ -233,7 +235,15 @@ const Client = (props) => {
               rounded
               style={tickIconStyle}
               onClick={(_) => {
-                _handleDataoperation("check", obj);
+                if (validation()) {
+                  _handleDataoperation("check", obj);
+                } else {
+                  showMessage(
+                    "Please fill mandatory fields",
+                    toastTopRight,
+                    "warn"
+                  );
+                }
               }}
             />
             <Button
@@ -257,11 +267,14 @@ const Client = (props) => {
 
     if (!val.Id && isadd) {
       if (fieldType == "FirstName") {
+        let clsValid = "";
+        !value.FirstName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <InputText
               type="text"
               placeholder="FirstName"
+              className={`${styles.tblTxtBox}${clsValid}`}
               value={value.FirstName}
               onChange={(e) => getOnchange("FirstName", e.target.value)}
             />
@@ -270,26 +283,34 @@ const Client = (props) => {
         );
       }
       if (fieldType == "LastName") {
+        let clsValid = "";
+        !value.LastName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
             placeholder="LastName"
+            className={`${styles.tblTxtBox}${clsValid}`}
             value={value.LastName}
             onChange={(e) => getOnchange("LastName", e.target.value)}
           />
         );
       }
       if (fieldType == "CompanyName") {
+        let clsValid = "";
+        !value.CompanyName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
             placeholder="CompanyName"
             value={value.CompanyName}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("CompanyName", e.target.value)}
           />
         );
       }
       if (fieldType == "Assistant") {
+        let clsValid = "";
+        !value.Assistant.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -300,6 +321,7 @@ const Client = (props) => {
             placeholder="Enter Email"
             ensureUser={true}
             // showHiddenInUI={false}
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
             defaultSelectedUsers={
@@ -320,6 +342,8 @@ const Client = (props) => {
         );
       }
       if (fieldType == "Backup") {
+        let clsValid = "";
+        !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -327,7 +351,7 @@ const Client = (props) => {
             groupName={""}
             showtooltip={false}
             // required={true}
-
+            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             placeholder="Enter Email"
             ensureUser={true}
             // showHiddenInUI={false}
@@ -354,24 +378,28 @@ const Client = (props) => {
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && isedit && val.Id === value.Id) {
       if (fieldType == "FirstName") {
+        let clsValid = "";
+        !value.FirstName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
-          <>
-            <InputText
-              type="text"
-              // placeholder="TaskName"
-              value={value.FirstName}
-              onChange={(e) => getOnchange("FirstName", e.target.value)}
-            />
-            {/* <p className={styles.errMsg}>error</p> */}
-          </>
+          <InputText
+            type="text"
+            // placeholder="TaskName"
+            className={`${styles.tblTxtBox}${clsValid}`}
+            value={value.FirstName}
+            onChange={(e) => getOnchange("FirstName", e.target.value)}
+          />
+          // {/* <p className={styles.errMsg}>error</p> */}
         );
       }
       if (fieldType == "LastName") {
+        let clsValid = "";
+        !value.LastName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <InputText
               type="text"
               // placeholder="TaskName"
+              className={`${styles.tblTxtBox}${clsValid}`}
               value={value.LastName}
               onChange={(e) => getOnchange("LastName", e.target.value)}
             />
@@ -380,10 +408,13 @@ const Client = (props) => {
         );
       }
       if (fieldType == "CompanyName") {
+        let clsValid = "";
+        !value.CompanyName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <InputText
               type="text"
+              className={`${styles.tblTxtBox}${clsValid}`}
               // placeholder="TaskName"
               value={value.CompanyName}
               onChange={(e) => getOnchange("CompanyName", e.target.value)}
@@ -394,6 +425,8 @@ const Client = (props) => {
       }
 
       if (fieldType == "Assistant") {
+        let clsValid = "";
+        !value.Assistant.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <PeoplePicker
@@ -404,6 +437,7 @@ const Client = (props) => {
               // required={true}
               ensureUser={true}
               // showHiddenInUI={false}
+              peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
               showHiddenInUI={true}
               principalTypes={[PrincipalType.User]}
               defaultSelectedUsers={
@@ -427,11 +461,14 @@ const Client = (props) => {
         );
       }
       if (fieldType == "Backup") {
+        let clsValid = "";
+        !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <PeoplePicker
               context={props.context}
               personSelectionLimit={1}
+              peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
               groupName={""}
               showtooltip={true}
               // required={true}
@@ -628,6 +665,31 @@ const Client = (props) => {
   const exportExcel = () => {
     exportToExcel(clientdetail, columns, "Client");
   };
+
+  const showMessage = (event, ref, severity) => {
+    const label = event;
+
+    ref.current.show({
+      severity: severity,
+      summary: label,
+      detail: label,
+      life: 3000,
+    });
+  };
+
+  function validation() {
+    let isAllValueFilled = true;
+    if (
+      !value.FirstName ||
+      !value.LastName ||
+      !value.CompanyName ||
+      !value.Backup.Id ||
+      !value.Assistant.Id
+    ) {
+      isAllValueFilled = false;
+    }
+    return isAllValueFilled;
+  }
   useEffect(() => {
     setLoader(true);
     getdatas();
@@ -635,6 +697,8 @@ const Client = (props) => {
 
   return (
     <>
+      <Toast ref={toastTopRight} position="top-right" />
+
       {loader ? (
         <Loader />
       ) : (

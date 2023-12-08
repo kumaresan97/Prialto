@@ -11,7 +11,7 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 import UserTasks from "./UserTasks";
-import UserBackUpTasks from "./UserBackUpTasks";
+import UserBackUpTasksNew from "./UserBackUpTasksNew";
 import UserClients from "./UserClient";
 
 export default function UserDashboard(props) 
@@ -224,7 +224,8 @@ export default function UserDashboard(props)
       </div>
       </div>
         <UserTasks searchValue={search} context={props.context} Email={user}/>
-        <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/>
+        {/* <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/> */}
+        <UserBackUpTasksNew searchValue={search} context={props.context} Email={user}/>
       </>)}
     </>
   );

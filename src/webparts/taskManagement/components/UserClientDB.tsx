@@ -17,6 +17,8 @@ import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
 import Loader from "./Loader";
+import { Toast } from 'primereact/toast';
+import { ConfirmDialog } from 'primereact/confirmdialog';
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -84,8 +86,13 @@ const UserClientDB = (props): JSX.Element => {
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
   const [loader, setLoader] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [deleteObj,setDeleteObj]= useState<any>({});
+  const toastTopRight = React.useRef(null);
+  //Here we exchanges crntUser value with assitant value
+  //const [curuserId, setCuruserId] = useState(props.crntUserData);
+  const [curuserId, setCuruserId] = useState(props.assistant?props.assistant:props.crntUserData);
 
-  const [curuserId, setCuruserId] = useState(props.crntUserData);
 
   const data: IMyTasks = {
     TaskName: "",
@@ -119,7 +126,7 @@ const UserClientDB = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
-      ClientName: "",
+      ClientName: props.clientName?props.clientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -148,7 +155,7 @@ const UserClientDB = (props): JSX.Element => {
     isAdd: false,
     data: {
       TaskName: "",
-      ClientName: "",
+      ClientName: props.clientName?props.clientName:"",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -241,7 +248,10 @@ const UserClientDB = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
-          onClick={() => deleteData(obj)}
+          onClick={() => {
+            setDeleteObj(obj);
+            setVisible(true);
+          }}
         />
       </div>
     );
@@ -255,7 +265,14 @@ const UserClientDB = (props): JSX.Element => {
           style={tickIconStyle}
           icon="pi pi-check"
           onClick={(_) => {
-            _handleDataoperation(obj);
+            if(validation())
+            {
+             _handleDataoperation(obj);
+            }
+            else
+            {
+             showMessage("Please fill mandatory fields", toastTopRight, 'warn');
+            }
           }}
         />
         <Button
@@ -264,6 +281,7 @@ const UserClientDB = (props): JSX.Element => {
           icon="pi pi-times"
           onClick={(_) => {
             _handleData("cancel", obj);
+            setCurdata({...data});
           }}
         />
       </div>
@@ -286,17 +304,18 @@ const UserClientDB = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
+      ClientId: props.clientId,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId,
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -446,6 +465,7 @@ const UserClientDB = (props): JSX.Element => {
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
+      ClientId: props.clientId
     };
     SPServices.SPUpdateItem({
       Listname: ListName,
@@ -689,17 +709,25 @@ const UserClientDB = (props): JSX.Element => {
 
     if (!val.Id && val.isAdd) {
       if (fieldType == "TaskName") {
+        let clsValid="";
+        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
         return (
           <InputText
             type="text"
             placeholder="TaskName"
             value={curdata.TaskName}
-            className={styles.tblTxtBox}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
           />
         );
       }
       if (fieldType == "DueDate") {
+        let clsValid="";
+        if(!curdata.DueDate)
+        {
+          clsValid="md:w-20rem w-full p-invalid"
+          curdata.DueDate=moment().format();
+        }
         return (
           <Calendar
             placeholder="Date"
@@ -715,6 +743,7 @@ const UserClientDB = (props): JSX.Element => {
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
+            disabled={true}
             showtooltip={true}
             placeholder="Enter Email"
             // required={true}
@@ -776,6 +805,10 @@ const UserClientDB = (props): JSX.Element => {
       if (fieldType == "PriorityLevel") {
         let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.PriorityLevel.name)
+        {
+          curdata.PriorityLevel=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
@@ -790,6 +823,10 @@ const UserClientDB = (props): JSX.Element => {
       if (fieldType == "Status") {
         let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.Status.name)
+        {
+          curdata.Status=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
@@ -815,15 +852,28 @@ const UserClientDB = (props): JSX.Element => {
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && val.isEdit) {
       if (fieldType == "TaskName") {
+        let clsValid="";
+        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
         return (
           <InputText
             type="text"
             value={curdata.TaskName}
+            className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
           />
         );
       }
       if (fieldType == "DueDate") {
+        let clsValid="";
+        if(!curdata.DueDate)
+        {
+          clsValid="md:w-20rem w-full p-invalid"
+          curdata.DueDate=moment().format();
+        }
+        else
+        {
+          clsValid=""
+        }
         return (
           <Calendar
             value={new Date(curdata.DueDate)}
@@ -898,6 +948,10 @@ const UserClientDB = (props): JSX.Element => {
       if (fieldType == "PriorityLevel") {
         let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.PriorityLevel.name)
+        {
+          curdata.PriorityLevel=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
@@ -912,6 +966,10 @@ const UserClientDB = (props): JSX.Element => {
       if (fieldType == "Status") {
         let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
         indexOfDrop<0?indexOfDrop=0:"";
+        if(!curdata.Status.name)
+        {
+          curdata.Status=dropval[indexOfDrop];
+        }
         return (
           <Dropdown
             options={dropval}
@@ -971,6 +1029,7 @@ const UserClientDB = (props): JSX.Element => {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
+    showMessage("Something went wrong, Please contact system admin", toastTopRight, 'error');
   };
 
   const onSelect = (event) => {
@@ -1093,6 +1152,35 @@ const UserClientDB = (props): JSX.Element => {
     setLoader(false);
   }
 
+  const showMessage = (event, ref, severity) => {
+    const label = event;
+
+    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
+  };
+
+  function validation()
+  {
+      let isAllValueFilled=true;
+      if(!curdata.TaskName)
+      {
+        isAllValueFilled=false;
+      }
+      return isAllValueFilled;
+  }
+
+  function accept()
+  {
+      deleteData(deleteObj);
+      setVisible(false);
+      setDeleteObj({});
+  }
+
+  function reject()
+  {
+      setVisible(false);
+      setDeleteObj({});
+  }
+
   useEffect(()=>{
     SearchFilter(props.searchValue)
   },[props.searchValue])
@@ -1106,6 +1194,12 @@ const UserClientDB = (props): JSX.Element => {
     <>
     {loader?<Loader/>:
     <div className={styles.myTaskSection}>
+      <Toast ref={toastTopRight} position="top-right" />
+      <ConfirmDialog visible={visible} onHide={() => setVisible(false)} message="Are you sure you want to delete?"
+                    header="Confirmation" icon="pi pi-exclamation-triangle" 
+                    accept={accept} 
+                    reject={reject}
+                    />
       <div
         className={styles.myTaskHeader}
         style={{

@@ -11,10 +11,11 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 let MyClients = [];
+let MyTaskIds=[];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-export default function UserTasks(props) {
+export default function UserBackUpTasksNew(props) {
   const UserEmail = !props.Email
     ? ""
     : props.Email;
@@ -109,7 +110,8 @@ export default function UserTasks(props) {
             setConfigure({ ...x });
           })
           .catch((err) => errFunction(err));
-          getMyClients(res.Id);
+          //getMyClients(res.Id);
+          getAllTaskID(res.Id);
       }).catch((err) => errFunction(err));
     }else
     {
@@ -137,12 +139,7 @@ export default function UserTasks(props) {
       .then((res) => {
         MyClients = [];
         res.forEach((val: any) => {
-          MyClients.push({ ID: val.ID, Name: val.FirstName , Assistant:
-            {
-              Id: val.Assistant?val.Assistant.ID:"",
-              EMail: val.Assistant?val.Assistant.EMail:"",
-              Title: val.Assistant?val.Assistant.Title:""
-            } });
+          MyClients.push({ ID: val.ID, Name: val.FirstName });
         });
         if (MyClients.length > 0) {
           getMainTask(id);
@@ -155,18 +152,83 @@ export default function UserTasks(props) {
       });
   }
 
-  //getmaintask
-  const getMainTask = (id) => {
+  function getAllTaskID(id)
+  {
     let Filter = [
       {
-        FilterKey: "Assistant/ID",
+        FilterKey: "Backup/ID",
         Operator: "eq",
         FilterValue: id,
-      },
+      }
     ];
-    MyClients.forEach((val: any) => {
+    SPServices.SPReadItems({
+      Listname: "Tasks",
+      Select:
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+
+      Expand: "Assistant,Backup,Author,Client",
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Filter: Filter,
+    })
+      .then((res) => {
+        MyTaskIds = [];
+        res.forEach((val: any) => {
+          MyTaskIds.push({ ID: val.ID});
+        });
+        getAllSubTaskID(id)
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
+  }
+
+  function getAllSubTaskID(id)
+  {
+    let Filter = [
+      {
+        FilterKey: "Backup/ID",
+        Operator: "eq",
+        FilterValue: id,
+      }
+    ];
+    SPServices.SPReadItems({
+      Listname: "SubTasks",
+      Select:
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,MainTaskID/ID",
+
+      Expand: "Assistant,Backup,Author,Client,MainTaskID",
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Filter: Filter,
+    })
+      .then((res) => {
+        res.forEach((val: any) => 
+        {
+          if(val.MainTaskID)
+          MyTaskIds.push({ ID: val.MainTaskID.ID});
+        });
+
+        if(MyTaskIds.length<0)
+          {
+            BindData();
+          }
+          else
+          {
+            getMainTask(id);
+          }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
+  }
+
+  //getmaintask
+  const getMainTask = (id) => {
+    let Filter = [];
+    MyTaskIds.forEach((val: any) => {
       Filter.push({
-        FilterKey: "Client/ID",
+        FilterKey: "ID",
         Operator: "eq",
         FilterValue: val.ID,
       });
@@ -219,7 +281,9 @@ export default function UserTasks(props) {
         });
 
         let arrFilter = [];
+        MyClients=[];
         for (let i = 0; i < MainTask.length; i++) {
+          MyClients.push({ ID: MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "", Name: MainTask[i].data.ClientName?MainTask[i].data.ClientName:"" });
           arrFilter.push({
             FilterKey: "MainTaskID/ID",
             FilterValue: MainTask[i].Id.toString(),
@@ -261,7 +325,6 @@ export default function UserTasks(props) {
             return data.MainTaskID.ID == MainTask[i].Id;
           });
           res.forEach((val: any, index) => {
-            val.ClientName == null &&
               SubTask.push({
                 key: `${MainTask[i].Id}-${index + 1}`,
                 Index: index,
@@ -330,7 +393,6 @@ export default function UserTasks(props) {
       tempClient.push({
         ClientName: MyClients[i].Name,
         ID: MyClients[i].ID,
-        Assistant:MyClients[i].Assistant,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
@@ -343,6 +405,45 @@ export default function UserTasks(props) {
     setClientdata([...tempClient]);
     setLoader(false);
   }
+
+  // function BindDataAfterSearch(FilterData) {
+  //   let tempClient = [];
+  //   for (let i = 0; i < MyClients.length; i++) {
+  //     tempClient.push({
+  //       ClientName: MyClients[i].Name,
+  //       ID: MyClients[i].ID,
+  //       Tasks: [],
+  //     });
+  //     for (let j = 0; j < FilterData.length; j++) {
+  //       if (FilterData[j].data.ClientID == MyClients[i].ID)
+  //         tempClient[i].Tasks.push(FilterData[j]);
+  //     }
+  //   }
+  //   setClientdata([...tempClient]);
+  //   setLoader(false);
+  // }
+
+  // const SearchFilter = (e) => {
+  //   setSearch(e);
+
+  //   let filteredResults = curMyTask.filter((item) => {
+  //     if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
+  //       return true;
+  //     }
+
+  //     const childMatches = item.children.filter((child) =>
+  //       child.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())
+  //     );
+
+  //     if (childMatches.length > 0) {
+  //       return true;
+  //     }
+
+  //     return false;
+  //   });
+  //   BindDataAfterSearch([...filteredResults]);
+  //   //setCurMyTask([...filteredResults]);
+  // };
 
   useEffect(()=>{
     setSearch(props.searchValue);
@@ -360,7 +461,7 @@ export default function UserTasks(props) {
   return (
     <>
       {loader?<Loader />:(<>
-      <Label className={styles.clientHeader}>Client Tasks</Label>
+      <Label className={styles.clientHeader}>Backup Tasks</Label>
       <>
         {clientdata.length > 0 ? (
           <>
@@ -372,7 +473,6 @@ export default function UserTasks(props) {
                     searchValue={props.searchValue}
                     clientName={val.ClientName}
                     clientId={val.ID}
-                    assistant={val.Assistant?val.Assistant:curuserId}
                     context={props.context}
                     mainData={val.Tasks}
                     crntUserData={curuserId}
@@ -385,13 +485,11 @@ export default function UserTasks(props) {
         ) : (
           <UserClientDB
             bind={false}
-            assistant={curuserId}
             searchValue={props.searchValue}
             context={props.context}
             mainData={masterdata}
             crntUserData={curuserId}
             crntBackData={configure}
-            
           />
         )}
       </>

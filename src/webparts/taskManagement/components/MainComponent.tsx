@@ -195,69 +195,6 @@ const MainComponent = (props: any): JSX.Element => {
 
       userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
     }
-    console.log(userTeams, "userteam");
-    console.log(_isAdmin, "isadmin");
-    let orgcgart = [];
-    userTeams.forEach((val) => {
-      orgcgart.push({
-        Id: val.Id,
-        // FirstName: val.FirstName ? val.FirstName : "",
-        // LastName: val.LastName ? val.LastName : "",
-        Name: {
-          Id: val.Name?.ID,
-          EMail: val.Name?.EMail,
-          Title: val.Name?.Title,
-        },
-        Role: val.Role ? val.Role : "",
-        Team: val.Team ? val.Team : "",
-        Cohort: val.Cohort ? val.Cohort : "",
-        Manager: {
-          Id: val.Manager?.ID,
-          EMail: val.Manager?.EMail,
-          Title: val.Manager?.Title,
-        },
-        TeamCaptain: {
-          Id: val.TeamCaptain?.ID,
-          EMail: val.TeamCaptain?.EMail,
-          Title: val.TeamCaptain?.Title,
-        },
-        TeamLeader: {
-          Id: val.TeamLeader?.ID,
-          EMail: val.TeamLeader?.EMail,
-          Title: val.TeamLeader?.Title,
-        },
-        // DirectReports:
-        //   val.DirectReports.length &&
-        //   val.DirectReports.map((response) => ({
-        //     Id: response?.ID,
-        //     EMail: response?.EMail,
-        //     Title: response?.Title,
-        //   })),
-        DirectReports: Array.isArray(val.DirectReports)
-          ? val.DirectReports.map((response) => ({
-              Id: response?.ID,
-              EMail: response?.EMail,
-              Title: response?.Title,
-            }))
-          : [],
-
-        // BackingUp: [
-        //   {
-        //     Id: val.BackingUp?.ID,
-        //     EMail: val.BackingUp?.EMail,
-        //     Title: val.BackingUp?.Title,
-        //   },
-        // ],
-        BackingUp: Array.isArray(val.BackingUp)
-          ? val.BackingUp.map((response) => ({
-              Id: response?.ID,
-              EMail: response?.EMail,
-              Title: response?.Title,
-            }))
-          : [],
-      });
-    });
-    console.log("orgchart,", orgcgart);
 
     _curArray = userTeams.map((data: any) => ({
       team: data.Team,
@@ -293,7 +230,6 @@ const MainComponent = (props: any): JSX.Element => {
         }
       }
     }
-    console.log(_curArray, "curarray");
 
     setTeams([..._formattedData]);
   };
@@ -322,7 +258,6 @@ const MainComponent = (props: any): JSX.Element => {
         <div>
           <Label
             onClick={(e) => {
-              console.log(e, "e");
               setvalue("mytasks");
             }}
             className={value == "mytasks" ? styles.activeBtn : styles.inActive}
@@ -421,66 +356,72 @@ const MainComponent = (props: any): JSX.Element => {
           })}
           {true && (
             <>
-              <Label
-                onClick={() => setvalue("CardView")}
-                styles={{
-                  root: {
-                    width: "100%",
-                    fontSize: " 16px !important",
-                    fontWeight: "400 !important",
+              {_isAdmin && (
+                <Label
+                  onClick={() => setvalue("CardView")}
+                  styles={{
+                    root: {
+                      width: "100%",
+                      fontSize: " 16px !important",
+                      fontWeight: "400 !important",
 
-                    color: "#FFFFFF !important",
+                      color: "#FFFFFF !important",
 
-                    padding: "10px 0px 10px 20px !important",
-                    cursor: "pointer !important",
-                  },
-                }}
-                className={
-                  value == "CardView" ? styles.activeBtn : styles.inActive
-                }
-              >
-                Card View
-              </Label>
-              <Label
-                onClick={() => setvalue("OrgChart")}
-                styles={{
-                  root: {
-                    width: "100%",
-                    fontSize: " 16px !important",
-                    fontWeight: "400 !important",
+                      padding: "10px 0px 10px 20px !important",
+                      cursor: "pointer !important",
+                    },
+                  }}
+                  className={
+                    value == "CardView" ? styles.activeBtn : styles.inActive
+                  }
+                >
+                  Card View
+                </Label>
+              )}
+              {(_isAdmin || _isTL) && (
+                <Label
+                  onClick={() => setvalue("OrgChart")}
+                  styles={{
+                    root: {
+                      width: "100%",
+                      fontSize: " 16px !important",
+                      fontWeight: "400 !important",
 
-                    color: "#FFFFFF !important",
+                      color: "#FFFFFF !important",
 
-                    padding: "10px 0px 10px 20px !important",
-                    cursor: "pointer !important",
-                  },
-                }}
-                className={
-                  value == "OrgChart" ? styles.activeBtn : styles.inActive
-                }
-              >
-                Org Chart
-              </Label>
-              <Label
-                onClick={() => setvalue("Client")}
-                styles={{
-                  root: {
-                    width: "100%",
-                    fontSize: " 16px !important",
-                    fontWeight: "400 !important",
+                      padding: "10px 0px 10px 20px !important",
+                      cursor: "pointer !important",
+                    },
+                  }}
+                  className={
+                    value == "OrgChart" ? styles.activeBtn : styles.inActive
+                  }
+                >
+                  Org Chart
+                </Label>
+              )}
+              {(_isAdmin || _isTC || _isTL) && (
+                <Label
+                  onClick={() => setvalue("Client")}
+                  styles={{
+                    root: {
+                      width: "100%",
+                      fontSize: " 16px !important",
+                      fontWeight: "400 !important",
 
-                    color: "#FFFFFF !important",
+                      color: "#FFFFFF !important",
 
-                    padding: "10px 0px 10px 20px !important",
-                    cursor: "pointer !important",
-                  },
-                }}
-                className={
-                  value == "Client" ? styles.activeBtn : styles.inActive
-                }
-              >
-                Client
-              </Label>
+                      padding: "10px 0px 10px 20px !important",
+                      cursor: "pointer !important",
+                    },
+                  }}
+                  className={
+                    value == "Client" ? styles.activeBtn : styles.inActive
+                  }
+                >
+                  Client
+                </Label>
+              )}
             </>
           )}
         </div>
@@ -502,16 +443,14 @@ const MainComponent = (props: any): JSX.Element => {
             context={props.context}
             Email={selectedMember}
           />
-        ) : value == "CardView" && _isAdmin ? (
+        ) : value == "CardView" ? (
           <CardView
             context={props.context}
             memberFunction={memberFunction}
           ></CardView>
-        ) : (value == "OrgChart" && _isAdmin) || _isTL ? (
-          <OrgChart context={props.context}></OrgChart>
         ) : value == "OrgChart" ? (
           <OrgChart context={props.context}></OrgChart>
-        ) : (value == "Client" && _isAdmin) || _isTL ? (
+        ) : value == "Client" ? (
           <Client context={props.context}></Client>
         ) : value == "TeamMembers" && selectedTeamMember.length ? (
           <Member

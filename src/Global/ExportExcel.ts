@@ -56,7 +56,7 @@ const exportToExcel = async (data, headers, sheetName) => {
           LastName: item?.LastName,
           CompanyName: item.CompanyName,
           Assistant: item.Assistant?.Title,
-          Backup: item.Backup?.Title,
+          // Backup: item.Backup?.Title,
         });
       });
     } else if (sheetName == "MyTask") {

@@ -106,9 +106,12 @@ const MainComponent = (props: any): JSX.Element => {
     sp.web.lists
       .getByTitle("Configuration")
       .items.select(
-        "*,Name/EMail,Name/Title,TeamCaptain/EMail,TeamCaptain/Title"
+        // "*,Name/EMail,Name/Title,TeamCaptain/EMail,TeamCaptain/Title"
+
+        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title"
       )
-      .expand("Name,TeamCaptain")
+      // .expand("Name,TeamCaptain")
+      .expand("Name,Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp")
       .top(5000)
       .get()
       .then((res: any) => {
@@ -192,6 +195,69 @@ const MainComponent = (props: any): JSX.Element => {
 
       userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
     }
+    console.log(userTeams, "userteam");
+    console.log(_isAdmin, "isadmin");
+    let orgcgart = [];
+    userTeams.forEach((val) => {
+      orgcgart.push({
+        Id: val.Id,
+        // FirstName: val.FirstName ? val.FirstName : "",
+        // LastName: val.LastName ? val.LastName : "",
+        Name: {
+          Id: val.Name?.ID,
+          EMail: val.Name?.EMail,
+          Title: val.Name?.Title,
+        },
+        Role: val.Role ? val.Role : "",
+        Team: val.Team ? val.Team : "",
+        Cohort: val.Cohort ? val.Cohort : "",
+        Manager: {
+          Id: val.Manager?.ID,
+          EMail: val.Manager?.EMail,
+          Title: val.Manager?.Title,
+        },
+        TeamCaptain: {
+          Id: val.TeamCaptain?.ID,
+          EMail: val.TeamCaptain?.EMail,
+          Title: val.TeamCaptain?.Title,
+        },
+        TeamLeader: {
+          Id: val.TeamLeader?.ID,
+          EMail: val.TeamLeader?.EMail,
+          Title: val.TeamLeader?.Title,
+        },
+        // DirectReports:
+        //   val.DirectReports.length &&
+        //   val.DirectReports.map((response) => ({
+        //     Id: response?.ID,
+        //     EMail: response?.EMail,
+        //     Title: response?.Title,
+        //   })),
+        DirectReports: Array.isArray(val.DirectReports)
+          ? val.DirectReports.map((response) => ({
+              Id: response?.ID,
+              EMail: response?.EMail,
+              Title: response?.Title,
+            }))
+          : [],
+
+        // BackingUp: [
+        //   {
+        //     Id: val.BackingUp?.ID,
+        //     EMail: val.BackingUp?.EMail,
+        //     Title: val.BackingUp?.Title,
+        //   },
+        // ],
+        BackingUp: Array.isArray(val.BackingUp)
+          ? val.BackingUp.map((response) => ({
+              Id: response?.ID,
+              EMail: response?.EMail,
+              Title: response?.Title,
+            }))
+          : [],
+      });
+    });
+    console.log("orgchart,", orgcgart);
 
     _curArray = userTeams.map((data: any) => ({
       team: data.Team,
@@ -227,6 +293,7 @@ const MainComponent = (props: any): JSX.Element => {
         }
       }
     }
+    console.log(_curArray, "curarray");
 
     setTeams([..._formattedData]);
   };
@@ -435,16 +502,16 @@ const MainComponent = (props: any): JSX.Element => {
             context={props.context}
             Email={selectedMember}
           />
-        ) : value == "CardView" ? (
+        ) : value == "CardView" && _isAdmin ? (
           <CardView
             context={props.context}
             memberFunction={memberFunction}
           ></CardView>
-        ) : value == "OrgChart" ? (
+        ) : (value == "OrgChart" && _isAdmin) || _isTL ? (
           <OrgChart context={props.context}></OrgChart>
         ) : value == "OrgChart" ? (
           <OrgChart context={props.context}></OrgChart>
-        ) : value == "Client" ? (
+        ) : (value == "Client" && _isAdmin) || _isTL ? (
           <Client context={props.context}></Client>
         ) : value == "TeamMembers" && selectedTeamMember.length ? (
           <Member

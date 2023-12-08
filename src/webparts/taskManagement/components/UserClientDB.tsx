@@ -33,6 +33,12 @@ const dropval = [
   { name: "Urgent", code: "Normal" }
 ];
 
+const dropStatus = [
+  { name: "Pending", code: "Pending" },
+  { name: "InProgress", code: "InProgress" },
+  { name: "Completed", code: "Completed" }
+];
+
 let MyClients = [];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
@@ -91,7 +97,7 @@ const UserClientDB = (props): JSX.Element => {
   const toastTopRight = React.useRef(null);
   //Here we exchanges crntUser value with assitant value
   //const [curuserId, setCuruserId] = useState(props.crntUserData);
-  const [curuserId, setCuruserId] = useState(props.assistant?props.assistant:props.crntUserData);
+  const [curuserId, setCuruserId] = useState(props.assistant);
 
 
   const data: IMyTasks = {
@@ -190,6 +196,13 @@ const UserClientDB = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#007C81";
     }
+    else if (PLevel == "Pending") {
+      bgColor = "#68BAC4";
+    } else if (PLevel == "InProgress") {
+      bgColor = "#F46906";
+    } else if (PLevel == "Completed") {
+      bgColor = "#007C81";
+    }
     return (
       <div className={styles.pLevelStyle} style={{ backgroundColor: bgColor }}>
         {PLevel}
@@ -201,7 +214,6 @@ const UserClientDB = (props): JSX.Element => {
   const getOnchange = (key, _value) => {
     let FormData = { ...curdata };
     if (key == "Backup") {
-      debugger;
       FormData.Backup.Id = _value.id;
       FormData.Backup.EMail = _value.secondaryText;
       FormData.Backup.Title = _value.text;
@@ -312,6 +324,7 @@ const UserClientDB = (props): JSX.Element => {
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
       ClientId: props.clientId,
+      AssistantId: curuserId.Id,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -759,7 +772,7 @@ const UserClientDB = (props): JSX.Element => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Creator", selectedItem.id);
+                getOnchange("Creator", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -821,18 +834,18 @@ const UserClientDB = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status") {
-        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
+        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
         indexOfDrop<0?indexOfDrop=0:"";
         if(!curdata.Status.name)
         {
-          curdata.Status=dropval[indexOfDrop];
+          curdata.Status=dropStatus[indexOfDrop];
         }
         return (
           <Dropdown
-            options={dropval}
+            options={dropStatus}
             placeholder="Select a status"
             optionLabel="name"
-            value={dropval[indexOfDrop]}
+            value={dropStatus[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"
@@ -889,6 +902,7 @@ const UserClientDB = (props): JSX.Element => {
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
+            disabled={true}
             showtooltip={true}
             // required={true}
             ensureUser={true}
@@ -935,7 +949,7 @@ const UserClientDB = (props): JSX.Element => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Backup", selectedItem.id);
+                getOnchange("Backup", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -964,18 +978,18 @@ const UserClientDB = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status") {
-        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.Status.name);
+        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
         indexOfDrop<0?indexOfDrop=0:"";
         if(!curdata.Status.name)
         {
-          curdata.Status=dropval[indexOfDrop];
+          curdata.Status=dropStatus[indexOfDrop];
         }
         return (
           <Dropdown
-            options={dropval}
+            options={dropStatus}
             placeholder="Select a status"
             optionLabel="name"
-            value={dropval[indexOfDrop]}
+            value={dropStatus[indexOfDrop]}
             onChange={(e: any) => getOnchange("Status", e.value)}
 
             // className="w-full md:w-14rem"

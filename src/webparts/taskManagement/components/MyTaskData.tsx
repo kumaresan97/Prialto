@@ -35,16 +35,10 @@ const dropval = [
   { name: "Urgent", code: "Normal" }
 ];
 
-// const dropStatus = [
-//   { name: "Pending", code: "Pending" },
-//   { name: "InProgress", code: "InProgress" },
-//   { name: "Completed", code: "Completed" }
-// ];
-
 const dropStatus = [
-  { name: "High", code: "High" },
-  { name: "Normal", code: "Urgent" },
-  { name: "Urgent", code: "Normal" }
+  { name: "Pending", code: "Pending" },
+  { name: "InProgress", code: "InProgress" },
+  { name: "Completed", code: "Completed" }
 ];
 
 let MyClients = [];
@@ -201,6 +195,12 @@ const MyTaskData = (props): JSX.Element => {
     } else if (PLevel == "New Task") {
       bgColor = "#68BAC4";
     } else if (PLevel == "Done") {
+      bgColor = "#007C81";
+    }else if (PLevel == "Pending") {
+      bgColor = "#68BAC4";
+    } else if (PLevel == "InProgress") {
+      bgColor = "#F46906";
+    } else if (PLevel == "Completed") {
       bgColor = "#007C81";
     }
     return (
@@ -846,7 +846,7 @@ const MyTaskData = (props): JSX.Element => {
         indexOfDrop<0?indexOfDrop=0:"";
         if(!curdata.Status.name)
         {
-          curdata.Status=dropval[indexOfDrop];
+          curdata.Status=dropStatus[indexOfDrop];
         }
         return (
           <Dropdown
@@ -992,7 +992,7 @@ const MyTaskData = (props): JSX.Element => {
         indexOfDrop<0?indexOfDrop=0:"";
         if(!curdata.Status.name)
         {
-          curdata.Status=dropval[indexOfDrop];
+          curdata.Status=dropStatus[indexOfDrop];
         }
         return (
           <Dropdown

@@ -683,11 +683,11 @@ const Client = (props) => {
   function validation() {
     let isAllValueFilled = true;
     if (
-      !value.FirstName ||
-      !value.LastName ||
-      !value.CompanyName ||
+      !value?.FirstName ||
+      !value?.LastName ||
+      !value?.CompanyName ||
       // !value.Backup.Id ||
-      !value.Assistant.Id
+      !value?.Assistant?.Id
     ) {
       isAllValueFilled = false;
     }

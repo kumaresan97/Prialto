@@ -299,7 +299,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Name") {
         let clsValid = "";
-        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Name?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -307,7 +307,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.Name?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -349,7 +351,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Manager") {
         let clsValid = "";
-        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -357,7 +359,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -400,7 +404,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamCaptain") {
         let clsValid = "";
-        !curobj.TeamCaptain.Id
+        !curobj.TeamCaptain?.Id
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -409,7 +413,9 @@ const OrgChart = (props) => {
             personSelectionLimit={1}
             groupName={""}
             showtooltip={true}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
+            }
             styles={multiPeoplePickerStyle}
             // required={true}
             placeholder="Enter Email"
@@ -437,7 +443,9 @@ const OrgChart = (props) => {
 
       if (fieldType == "TeamLeader") {
         let clsValid = "";
-        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.TeamLeader?.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -445,7 +453,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -477,6 +487,7 @@ const OrgChart = (props) => {
             type="text"
             placeholder="Cohort"
             value={curobj.Cohort}
+            // className={!curobj.Cohort ? styles.tblTxtBox : clsValid}
             className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("Cohort", e.target.value)}
           />
@@ -494,7 +505,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -530,7 +541,9 @@ const OrgChart = (props) => {
       }
       if (fieldType == "BackingUp") {
         let clsValid = "";
-        !curobj.BackingUp[0].Id
+        !curobj.BackingUp ||
+        curobj.BackingUp.length === 0 ||
+        !curobj.BackingUp.some((user) => user.Id !== null)
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
 
@@ -541,7 +554,13 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.BackingUp ||
+              curobj.BackingUp.length === 0 ||
+              !curobj.BackingUp.some((user) => user.Id !== null)
+                ? styles.peoplepickerErrStyle
+                : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -594,7 +613,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Name") {
         let clsValid = "";
-        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Name?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -602,7 +621,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.Name?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -631,6 +652,7 @@ const OrgChart = (props) => {
         return (
           <Dropdown
             options={role}
+            style={{ width: "100%" }}
             placeholder="Role"
             optionLabel="name"
             value={curobj.Role}
@@ -642,7 +664,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Manager") {
         let clsValid = "";
-        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -650,7 +672,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -681,6 +705,7 @@ const OrgChart = (props) => {
         !curobj.Team ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <Dropdown
+            style={{ width: "100%" }}
             options={team}
             placeholder="Team"
             optionLabel="name"
@@ -692,7 +717,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamCaptain") {
         let clsValid = "";
-        !curobj.TeamCaptain.Id
+        !curobj.TeamCaptain?.Id
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -702,7 +727,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -728,7 +755,9 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamLeader") {
         let clsValid = "";
-        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.TeamLeader?.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -736,7 +765,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
+            }
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -768,6 +799,7 @@ const OrgChart = (props) => {
             type="text"
             placeholder="Cohort"
             value={curobj.Cohort}
+            // className={!curobj.Cohort ? styles.tblTxtBox : clsValid}
             className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("Cohort", e.target.value)}
           />
@@ -812,7 +844,9 @@ const OrgChart = (props) => {
       }
       if (fieldType == "BackingUp") {
         let clsValid = "";
-        !curobj.BackingUp[0]?.Id
+        !curobj.BackingUp ||
+        curobj.BackingUp.length === 0 ||
+        !curobj.BackingUp.some((user) => user.Id !== null)
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -820,7 +854,14 @@ const OrgChart = (props) => {
             context={props.context}
             personSelectionLimit={3}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !curobj.BackingUp ||
+              curobj.BackingUp.length === 0 ||
+              !curobj.BackingUp.some((user) => user.Id !== null)
+                ? styles.peoplepickerErrStyle
+                : ""
+            }
+            // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             groupName={""}
             showtooltip={true}
             // required={true}
@@ -1099,15 +1140,18 @@ const OrgChart = (props) => {
               style={tickIconStyle}
               rounded
               onClick={(_) => {
-                const missingFields = validation();
+                const missingFields = validateObject();
                 if (missingFields.length === 0) {
                   _handleDataoperation("check", obj);
                 } else {
                   // missingFields.forEach((field) => {
-                  const errorMessage = `Please fill ${missingFields[0]}`;
+                  const errorMessage = `Please fill ${missingFields[currentFieldIndex]}`;
                   showMessage(errorMessage, toastTopRight, "warn");
-                  // });
+
+                  currentFieldIndex =
+                    (currentFieldIndex + 1) % missingFields.length;
                 }
+                // });
 
                 // if (validation()) {
                 //   _handleDataoperation("check", obj);
@@ -1489,7 +1533,7 @@ const OrgChart = (props) => {
     ref.current.show({
       severity: severity,
       summary: label,
-      detail: label,
+      // detail: label,
       life: 3000,
     });
   };
@@ -1512,15 +1556,66 @@ const OrgChart = (props) => {
   //   }
   //   return isAllValueFilled;
   // }
-  function validation() {
+
+  let currentFieldIndex = 0;
+
+  // function validation() {
+  //   const requiredFields = [
+  //     "Name",
+  //     "Manager",
+  //     "Cohort",
+  //     "Role",
+  //     "Team",
+  //     "TeamCaptain",
+  //     "TeamLeader",
+  //   ];
+
+  //   const missingFields = [];
+
+  //   requiredFields.forEach((field) => {
+  //     if (!curobj[field]?.Id) {
+  //       missingFields.push(field);
+  //     }
+  //   });
+
+  //   if (
+  //     !curobj.BackingUp ||
+  //     curobj.BackingUp.length === 0 ||
+  //     !curobj.BackingUp.some((user) => user.Id !== null)
+  //   ) {
+  //     missingFields.push("BackingUp");
+  //   }
+
+  //   return missingFields;
+  // }
+
+  function validateObject() {
     const missingFields = [];
 
-    requiredFields.forEach((field) => {
-      if (!curobj[field]?.Id) {
-        missingFields.push(field);
-      }
-    });
-
+    if (!curobj.Name?.Id || curobj.Name?.Id === null) {
+      missingFields.push("Name");
+    }
+    if (!curobj.Role || curobj.Role === "") {
+      missingFields.push("Role");
+    }
+    if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
+      missingFields.push("Manager");
+    }
+    if (!curobj.Team || curobj.Team === "") {
+      missingFields.push("Team");
+    }
+    if (!curobj.TeamCaptain?.Id || curobj.TeamCaptain?.Id === null) {
+      missingFields.push("TeamCaptain");
+    }
+    if (!curobj.TeamLeader?.Id || curobj.TeamLeader?.Id === null) {
+      missingFields.push("TeamLeader");
+    }
+    if (!curobj.Cohort || curobj.Cohort === "") {
+      missingFields.push("Cohort");
+    }
+    // if (!curobj.DirectReports[0]?.Id || curobj.DirectReports[0]?.Id === null) {
+    //   missingFields.push('DirectReports');
+    // }
     if (
       !curobj.BackingUp ||
       curobj.BackingUp.length === 0 ||
@@ -1628,13 +1723,13 @@ const OrgChart = (props) => {
 
             <Column
               field="TeamCaptain"
-              header="Team Captain"
+              header="Team captain"
               sortable
               body={(obj: any) => _addTextField(obj, "TeamCaptain")}
             ></Column>
             <Column
               field="TeamLeader"
-              header="Team Leader"
+              header="Team leader"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "TeamLeader")}
@@ -1654,14 +1749,14 @@ const OrgChart = (props) => {
           ></Column> */}
             <Column
               field="DirectReports"
-              header="Direct Reports"
+              header="Direct reports"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "DirectReports")}
             ></Column>
             <Column
               field="BackingUp"
-              header="Backing Up"
+              header="Backing up"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "BackingUp")}
@@ -1673,8 +1768,8 @@ const OrgChart = (props) => {
             visible={showDialog}
             onHide={() => setShowDialog(false)}
             message="Are you sure you want to delete?"
-            header="Confirmation"
-            icon="pi pi-exclamation-triangle"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
             acceptClassName="p-button-danger"
             acceptLabel="Yes"
             rejectLabel="No"

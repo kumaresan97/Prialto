@@ -34,7 +34,9 @@ let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 const MyTasksDashboard = (props): JSX.Element => {
-  const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
+  const UserEmail = !props.Email
+    ? props.context.pageContext.user.email
+    : props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -122,7 +124,7 @@ const MyTasksDashboard = (props): JSX.Element => {
       },
     },
   };
-  
+
   const [curdata, setCurdata] = useState<IMyTasks>(data);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
@@ -205,9 +207,8 @@ const MyTasksDashboard = (props): JSX.Element => {
   };
   //handle update,delete,edit
   const _handleDataoperation = (obj) => {
-
     //if (obj.isParent && obj.isEdit && obj.Id) {
-      if (obj.isEdit && obj.Id) {
+    if (obj.isEdit && obj.Id) {
       Editfunction(obj);
     } else if (obj.isParent && !obj.Id) {
       AddItem(obj);
@@ -264,7 +265,6 @@ const MyTasksDashboard = (props): JSX.Element => {
           isParent: val.isParent,
         })
       );
-
 
     SPServices.SPDeleteItem({
       Listname: ListName,
@@ -500,7 +500,6 @@ const MyTasksDashboard = (props): JSX.Element => {
   };
   //addtextfield
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
-    
     const data: any = val?.data;
 
     if (!val.Id && val.isAdd) {
@@ -636,7 +635,13 @@ const MyTasksDashboard = (props): JSX.Element => {
         );
       }
       if (fieldType == "DueDate") {
-        return <Calendar value={new Date(curdata.DueDate)} onChange={(e) => getOnchange("DueDate", e.value)} showIcon />;
+        return (
+          <Calendar
+            value={new Date(curdata.DueDate)}
+            onChange={(e) => getOnchange("DueDate", e.value)}
+            showIcon
+          />
+        );
       }
 
       if (fieldType == "Creator") {
@@ -767,7 +772,7 @@ const MyTasksDashboard = (props): JSX.Element => {
       }
     }
   };
-  
+
   const errFunction = (err) => {
     console.log(err);
   };
@@ -822,13 +827,13 @@ const MyTasksDashboard = (props): JSX.Element => {
             });
         });
 
-        let arrFilter=[];
+        let arrFilter = [];
         for (let i = 0; i < MainTask.length; i++) {
           arrFilter.push({
             FilterKey: "MainTaskID/ID",
             FilterValue: MainTask[i].Id.toString(),
-            Operator: "eq"
-          })
+            Operator: "eq",
+          });
         }
         getsubTask(arrFilter);
       })
@@ -846,103 +851,104 @@ const MyTasksDashboard = (props): JSX.Element => {
       Expand: "MainTaskID, Backup, Author",
       Orderby: "Created",
       Orderbydecorasc: false,
-      Filter:FilterValue,
-      FilterCondition:"or",
+      Filter: FilterValue,
+      FilterCondition: "or",
       Topcount: 5000,
     })
-      .then((response) => 
-      {
+      .then((response) => {
         let count = 0;
         for (let i = 0; i < MainTask.length; i++) {
-        /* Start Of Subtaks */
-              SubTask = [];
-              var res =  response.filter(function(data:any) {
-                return data.MainTaskID.ID == MainTask[i].Id;
+          /* Start Of Subtaks */
+          SubTask = [];
+          var res = response.filter(function (data: any) {
+            return data.MainTaskID.ID == MainTask[i].Id;
+          });
+          res.forEach((val: any, index) => {
+            val.ClientName == null &&
+              SubTask.push({
+                key: `${MainTask[i].Id}-${index + 1}`,
+                Id: val.Id,
+                subId: MainTask[i].Id,
+                isClick: false,
+                isParent: false,
+                isAdd: false,
+                isEdit: false,
+                data: {
+                  TaskName: val.TaskName,
+                  Creator: {
+                    Id: val.Author.ID,
+                    EMail: val.Author.EMail,
+                    Title: val.Author.Title,
+                  },
+                  Backup: {
+                    Id: val.Backup?.ID,
+                    EMail: val.Backup?.EMail,
+                    Title: val.Backup?.Title,
+                  },
+                  DueDate: SPServices.displayDate(val.DueDate),
+                  PriorityLevel: val.PriorityLevel,
+                  Status: val.Status,
+                  Created: SPServices.displayDate(val.Created),
+                },
               });
-              res.forEach((val: any, index) => {
-                val.ClientName == null &&
-                  SubTask.push({
-                    key: `${MainTask[i].Id}-${index + 1}`,
-                    Id: val.Id,
-                    subId: MainTask[i].Id,
-                    isClick: false,
-                    isParent: false,
-                    isAdd: false,
-                    isEdit: false,
-                    data: {
-                      TaskName: val.TaskName,
-                      Creator: {
-                        Id: val.Author.ID,
-                        EMail: val.Author.EMail,
-                        Title: val.Author.Title,
-                      },
-                      Backup: {
-                        Id: val.Backup?.ID,
-                        EMail: val.Backup?.EMail,
-                        Title: val.Backup?.Title,
-                      },
-                      DueDate: SPServices.displayDate(val.DueDate),
-                      PriorityLevel: val.PriorityLevel,
-                      Status: val.Status,
-                      Created: SPServices.displayDate(val.Created)
-                    },
-                  });
-              });
-    
-              MainArray.push({
-                ...MainTask[i],
-                children: SubTask,
-              });
-              count++;
-    
-              if (count === MainTask.length) {
-                console.log(MainArray, "MainArray");
-                setCurMyTask([...MainArray]);
-                setMasterdata([...MainArray]);
-              }
-              /* End Of Subtaks */ 
+          });
+
+          MainArray.push({
+            ...MainTask[i],
+            children: SubTask,
+          });
+          count++;
+
+          if (count === MainTask.length) {
+            console.log(MainArray, "MainArray");
+            setCurMyTask([...MainArray]);
+            setMasterdata([...MainArray]);
+          }
+          /* End Of Subtaks */
         }
       })
-      .catch((err) => 
-      {
+      .catch((err) => {
         errFunction(err);
       });
   };
   //getcuruser
   const getcurUser = () => {
     //let user = sp.web.currentUser().then((res) => {
-      let user = sp.web.siteUsers.getByEmail(UserEmail).get().then((res) => {
-      curuserId.Id = res.Id;
-      curuserId.EMail = res.Email;
-      curuserId.Title = res.Title;
+    let user = sp.web.siteUsers
+      .getByEmail(UserEmail)
+      .get()
+      .then((res) => {
+        curuserId.Id = res.Id;
+        curuserId.EMail = res.Email;
+        curuserId.Title = res.Title;
 
-      SPServices.SPReadItems({
-        Listname: "Configuration",
-        Select:
-          "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
-        Expand: "BackingUp ,Name,TeamCaptain",
-        Filter: [
-          {
-            FilterKey: "Name/ID",
-            FilterValue: res.Id.toString(),
-            Operator: "eq",
-          },
-        ],
-      })
-        .then((res: any) => {
-          let x = { ...configure };
-          res.forEach((val) => {
-            x.EMail = val.BackingUp[0].EMail;
-            x.backupId = val.BackingUp[0].ID;
-            x.Title = val.BackingUp[0].Title;
-          });
-          setConfigure({ ...x });
+        SPServices.SPReadItems({
+          Listname: "Configuration",
+          Select:
+            "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
+          Expand: "BackingUp ,Name,TeamCaptain",
+          Filter: [
+            {
+              FilterKey: "Name/ID",
+              FilterValue: res.Id.toString(),
+              Operator: "eq",
+            },
+          ],
         })
-        .catch((err) => errFunction(err));
+          .then((res: any) => {
+            let x = { ...configure };
+            res.forEach((val) => {
+              x.EMail = val.BackingUp[0].EMail;
+              x.backupId = val.BackingUp[0].ID;
+              x.Title = val.BackingUp[0].Title;
+            });
+            setConfigure({ ...x });
+          })
+          .catch((err) => errFunction(err));
 
-      setCuruserId({ ...curuserId });
-      getMainTask(res.Id);
-    });
+        setCuruserId({ ...curuserId });
+        getMainTask(res.Id);
+      });
   };
 
   const onSelect = (event) => {
@@ -999,6 +1005,7 @@ const MyTasksDashboard = (props): JSX.Element => {
           <i className="pi pi-search" />
           <InputText
             placeholder="Search"
+            className="searchFilter"
             value={search}
             onChange={(e: any) => SearchFilter(e.target.value)}
           />
@@ -1054,7 +1061,7 @@ const MyTasksDashboard = (props): JSX.Element => {
       >
         <Column
           field="TaskName"
-          header="TaskName"
+          header="Task name"
           expander
           sortable
           style={{ width: "265px" }}
@@ -1078,7 +1085,7 @@ const MyTasksDashboard = (props): JSX.Element => {
         />
         <Column
           field="DueDate"
-          header="Due Date"
+          header="Due date"
           sortable
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "DueDate")}
@@ -1086,7 +1093,7 @@ const MyTasksDashboard = (props): JSX.Element => {
 
         <Column
           field="PriorityLevel"
-          header=" Priority Level"
+          header=" Priority level"
           sortable
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "PriorityLevel")}

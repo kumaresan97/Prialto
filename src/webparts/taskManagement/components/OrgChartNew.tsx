@@ -102,6 +102,7 @@ const OrgChart = (props) => {
         maxHeight: 50,
         overflowX: "hidden",
         padding: "3px 5px",
+        minWidth: "100%",
         background: "#fff",
       },
     },
@@ -654,6 +655,7 @@ const OrgChart = (props) => {
             options={role}
             style={{ width: "100%" }}
             placeholder="Role"
+            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Role}
             onChange={(e: any) => getOnchange("Role", e.value)}
@@ -708,6 +710,7 @@ const OrgChart = (props) => {
             style={{ width: "100%" }}
             options={team}
             placeholder="Team"
+            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Team}
             onChange={(e: any) => getOnchange("Team", e.value)}
@@ -1109,7 +1112,7 @@ const OrgChart = (props) => {
     return (
       <div>
         {edit == false && add == false && (
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Button
               type="button"
               icon="pi pi-pencil"
@@ -1650,6 +1653,7 @@ const OrgChart = (props) => {
                 <span className="p-input-icon-left">
                   <i className="pi pi-search" />
                   <InputText
+                    className="searchFilter"
                     placeholder="Search"
                     value={search}
                     onChange={(e: any) => SearchFilter(e.target.value)}

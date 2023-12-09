@@ -19,8 +19,8 @@ import * as moment from "moment";
 import { findIndex } from "office-ui-fabric-react";
 import Loader from "./Loader";
 
-import { Toast } from 'primereact/toast';
-import { ConfirmDialog } from 'primereact/confirmdialog';
+import { Toast } from "primereact/toast";
+import { ConfirmDialog } from "primereact/confirmdialog";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -32,13 +32,13 @@ const cities = [
 const dropval = [
   { name: "High", code: "High" },
   { name: "Normal", code: "Urgent" },
-  { name: "Urgent", code: "Normal" }
+  { name: "Urgent", code: "Normal" },
 ];
 
 const dropStatus = [
   { name: "Pending", code: "Pending" },
   { name: "InProgress", code: "InProgress" },
-  { name: "Completed", code: "Completed" }
+  { name: "Completed", code: "Completed" },
 ];
 
 let MyClients = [];
@@ -46,10 +46,9 @@ let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
-
 const MyTaskData = (props): JSX.Element => {
   // style variables
-  const cellStyle = { backgroundColor: "#fff", width: 200 };
+  const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
   // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
   const TaskCellStyle = { backgroundColor: "#fff", width: 265 };
@@ -58,10 +57,10 @@ const MyTaskData = (props): JSX.Element => {
   const iconbtnStyle = {
     backgroundColor: "transparent",
     color: "#007C81",
-    border: "1px solid #007C81",
+    border: "none",
     height: 24,
     width: 24,
-    borderRadius: "50%",
+    // borderRadius: "50%",
   };
   const tickIconStyle = {
     backgroundColor: "transparent",
@@ -74,6 +73,7 @@ const MyTaskData = (props): JSX.Element => {
     backgroundColor: "transparent",
     height: 26,
     width: 26,
+    marginLeft: 4,
   };
   const delIconBtnStyle = {
     color: "#BF4927",
@@ -90,13 +90,20 @@ const MyTaskData = (props): JSX.Element => {
       },
     },
   };
+  const peopickerStyle = {
+    root: {
+      ".ms-PickerPersona-container": {
+        minHeight: 34,
+      },
+    },
+  };
 
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
   const [loader, setLoader] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [deleteObj,setDeleteObj]= useState<any>({});
+  const [deleteObj, setDeleteObj] = useState<any>({});
 
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
@@ -186,25 +193,30 @@ const MyTaskData = (props): JSX.Element => {
   // style function
   const priorityLevelStyle = (PLevel) => {
     let bgColor: string = "";
+    let color: string = "";
     if (PLevel == "Urgent") {
       bgColor = "#BF4927";
-    } else if (PLevel == "High" || PLevel == "In Progress") {
-      bgColor = "#F46906";
+    } else if (PLevel == "High" || PLevel == "InProgress") {
+      bgColor = "#ffdfc8";
+      color = "#f46906";
     } else if (PLevel == "Normal") {
-      bgColor = "#009BA2";
+      // bgColor = "#009BA2";
+      bgColor = "#bbfcff";
+      color = "#4b6164";
     } else if (PLevel == "New Task") {
-      bgColor = "#68BAC4";
+      // bgColor = "#68BAC4";
+      bgColor = "#d1faff";
+      color = "#444444";
     } else if (PLevel == "Done") {
-      bgColor = "#007C81";
-    }else if (PLevel == "Pending") {
-      bgColor = "#68BAC4";
-    } else if (PLevel == "InProgress") {
-      bgColor = "#F46906";
-    } else if (PLevel == "Completed") {
-      bgColor = "#007C81";
+      // bgColor = "#007C81";
+      bgColor = "#c6fdff";
+      color = "#007C81";
     }
     return (
-      <div className={styles.pLevelStyle} style={{ backgroundColor: bgColor }}>
+      <div
+        className={styles.pLevelStyle}
+        style={{ backgroundColor: bgColor, color: color }}
+      >
         {PLevel}
       </div>
     );
@@ -260,8 +272,7 @@ const MyTaskData = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-trash"
-          onClick={() => 
-          {
+          onClick={() => {
             setDeleteObj(obj);
             setVisible(true);
             //deleteData(obj);
@@ -279,15 +290,15 @@ const MyTaskData = (props): JSX.Element => {
           style={tickIconStyle}
           icon="pi pi-check"
           onClick={(_) => {
-             if(validation())
-             {
+            if (validation()) {
               _handleDataoperation(obj);
-             }
-             else
-             {
-              showMessage("Please fill mandatory fields", toastTopRight, 'warn');
-             }
-            
+            } else {
+              showMessage(
+                "Please fill mandatory fields",
+                toastTopRight,
+                "warn"
+              );
+            }
           }}
         />
         <Button
@@ -296,7 +307,7 @@ const MyTaskData = (props): JSX.Element => {
           icon="pi pi-times"
           onClick={(_) => {
             _handleData("cancel", obj);
-            setCurdata({...data});
+            setCurdata({ ...data });
           }}
         />
       </div>
@@ -320,7 +331,11 @@ const MyTaskData = (props): JSX.Element => {
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
       //AssistantId:curuserId.Id,
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
+      BackupId: curdata.Backup.Id
+        ? curdata.Backup.Id
+        : configure.backupId
+        ? configure.backupId
+        : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -330,7 +345,11 @@ const MyTaskData = (props): JSX.Element => {
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : configure.backupId?configure.backupId:null,
+      BackupId: curdata.Backup.Id
+        ? curdata.Backup.Id
+        : configure.backupId
+        ? configure.backupId
+        : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -428,7 +447,7 @@ const MyTaskData = (props): JSX.Element => {
           isParent: val.isParent,
         })
       );
-    
+
     SPServices.SPDeleteItem({
       Listname: ListName,
       ID: obj.Id,
@@ -467,7 +486,6 @@ const MyTaskData = (props): JSX.Element => {
     } else {
       BindAfterChildDataDelete(obj.Id, obj.subId, obj.Index);
     }
-    
   }
 
   //editfunction
@@ -475,7 +493,7 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let editval = {
       TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id?curdata.Backup.Id:null,
+      BackupId: curdata.Backup.Id ? curdata.Backup.Id : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -723,8 +741,8 @@ const MyTaskData = (props): JSX.Element => {
 
     if (!val.Id && val.isAdd) {
       if (fieldType == "TaskName") {
-        let clsValid="";
-        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
+        let clsValid = "";
+        !curdata.TaskName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
@@ -736,15 +754,12 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "DueDate") {
-        let clsValid="";
-        if(!curdata.DueDate)
-        {
-          clsValid="md:w-20rem w-full p-invalid"
-          curdata.DueDate=moment().format();
-        }
-        else
-        {
-          clsValid=""
+        let clsValid = "";
+        if (!curdata.DueDate) {
+          clsValid = "md:w-20rem w-full p-invalid";
+          curdata.DueDate = moment().format();
+        } else {
+          clsValid = "";
         }
 
         return (
@@ -760,11 +775,14 @@ const MyTaskData = (props): JSX.Element => {
       if (fieldType == "Creator") {
         return (
           <PeoplePicker
+            styles={peopickerStyle}
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
             disabled={true}
-            peoplePickerCntrlclassName={curuserId.EMail?"":styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              curuserId.EMail ? "" : styles.peoplepickerErrStyle
+            }
             showtooltip={true}
             placeholder="Enter Email"
             // required={true}
@@ -793,6 +811,7 @@ const MyTaskData = (props): JSX.Element => {
       if (fieldType == "Backup") {
         return (
           <PeoplePicker
+            styles={peopickerStyle}
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
@@ -824,15 +843,17 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "PriorityLevel") {
-        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
-        indexOfDrop<0?indexOfDrop=0:"";
-        if(!curdata.PriorityLevel.name)
-        {
-          curdata.PriorityLevel=dropval[indexOfDrop];
+        let indexOfDrop = dropval.findIndex(
+          (data) => data.name == curdata.PriorityLevel.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.PriorityLevel.name) {
+          curdata.PriorityLevel = dropval[indexOfDrop];
         }
         return (
           <Dropdown
             options={dropval}
+            style={{ width: "85%" }}
             placeholder="priority level"
             optionLabel="name"
             value={dropval[indexOfDrop]}
@@ -842,15 +863,17 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status") {
-        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
-        indexOfDrop<0?indexOfDrop=0:"";
-        if(!curdata.Status.name)
-        {
-          curdata.Status=dropStatus[indexOfDrop];
+        let indexOfDrop = dropStatus.findIndex(
+          (data) => data.name == curdata.Status.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.Status.name) {
+          curdata.Status = dropStatus[indexOfDrop];
         }
         return (
           <Dropdown
             options={dropStatus}
+            style={{ width: "85%" }}
             placeholder="Select a status"
             optionLabel="name"
             value={dropStatus[indexOfDrop]}
@@ -873,8 +896,8 @@ const MyTaskData = (props): JSX.Element => {
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && val.isEdit) {
       if (fieldType == "TaskName") {
-        let clsValid="";
-        !curdata.TaskName?clsValid="md:w-20rem w-full p-invalid":"";
+        let clsValid = "";
+        !curdata.TaskName ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <InputText
             type="text"
@@ -885,15 +908,12 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "DueDate") {
-        let clsValid="";
-        if(!curdata.DueDate)
-        {
-          clsValid="md:w-20rem w-full p-invalid"
-          curdata.DueDate=moment().format();
-        }
-        else
-        {
-          clsValid=""
+        let clsValid = "";
+        if (!curdata.DueDate) {
+          clsValid = "md:w-20rem w-full p-invalid";
+          curdata.DueDate = moment().format();
+        } else {
+          clsValid = "";
         }
         return (
           <Calendar
@@ -908,6 +928,7 @@ const MyTaskData = (props): JSX.Element => {
       if (fieldType == "Creator") {
         return (
           <PeoplePicker
+            styles={peopickerStyle}
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
@@ -939,6 +960,7 @@ const MyTaskData = (props): JSX.Element => {
       if (fieldType == "Backup") {
         return (
           <PeoplePicker
+            styles={peopickerStyle}
             context={props.context}
             personSelectionLimit={1}
             groupName={""}
@@ -970,11 +992,12 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "PriorityLevel") {
-        let indexOfDrop=dropval.findIndex((data)=>data.name==curdata.PriorityLevel.name);
-        indexOfDrop<0?indexOfDrop=0:"";
-        if(!curdata.PriorityLevel.name)
-        {
-          curdata.PriorityLevel=dropval[indexOfDrop];
+        let indexOfDrop = dropval.findIndex(
+          (data) => data.name == curdata.PriorityLevel.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.PriorityLevel.name) {
+          curdata.PriorityLevel = dropval[indexOfDrop];
         }
         return (
           <Dropdown
@@ -988,11 +1011,12 @@ const MyTaskData = (props): JSX.Element => {
         );
       }
       if (fieldType == "Status") {
-        let indexOfDrop=dropStatus.findIndex((data)=>data.name==curdata.Status.name);
-        indexOfDrop<0?indexOfDrop=0:"";
-        if(!curdata.Status.name)
-        {
-          curdata.Status=dropStatus[indexOfDrop];
+        let indexOfDrop = dropStatus.findIndex(
+          (data) => data.name == curdata.Status.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.Status.name) {
+          curdata.Status = dropStatus[indexOfDrop];
         }
         return (
           <Dropdown
@@ -1053,7 +1077,11 @@ const MyTaskData = (props): JSX.Element => {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
-    showMessage("Something went wrong, Please contact system admin", toastTopRight, 'error');
+    showMessage(
+      "Something went wrong, Please contact system admin",
+      toastTopRight,
+      "error"
+    );
   };
 
   const onSelect = (event) => {
@@ -1162,7 +1190,6 @@ const MyTaskData = (props): JSX.Element => {
     setMasterdata([...tempData]);
     setCurdata({ ...data });
     setLoader(false);
-    
   }
 
   function BindAfterChildDataDelete(ID, parentId, childIndex) {
@@ -1173,36 +1200,36 @@ const MyTaskData = (props): JSX.Element => {
     setMasterdata([...tempData]);
     setCurdata({ ...data });
     setLoader(false);
-    
   }
 
   const showMessage = (event, ref, severity) => {
     const label = event;
 
-    ref.current.show({ severity: severity, summary: label, detail: label, life: 3000 });
+    ref.current.show({
+      severity: severity,
+      summary: label,
+      detail: label,
+      life: 3000,
+    });
   };
 
-  function validation()
-  {
-      let isAllValueFilled=true;
-      if(!curdata.TaskName)
-      {
-        isAllValueFilled=false;
-      }
-      return isAllValueFilled;
+  function validation() {
+    let isAllValueFilled = true;
+    if (!curdata.TaskName) {
+      isAllValueFilled = false;
+    }
+    return isAllValueFilled;
   }
 
-  function accept()
-  {
-      deleteData(deleteObj);
-      setVisible(false);
-      setDeleteObj({});
+  function accept() {
+    deleteData(deleteObj);
+    setVisible(false);
+    setDeleteObj({});
   }
 
-  function reject()
-  {
-      setVisible(false);
-      setDeleteObj({});
+  function reject() {
+    setVisible(false);
+    setDeleteObj({});
   }
 
   // useEffect(()=>{
@@ -1215,119 +1242,127 @@ const MyTaskData = (props): JSX.Element => {
   }, [props.mainData]);
 
   return (
-    <>{loader?<Loader/>:
-    <div className={styles.myTaskSection}>
-      <Toast ref={toastTopRight} position="top-right" />
-      <ConfirmDialog visible={visible} onHide={() => setVisible(false)} message="Are you sure you want to delete?"
-                    header="Confirmation" icon="pi pi-exclamation-triangle" 
-                    accept={accept} 
-                    reject={reject}
-                    />
-      <div
-        className={styles.myTaskHeader}
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          margin: "10px 0px",
-        }}
-      >
-        <h2
-          
-          // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
-        >
-          My Tasks
-        </h2>
-        <Button
-          label="New task"
-          className={styles.btnColor}
-          onClick={(e) => {
-            _handleData("addParent", { ..._sampleParent });
-          }}
-        />
-      </div>
-      <TreeTable
-        selectionMode="checkbox"
-        sortMode="multiple"
-        selectionKeys={selectedNodeKeys}
-        onSelect={onSelect}
-        onUnselect={unselect}
-        expandedKeys={expandedKeys}
-        onToggle={(e) => setExpandedKeys(e.value)}
-        onSelectionChange={(e) => {
-          setSelectedNodeKeys(e.value);
-        }}
-        value={[...curMyTask]}
-        tableStyle={{ minWidth: "50rem" }}
-        // paginator
-        // rows={10}
-      >
-        <Column
-          field="TaskName"
-          header="TaskName"
-          expander
-          sortable
-          style={TaskCellStyle}
-          body={(obj: any) => _addTextField(obj, "TaskName")}
-        />
-        <Column style={cellStyle} body={(obj: any) => _action(obj)} />
-        {/* <Column
+    <>
+      {loader ? (
+        <Loader />
+      ) : (
+        <div className={styles.myTaskSection}>
+          <Toast ref={toastTopRight} position="top-right" />
+          <ConfirmDialog
+            visible={visible}
+            onHide={() => setVisible(false)}
+            message="Are you sure you want to delete?"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
+            accept={accept}
+            reject={reject}
+          />
+          <div
+            className={styles.myTaskHeader}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: "15px 0px",
+            }}
+          >
+            <h2
+
+            // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
+            >
+              My Tasks
+            </h2>
+            <Button
+              label="New task"
+              className={styles.btnColor}
+              onClick={(e) => {
+                _handleData("addParent", { ..._sampleParent });
+              }}
+            />
+          </div>
+          <TreeTable
+            selectionMode="checkbox"
+            sortMode="multiple"
+            selectionKeys={selectedNodeKeys}
+            onSelect={onSelect}
+            onUnselect={unselect}
+            expandedKeys={expandedKeys}
+            onToggle={(e) => setExpandedKeys(e.value)}
+            onSelectionChange={(e) => {
+              setSelectedNodeKeys(e.value);
+            }}
+            value={[...curMyTask]}
+            tableStyle={{ minWidth: "50rem" }}
+            // paginator
+            // rows={10}
+          >
+            <Column
+              field="TaskName"
+              header="Task name"
+              expander
+              sortable
+              style={TaskCellStyle}
+              body={(obj: any) => _addTextField(obj, "TaskName")}
+            />
+            <Column style={cellStyle} body={(obj: any) => _action(obj)} />
+            {/* <Column
           field="ClientName"
           header="ClientName"
           sortable
           style={cellStyle}
         /> */}
-        <Column
-          field="Assitant"
-          header="Assitant"
-          sortable
-          style={cellStyle}
-          body={(obj: any) => _addTextField(obj, "Creator")}
-        />
-        {/* <Column
+            <Column
+              field="Assitant"
+              header="Assitant"
+              sortable
+              style={cellStyle}
+              body={(obj: any) => _addTextField(obj, "Creator")}
+            />
+            {/* <Column
           field="Backup"
           header="Backup"
           sortable
           style={cellStyle}
           body={(obj: any) => _addTextField(obj, "Backup")}
         /> */}
-        <Column
-          field="DueDate"
-          header="Due Date"
-          sortable
-          style={cellStyle}
-          body={(obj: any) => _addTextField(obj, "DueDate")}
-        />
+            <Column
+              field="DueDate"
+              header="Due date"
+              sortable
+              style={cellStyle}
+              body={(obj: any) => _addTextField(obj, "DueDate")}
+            />
 
-        <Column
-          field="PriorityLevel"
-          header=" Priority Level"
-          sortable
-          style={cellStyle}
-          body={(obj: any) => _addTextField(obj, "PriorityLevel")}
-        />
-        <Column
-          field="Status"
-          header="Status"
-          sortable
-          style={cellStyle}
-          body={(obj: any) => _addTextField(obj, "Status")}
-        />
-        {/* <Column
+            <Column
+              field="PriorityLevel"
+              header=" Priority level"
+              sortable
+              style={cellStyle}
+              body={(obj: any) => _addTextField(obj, "PriorityLevel")}
+            />
+            <Column
+              field="Status"
+              header="Status"
+              sortable
+              style={cellStyle}
+              body={(obj: any) => _addTextField(obj, "Status")}
+            />
+            {/* <Column
           field="Created"
           header="Created"
           sortable
           style={{ width: "200px" }}
           body={(obj: any) => _addTextField(obj, "Created")}
         /> */}
-        <Column
-          style={actionCellStyle}
-          body={(obj: any, index) =>
-            obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
-          }
-        />
-      </TreeTable>
-    </div>}
+            <Column
+              style={actionCellStyle}
+              body={(obj: any, index) =>
+                obj.isClick && (obj.isAdd || obj.isEdit) && _actionSubmit(obj)
+              }
+            />
+          </TreeTable>
+        </div>
+      )}
     </>
   );
 };

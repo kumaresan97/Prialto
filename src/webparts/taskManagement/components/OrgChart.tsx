@@ -95,6 +95,7 @@ const OrgChart = (props) => {
         overflowX: "hidden",
         padding: "3px 5px",
         background: "#fff",
+        minWidth: "100%",
       },
     },
   };
@@ -1895,6 +1896,7 @@ const OrgChart = (props) => {
                   <i className="pi pi-search" />
                   <InputText
                     placeholder="Search"
+                    className="searchFilter"
                     value={search}
                     onChange={(e: any) => SearchFilter(e.target.value)}
                   />
@@ -2012,8 +2014,8 @@ const OrgChart = (props) => {
             visible={showDialog}
             onHide={() => setShowDialog(false)}
             message="Are you sure you want to delete?"
-            header="Confirmation"
-            icon="pi pi-exclamation-triangle"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
             acceptClassName="p-button-danger"
             acceptLabel="Yes"
             rejectLabel="No"

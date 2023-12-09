@@ -37,7 +37,7 @@ let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 const UserMyTasksDB = (props): JSX.Element => {
   // styles variables
-  const cellStyle = { backgroundColor: "#fff", width: 200 };
+  const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
   // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
   const TaskCellStyle = { backgroundColor: "#fff", width: 265 };
@@ -47,10 +47,10 @@ const UserMyTasksDB = (props): JSX.Element => {
   const iconbtnStyle = {
     backgroundColor: "transparent",
     color: "#007C81",
-    border: "1px solid #007C81",
+    border: "none",
     height: 24,
     width: 24,
-    borderRadius: "50%",
+    // borderRadius: "50%",
   };
   const tickIconStyle = {
     backgroundColor: "transparent",
@@ -178,19 +178,30 @@ const UserMyTasksDB = (props): JSX.Element => {
   // style function
   const priorityLevelStyle = (PLevel) => {
     let bgColor: string = "";
+    let color: string = "";
     if (PLevel == "Urgent") {
       bgColor = "#BF4927";
-    } else if (PLevel == "High" || PLevel == "In Progress") {
-      bgColor = "#F46906";
+    } else if (PLevel == "High" || PLevel == "InProgress") {
+      bgColor = "#ffdfc8";
+      color = "#f46906";
     } else if (PLevel == "Normal") {
-      bgColor = "#009BA2";
+      // bgColor = "#009BA2";
+      bgColor = "#bbfcff";
+      color = "#4b6164";
     } else if (PLevel == "New Task") {
-      bgColor = "#68BAC4";
+      // bgColor = "#68BAC4";
+      bgColor = "#d1faff";
+      color = "#444444";
     } else if (PLevel == "Done") {
-      bgColor = "#007C81";
+      // bgColor = "#007C81";
+      bgColor = "#c6fdff";
+      color = "#007C81";
     }
     return (
-      <div className={styles.pLevelStyle} style={{ backgroundColor: bgColor }}>
+      <div
+        className={styles.pLevelStyle}
+        style={{ backgroundColor: bgColor, color: color }}
+      >
         {PLevel}
       </div>
     );
@@ -1096,9 +1107,9 @@ const UserMyTasksDB = (props): JSX.Element => {
         .then((res: any) => {
           let x = { ...configure };
           res.forEach((val) => {
-            x.EMail = val.BackingUp?val.BackingUp[0]?.EMail:"";
-            x.backupId = val.BackingUp?val.BackingUp[0]?.ID:"";
-            x.Title = val.BackingUp?val.BackingUp[0]?.Title:"";
+            x.EMail = val.BackingUp ? val.BackingUp[0]?.EMail : "";
+            x.backupId = val.BackingUp ? val.BackingUp[0]?.ID : "";
+            x.Title = val.BackingUp ? val.BackingUp[0]?.Title : "";
           });
           setConfigure({ ...x });
           //   console.log(res.BackingUp[0].EMail, "backup");
@@ -1176,6 +1187,7 @@ const UserMyTasksDB = (props): JSX.Element => {
           <i className="pi pi-search" />
           <InputText
             placeholder="Search"
+            className="searchFilter"
             value={search}
             onChange={(e: any) => SearchFilter(e.target.value)}
           />

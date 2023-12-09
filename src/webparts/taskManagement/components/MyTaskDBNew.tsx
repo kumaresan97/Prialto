@@ -424,6 +424,7 @@ export default function UserClients(props) {
                   <i className="pi pi-search" />
                   <InputText
                     placeholder="Search"
+                    className="searchFilter"
                     value={search}
                     onChange={(e: any) => SearchFilter(e.target.value)}
                   />

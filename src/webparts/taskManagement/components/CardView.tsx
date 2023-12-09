@@ -217,7 +217,7 @@ const CardView = (props) => {
                               <Label className={styles.roleHead}>
                                 Team Members
                               </Label>
-                              <div style={{ display: "flex" }}>
+                              <div style={{ display: "flex", height: 26 }}>
                                 <AvatarGroup>
                                   {val.members.length &&
                                     val.members.slice(0, 5).map((res) => {

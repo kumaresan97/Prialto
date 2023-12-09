@@ -159,7 +159,6 @@ const MainComponent = (props: any): JSX.Element => {
     teamArr = [];
     userTeams = [];
 
-    debugger;
     if (_isAdmin) {
       if (_masterArray.length) {
         _masterArray.forEach((val: any, i: number) => {
@@ -386,7 +385,7 @@ const MainComponent = (props: any): JSX.Element => {
 
                       color: "#FFFFFF !important",
 
-                      padding: "10px 0px 10px 20px !important",
+                      padding: "6px 0px 6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -408,7 +407,7 @@ const MainComponent = (props: any): JSX.Element => {
 
                       color: "#FFFFFF !important",
 
-                      padding: "10px 0px 10px 20px !important",
+                      padding: "6px 0px 6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -416,7 +415,7 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "OrgChart" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  Org Chart
+                  Organization Chart
                 </Label>
               )}
               {(_isAdmin || _isTC || _isTL) && (
@@ -430,7 +429,7 @@ const MainComponent = (props: any): JSX.Element => {
 
                       color: "#FFFFFF !important",
 
-                      padding: "10px 0px 10px 20px !important",
+                      padding: "6px 0px 6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -438,7 +437,7 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "Client" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  Client
+                  Client list
                 </Label>
               )}
             </>
@@ -446,7 +445,7 @@ const MainComponent = (props: any): JSX.Element => {
         </div>
       </div>
 
-      <div style={{ width: "80%", padding: "12px 35px 0px 0px" }}>
+      <div style={{ width: "80%", padding: 0 }}>
         {value == "mytasks" ? (
           <>
             <MyTaskDBNew context={props.context} />

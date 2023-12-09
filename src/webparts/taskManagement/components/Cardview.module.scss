@@ -7,8 +7,7 @@ $roleHeader: #757b81;
   width: 100%;
   gap: 16px;
   .cardSize {
-    // width: 32.3%;
-    width: 37.3%;
+    width: 32.3%;
     box-shadow: 0px -1px 4px #b9b9b926;
     .secDivider {
       display: flex;
@@ -16,10 +15,10 @@ $roleHeader: #757b81;
       justify-content: space-between;
     }
     .leftSideContainer {
-      width: 70%;
+      width: 50%;
     }
     .rightSideContainer {
-      width: 30%;
+      width: 50%;
     }
     .noPaddingLable {
       padding: 0px;

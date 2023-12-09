@@ -102,6 +102,7 @@ const OrgChart = (props) => {
         maxHeight: 50,
         overflowX: "hidden",
         padding: "3px 5px",
+        minWidth: "100%",
         background: "#fff",
       },
     },
@@ -632,6 +633,7 @@ const OrgChart = (props) => {
           <Dropdown
             options={role}
             placeholder="Role"
+            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Role}
             onChange={(e: any) => getOnchange("Role", e.value)}
@@ -683,6 +685,7 @@ const OrgChart = (props) => {
           <Dropdown
             options={team}
             placeholder="Team"
+            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Team}
             onChange={(e: any) => getOnchange("Team", e.value)}
@@ -1068,7 +1071,7 @@ const OrgChart = (props) => {
     return (
       <div>
         {edit == false && add == false && (
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <Button
               type="button"
               icon="pi pi-pencil"
@@ -1555,6 +1558,7 @@ const OrgChart = (props) => {
                 <span className="p-input-icon-left">
                   <i className="pi pi-search" />
                   <InputText
+                    className="searchFilter"
                     placeholder="Search"
                     value={search}
                     onChange={(e: any) => SearchFilter(e.target.value)}
@@ -1673,8 +1677,8 @@ const OrgChart = (props) => {
             visible={showDialog}
             onHide={() => setShowDialog(false)}
             message="Are you sure you want to delete?"
-            header="Confirmation"
-            icon="pi pi-exclamation-triangle"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
             acceptClassName="p-button-danger"
             acceptLabel="Yes"
             rejectLabel="No"

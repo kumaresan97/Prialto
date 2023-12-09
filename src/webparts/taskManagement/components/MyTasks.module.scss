@@ -1,5 +1,6 @@
 $btnColor: #f46906;
 .myTaskSection {
+  margin-bottom: 15px;
   thead > tr > th {
     padding: 10px !important;
   }
@@ -26,15 +27,17 @@ $btnColor: #f46906;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 25px 0px 10px 0px;
+    // margin: 15px 0px;
+    // margin: 25px 0px 10px 0px;
     h2 {
       margin: 0;
-      font-weight: 700;
+      font-weight: 600;
       color: $btnColor;
+      font-size: 19px;
     }
     label {
       font-size: 18px;
-      font-weight: 700;
+      font-weight: 600;
     }
   }
 }
@@ -43,7 +46,7 @@ $btnColor: #f46906;
 }
 .tblAction {
   display: flex;
-  gap: 10px;
+  // gap: 10px;
   justify-content: center;
 }
 .pLevelStyle {
@@ -57,65 +60,70 @@ $btnColor: #f46906;
 .actionContainer {
   display: flex;
   align-items: center;
-  gap: 10px;
+  // gap: 10px;
 }
 .btnColor {
   background-color: $btnColor;
   border: none;
-  padding: 8px 12px;
+  padding: 4px 18px;
 }
 
 // topContainer
 .commonFilterSection {
   display: flex;
   justify-content: space-between;
+  height: 32px;
   .leftFilterSection {
     font-size: 20px;
     font-weight: 700;
+    text-transform: capitalize;
   }
   .rightFilterSection {
     display: flex;
     gap: 10px;
   }
 }
-.clientHeader{
-  font-size: 20px;
-    font-weight: 700;
-    color:#f46906
+.clientHeader {
+  font-size: 19px;
+  font-weight: 600;
+  color: #f46906;
+  // margin-top: 15px;
 }
 // TL and TC Section styles
-.TLTCSection{
+.TLTCSection {
   display: flex;
   gap: 40px;
-  margin: 10px 0px;
-  b{
-    font-size: 20px;
+  margin: 15px 0px;
+  b {
+    font-size: 18px;
+    font-weight: 500;
   }
-  .TLImage{
+  .TLImage {
     display: flex;
     gap: 10px;
     align-items: center;
-    .avatar{
-      img{
-      border-radius: 8px !important;
+    .avatar {
+      img {
+        border-radius: 8px !important;
       }
     }
-    .avatarAndNameFlex{
+    .avatarAndNameFlex {
       display: flex;
       gap: 12px;
       align-items: center;
-      img{
-width: 34px;
-height: 34px;
+      img {
+        width: 26px;
+        height: 26px;
       }
-      span{
-        font-size: 18px;
+      span {
+        font-size: 16px;
+        font-weight: 400;
       }
     }
   }
 }
 
-.peoplepickerErrStyle{
+.peoplepickerErrStyle {
   border: 1px solid #dc3545;
   border-radius: 4px;
 }

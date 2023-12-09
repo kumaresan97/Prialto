@@ -801,8 +801,8 @@ const Client = (props) => {
             visible={showDialog}
             onHide={() => setShowDialog(false)}
             message="Are you sure you want to delete?"
-            header="Confirmation"
-            icon="pi pi-exclamation-triangle"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
             acceptClassName="p-button-danger"
             acceptLabel="Yes"
             rejectLabel="No"

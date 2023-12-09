@@ -23,6 +23,7 @@ import UserClient from "./UserClient";
 import Client from "./Client";
 import Loader from "./Loader";
 import Member from "./Members";
+import OrgChartNew from "./OrgChartNew";
 
 // Global Variables creation
 let _masterArray: any[] = [];
@@ -467,7 +468,7 @@ const MainComponent = (props: any): JSX.Element => {
             memberFunction={memberFunction}
           ></CardView>
         ) : value == "OrgChart" ? (
-          <OrgChart context={props.context}></OrgChart>
+          <OrgChartNew context={props.context}></OrgChartNew>
         ) : value == "Client" ? (
           <Client context={props.context}></Client>
         ) : value == "TeamMembers" && selectedTeamMember.length ? (

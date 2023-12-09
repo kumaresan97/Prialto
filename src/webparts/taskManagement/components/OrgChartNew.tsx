@@ -82,7 +82,15 @@ let team = [
   { name: "Team2", code: "Team2" },
   { name: "Team3", code: "Team3" },
 ];
-
+let requiredFields = [
+  "Name",
+  "Manager",
+  "Cohort",
+  "Role",
+  "Team",
+  "TeamCaptain",
+  "TeamLeader",
+];
 const OrgChart = (props) => {
   // style variables
   const multiPeoplePickerStyle = {
@@ -766,7 +774,6 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "DirectReports") {
-      
         return (
           <PeoplePicker
             context={props.context}
@@ -1092,15 +1099,25 @@ const OrgChart = (props) => {
               style={tickIconStyle}
               rounded
               onClick={(_) => {
-                if (validation()) {
+                const missingFields = validation();
+                if (missingFields.length === 0) {
                   _handleDataoperation("check", obj);
                 } else {
-                  showMessage(
-                    "Please fill mandatory fields",
-                    toastTopRight,
-                    "warn"
-                  );
+                  // missingFields.forEach((field) => {
+                  const errorMessage = `Please fill ${missingFields[0]}`;
+                  showMessage(errorMessage, toastTopRight, "warn");
+                  // });
                 }
+
+                // if (validation()) {
+                //   _handleDataoperation("check", obj);
+                // } else {
+                //   showMessage(
+                //     "Please fill mandatory fields",
+                //     toastTopRight,
+                //     "warn"
+                //   );
+                // }
               }}
             />
             <Button
@@ -1211,8 +1228,8 @@ const OrgChart = (props) => {
         _masterArray = res;
 
         dataManipulation(res);
-        
-       /* _curUserDetailsArray = res.filter(
+
+        /* _curUserDetailsArray = res.filter(
           (data: any) =>
             data.NameId &&
             data.Name.EMail.toLowerCase() === _curUser.toLowerCase()
@@ -1224,51 +1241,43 @@ const OrgChart = (props) => {
             : _curUserDetail()
           : setValue([]);
         setLoader(false);*/
-
-        
       })
       .catch((err: any) => {
         errFunction("Configuration List Nave Details get issue.", "");
       });
   };
 
-  function dataManipulation(data)
-  {
-    let arrDisplay=[];
-    let myTeams=[];
+  function dataManipulation(data) {
+    let arrDisplay = [];
+    let myTeams = [];
     _isTL = false;
     _isTC = false;
     _isPA = false;
 
     data.forEach((val: any) => {
-        
-        if (val.Role === "TL"&&val.Name.EMail==_curUser) 
-        {
-          _isTL = true;
-          myTeams.push(val.Team);
-        } else if (val.Role === "TC"&&val.Name.EMail==_curUser) {
-          _isTC = true;
-          myTeams.push(val.Team);
-        } else if (val.Role === "PA") {
-          _isPA = true;
-        }
-      });
-       
-    for(let i=0;i<data.length;i++)
-    {
-      let ismyTeam=myTeams.includes(data[i].Team);
+      if (val.Role === "TL" && val.Name.EMail == _curUser) {
+        _isTL = true;
+        myTeams.push(val.Team);
+      } else if (val.Role === "TC" && val.Name.EMail == _curUser) {
+        _isTC = true;
+        myTeams.push(val.Team);
+      } else if (val.Role === "PA") {
+        _isPA = true;
+      }
+    });
 
-      if((_isTL&&ismyTeam)||(_isAdmin))
-      {
-          arrDisplay.push(data[i]);
+    for (let i = 0; i < data.length; i++) {
+      let ismyTeam = myTeams.includes(data[i].Team);
+
+      if ((_isTL && ismyTeam) || _isAdmin) {
+        arrDisplay.push(data[i]);
       }
     }
 
     BindData(arrDisplay);
   }
 
-  function BindData(Data)
-  {
+  function BindData(Data) {
     let orgcgart = [];
     Data.forEach((val) => {
       orgcgart.push({
@@ -1342,7 +1351,6 @@ const OrgChart = (props) => {
   //   let _TLArray: any[] = [];
   //   let _TCArray: any[] = [];
   //   let _PAArray: any[] = [];
-
 
   //   _curArray = [];
   //   uniqueTeams = [];
@@ -1486,23 +1494,42 @@ const OrgChart = (props) => {
     });
   };
 
+  // function validation() {
+  //   let isAllValueFilled = true;
+  //   if (
+  //     !curobj.Name.Id ||
+  //     !curobj.Manager.Id ||
+  //     !curobj.Cohort ||
+  //     !curobj.Role ||
+  //     !curobj.Team ||
+  //     !curobj.TeamCaptain.Id ||
+  //     !curobj.TeamLeader.Id ||
+  //     // !curobj.DirectReports[0].Id ||
+  //     (!curobj.BackingUp||curobj.BackingUp.length===0)
+
+  //   ) {
+  //     isAllValueFilled = false;
+  //   }
+  //   return isAllValueFilled;
+  // }
   function validation() {
-    let isAllValueFilled = true;
+    const missingFields = [];
+
+    requiredFields.forEach((field) => {
+      if (!curobj[field]?.Id) {
+        missingFields.push(field);
+      }
+    });
+
     if (
-      !curobj.Name.Id ||
-      !curobj.Manager.Id ||
-      !curobj.Cohort ||
-      !curobj.Role ||
-      !curobj.Team ||
-      !curobj.TeamCaptain.Id ||
-      !curobj.TeamLeader.Id ||
-      // !curobj.DirectReports[0].Id ||
-      (!curobj.BackingUp||curobj.BackingUp.length===0)
-    
+      !curobj.BackingUp ||
+      curobj.BackingUp.length === 0 ||
+      !curobj.BackingUp.some((user) => user.Id !== null)
     ) {
-      isAllValueFilled = false;
+      missingFields.push("BackingUp");
     }
-    return isAllValueFilled;
+
+    return missingFields;
   }
   useEffect(() => {
     setLoader(true);

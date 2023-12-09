@@ -144,6 +144,15 @@ const OrgChart = (props) => {
   //     ],
   //   },
   // ];
+  let requiredFields = [
+    "Name",
+    "Manager",
+    "Cohort",
+    "Role",
+    "Team",
+    "TeamCaptain",
+    "TeamLeader",
+  ];
 
   let addparent: clinet = {
     Id: null,
@@ -291,7 +300,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Name") {
         let clsValid = "";
-        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Name?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -341,7 +350,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Manager") {
         let clsValid = "";
-        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -392,7 +401,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamCaptain") {
         let clsValid = "";
-        !curobj.TeamCaptain.Id
+        !curobj.TeamCaptain?.Id
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -429,7 +438,9 @@ const OrgChart = (props) => {
 
       if (fieldType == "TeamLeader") {
         let clsValid = "";
-        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.TeamLeader?.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -475,10 +486,6 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "DirectReports") {
-        let clsValid = "";
-        !curobj.DirectReports[0].Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -486,7 +493,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -499,8 +506,8 @@ const OrgChart = (props) => {
             //     : []
             // }
 
-            defaultSelectedUsers={curobj.DirectReports.map((report) => {
-              return report.EMail;
+            defaultSelectedUsers={curobj.DirectReports?.map((report) => {
+              return report?.EMail;
             })}
             // defaultSelectedUsers={[
             //   "devaraj@chandrudemo.onmicrosoft.com",
@@ -522,7 +529,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "BackingUp") {
         let clsValid = "";
-        !curobj.BackingUp[0].Id
+        !curobj.BackingUp || curobj.BackingUp.length == 0
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
 
@@ -586,7 +593,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Name") {
         let clsValid = "";
-        !curobj.Name.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Name?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -634,7 +641,7 @@ const OrgChart = (props) => {
 
       if (fieldType == "Manager") {
         let clsValid = "";
-        !curobj.Manager.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -684,7 +691,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamCaptain") {
         let clsValid = "";
-        !curobj.TeamCaptain.Id
+        !curobj.TeamCaptain?.Id
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -720,7 +727,9 @@ const OrgChart = (props) => {
       }
       if (fieldType == "TeamLeader") {
         let clsValid = "";
-        !curobj.TeamLeader.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !curobj.TeamLeader?.Id
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -766,10 +775,6 @@ const OrgChart = (props) => {
         );
       }
       if (fieldType == "DirectReports") {
-        let clsValid = "";
-        !curobj.DirectReports[0].Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -777,7 +782,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
             placeholder="Enter Email"
             ensureUser={true}
@@ -789,8 +794,8 @@ const OrgChart = (props) => {
             //     ? [curobj.DirectReports[0].EMail]
             //     : []
             // }
-            defaultSelectedUsers={curobj.DirectReports.map((report) => {
-              return report.EMail;
+            defaultSelectedUsers={curobj.DirectReports?.map((report) => {
+              return report?.EMail;
             })}
             resolveDelay={1000}
             onChange={(items: any[]) => {
@@ -808,7 +813,7 @@ const OrgChart = (props) => {
       }
       if (fieldType == "BackingUp") {
         let clsValid = "";
-        !curobj.BackingUp[0].Id
+        !curobj.BackingUp || curobj.BackingUp.length == 0
           ? (clsValid = "md:w-20rem w-full p-invalid")
           : "";
         return (
@@ -825,8 +830,8 @@ const OrgChart = (props) => {
             // showHiddenInUI={false}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={curobj.BackingUp.map((report) => {
-              return report.EMail;
+            defaultSelectedUsers={curobj.BackingUp?.map((report) => {
+              return report?.EMail;
             })}
             // defaultSelectedUsers={
             //   curobj.DirectReports[0].EMail
@@ -1013,7 +1018,8 @@ const OrgChart = (props) => {
     };
 
     SPServices.SPAddItem({
-      Listname: "Configuration",
+      // Listname: "Configuration",
+      Listname: "testConfig",
       RequestJSON: json,
     })
       .then((res) => {
@@ -1120,15 +1126,28 @@ const OrgChart = (props) => {
               icon="pi pi-check"
               style={tickIconStyle}
               rounded
+              // onClick={(_) => {
+              //   if (validation()) {
+              //     _handleDataoperation("check", obj);
+              //   } else {
+              //     showMessage(
+              //       "Please fill mandatory fields",
+              //       toastTopRight,
+              //       "warn"
+              //     );
+              //   }
+              // }}
+
               onClick={(_) => {
-                if (validation()) {
+                const missingFields = validation();
+
+                if (missingFields.length === 0) {
                   _handleDataoperation("check", obj);
                 } else {
-                  showMessage(
-                    "Please fill mandatory fields",
-                    toastTopRight,
-                    "warn"
-                  );
+                  missingFields.forEach((field) => {
+                    const errorMessage = `Please fill ${field}`;
+                    showMessage(errorMessage, toastTopRight, "warn");
+                  });
                 }
               }}
             />
@@ -1201,7 +1220,8 @@ const OrgChart = (props) => {
     };
 
     SPServices.SPUpdateItem({
-      Listname: "Configuration",
+      // Listname: "Configuration",
+      Listname: "testConfig",
       ID: obj.Id,
       RequestJSON: json,
     })
@@ -1265,7 +1285,7 @@ const OrgChart = (props) => {
 
   const getdatas = () => {
     SPServices.SPReadItems({
-      Listname: "Configuration",
+      Listname: "testConfig",
       Select:
         "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title",
 
@@ -1337,26 +1357,30 @@ const OrgChart = (props) => {
         // }
       });
     }
+    console.log(uniqueTeams, "uniqteam");
+    console.log(_isAdmin, "admin");
+    console.log(_isTC, "tc");
+    console.log(_isTL, "tl");
 
     teamArr =
       _masterArray.length &&
       _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
-
+    debugger;
     if (_isAdmin) {
       userTeams = teamArr;
     } else {
       if (_isTL) {
-        _TLArray = teamArr.filter((team) => team.Role === "TL");
+        _TLArray = teamArr.filter((res) => uniqueTeams.includes(res.Team));
       }
-      // if (_isTC) {
-      //   _TCArray = teamArr.filter((team) => team.Role === "TC");
-      // }
+      if (_isTC) {
+        _TCArray = teamArr.filter((res) => uniqueTeams.includes(res.Team));
+      }
       // if (_isPA) {
       //   _PAArray = teamArr.filter((team) => team.Role === "PA");
       // }
 
       // userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
-      userTeams = [..._TLArray];
+      userTeams = [..._TLArray, ..._TCArray];
     }
 
     let orgcgart = [];
@@ -1430,9 +1454,13 @@ const OrgChart = (props) => {
     //     },
     //   ],
     // }));
+    console.log(orgcgart, "orgchart");
+
     setValue([...orgcgart]);
     setMasterdata([...orgcgart]);
     setLoader(false);
+    setAdd(false);
+    setEdit(false);
 
     // _prepareNaveData();
   };
@@ -1768,27 +1796,79 @@ const OrgChart = (props) => {
     ref.current.show({
       severity: severity,
       summary: label,
-      detail: label,
+      // detail: label,
       life: 3000,
     });
   };
 
+  // function validation() {
+  //   let isAllValueFilled = true;
+  //   if (
+  //     !curobj.Name?.Id ||
+  //     !curobj.Manager?.Id ||
+  //     !curobj.Cohort ||
+  //     !curobj.Role ||
+  //     !curobj.Team ||
+  //     !curobj.TeamCaptain?.Id ||
+  //     !curobj.TeamLeader?.Id ||
+  //     // !curobj.DirectReports[0].Id ||
+  //     !curobj.BackingUp ||
+  //     curobj.BackingUp?.length === 0
+  //   ) {
+  //     isAllValueFilled = false;
+  //   }
+  //   return isAllValueFilled;
+  // }
+
+  // function validation() {
+  //   const missingFields = [];
+
+  //   if (!curobj.Name?.Id) {
+  //     missingFields.push("Name");
+  //   }
+  //   if (!curobj.Manager?.Id) {
+  //     missingFields.push("Manager");
+  //   }
+  //   if (!curobj.Cohort) {
+  //     missingFields.push("Cohort");
+  //   }
+  //   if (!curobj.Role) {
+  //     missingFields.push("Role");
+  //   }
+  //   if (!curobj.Team) {
+  //     missingFields.push("Team");
+  //   }
+  //   if (!curobj.TeamCaptain?.Id) {
+  //     missingFields.push("Team Captain");
+  //   }
+  //   if (!curobj.TeamLeader?.Id) {
+  //     missingFields.push("Team Leader");
+  //   }
+  //   if (!curobj.BackingUp || curobj.BackingUp?.length === 0) {
+  //     missingFields.push("BackingUp");
+  //   }
+
+  //   return missingFields;
+  // }
+
   function validation() {
-    let isAllValueFilled = true;
+    const missingFields = [];
+
+    requiredFields.forEach((field) => {
+      if (!curobj[field]?.Id) {
+        missingFields.push(field);
+      }
+    });
+
     if (
-      !curobj.Name.Id ||
-      !curobj.Manager.Id ||
-      !curobj.Cohort ||
-      !curobj.Role ||
-      !curobj.Team ||
-      !curobj.TeamCaptain.Id ||
-      !curobj.TeamLeader.Id ||
-      !curobj.DirectReports[0].Id ||
-      !curobj.BackingUp[0].Id
+      !curobj.BackingUp ||
+      curobj.BackingUp.length === 0 ||
+      !curobj.BackingUp.some((user) => user.Id !== null)
     ) {
-      isAllValueFilled = false;
+      missingFields.push("BackingUp");
     }
-    return isAllValueFilled;
+
+    return missingFields;
   }
   useEffect(() => {
     setLoader(true);

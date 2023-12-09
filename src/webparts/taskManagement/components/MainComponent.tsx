@@ -106,11 +106,8 @@ const MainComponent = (props: any): JSX.Element => {
     sp.web.lists
       .getByTitle("Configuration")
       .items.select(
-        // "*,Name/EMail,Name/Title,TeamCaptain/EMail,TeamCaptain/Title"
-
-        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title"
+        "*, Name/ID, Name/EMail, Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title, DirectReports/ID, DirectReports/EMail, DirectReports/Title"
       )
-      // .expand("Name,TeamCaptain")
       .expand("Name,Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp")
       .top(5000)
       .get()
@@ -154,52 +151,70 @@ const MainComponent = (props: any): JSX.Element => {
   };
 
   const _prepareFilteredData = (): void => {
-    let _TLArray: any[] = [];
-    let _TCArray: any[] = [];
+    let _TLAndTCArray: any[] = [];
     let _PAArray: any[] = [];
     _curArray = [];
     uniqueTeams = [];
     teamArr = [];
     userTeams = [];
 
+    debugger;
     if (_isAdmin) {
-      _masterArray.forEach((val: any) => {
-        if (!uniqueTeams.includes(val.Team)) {
-          uniqueTeams.push(val.Team);
-        }
-      });
+      if (_masterArray.length) {
+        _masterArray.forEach((val: any, i: number) => {
+          if (i === 0) {
+            uniqueTeams.push({ Team: val.Team, Role: "" });
+          } else {
+            if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(val.Team)) {
+              uniqueTeams.push({ Team: val.Team, Role: "" });
+            }
+          }
+        });
+      }
     } else {
-      _curUserDetailsArray.forEach((val: any) => {
-        if (!uniqueTeams.includes(val.Team)) {
-          uniqueTeams.push(val.Team);
-        }
-      });
+      if (_curUserDetailsArray.length) {
+        _curUserDetailsArray.forEach((val: any, i: number) => {
+          if (i === 0) {
+            uniqueTeams.push({ Team: val.Team, Role: val.Role });
+          } else {
+            if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(val.Team)) {
+              uniqueTeams.push({ Team: val.Team, Role: val.Role });
+            }
+          }
+        });
+      }
     }
 
-    teamArr =
-      _masterArray.length &&
-      _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
-
     if (_isAdmin) {
-      userTeams = teamArr;
-    } else {
-      if (_isTL) {
-        _TLArray = teamArr.filter((team) => team.Role === "TL");
-      }
-      if (_isTC) {
-        _TCArray = teamArr.filter((team) => team.Role === "TC");
-      }
-      if (_isPA) {
-        _PAArray = teamArr.filter((team) => team.Role === "PA");
+      userTeams = _masterArray;
+    } else if (uniqueTeams.length) {
+      for (let i: number = 0; uniqueTeams.length > i; i++) {
+        let _tempArray: any[] = [];
+        if (uniqueTeams[i].Role !== "PA") {
+          for (let j: number = 0; _masterArray.length > j; j++) {
+            if (uniqueTeams[i].Team === _masterArray[j].Team) {
+              _tempArray.push({ ..._masterArray[j] });
+            }
+
+            if (_masterArray.length === j + 1) {
+              _TLAndTCArray.push(..._tempArray);
+            }
+          }
+        }
       }
 
-      userTeams = [..._TLArray, ..._TCArray, ..._PAArray];
+      if (_isTL || _isTC || _isPA) {
+        _PAArray = _curUserDetailsArray.filter((team) => team.Role === "PA");
+
+        userTeams = [..._TLAndTCArray, ..._PAArray];
+      }
     }
 
     _curArray = userTeams.map((data: any) => ({
       team: data.Team,
       members: [
         {
+          Role: data?.Role,
           Name: data.Name?.Title,
           Email: data.Name?.EMail,
           Id: data.NameId,
@@ -214,19 +229,22 @@ const MainComponent = (props: any): JSX.Element => {
     let _curMembers: any[] = [];
     _formattedData = [];
 
-    for (let i: number = 0; uniqueTeams.length > i; i++) {
-      _curMembers = [];
+    if (uniqueTeams.length) {
+      for (let i: number = 0; uniqueTeams.length > i; i++) {
+        _curMembers = [];
 
-      for (let j: number = 0; _curArray.length > j; j++) {
-        if (uniqueTeams[i] === _curArray[j].team) {
-          _curMembers.push(..._curArray[j].members);
-        }
+        for (let j: number = 0; _curArray.length > j; j++) {
+          if (uniqueTeams[i].Team === _curArray[j].team) {
+            delete _curArray[j].members[0].Role;
+            _curMembers.push(..._curArray[j].members);
+          }
 
-        if (_curArray.length === j + 1) {
-          _formattedData.push({
-            team: uniqueTeams[i],
-            members: [..._curMembers],
-          });
+          if (_curArray.length === j + 1) {
+            _formattedData.push({
+              team: uniqueTeams[i].Team,
+              members: [..._curMembers],
+            });
+          }
         }
       }
     }

@@ -94,6 +94,7 @@ const Client = (props) => {
     //   Title: "",
     // },
   };
+
   const [loader, setLoader] = useState(false);
 
   const [clientdetail, setClientdetail] = useState<IClient[]>([]);
@@ -235,15 +236,26 @@ const Client = (props) => {
               rounded
               style={tickIconStyle}
               onClick={(_) => {
-                if (validation()) {
+                const missingFields = validation();
+                if (missingFields.length === 0) {
                   _handleDataoperation("check", obj);
                 } else {
-                  showMessage(
-                    "Please fill mandatory fields",
-                    toastTopRight,
-                    "warn"
-                  );
+                  // missingFields.forEach((field) => {
+                  const errorMessage = `Please fill ${missingFields[currentFieldIndex]}`;
+                  showMessage(errorMessage, toastTopRight, "warn");
+
+                  currentFieldIndex =
+                    (currentFieldIndex + 1) % missingFields.length;
                 }
+                // if (validation()) {
+                //   _handleDataoperation("check", obj);
+                // } else {
+                //   showMessage(
+                //     "Please fill mandatory fields",
+                //     toastTopRight,
+                //     "warn"
+                //   );
+                // }
               }}
             />
             <Button
@@ -310,7 +322,7 @@ const Client = (props) => {
       }
       if (fieldType == "Assistant") {
         let clsValid = "";
-        !value.Assistant.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !value.Assistant?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -321,7 +333,9 @@ const Client = (props) => {
             placeholder="Enter Email"
             ensureUser={true}
             // showHiddenInUI={false}
-            peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            peoplePickerCntrlclassName={
+              !value.Assistant?.Id ? styles.peoplepickerErrStyle : ""
+            }
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
             defaultSelectedUsers={
@@ -399,6 +413,7 @@ const Client = (props) => {
             <InputText
               type="text"
               // placeholder="TaskName"
+
               className={`${styles.tblTxtBox}${clsValid}`}
               value={value.LastName}
               onChange={(e) => getOnchange("LastName", e.target.value)}
@@ -426,7 +441,7 @@ const Client = (props) => {
 
       if (fieldType == "Assistant") {
         let clsValid = "";
-        !value.Assistant.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
+        !value.Assistant?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <>
             <PeoplePicker
@@ -437,7 +452,9 @@ const Client = (props) => {
               // required={true}
               ensureUser={true}
               // showHiddenInUI={false}
-              peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+              peoplePickerCntrlclassName={
+                !value.Assistant?.Id ? styles.peoplepickerErrStyle : ""
+              }
               showHiddenInUI={true}
               principalTypes={[PrincipalType.User]}
               defaultSelectedUsers={
@@ -675,23 +692,44 @@ const Client = (props) => {
     ref.current.show({
       severity: severity,
       summary: label,
-      detail: label,
+      // detail: label,
       life: 3000,
     });
   };
 
+  // function validation() {
+  //   let isAllValueFilled = true;
+  //   if (
+  //     !value?.FirstName ||
+  //     !value?.LastName ||
+  //     !value?.CompanyName ||
+  //     // !value.Backup.Id ||
+  //     !value?.Assistant?.Id
+  //   ) {
+  //     isAllValueFilled = false;
+  //   }
+  //   return isAllValueFilled;
+  // }
+  let currentFieldIndex = 0;
+
   function validation() {
-    let isAllValueFilled = true;
-    if (
-      !value?.FirstName ||
-      !value?.LastName ||
-      !value?.CompanyName ||
-      // !value.Backup.Id ||
-      !value?.Assistant?.Id
-    ) {
-      isAllValueFilled = false;
+    const missingFields = [];
+
+    if (!value.FirstName || value.FirstName == "") {
+      missingFields.push("FirstName");
     }
-    return isAllValueFilled;
+    if (!value.LastName || value.LastName === "") {
+      missingFields.push("LastName");
+    }
+    if (!value.CompanyName || value.CompanyName == "") {
+      missingFields.push("CompanyName");
+    }
+
+    if (!value.Assistant?.Id || value.Assistant?.Id === null) {
+      missingFields.push("Assistant");
+    }
+
+    return missingFields;
   }
   useEffect(() => {
     setLoader(true);

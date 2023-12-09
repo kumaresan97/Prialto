@@ -60,7 +60,6 @@ const exportToExcel = async (data, headers, sheetName) => {
         });
       });
     } else if (sheetName == "MyTask") {
-      debugger;
       for (const parent of data) {
         worksheet.addRow({
           TaskName: parent.data?.TaskName,
@@ -71,13 +70,13 @@ const exportToExcel = async (data, headers, sheetName) => {
           Status: parent.data?.Status,
           Created: parent.data?.Created,
         });
-        worksheet.addRow();
-
+        //worksheet.addRow();
         // Add child data for each parent
         if (parent.children.length > 0) {
           for (const child of parent.children) {
             worksheet.addRow({
               TaskName: child.data?.TaskName,
+              ParenTask:parent.data?.TaskName,
               Creator: child.data?.Creator.Title,
               Backup: child.data?.Backup.Title,
               PriorityLevel: child.data?.PriorityLevel,
@@ -87,10 +86,10 @@ const exportToExcel = async (data, headers, sheetName) => {
             });
           }
         } else {
-          worksheet.addRow({}); // Add an empty row
+          //worksheet.addRow({}); // Add an empty row
         }
 
-        worksheet.addRow(); // Empty row after each parent's children
+        //worksheet.addRow(); // Empty row after each parent's children
       }
     }
 

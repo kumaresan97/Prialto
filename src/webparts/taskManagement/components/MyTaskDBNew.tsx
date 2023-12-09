@@ -372,6 +372,7 @@ export default function UserClients(props) {
 
   let columns = [
     { header: "Task Name", key: "TaskName", width: 15 },
+    { header: "Parent Task Name", key: "ParenTask", width: 15 },
     { header: "Creator", key: "Creator", width: 25 },
     { header: "Backup", key: "Backup", width: 25 },
     { header: "DueDate", key: "DueDate", width: 25 },

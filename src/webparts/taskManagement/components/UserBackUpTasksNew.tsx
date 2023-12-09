@@ -497,7 +497,7 @@ export default function UserBackUpTasksNew(props) {
   return (
     <>
       {loader?<Loader />:(<>
-      <Label className={styles.clientHeader}>Backup Tasks {props.Email}</Label>
+      <Label className={styles.clientHeader}>Backup Tasks</Label>
       <>
         {clientdata.length > 0 ? (
           <>

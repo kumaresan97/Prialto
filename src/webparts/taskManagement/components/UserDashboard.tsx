@@ -193,7 +193,7 @@ export default function UserDashboard(props) {
               />
             </div>
           </div>
-          <div className={styles.TLTCSection}>
+          {/* <div className={styles.TLTCSection}>
             <div className={styles.TLImage}>
               <b>TL :</b>
               <div className={styles.avatarAndNameFlex}>
@@ -220,7 +220,7 @@ export default function UserDashboard(props) {
                 <span>{teamCaptainData.Title}</span>
               </div>
             </div>
-          </div>
+          </div> */}
           <UserTasks
             searchValue={search}
             context={props.context}

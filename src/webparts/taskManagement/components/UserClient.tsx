@@ -382,7 +382,7 @@ export default function UserClients(props) {
               />
             </div>
           </div>
-          <div className={styles.TLTCSection}>
+          {/* <div className={styles.TLTCSection}>
             <div className={styles.TLImage}>
               <b>TL :</b>
               <div className={styles.avatarAndNameFlex}>
@@ -409,7 +409,7 @@ export default function UserClients(props) {
                 <span>{teamCaptainData.Title}</span>
               </div>
             </div>
-          </div>
+          </div> */}
           <Label className={styles.clientHeader}>Client Tasks</Label>
           <>
             {clientdata.length > 0 ? (

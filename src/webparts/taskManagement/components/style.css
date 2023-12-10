@@ -1,167 +1,240 @@
 #workbenchPageContent {
-  max-width: 100%;
+    max-width: 100%;
 }
 
 .content_3f3fd3c2,
 .CanvasZone {
-  padding: 0 !important;
-  max-width: 100% !important;
+    padding: 0 !important;
+    max-width: 100% !important;
 }
 
 .report-style-class {
-  height: 100vh;
-}
-.p-card-body {
-  padding: 10px 20px 14px 20px;
-}
-.p-card .p-card-content {
-  padding: 0;
-}
-.p-avatar-image {
-  width: 26px;
-  height: 26px;
-}
-.p-inputtext:focus {
-  box-shadow: unset;
-  border-color: #000;
-}
-.p-button:focus {
-  box-shadow: unset;
-}
-.p-dropdown:not(.p-disabled).p-focus {
-  box-shadow: unset;
-  border-color: #000;
-}
-.pi-check,
-.pi-times {
-  font-size: 18px;
+    height: 100vh;
 }
 
-/* treetable styles start */
-.p-treetable-thead th {
-  background-color: #fff !important;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
+.p-card-body {
+    padding: 10px 20px 14px 20px;
 }
+
+.p-card .p-card-content {
+    padding: 0;
+}
+
+.p-avatar-image {
+    width: 26px;
+    height: 26px;
+}
+
+.p-inputtext:focus {
+    box-shadow: unset;
+    border-color: #000;
+}
+
+.p-button:focus {
+    box-shadow: unset;
+}
+
+.p-dropdown:not(.p-disabled).p-focus {
+    box-shadow: unset;
+    border-color: #000;
+}
+
+.pi-check,
+.pi-times {
+    font-size: 18px;
+}
+
+
+/* treetable styles start */
+
+.p-treetable-thead th {
+    background-color: #fff !important;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+}
+
 .p-treetable-tbody span,
 td {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .p-treetable-tbody .p-button-icon {
-  font-weight: 900;
+    font-weight: 900;
 }
 
 .p-treetable-wrapper::-webkit-scrollbar {
-  height: 8px;
-  background-color: #f5f5f5;
+    height: 8px;
+    background-color: #f5f5f5;
 }
 
 .p-treetable-wrapper::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: #a3a3a3;
+    border-radius: 10px;
+    background-color: #a3a3a3;
 }
+
+
 /* treetable styles end */
 
+
 /* peoplepicker style  start*/
+
 .ms-BasePicker-text {
-  border: 1px solid #ced4da !important;
-  min-height: 34px;
-  border-radius: 4px;
-  background-color: #fff;
-  min-width: 100%;
+    border: 1px solid #ced4da !important;
+    min-height: 34px;
+    border-radius: 4px;
+    background-color: #fff;
+    min-width: 100%;
 }
+
 .ms-BasePicker-text::after {
-  border: 1px solid #000 !important;
-  content: unset;
+    border: 1px solid #000 !important;
+    content: unset;
 }
+
 .ms-BasePicker-text input {
-  min-height: 34px;
+    min-height: 34px;
 }
+
 
 /* peoplepicker style  end*/
 
+
 /* datepicker styles start */
+
 .p-datepicker-trigger {
-  background-color: transparent;
-  border: none;
-  color: #009ba2;
+    background-color: transparent;
+    border: none;
+    color: #009ba2;
 }
+
 .p-calendar {
-  border: 1px solid #ced4da;
-  border-radius: 4px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }
+
 .p-calendar .p-inputtext {
-  border: none;
+    border: none;
 }
+
 .p-dropdown-trigger-icon {
-  color: #009ba2;
+    color: #009ba2;
 }
+
+
 /* datepicker styles end */
 
+
 /* modal styles  start*/
+
 .p-confirm-dialog-message {
-  font-size: 20px;
+    font-size: 20px;
 }
+
+
 /* modal styles  end*/
 
+
 /* datatable scroll design */
+
 .p-datatable-wrapper::-webkit-scrollbar {
-  height: 8px;
-  background-color: #f5f5f5;
+    height: 8px;
+    background-color: #f5f5f5;
 }
 
 .p-datatable-wrapper::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: #a3a3a3;
+    border-radius: 10px;
+    background-color: #a3a3a3;
 }
+
 
 /* checkbox style */
+
 .p-checkbox-box.p-highlight {
-  border-color: #009ba2;
-  background: #009ba2;
+    border-color: #009ba2;
+    background: #009ba2;
 }
+
 
 /* deletemodal style start*/
+
 .p-dialog {
-  border: none;
+    border: none;
 }
+
 .p-dialog-header {
-  display: none;
+    display: none;
 }
+
 .p-confirm-dialog-message {
-  font-size: 18px;
+    font-size: 18px;
 }
+
 .p-dialog .p-dialog-footer {
-  padding: 10px;
-  text-align: center;
-  border: none;
-  border-radius: 0px;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 0px;
 }
+
 .p-dialog .p-button {
-  padding: 4px 24px;
+    padding: 4px 24px;
 }
+
 .p-dialog .p-confirm-dialog-reject {
-  background-color: gray;
-  color: #fff;
-  border: none;
+    background-color: gray;
+    color: #fff;
+    border: none;
 }
+
 .p-dialog .p-confirm-dialog-accept {
-  background-color: #009ba2;
-  border: none;
+    background-color: #009ba2;
+    border: none;
 }
+
+
 /* deletemodal style end*/
 
+
 /* search filter style  start*/
+
 .searchFilter {
-  padding: 0.2rem 0.75rem 0.3rem 2.5rem !important;
-  /* padding-left: 2.5rem; */
+    padding: 0.2rem 0.75rem 0.3rem 2.5rem !important;
+    /* padding-left: 2.5rem; */
 }
+
+
 /* search filter style  end*/
 
+
 /* sorting icon */
+
 .p-sortable-column-icon {
-  height: 10px;
-  width: 10px;
+    height: 10px;
+    width: 10px;
+}
+
+
+/*
+ *  STYLE 7
+ */
+
+*::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+*::-webkit-scrollbar {
+    width: 3px;
+    background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #47bcc0), color-stop(0.72, #47bcc0), color-stop(0.86, #009b9f));
+}
+
+tr:has( .p-checkbox-box.p-highlight) {
+    background: #e0e9e9 !important;
 }

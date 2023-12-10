@@ -1,129 +1,134 @@
 $btnColor: #f46906;
 .myTaskSection {
-  margin-bottom: 15px;
-  thead > tr > th {
-    padding: 10px !important;
-  }
-
-  .filterSection {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-  td:nth-child(1) {
-    display: flex;
-    height: 54px;
-    align-items: center;
-  }
-  // tr :nth-child(1) {
-  //   background: #747a7c33 !important;
-  // }
-
-  tbody > tr > td {
-    padding: 8px !important;
-    // background: #747a7c33 !important;
-  }
-  .myTaskHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    // margin: 15px 0px;
-    // margin: 25px 0px 10px 0px;
-    h2 {
-      margin: 0;
-      font-weight: 600;
-      color: $btnColor;
-      font-size: 19px;
+    margin-bottom: 15px;
+    thead>tr>th {
+        padding: 10px !important;
     }
-    label {
-      font-size: 18px;
-      font-weight: 600;
+    .filterSection {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
     }
-  }
+    td:nth-child(1) {
+        display: flex;
+        height: 54px;
+        align-items: center;
+    }
+    // tr :nth-child(1) {
+    //   background: #747a7c33 !important;
+    // }
+    tbody>tr>td {
+        padding: 8px !important;
+        // background: #747a7c33 !important; Maasi
+        background-color: transparent !important;
+    }
+    .myTaskHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // margin: 15px 0px;
+        // margin: 25px 0px 10px 0px;
+        h2 {
+            margin: 0;
+            font-weight: 600;
+            color: $btnColor;
+            font-size: 19px;
+        }
+        label {
+            font-size: 18px;
+            font-weight: 600;
+        }
+    }
 }
+
 .tblTxtBox {
-  width: 100%;
+    width: 100%;
 }
+
 .tblAction {
-  display: flex;
-  // gap: 10px;
-  justify-content: center;
+    display: flex;
+    // gap: 10px;
+    justify-content: center;
 }
+
 .pLevelStyle {
-  color: #fff;
-  padding: 6px 0px;
-  text-align: center;
-  border-radius: 12px;
-  width: 96px;
+    color: #fff;
+    padding: 6px 0px;
+    text-align: center;
+    border-radius: 12px;
+    width: 96px;
 }
 
 .actionContainer {
-  display: flex;
-  align-items: center;
-  // gap: 10px;
+    display: flex;
+    align-items: center;
+    // gap: 10px;
 }
+
 .btnColor {
-  background-color: $btnColor;
-  border: none;
-  padding: 4px 18px;
+    background-color: $btnColor;
+    border: none;
+    padding: 4px 18px;
 }
 
 // topContainer
 .commonFilterSection {
-  display: flex;
-  justify-content: space-between;
-  height: 32px;
-  .leftFilterSection {
-    font-size: 20px;
-    font-weight: 700;
-    text-transform: capitalize;
-  }
-  .rightFilterSection {
     display: flex;
-    gap: 10px;
-  }
+    justify-content: space-between;
+    height: 32px;
+    .leftFilterSection {
+        font-size: 20px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+    .rightFilterSection {
+        display: flex;
+        gap: 10px;
+    }
 }
+
 .clientHeader {
-  font-size: 19px;
-  font-weight: 600;
-  color: #f46906;
-  // margin-top: 15px;
+    font-size: 19px;
+    font-weight: 600;
+    color: #f46906;
+    // margin-top: 15px;
 }
+
 // TL and TC Section styles
 .TLTCSection {
-  display: flex;
-  gap: 40px;
-  margin: 15px 0px;
-  b {
-    font-size: 18px;
-    font-weight: 500;
-  }
-  .TLImage {
     display: flex;
-    gap: 10px;
-    align-items: center;
-    .avatar {
-      img {
-        border-radius: 8px !important;
-      }
+    gap: 40px;
+    margin: 15px 0px;
+    b {
+        font-size: 18px;
+        font-weight: 500;
     }
-    .avatarAndNameFlex {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      img {
-        width: 26px;
-        height: 26px;
-      }
-      span {
-        font-size: 16px;
-        font-weight: 400;
-      }
+    .TLImage {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        .avatar {
+            img {
+                border-radius: 8px !important;
+            }
+        }
+        .avatarAndNameFlex {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            img {
+                width: 26px;
+                height: 26px;
+            }
+            span {
+                font-size: 16px;
+                font-weight: 400;
+            }
+        }
     }
-  }
 }
 
 .peoplepickerErrStyle {
-  border: 1px solid #dc3545;
-  border-radius: 4px;
+    border: 1px solid #dc3545;
+    border-radius: 4px;
 }

@@ -1,51 +1,76 @@
 .activeBtn {
-  background: #007c81 !important;
+    background: #007c81 !important;
+    font-weight: 600 !important;
 }
 
 .inActive {
-  background: none !important;
+    background: none !important;
+    font-weight: 400;
 }
 
 .TaskManagementSection {
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  .leftNav {
-    // width: 20%;
-    width: 15%;
-    height: 100vh;
-    background: #009b9f;
-    .accordTeam {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      // padding: 10px 0 10px 20px;
-      padding: 5px 0 5px 20px;
-      cursor: pointer;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    .leftNav {
+        // width: 20%;
+        width: 15%;
+        height: 100vh;
+        background: #009b9f;
+        .menuWithIcon {
+            display: flex;
+        }
+        .accordTeam {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            // padding: 10px 0 10px 20px;
+            padding: 5px 20px;
+            cursor: pointer;
+        }
+        .accordTeamMembers {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 400;
+            list-style: none;
+            cursor: pointer;
+            padding: 10px 0;
+            .accordMember {
+                height: "100%";
+                margin-left: 51px;
+                display: flex;
+                align-items: center;
+            }
+        }
     }
-    .accordTeamMembers {
-      color: #fff;
-      font-size: 14px;
-      font-weight: 400;
-      list-style: none;
-      cursor: pointer;
-      padding: 10px 0;
-      .accordMember {
-        height: "100%";
-        margin-left: 51px;
-      }
-    }
-  }
 }
+
 .lefticon {
-  background-color: #f46906 !important;
-  border: none;
-  width: 26px;
-  height: 26px;
+    background-color: #f46906 !important;
+    border: none;
+    width: 26px;
+    height: 26px;
 }
-.lefticon > span {
-  color: #fff;
+
+.lefticon>span {
+    color: #fff;
 }
-.righticon > span {
-  font-size: 20px;
+
+.righticon>span {
+    font-size: 20px;
+}
+
+.teamMemberSection {
+    display: flex;
+    height: 100%;
+    margin-left: 52px;
+    justify-content: space-between;
+}
+
+.leftNavExpandController {
+    display: flex;
+    padding: 16px;
+    i {
+        cursor: pointer;
+    }
 }

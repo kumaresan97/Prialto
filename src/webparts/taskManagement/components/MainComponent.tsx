@@ -24,6 +24,12 @@ import Client from "./Client";
 import Loader from "./Loader";
 import Member from "./Members";
 import OrgChartNew from "./OrgChartNew";
+import {
+  IPersonaSharedProps,
+  Persona,
+  PersonaSize,
+  PersonaPresence,
+} from "@fluentui/react/lib/Persona";
 
 // Global Variables creation
 let _masterArray: any[] = [];
@@ -69,7 +75,7 @@ const MainComponent = (props: any): JSX.Element => {
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [teams, setTeams] = useState([]);
   const [selectedTeamMember, setSelectedTeamMember] = useState([]);
-
+  const [menuExpand, setMenuExpand] = useState(false);
   // Styles creation
   const navStyles: Partial<INavStyles> = {
     root: {
@@ -272,28 +278,46 @@ const MainComponent = (props: any): JSX.Element => {
 
   return (
     <div className={styles.TaskManagementSection}>
-      <div className={styles.leftNav}>
+      <div
+        className={styles.leftNav}
+        style={{
+          width: `${menuExpand ? "260px" : "92px"}`,
+        }}
+      >
+        <div className={styles.leftNavExpandController}>
+          <i
+            title={menuExpand ? "Collapse" : "Expand"}
+            className="pi pi-bars"
+            style={{ fontSize: "1.25rem", color: "#fff" }}
+            onClick={() => {
+              setMenuExpand(!menuExpand);
+            }}
+          ></i>
+        </div>
         <div>
           <Label
             onClick={(e) => {
               setvalue("mytasks");
             }}
             className={value == "mytasks" ? styles.activeBtn : styles.inActive}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
             styles={{
               root: {
                 width: "100%",
-                fontSize: " 16px !important",
-                fontWeight: "600 !important",
-
-                color: "#FFFFFF !important",
-                padding: "10px 0px 10px 20px !important",
-                cursor: "pointer !important",
+                fontSize: " 16px",
+                color: "#FFFFFF",
+                padding: "10px 20px",
+                cursor: "pointer",
                 // background:
                 //   value == "mytasks" ? "#576191 !important" : "none !important",
               },
             }}
           >
-            My Tasks
+            {menuExpand ? "My Tasks" : ""}
+            <i className="pi pi-file-edit" style={{ fontSize: "1.25rem" }}></i>
           </Label>
           {teams.map((val, i) => {
             return (
@@ -309,6 +333,7 @@ const MainComponent = (props: any): JSX.Element => {
                         : "ChevronRightSmall"
                     }
                     // onClick={() => toggleTeam(i)}
+
                     styles={{
                       root: {
                         cursor: "pointer !important",
@@ -319,6 +344,10 @@ const MainComponent = (props: any): JSX.Element => {
                     }}
                   />
                   <Label
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
                     styles={{
                       root: {
                         width: "100%",
@@ -332,7 +361,12 @@ const MainComponent = (props: any): JSX.Element => {
                     //   value == "OrgChart" ? styles.activeBtn : styles.inActive
                     // }
                   >
-                    {val.team}
+                    {menuExpand ? val.team : ""}
+                    <i
+                      title={val.team}
+                      className="pi pi-star-fill"
+                      style={{ fontSize: "1.25rem" }}
+                    ></i>
                   </Label>
                 </div>
 
@@ -360,10 +394,17 @@ const MainComponent = (props: any): JSX.Element => {
                           onClick={() => {
                             handleMemberClick(member.Email);
                           }}
-                          style={{ height: "100%", marginLeft: "51px" }}
-                          // className={styles.accordMember}
+                          className={styles.teamMemberSection}
                         >
-                          {member.Name}
+                          {menuExpand ? member.Name : ""}
+                          <Persona
+                            title={member.Name}
+                            imageUrl={
+                              "/_layouts/15/userphoto.aspx?username=" +
+                              member.Email
+                            }
+                            size={PersonaSize.size24}
+                          />
                         </div>
                       </li>
                     ))}
@@ -374,18 +415,21 @@ const MainComponent = (props: any): JSX.Element => {
           })}
           {true && (
             <>
+              {/* Card View */}
               {_isAdmin && (
                 <Label
                   onClick={() => setvalue("CardView")}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                   styles={{
                     root: {
                       width: "100%",
                       fontSize: " 16px !important",
                       fontWeight: "400 !important",
-
                       color: "#FFFFFF !important",
-
-                      padding: "6px 0px 6px 20px !important",
+                      padding: "6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -393,12 +437,21 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "CardView" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  Card View
+                  {menuExpand ? "Card View" : ""}
+                  <i
+                    className="pi pi-id-card"
+                    style={{ fontSize: "1.25rem" }}
+                  ></i>
                 </Label>
               )}
+              {/* Org Chart */}
               {(_isAdmin || _isTL) && (
                 <Label
                   onClick={() => setvalue("OrgChart")}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                   styles={{
                     root: {
                       width: "100%",
@@ -407,7 +460,7 @@ const MainComponent = (props: any): JSX.Element => {
 
                       color: "#FFFFFF !important",
 
-                      padding: "6px 0px 6px 20px !important",
+                      padding: "6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -415,12 +468,21 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "OrgChart" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  Organization Chart
+                  {menuExpand ? "Organization Chart" : ""}
+                  <i
+                    className="pi pi-sitemap"
+                    style={{ fontSize: "1.25rem" }}
+                  ></i>
                 </Label>
               )}
+              {/* Client List */}
               {(_isAdmin || _isTC || _isTL) && (
                 <Label
                   onClick={() => setvalue("Client")}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
                   styles={{
                     root: {
                       width: "100%",
@@ -429,7 +491,7 @@ const MainComponent = (props: any): JSX.Element => {
 
                       color: "#FFFFFF !important",
 
-                      padding: "6px 0px 6px 20px !important",
+                      padding: "6px 20px !important",
                       cursor: "pointer !important",
                     },
                   }}
@@ -437,7 +499,11 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "Client" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  Client list
+                  {menuExpand ? "Client list" : ""}
+                  <i
+                    className="pi pi-users"
+                    style={{ fontSize: "1.25rem" }}
+                  ></i>
                 </Label>
               )}
             </>
@@ -445,7 +511,12 @@ const MainComponent = (props: any): JSX.Element => {
         </div>
       </div>
 
-      <div style={{ width: "80%", padding: 0 }}>
+      <div
+        style={{
+          width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
+          padding: 0,
+        }}
+      >
         {value == "mytasks" ? (
           <>
             <MyTaskDBNew context={props.context} />

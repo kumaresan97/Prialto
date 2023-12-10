@@ -98,10 +98,10 @@ const OrgChart = (props) => {
       minWidth: 200,
       background: "rgba(218, 218, 218, 0.29)",
       ".ms-BasePicker-text": {
-        minHeigth: 36,
+        minHeigth: 38,
         maxHeight: 50,
         overflowX: "hidden",
-        padding: "3px 5px",
+        padding: "1px 5px",
         minWidth: "100%",
         background: "#fff",
       },

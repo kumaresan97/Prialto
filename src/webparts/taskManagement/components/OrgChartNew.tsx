@@ -655,7 +655,6 @@ const OrgChart = (props) => {
             options={role}
             style={{ width: "100%" }}
             placeholder="Role"
-            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Role}
             onChange={(e: any) => getOnchange("Role", e.value)}
@@ -710,7 +709,6 @@ const OrgChart = (props) => {
             style={{ width: "100%" }}
             options={team}
             placeholder="Team"
-            style={{ width: "100%" }}
             optionLabel="name"
             value={curobj.Team}
             onChange={(e: any) => getOnchange("Team", e.value)}

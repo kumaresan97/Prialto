@@ -241,7 +241,7 @@ const Client = (props) => {
                   _handleDataoperation("check", obj);
                 } else {
                   // missingFields.forEach((field) => {
-                  const errorMessage = `Please fill ${missingFields[currentFieldIndex]}`;
+                  const errorMessage = `Please enter ${missingFields[currentFieldIndex]}`;
                   showMessage(errorMessage, toastTopRight, "warn");
 
                   currentFieldIndex =
@@ -285,7 +285,7 @@ const Client = (props) => {
           <>
             <InputText
               type="text"
-              placeholder="FirstName"
+              placeholder="First name"
               className={`${styles.tblTxtBox}${clsValid}`}
               value={value.FirstName}
               onChange={(e) => getOnchange("FirstName", e.target.value)}
@@ -300,7 +300,7 @@ const Client = (props) => {
         return (
           <InputText
             type="text"
-            placeholder="LastName"
+            placeholder="Last name"
             className={`${styles.tblTxtBox}${clsValid}`}
             value={value.LastName}
             onChange={(e) => getOnchange("LastName", e.target.value)}
@@ -313,7 +313,7 @@ const Client = (props) => {
         return (
           <InputText
             type="text"
-            placeholder="CompanyName"
+            placeholder="Company name"
             value={value.CompanyName}
             className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e) => getOnchange("CompanyName", e.target.value)}
@@ -330,7 +330,7 @@ const Client = (props) => {
             groupName={""}
             showtooltip={false}
             // required={true}
-            placeholder="Enter Email"
+            placeholder=" Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             peoplePickerCntrlclassName={
@@ -675,9 +675,9 @@ const Client = (props) => {
   };
 
   let columns = [
-    { header: "First Name", key: "FirstName", width: 15 },
-    { header: "First Name", key: "LastName", width: 25 },
-    { header: "Company Name", key: "CompanyName", width: 25 },
+    { header: "First name", key: "FirstName", width: 15 },
+    { header: "Last name", key: "LastName", width: 25 },
+    { header: "Company name", key: "CompanyName", width: 25 },
     { header: "Assistant", key: "Assistant", width: 25 },
 
     // { header: "Backup", key: "Backup", width: 25 },
@@ -716,16 +716,12 @@ const Client = (props) => {
     const missingFields = [];
 
     if (!value.FirstName || value.FirstName == "") {
-      missingFields.push("FirstName");
-    }
-    if (!value.LastName || value.LastName === "") {
-      missingFields.push("LastName");
-    }
-    if (!value.CompanyName || value.CompanyName == "") {
-      missingFields.push("CompanyName");
-    }
-
-    if (!value.Assistant?.Id || value.Assistant?.Id === null) {
+      missingFields.push("First name");
+    } else if (!value.LastName || value.LastName === "") {
+      missingFields.push("Last name");
+    } else if (!value.CompanyName || value.CompanyName == "") {
+      missingFields.push("Company name");
+    } else if (!value.Assistant?.Id || value.Assistant?.Id === null) {
       missingFields.push("Assistant");
     }
 
@@ -753,7 +749,7 @@ const Client = (props) => {
             // }}
             className={styles.clientContainer}
           >
-            <h2>Client</h2>
+            <h2>Client list</h2>
             {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
@@ -803,19 +799,19 @@ const Client = (props) => {
             >
               <Column
                 field="FirstName"
-                header="First Name"
+                header="First name"
                 sortable
                 body={(obj: any) => _addTextField(obj, "FirstName")}
               ></Column>
               <Column
                 field="LastName"
-                header="Last Name"
+                header="Last name"
                 sortable
                 body={(obj: any) => _addTextField(obj, "LastName")}
               ></Column>
               <Column
                 field="CompanyName"
-                header="Company Name"
+                header="Company name"
                 sortable
                 body={(obj: any) => _addTextField(obj, "CompanyName")}
               ></Column>

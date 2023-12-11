@@ -144,7 +144,7 @@ const CardView = (props) => {
             />
           ) : ( */}
           <div>
-            <h2>Team List</h2>
+            <h2>Card View</h2>
             <div
               className={styles.mainContainer}
               // style={{ display: "flex", flexWrap: "wrap", width: "100%", gap: "10px" }}
@@ -162,7 +162,7 @@ const CardView = (props) => {
                         <>
                           <div className={styles.secDivider}>
                             <div className={styles.leftSideContainer}>
-                              <Label className={styles.roleHead}>Team</Label>
+                              <Label className={styles.roleHead}>Cohort</Label>
                               <Label className={styles.noPaddingLable}>
                                 {val.TeamName}
                               </Label>

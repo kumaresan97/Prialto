@@ -37,8 +37,9 @@ const dropval = [
 
 const dropStatus = [
   { name: "Pending", code: "Pending" },
-  { name: "InProgress", code: "InProgress" },
+  { name: "In Progress", code: "In Progress" },
   { name: "Completed", code: "Completed" },
+  { name: "Done", code: "Done" },
 ];
 
 let MyClients = [];
@@ -195,22 +196,26 @@ const MyTaskData = (props): JSX.Element => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      bgColor = "#BF4927";
-    } else if (PLevel == "High" || PLevel == "InProgress") {
-      bgColor = "#ffdfc8";
+      color = "#bf4927";
+      bgColor = "#ffded5";
+    } else if (PLevel == "High") {
+      bgColor = "#ffd5b8";
       color = "#f46906";
     } else if (PLevel == "Normal") {
-      // bgColor = "#009BA2";
       bgColor = "#bbfcff";
       color = "#4b6164";
-    } else if (PLevel == "New Task") {
-      // bgColor = "#68BAC4";
-      bgColor = "#d1faff";
-      color = "#444444";
+    } else if (PLevel == "In Progress") {
+      bgColor = "#defffd";
+      color = "#666666";
+    } else if (PLevel == "Pending") {
+      bgColor = "#f5ffbd";
+      color = "#5c5c5c";
+    } else if (PLevel == "Completed") {
+      bgColor = "#c7ffc7";
+      color = "#1a8100";
     } else if (PLevel == "Done") {
-      // bgColor = "#007C81";
-      bgColor = "#c6fdff";
-      color = "#007C81";
+      bgColor = "#dfffbb";
+      color = "#6e6e6e";
     }
     return (
       <div
@@ -293,11 +298,7 @@ const MyTaskData = (props): JSX.Element => {
             if (validation()) {
               _handleDataoperation(obj);
             } else {
-              showMessage(
-                "Please fill mandatory fields",
-                toastTopRight,
-                "warn"
-              );
+              showMessage("Please enter Task name", toastTopRight, "warn");
             }
           }}
         />
@@ -746,7 +747,7 @@ const MyTaskData = (props): JSX.Element => {
         return (
           <InputText
             type="text"
-            placeholder="TaskName"
+            placeholder="Task name"
             value={curdata.TaskName}
             className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
@@ -1208,7 +1209,7 @@ const MyTaskData = (props): JSX.Element => {
     ref.current.show({
       severity: severity,
       summary: label,
-      detail: label,
+      // detail: label,
       life: 3000,
     });
   };

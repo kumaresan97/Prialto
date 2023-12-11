@@ -30,7 +30,13 @@ const dropval = [
   { name: "High", code: "High" },
   { name: "Normal", code: "Urgent" },
   { name: "Urgent", code: "Normal" },
-  { name: "Newindia", code: "Newindia" },
+];
+
+const dropStatus = [
+  { name: "Pending", code: "Pending" },
+  { name: "In Progress", code: "In Progress" },
+  { name: "Completed", code: "Completed" },
+  { name: "Done", code: "Done" },
 ];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
@@ -176,26 +182,60 @@ const UserMyTasksDB = (props): JSX.Element => {
   });
   const [masterdata, setMasterdata] = useState<any[]>([]);
   // style function
+  // const priorityLevelStyle = (PLevel) => {
+  //   let bgColor: string = "";
+  //   let color: string = "";
+  //   if (PLevel == "Urgent") {
+  //     bgColor = "#BF4927";
+  //   } else if (PLevel == "High" || PLevel == "In Progress") {
+  //     bgColor = "#ffdfc8";
+  //     color = "#f46906";
+  //   } else if (PLevel == "Normal") {
+  //     // bgColor = "#009BA2";
+  //     bgColor = "#bbfcff";
+  //     color = "#4b6164";
+  //   } else if (PLevel == "New Task" || PLevel == "Pending") {
+  //     // bgColor = "#68BAC4";
+  //     bgColor = "#d1faff";
+  //     color = "#444444";
+  //   } else if (PLevel == "Done" || PLevel == "Completed") {
+  //     // bgColor = "#007C81";
+  //     bgColor = "#c6fdff";
+  //     color = "#007C81";
+  //   }
+  //   return (
+  //     <div
+  //       className={styles.pLevelStyle}
+  //       style={{ backgroundColor: bgColor, color: color }}
+  //     >
+  //       {PLevel}
+  //     </div>
+  //   );
+  // };
   const priorityLevelStyle = (PLevel) => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      bgColor = "#BF4927";
-    } else if (PLevel == "High" || PLevel == "InProgress") {
-      bgColor = "#ffdfc8";
+      color = "#bf4927";
+      bgColor = "#ffded5";
+    } else if (PLevel == "High") {
+      bgColor = "#ffd5b8";
       color = "#f46906";
     } else if (PLevel == "Normal") {
-      // bgColor = "#009BA2";
       bgColor = "#bbfcff";
       color = "#4b6164";
-    } else if (PLevel == "New Task") {
-      // bgColor = "#68BAC4";
-      bgColor = "#d1faff";
-      color = "#444444";
+    } else if (PLevel == "In Progress") {
+      bgColor = "#defffd";
+      color = "#666666";
+    } else if (PLevel == "Pending") {
+      bgColor = "#f5ffbd";
+      color = "#5c5c5c";
+    } else if (PLevel == "Completed") {
+      bgColor = "#c7ffc7";
+      color = "#1a8100";
     } else if (PLevel == "Done") {
-      // bgColor = "#007C81";
-      bgColor = "#c6fdff";
-      color = "#007C81";
+      bgColor = "#dfffbb";
+      color = "#6e6e6e";
     }
     return (
       <div
@@ -765,7 +805,7 @@ const UserMyTasksDB = (props): JSX.Element => {
       if (fieldType == "Status") {
         return (
           <Dropdown
-            options={dropval}
+            options={dropStatus}
             placeholder="Select a status"
             optionLabel="name"
             value={curdata.Status}

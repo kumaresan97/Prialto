@@ -312,7 +312,7 @@ const OrgChart = (props) => {
               !curobj.Name?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder=" Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -364,7 +364,7 @@ const OrgChart = (props) => {
               !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -394,7 +394,7 @@ const OrgChart = (props) => {
         return (
           <Dropdown
             options={team}
-            placeholder="Team"
+            placeholder="Cohort"
             optionLabel="name"
             value={curobj.Team}
             style={{ width: "100%" }}
@@ -419,7 +419,7 @@ const OrgChart = (props) => {
             }
             styles={multiPeoplePickerStyle}
             // required={true}
-            placeholder="Enter Email"
+            placeholder=" Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -458,7 +458,7 @@ const OrgChart = (props) => {
               !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -508,7 +508,7 @@ const OrgChart = (props) => {
             styles={multiPeoplePickerStyle}
             // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -563,7 +563,7 @@ const OrgChart = (props) => {
                 : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -677,7 +677,7 @@ const OrgChart = (props) => {
               !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -708,7 +708,7 @@ const OrgChart = (props) => {
           <Dropdown
             style={{ width: "100%" }}
             options={team}
-            placeholder="Team"
+            placeholder="Cohort"
             optionLabel="name"
             value={curobj.Team}
             onChange={(e: any) => getOnchange("Team", e.value)}
@@ -732,7 +732,7 @@ const OrgChart = (props) => {
               !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -770,7 +770,7 @@ const OrgChart = (props) => {
               !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
             }
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -816,7 +816,7 @@ const OrgChart = (props) => {
             styles={multiPeoplePickerStyle}
             // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -866,7 +866,7 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             // required={true}
-            placeholder="Enter Email"
+            placeholder="Enter user"
             ensureUser={true}
             // showHiddenInUI={false}
             showHiddenInUI={true}
@@ -1033,7 +1033,7 @@ const OrgChart = (props) => {
       NameId: curobj.Name.Id ? curobj.Name.Id : null,
       Role: curobj.Role ? curobj.Role["name"] : "",
       Team: curobj.Team ? curobj.Team["name"] : "",
-      Cohort: curobj.Cohort ? curobj.Cohort : "",
+      // Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
       // BackingUpId: BackupId.length && { results: BackupId },
       BackingUpId: { results: BackupId },
@@ -1146,7 +1146,7 @@ const OrgChart = (props) => {
                   _handleDataoperation("check", obj);
                 } else {
                   // missingFields.forEach((field) => {
-                  const errorMessage = `Please fill ${missingFields[currentFieldIndex]}`;
+                  const errorMessage = `Please enter ${missingFields[currentFieldIndex]}`;
                   showMessage(errorMessage, toastTopRight, "warn");
 
                   currentFieldIndex =
@@ -1210,7 +1210,7 @@ const OrgChart = (props) => {
       // LastName: curobj.LastName ? curobj.LastName : "",
       Role: curobj.Role ? curobj.Role["name"] : "",
       Team: curobj.Team ? curobj.Team["name"] : "",
-      Cohort: curobj.Cohort ? curobj.Cohort : "",
+      // Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
       BackingUpId: { results: BackupId },
 
@@ -1334,7 +1334,7 @@ const OrgChart = (props) => {
         },
         Role: val.Role ? val.Role : "",
         Team: val.Team ? val.Team : "",
-        Cohort: val.Cohort ? val.Cohort : "",
+        Cohort: "",
         Manager: {
           Id: val.Manager?.ID,
           EMail: val.Manager?.EMail,
@@ -1595,34 +1595,29 @@ const OrgChart = (props) => {
 
     if (!curobj.Name?.Id || curobj.Name?.Id === null) {
       missingFields.push("Name");
-    }
-    if (!curobj.Role || curobj.Role === "") {
+    } else if (!curobj.Role || curobj.Role === "") {
       missingFields.push("Role");
-    }
-    if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
+    } else if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
       missingFields.push("Manager");
-    }
-    if (!curobj.Team || curobj.Team === "") {
-      missingFields.push("Team");
-    }
-    if (!curobj.TeamCaptain?.Id || curobj.TeamCaptain?.Id === null) {
-      missingFields.push("TeamCaptain");
-    }
-    if (!curobj.TeamLeader?.Id || curobj.TeamLeader?.Id === null) {
-      missingFields.push("TeamLeader");
-    }
-    if (!curobj.Cohort || curobj.Cohort === "") {
+    } else if (!curobj.Team || curobj.Team === "") {
       missingFields.push("Cohort");
+    } else if (!curobj.TeamCaptain?.Id || curobj.TeamCaptain?.Id === null) {
+      missingFields.push("Team captain");
+    } else if (!curobj.TeamLeader?.Id || curobj.TeamLeader?.Id === null) {
+      missingFields.push("Team leader");
     }
+    //  else if (!curobj.Cohort || curobj.Cohort === "") {
+    //   missingFields.push("cohort");
+    // }
     // if (!curobj.DirectReports[0]?.Id || curobj.DirectReports[0]?.Id === null) {
     //   missingFields.push('DirectReports');
     // }
-    if (
+    else if (
       !curobj.BackingUp ||
       curobj.BackingUp.length === 0 ||
       !curobj.BackingUp.some((user) => user.Id !== null)
     ) {
-      missingFields.push("BackingUp");
+      missingFields.push("Backing up");
     }
 
     return missingFields;
@@ -1641,7 +1636,7 @@ const OrgChart = (props) => {
       ) : (
         <div>
           <div className={styles.clientContainer}>
-            <h2>Org Chart</h2>
+            <h2>Organization Chart</h2>
             {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}
@@ -1717,7 +1712,7 @@ const OrgChart = (props) => {
             ></Column>
             <Column
               field="Team"
-              header="Team"
+              header="Cohort"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "Team")}
@@ -1736,13 +1731,13 @@ const OrgChart = (props) => {
               sortable
               body={(obj: any) => _addTextField(obj, "TeamLeader")}
             ></Column>
-            <Column
+            {/* <Column
               field="Cohort"
               header="Cohort"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "Cohort")}
-            ></Column>
+            ></Column> */}
             {/* <Column
             field="Country"
             header="Country"

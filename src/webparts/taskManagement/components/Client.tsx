@@ -16,6 +16,20 @@ import Loader from "./Loader";
 import exportToExcel from "../../../Global/ExportExcel";
 import { Toast } from "primereact/toast";
 const Client = (props) => {
+  const multiPeoplePickerStyle = {
+    root: {
+      minWidth: 200,
+      background: "rgba(218, 218, 218, 0.29)",
+      ".ms-BasePicker-text": {
+        minHeigth: 38,
+        maxHeight: 50,
+        overflowX: "hidden",
+        padding: "1px 5px",
+        minWidth: "100%",
+        background: "#fff",
+      },
+    },
+  };
   const [showDialog, setShowDialog] = useState(false);
   const [mastedata, setMasterdata] = useState([]);
   const toastTopRight = React.useRef(null);
@@ -293,6 +307,7 @@ const Client = (props) => {
             <Button
               type="button"
               icon="pi pi-pencil"
+              // disabled={props._isAdmin ? false : true}
               style={editIconStyle}
               onClick={(_) => {
                 setisEdit(true);
@@ -304,6 +319,7 @@ const Client = (props) => {
             <Button
               type="button"
               icon=" pi pi-trash"
+              // disabled={props._isAdmin ? false : true}
               style={delIconBtnStyle}
               onClick={(_) => {
                 confirmDelete(obj);
@@ -456,6 +472,7 @@ const Client = (props) => {
             groupName={""}
             showtooltip={false}
             // required={true}
+            styles={multiPeoplePickerStyle}
             peoplePickerCntrlclassName={
               !value.Backup ||
               value.Backup.length === 0 ||
@@ -591,6 +608,7 @@ const Client = (props) => {
             <PeoplePicker
               context={props.context}
               personSelectionLimit={3}
+              styles={multiPeoplePickerStyle}
               peoplePickerCntrlclassName={
                 !value.Backup ||
                 value.Backup.length === 0 ||
@@ -842,7 +860,7 @@ const Client = (props) => {
     { header: "Company name", key: "CompanyName", width: 25 },
     { header: "Assistant", key: "Assistant", width: 25 },
 
-    // { header: "Backup", key: "Backup", width: 25 },
+    { header: "Backup", key: "Backup", width: 25 },
   ];
   const exportExcel = () => {
     exportToExcel(clientdetail, columns, "Client");
@@ -944,19 +962,22 @@ const Client = (props) => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
               />
-              <Button
-                label="Add Client"
-                className={styles.btnColor}
-                onClick={() => {
-                  setisAdd(true);
+              {props._isAdmin && (
+                <Button
+                  label="Add Client"
+                  className={styles.btnColor}
+                  // disabled={props._isAdmin ? false : true}
+                  onClick={() => {
+                    setisAdd(true);
 
-                  setisEdit(false);
-                  setClientdetail([...clientdetail, Newdatadd]);
+                    setisEdit(false);
+                    setClientdetail([...clientdetail, Newdatadd]);
 
-                  setValue({ ...Data });
-                  // _handleData("addParent", { ..._sampleParent });
-                }}
-              />
+                    setValue({ ...Data });
+                    // _handleData("addParent", { ..._sampleParent });
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className={styles.dataTableContainer}>
@@ -968,34 +989,45 @@ const Client = (props) => {
               <Column
                 field="FirstName"
                 header="First name"
+                style={{ width: "200px" }}
                 sortable
                 body={(obj: any) => _addTextField(obj, "FirstName")}
               ></Column>
               <Column
                 field="LastName"
                 header="Last name"
+                style={{ width: "200px" }}
                 sortable
                 body={(obj: any) => _addTextField(obj, "LastName")}
               ></Column>
               <Column
                 field="CompanyName"
                 header="Company name"
+                style={{ width: "200px" }}
                 sortable
                 body={(obj: any) => _addTextField(obj, "CompanyName")}
               ></Column>
               <Column
                 field="Assistant"
                 header="Assistant"
+                style={{ width: "200px" }}
                 sortable
                 body={(obj: any) => _addTextField(obj, "Assistant")}
               ></Column>
               <Column
                 field="Backup"
                 header="Backup"
+                style={{ width: "200px" }}
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
               ></Column>
-              <Column header="Action" body={(obj) => _action(obj)}></Column>
+              {props._isAdmin && (
+                <Column
+                  header="Action"
+                  style={{ width: "200px" }}
+                  body={(obj) => _action(obj)}
+                ></Column>
+              )}
             </DataTable>
           </div>
 

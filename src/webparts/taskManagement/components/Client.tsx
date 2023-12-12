@@ -46,22 +46,22 @@ const Client = (props) => {
   };
   const [isadd, setisAdd] = useState(false);
   const [isedit, setisEdit] = useState(false);
-  let products: IClient = {
-    Id: 1,
-    FirstName: "1000",
-    LastName: "f230fh0g3",
-    CompanyName: "o BamboWatch",
-    Assistant: {
-      Id: null,
-      EMail: "",
-      Title: "Kumaresan",
-    },
-    // Backup: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "raj",
-    // },
-  };
+  // let products: IClient = {
+  //   Id: 1,
+  //   FirstName: "1000",
+  //   LastName: "f230fh0g3",
+  //   CompanyName: "o BamboWatch",
+  //   Assistant: {
+  //     Id: null,
+  //     EMail: "",
+  //     Title: "Kumaresan",
+  //   },
+  //   // Backup: {
+  //   //   Id: null,
+  //   //   EMail: "",
+  //   //   Title: "raj",
+  //   // },
+  // };
   let Data: IClient = {
     Id: null,
     FirstName: "",
@@ -72,11 +72,13 @@ const Client = (props) => {
       EMail: "",
       Title: "",
     },
-    // Backup: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
+    Backup: [
+      {
+        Id: null,
+        EMail: "",
+        Title: "",
+      },
+    ],
   };
   let Newdatadd: IClient = {
     Id: null,
@@ -88,11 +90,13 @@ const Client = (props) => {
       EMail: "",
       Title: "",
     },
-    // Backup: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
+    Backup: [
+      {
+        Id: null,
+        EMail: "",
+        Title: "",
+      },
+    ],
   };
 
   const [loader, setLoader] = useState(false);
@@ -110,11 +114,23 @@ const Client = (props) => {
 
   const AddItem = (obj) => {
     setLoader(true);
+
+    let Backupids = [];
+
+    if (value.Backup && value.Backup.length >= 1) {
+      value.Backup.forEach((val) => {
+        if (val && val.Id) {
+          Backupids.push(val.Id);
+        }
+      });
+    }
     let json = {
       FirstName: value.FirstName ? value.FirstName : "",
       LastName: value.LastName ? value.LastName : "",
       CompanyName: value.CompanyName ? value.CompanyName : "",
       AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
+      BackupId: { results: Backupids },
+
       // BackupId: value.Backup.Id ? value.Backup.Id : null,
     };
 
@@ -123,22 +139,59 @@ const Client = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
+        let resobj = {
+          Id: res.data.ID,
+          FirstName: value.FirstName ? value.FirstName : "",
+          LastName: value.LastName ? value.LastName : "",
+          CompanyName: value.CompanyName ? value.CompanyName : "",
+          Assistant: {
+            Id: value.Assistant?.Id,
+            EMail: value.Assistant?.EMail,
+            Title: value.Assistant?.Title,
+          },
+
+          // AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
+
+          Backup: Array.isArray(value.Backup)
+            ? value.Backup.map((response) => ({
+                Id: response?.ID,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+        };
+
+        let x = clientdetail.filter((val) => val.Id !== null);
+        setClientdetail([...x, resobj]);
         setisAdd(false);
         setisEdit(false);
+
         setValue({ ...Data });
         setLoader(false);
-        getdatas();
+        // getdatas();
         // getcurUser();
       })
       .catch((err) => errFunction(err));
   };
   const Editfunction = (obj) => {
     setLoader(true);
+
+    let Backupids = [];
+
+    if (value.Backup && value.Backup.length >= 1) {
+      value.Backup.forEach((val) => {
+        if (val && val.Id) {
+          Backupids.push(val.Id);
+        }
+      });
+    }
     let json = {
       FirstName: value.FirstName ? value.FirstName : "",
       LastName: value.LastName ? value.LastName : "",
       CompanyName: value.CompanyName ? value.CompanyName : "",
       AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
+      BackupId: { results: Backupids },
+
       // BackupId: value.Backup.Id ? value.Backup.Id : null,
     };
     SPServices.SPUpdateItem({
@@ -147,12 +200,45 @@ const Client = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
+        let resobj = {
+          Id: obj.Id,
+          FirstName: value.FirstName ? value.FirstName : "",
+          LastName: value.LastName ? value.LastName : "",
+          CompanyName: value.CompanyName ? value.CompanyName : "",
+          Assistant: {
+            Id: value.Assistant?.Id,
+            EMail: value.Assistant?.EMail,
+            Title: value.Assistant?.Title,
+          },
+
+          // AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
+
+          Backup: Array.isArray(value.Backup)
+            ? value.Backup.map((response) => ({
+                Id: response?.ID,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+        };
+        let updatedClientDetail = clientdetail.map((val) => {
+          if (val.Id === obj.Id) {
+            debugger;
+            return resobj;
+          }
+          return val;
+        });
+
+        setClientdetail([...updatedClientDetail]);
+
+        // setClientdetail([...clientdetail]);
+
         setisAdd(false);
         setisEdit(false);
         setValue({ ...Data });
         setLoader(false);
 
-        getdatas();
+        // getdatas();
       })
       .catch((err) => errFunction(err));
   };
@@ -345,7 +431,7 @@ const Client = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Assistant", selectedItem.id);
+                getOnchange("Assistant", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -355,39 +441,54 @@ const Client = (props) => {
           />
         );
       }
-      // if (fieldType == "Backup") {
-      //   let clsValid = "";
-      //   !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
-      //   return (
-      //     <PeoplePicker
-      //       context={props.context}
-      //       personSelectionLimit={1}
-      //       groupName={""}
-      //       showtooltip={false}
-      //       // required={true}
-      //       peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
-      //       placeholder="Enter Email"
-      //       ensureUser={true}
-      //       // showHiddenInUI={false}
-      //       showHiddenInUI={true}
-      //       principalTypes={[PrincipalType.User]}
-      //       defaultSelectedUsers={
-      //         value.Backup.EMail ? [value.Backup.EMail] : []
-      //       }
-      //       resolveDelay={1000}
-      //       onChange={(items: any[]) => {
-      //         if (items.length > 0) {
-      //           const selectedItem = items[0];
-      //           getOnchange("Backup", selectedItem.id);
-      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
-      //         } else {
-      //           // No selection, pass null or handle as needed
-      //           getOnchange("Backup", null);
-      //         }
-      //       }}
-      //     />
-      //   );
-      // }
+      if (fieldType == "Backup") {
+        let clsValid = "";
+        !value.Backup ||
+        value.Backup.length === 0 ||
+        !value.Backup.some((user) => user.Id !== null)
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
+
+        return (
+          <PeoplePicker
+            context={props.context}
+            personSelectionLimit={3}
+            groupName={""}
+            showtooltip={false}
+            // required={true}
+            peoplePickerCntrlclassName={
+              !value.Backup ||
+              value.Backup.length === 0 ||
+              !value.Backup.some((user) => user.Id !== null)
+                ? styles.peoplepickerErrStyle
+                : ""
+            }
+            // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+            placeholder="Enter Email"
+            ensureUser={true}
+            // showHiddenInUI={false}
+            showHiddenInUI={true}
+            principalTypes={[PrincipalType.User]}
+            defaultSelectedUsers={value.Backup?.map((report) => {
+              return report.EMail;
+            })}
+            // defaultSelectedUsers={
+            //   value.Backup.EMail ? [value.Backup.EMail] : []
+            // }
+            resolveDelay={1000}
+            onChange={(items: any[]) => {
+              if (items.length > 0) {
+                const selectedItem = items;
+                getOnchange("Backup", selectedItem);
+                // getonChange("PeopleEmail", selectedItem.secondaryText);
+              } else {
+                // No selection, pass null or handle as needed
+                getOnchange("Backup", []);
+              }
+            }}
+          />
+        );
+      }
 
       //   return <InputText type="text" value={""} />;
     } else if (val.Id && isedit && val.Id === value.Id) {
@@ -465,7 +566,7 @@ const Client = (props) => {
               onChange={(items: any[]) => {
                 if (items.length > 0) {
                   const selectedItem = items[0];
-                  getOnchange("Assistant", selectedItem.id);
+                  getOnchange("Assistant", selectedItem);
                   // getonChange("PeopleEmail", selectedItem.secondaryText);
                 } else {
                   // No selection, pass null or handle as needed
@@ -477,45 +578,83 @@ const Client = (props) => {
           </>
         );
       }
-      // if (fieldType == "Backup") {
-      //   let clsValid = "";
-      //   !value.Backup.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
-      //   return (
-      //     <>
-      //       <PeoplePicker
-      //         context={props.context}
-      //         personSelectionLimit={1}
-      //         peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
-      //         groupName={""}
-      //         showtooltip={true}
-      //         // required={true}
-      //         ensureUser={true}
-      //         // showHiddenInUI={false}
-      //         showHiddenInUI={true}
-      //         principalTypes={[PrincipalType.User]}
-      //         defaultSelectedUsers={
-      //           value.Backup.EMail ? [value.Backup.EMail] : []
-      //         }
-      //         resolveDelay={1000}
-      //         onChange={(items: any[]) => {
-      //           if (items.length > 0) {
-      //             const selectedItem = items[0];
-      //             getOnchange("Backup", selectedItem.id);
-      //             // getonChange("PeopleEmail", selectedItem.secondaryText);
-      //           } else {
-      //             // No selection, pass null or handle as needed
-      //             getOnchange("Backup", null);
-      //           }
-      //         }}
-      //       />{" "}
-      //       {/* <p className={styles.errMsg}>error</p> */}
-      //     </>
-      //   );
-      // }
+      if (fieldType == "Backup") {
+        let clsValid = "";
+        !value.Backup ||
+        value.Backup.length === 0 ||
+        !value.Backup.some((user) => user.Id !== null)
+          ? (clsValid = "md:w-20rem w-full p-invalid")
+          : "";
+
+        return (
+          <>
+            <PeoplePicker
+              context={props.context}
+              personSelectionLimit={3}
+              peoplePickerCntrlclassName={
+                !value.Backup ||
+                value.Backup.length === 0 ||
+                !value.Backup.some((user) => user.Id !== null)
+                  ? styles.peoplepickerErrStyle
+                  : ""
+              }
+              // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
+              groupName={""}
+              showtooltip={true}
+              // required={true}
+              ensureUser={true}
+              // showHiddenInUI={false}
+              showHiddenInUI={true}
+              principalTypes={[PrincipalType.User]}
+              defaultSelectedUsers={value.Backup?.map((report) => {
+                return report.EMail;
+              })}
+              // defaultSelectedUsers={
+              //   value.Backup.EMail ? [value.Backup.EMail] : []
+              // }
+              resolveDelay={1000}
+              onChange={(items: any[]) => {
+                if (items.length > 0) {
+                  const selectedItem = items;
+                  getOnchange("Backup", selectedItem);
+                  // getonChange("PeopleEmail", selectedItem.secondaryText);
+                } else {
+                  // No selection, pass null or handle as needed
+                  getOnchange("Backup", []);
+                }
+              }}
+            />{" "}
+            {/* <p className={styles.errMsg}>error</p> */}
+          </>
+        );
+      }
     } else {
       if (fieldType == "Assistant") {
         return (
           <span className={styles.textOverflow}>{data[fieldType].Title}</span>
+        );
+      }
+
+      if (fieldType == "Backup") {
+        return (
+          <>
+            {data[fieldType].length > 0 &&
+              data[fieldType].map((val, index) => (
+                <span
+                  key={index} // Add a unique key prop when mapping elements in React
+                  // style={{
+                  //   textOverflow: "ellipsis",
+                  //   overflow: "hidden",
+                  //   whiteSpace: "nowrap",
+                  //   display: "block",
+                  //   width: "160px",
+                  // }}
+                  className={styles.textOverflow}
+                >
+                  {val.Title}
+                </span>
+              ))}
+          </>
         );
       }
       return <span className={styles.textOverflow}>{data[fieldType]}</span>;
@@ -526,6 +665,7 @@ const Client = (props) => {
     console.log(err);
   };
   const getdatas = () => {
+    debugger;
     SPServices.SPReadItems({
       Listname: "ClientDetails",
       Select:
@@ -536,6 +676,7 @@ const Client = (props) => {
       Orderbydecorasc: false,
     })
       .then((res) => {
+        debugger;
         let array: IClient[] = [];
         res.forEach((val: any) => {
           array.push({
@@ -549,6 +690,14 @@ const Client = (props) => {
               Title: val.Assistant?.Title,
             },
 
+            Backup: Array.isArray(val.Backup)
+              ? val.Backup?.map((response) => ({
+                  Id: response?.ID,
+                  EMail: response?.EMail,
+                  Title: response?.Title,
+                }))
+              : [],
+
             // Backup: {
             //   Id: val.Backup?.ID,
             //   EMail: val.Backup?.EMail,
@@ -556,6 +705,7 @@ const Client = (props) => {
             // },
           });
         });
+        debugger;
         setClientdetail([...array]);
         setMasterdata([...array]);
         setLoader(false);
@@ -568,7 +718,16 @@ const Client = (props) => {
     // let err = { ...error };
 
     if (key == "Assistant") {
-      FormData.Assistant.Id = _value;
+      (FormData.Assistant.Id = _value ? _value.id : null),
+        (FormData.Assistant.EMail = _value ? _value.secondaryText : ""),
+        (FormData.Assistant.Title = _value ? _value.text : "");
+    } else if (key === "Backup") {
+      // Handle arrays of objects for DirectReports, BackingUp
+      FormData[key] = _value.map((item) => ({
+        Id: item.id,
+        EMail: item.secondaryText,
+        Title: item.text,
+      }));
     }
     // else if (key == "Backup") {
     //   FormData.Backup.Id = _value;
@@ -595,8 +754,11 @@ const Client = (props) => {
       }).then((res) => {
         setShowDialog(false);
         setLoader(false);
-
-        getdatas();
+        let deleteobj = clientdetail.filter(
+          (val) => val.Id !== itemToDelete.Id
+        );
+        setClientdetail([...deleteobj]);
+        // getdatas();
       });
     } else {
       setShowDialog(false);
@@ -723,6 +885,12 @@ const Client = (props) => {
       missingFields.push("Company name");
     } else if (!value.Assistant?.Id || value.Assistant?.Id === null) {
       missingFields.push("Assistant");
+    } else if (
+      !value.Backup ||
+      value.Backup.length === 0 ||
+      !value.Backup.some((user) => user.Id !== null)
+    ) {
+      missingFields.push("Backup");
     }
 
     return missingFields;
@@ -821,12 +989,12 @@ const Client = (props) => {
                 sortable
                 body={(obj: any) => _addTextField(obj, "Assistant")}
               ></Column>
-              {/* <Column
+              <Column
                 field="Backup"
                 header="Backup"
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
-              ></Column> */}
+              ></Column>
               <Column header="Action" body={(obj) => _action(obj)}></Column>
             </DataTable>
           </div>

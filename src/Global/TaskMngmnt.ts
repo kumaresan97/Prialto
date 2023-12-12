@@ -45,5 +45,5 @@ export interface IClient {
   LastName: string;
   CompanyName: string;
   Assistant: IPeoplePicker;
-  // Backup: IPeoplePicker;
+  Backup: any;
 }

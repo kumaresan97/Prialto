@@ -540,7 +540,7 @@ const MainComponent = (props: any): JSX.Element => {
         ) : value == "OrgChart" ? (
           <OrgChartNew context={props.context}></OrgChartNew>
         ) : value == "Client" ? (
-          <Client context={props.context}></Client>
+          <Client context={props.context} _isAdmin={_isAdmin}></Client>
         ) : value == "TeamMembers" && selectedTeamMember.length ? (
           <Member
             context={props.context}

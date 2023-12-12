@@ -299,8 +299,6 @@ const OrgChart = (props) => {
       // }
 
       if (fieldType == "Name") {
-        let clsValid = "";
-        !curobj.Name?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -323,7 +321,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Name", selectedItem.id);
+                getOnchange("Name", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -351,8 +349,6 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Manager") {
-        let clsValid = "";
-        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -377,7 +373,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Manager", selectedItem.id);
+                getOnchange("Manager", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -431,7 +427,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("TeamCaptain", selectedItem.id);
+                getOnchange("TeamCaptain", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -470,7 +466,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("TeamLeader", selectedItem.id);
+                getOnchange("TeamLeader", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -637,7 +633,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Name", selectedItem.id);
+                getOnchange("Name", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -690,7 +686,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("Manager", selectedItem.id);
+                getOnchange("Manager", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -744,7 +740,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("TeamCaptain", selectedItem.id);
+                getOnchange("TeamCaptain", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -782,7 +778,7 @@ const OrgChart = (props) => {
             onChange={(items: any[]) => {
               if (items.length > 0) {
                 const selectedItem = items[0];
-                getOnchange("TeamLeader", selectedItem.id);
+                getOnchange("TeamLeader", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
                 // No selection, pass null or handle as needed
@@ -977,18 +973,26 @@ const OrgChart = (props) => {
     // let err = { ...error };
 
     if (key == "Manager") {
-      FormData.Manager.Id = _value;
+      (FormData.Manager.Id = _value ? _value.id : null),
+        (FormData.Manager.EMail = _value ? _value.secondaryText : ""),
+        (FormData.Manager.Title = _value ? _value.text : "");
     } else if (key == "TeamCaptain") {
-      FormData.TeamCaptain.Id = _value;
+      (FormData.TeamCaptain.Id = _value ? _value.id : null),
+        (FormData.TeamCaptain.EMail = _value ? _value.secondaryText : ""),
+        (FormData.TeamCaptain.Title = _value ? _value.text : "");
     } else if (key == "TeamLeader") {
-      FormData.TeamLeader.Id = _value;
+      (FormData.TeamLeader.Id = _value ? _value.id : null),
+        (FormData.TeamLeader.EMail = _value ? _value.secondaryText : ""),
+        (FormData.TeamLeader.Title = _value ? _value.text : "");
       // } else if (key == "DirectReports") {
       //   FormData.DirectReports[0].Id = _value;
       // } else if (key == "BackingUp") {
       //   FormData.BackingUp[0].Id = _value;
       // }
     } else if (key == "Name") {
-      FormData.Name.Id = _value;
+      (FormData.Name.Id = _value ? _value.id : null),
+        (FormData.Name.EMail = _value ? _value.secondaryText : ""),
+        (FormData.Name.Title = _value ? _value.text : "");
       // } else if (key == "DirectReports") {
       //   FormData.DirectReports[0].Id = _value;
       // } else if (key == "BackingUp") {
@@ -1053,12 +1057,56 @@ const OrgChart = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
+        let resjson = {
+          Id: res.data.Id,
+          Name: {
+            Id: curobj.Name?.Id,
+            EMail: curobj.Name?.EMail,
+            Title: curobj.Name?.Title,
+          },
+          Role: curobj.Role ? curobj.Role["name"] : "",
+          Team: curobj.Team ? curobj.Team["name"] : "",
+          Cohort: "",
+          Manager: {
+            Id: curobj.Manager?.Id,
+            EMail: curobj.Manager?.EMail,
+            Title: curobj.Manager?.Title,
+          },
+          TeamCaptain: {
+            Id: curobj.TeamCaptain?.Id,
+            EMail: curobj.TeamCaptain?.EMail,
+            Title: curobj.TeamCaptain?.Title,
+          },
+          TeamLeader: {
+            Id: curobj.TeamLeader?.Id,
+            EMail: curobj.TeamLeader?.EMail,
+            Title: curobj.TeamLeader?.Title,
+          },
+          DirectReports: Array.isArray(curobj.DirectReports)
+            ? curobj.DirectReports.map((response) => ({
+                Id: response?.Id,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+          BackingUp: Array.isArray(curobj.BackingUp)
+            ? curobj.BackingUp.map((response) => ({
+                Id: response?.Id,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+        };
+
+        let filterdatas = value.filter((val) => val.Id !== null);
+        setValue([...filterdatas, resjson]);
+
         setAdd(false);
         setEdit(false);
         setcurobj({ ...addparent });
-        setLoader(true);
+        setLoader(false);
 
-        getdatas();
+        // getdatas();
       })
       .catch((err) => errFunction("Configuration err ", err));
   };
@@ -1230,12 +1278,60 @@ const OrgChart = (props) => {
       RequestJSON: json,
     })
       .then((res) => {
+        let editobj = {
+          Id: obj.Id,
+          Name: {
+            Id: curobj.Name?.Id,
+            EMail: curobj.Name?.EMail,
+            Title: curobj.Name?.Title,
+          },
+          Role: curobj.Role ? curobj.Role["name"] : "",
+          Team: curobj.Team ? curobj.Team["name"] : "",
+          Cohort: "",
+          Manager: {
+            Id: curobj.Manager?.Id,
+            EMail: curobj.Manager?.EMail,
+            Title: curobj.Manager?.Title,
+          },
+          TeamCaptain: {
+            Id: curobj.TeamCaptain?.Id,
+            EMail: curobj.TeamCaptain?.EMail,
+            Title: curobj.TeamCaptain?.Title,
+          },
+          TeamLeader: {
+            Id: curobj.TeamLeader?.Id,
+            EMail: curobj.TeamLeader?.EMail,
+            Title: curobj.TeamLeader?.Title,
+          },
+          DirectReports: Array.isArray(curobj.DirectReports)
+            ? curobj.DirectReports.map((response) => ({
+                Id: response?.Id,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+          BackingUp: Array.isArray(curobj.BackingUp)
+            ? curobj.BackingUp.map((response) => ({
+                Id: response?.Id,
+                EMail: response?.EMail,
+                Title: response?.Title,
+              }))
+            : [],
+        };
+
+        let updatedClientDetail = value.map((val) => {
+          if (val.Id === obj.Id) {
+            return editobj;
+          }
+          return val;
+        });
+        setValue([...updatedClientDetail]);
         setAdd(false);
         setEdit(false);
         setcurobj({ ...addparent });
         setLoader(false);
 
-        getdatas();
+        // getdatas();
       })
       .catch((err) => errFunction("Configuration json", err));
   };
@@ -1489,10 +1585,12 @@ const OrgChart = (props) => {
         Listname: "Configuration",
         ID: itemToDelete.Id,
       }).then((res) => {
+        let deleteobj = value.filter((val) => val.Id !== itemToDelete.Id);
+        setValue([...deleteobj]);
         setShowDialog(false);
         setLoader(false);
 
-        getdatas();
+        // getdatas();
       });
     } else {
       setLoader(false);
@@ -1591,6 +1689,7 @@ const OrgChart = (props) => {
   // }
 
   function validateObject() {
+    debugger;
     const missingFields = [];
 
     if (!curobj.Name?.Id || curobj.Name?.Id === null) {

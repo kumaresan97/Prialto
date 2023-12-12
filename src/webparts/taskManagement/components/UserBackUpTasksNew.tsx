@@ -50,7 +50,6 @@ export default function UserBackUpTasksNew(props) {
       .getByEmail(UserEmail)
       .get()
       .then((res) => {
-        console.log(UserEmail);
         let crntUserDetails = {
           Id: res.Id,
           EMail: res.Email,
@@ -162,6 +161,11 @@ export default function UserBackUpTasksNew(props) {
         FilterValue: id,
       },
       {
+        FilterKey: "Assistant/ID",
+        Operator: "ne",
+        FilterValue: id,
+      },
+      {
         FilterKey: "Client/ID",
         Operator: "gt",
         FilterValue: 0,
@@ -197,6 +201,11 @@ export default function UserBackUpTasksNew(props) {
         FilterKey: "Backup/ID",
         Operator: "eq",
         FilterValue: id,
+      },
+      {
+        FilterKey: "Assistant/ID",
+        Operator: "ne",
+        FilterValue: id,
       }
     ];
     SPServices.SPReadItems({
@@ -208,6 +217,7 @@ export default function UserBackUpTasksNew(props) {
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
+      FilterCondition:"and"
     })
       .then((res) => {
         res.forEach((val: any) => 
@@ -285,6 +295,7 @@ export default function UserBackUpTasksNew(props) {
                 TaskName: val.TaskName,
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
+                BackupUsers:val.BackupId?val.BackupId:[],
                 Creator: {
                   Id: val.Assistant.ID,
                   EMail: val.Assistant.EMail,
@@ -316,7 +327,7 @@ export default function UserBackUpTasksNew(props) {
             Id: MainTask[i].data.Creator?MainTask[i].data.Creator.Id:"",
             EMail: MainTask[i].data.Creator?MainTask[i].data.Creator.EMail:"",
             Title: MainTask[i].data.Creator?MainTask[i].data.Creator.Title:""
-          } });
+          },BackupUsers:MainTask[i].data.BackupUsers});
         }
 
           arrFilter.push({
@@ -429,6 +440,7 @@ export default function UserBackUpTasksNew(props) {
         ClientName: MyClients[i].Name,
         ID: MyClients[i].ID,
         Assistant:MyClients[i].Assistant,
+        BackupUsers:MainTask[i].data.BackupUsers,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
@@ -514,6 +526,7 @@ export default function UserBackUpTasksNew(props) {
                     assistant={val.Assistant?val.Assistant:curuserId}
                     crntUserData={curuserId}
                     crntBackData={configure}
+                  backupUsers={val.BackupUsers}///Changes for backup users multiple
                   />
                 </>
               );
@@ -528,6 +541,7 @@ export default function UserBackUpTasksNew(props) {
             mainData={masterdata}
             crntUserData={curuserId}
             crntBackData={configure}
+            backupUsers={[]}
           />
         )}
       </>

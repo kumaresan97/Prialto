@@ -143,7 +143,9 @@ export default function UserTasks(props) {
               Id: val.Assistant?val.Assistant.ID:"",
               EMail: val.Assistant?val.Assistant.EMail:"",
               Title: val.Assistant?val.Assistant.Title:""
-            } });
+            },
+            BackupUsers:val.BackupId?val.BackupId:[]
+          });
         });
         if (MyClients.length > 0) {
           getMainTask(id);
@@ -206,9 +208,12 @@ export default function UserTasks(props) {
                   Title: val.Assistant.Title,
                 },
                 Backup: {
-                  Id: val.Backup?.ID,
-                  EMail: val.Backup?.EMail,
-                  Title: val.Backup?.Title,
+                  // Id: val.Backup?.ID,///Changes for backup users multiple
+                    // EMail: val.Backup?.EMail,
+                    // Title: val.Backup?.Title,
+                    Id: "",
+                    EMail: "",
+                    Title: "",
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
@@ -282,9 +287,12 @@ export default function UserTasks(props) {
                     Title: val.Assistant?.Title,
                   },
                   Backup: {
-                    Id: val.Backup?.ID,
-                    EMail: val.Backup?.EMail,
-                    Title: val.Backup?.Title,
+                    // Id: val.Backup?.ID,///Changes for backup users multiple
+                    // EMail: val.Backup?.EMail,
+                    // Title: val.Backup?.Title,
+                    Id: "",
+                    EMail: "",
+                    Title: "",
                   },
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
@@ -332,6 +340,7 @@ export default function UserTasks(props) {
         ClientName: MyClients[i].Name,
         ID: MyClients[i].ID,
         Assistant:MyClients[i].Assistant,
+        BackupUsers:MyClients[i].BackupUsers,///Changes for backup users multiple
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
@@ -378,6 +387,7 @@ export default function UserTasks(props) {
                     mainData={val.Tasks}
                     crntUserData={curuserId}
                     crntBackData={configure}
+                    backupUsers={val.BackupUsers}
                   />
                 </>
               );
@@ -392,6 +402,7 @@ export default function UserTasks(props) {
             mainData={masterdata}
             crntUserData={curuserId}
             crntBackData={configure}
+            backupUsers={[]}
             
           />
         )}

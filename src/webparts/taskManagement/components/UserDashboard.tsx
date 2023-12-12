@@ -11,6 +11,7 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 import UserTasks from "./UserTasks";
+import UserBackUpTasks from "./UserBackUpTasks";
 import UserBackUpTasksNew from "./UserBackUpTasksNew";
 import UserClients from "./UserClient";
 

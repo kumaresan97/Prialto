@@ -331,12 +331,12 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      //AssistantId:curuserId.Id,
-      BackupId: curdata.Backup.Id
-        ? curdata.Backup.Id
-        : configure.backupId
-        ? configure.backupId
-        : null,
+      AssistantId:curuserId.Id,
+      // BackupId: curdata.Backup.Id
+      //   ? curdata.Backup.Id
+      //   : configure.backupId
+      //   ? configure.backupId
+      //   : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -346,11 +346,11 @@ const MyTaskData = (props): JSX.Element => {
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id
-        ? curdata.Backup.Id
-        : configure.backupId
-        ? configure.backupId
-        : null,
+      // BackupId: curdata.Backup.Id
+      //   ? curdata.Backup.Id
+      //   : configure.backupId
+      //   ? configure.backupId
+      //   : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -494,7 +494,7 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let editval = {
       TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id ? curdata.Backup.Id : null,
+      //BackupId: curdata.Backup.Id ? curdata.Backup.Id : null,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -1312,13 +1312,13 @@ const MyTaskData = (props): JSX.Element => {
           sortable
           style={cellStyle}
         /> */}
-            <Column
+            {/* <Column
               field="Assitant"
               header="Assitant"
               sortable
               style={cellStyle}
               body={(obj: any) => _addTextField(obj, "Creator")}
-            />
+            /> */}
             {/* <Column
           field="Backup"
           header="Backup"

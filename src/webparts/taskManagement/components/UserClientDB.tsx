@@ -354,11 +354,12 @@ const UserClientDB = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id
-        ? curdata.Backup.Id
-        : configure.backupId
-        ? configure.backupId
-        : null,
+      // BackupId: curdata.Backup.Id ///Changes for backup users multiple
+      //   ? curdata.Backup.Id
+      //   : configure.backupId
+      //   ? configure.backupId
+      //   : null,
+      BackupId:{ 'results': props.backupUsers },
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -370,11 +371,12 @@ const UserClientDB = (props): JSX.Element => {
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      BackupId: curdata.Backup.Id
-        ? curdata.Backup.Id
-        : configure.backupId
-        ? configure.backupId
-        : null,
+      // BackupId: curdata.Backup.Id ///Changes for backup users multiple
+      //   ? curdata.Backup.Id
+      //   : configure.backupId
+      //   ? configure.backupId
+      //   : null,
+      BackupId:{ 'results': props.backupUsers },
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -518,7 +520,7 @@ const UserClientDB = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let editval = {
       TaskName: curdata.TaskName,
-      BackupId: curdata.Backup.Id,
+      //BackupId: curdata.Backup.Id,
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -812,7 +814,9 @@ const UserClientDB = (props): JSX.Element => {
             // defaultSelectedUsers={
             //   value.PeopleEmail ? [value.PeopleEmail] : []
             // }
-            defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
+            ///Changes for backup users multiple
+            //defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
+
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
@@ -843,9 +847,10 @@ const UserClientDB = (props): JSX.Element => {
             // defaultSelectedUsers={
             //   value.PeopleEmail ? [value.PeopleEmail] : []
             // }
-            defaultSelectedUsers={
-              curdata.Backup.EMail ? [curdata.Backup.EMail] : [configure.EMail]
-            }
+            ///Changes for backup users multiple
+            // defaultSelectedUsers={
+            //   curdata.Backup.EMail ? [curdata.Backup.EMail] : [configure.EMail]
+            // }
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
@@ -958,7 +963,8 @@ const UserClientDB = (props): JSX.Element => {
             // defaultSelectedUsers={
             //   value.PeopleEmail ? [value.PeopleEmail] : []
             // }
-            defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
+            ///Changes for backup users multiple
+            //defaultSelectedUsers={curuserId.EMail ? [curuserId.EMail] : []}
             resolveDelay={1000}
             // onChange={(items: any[]) => {
             //   if (items.length > 0) {
@@ -988,9 +994,8 @@ const UserClientDB = (props): JSX.Element => {
             // defaultSelectedUsers={
             //   value.PeopleEmail ? [value.PeopleEmail] : []
             // }
-            defaultSelectedUsers={
-              curdata.Backup.EMail ? [curdata.Backup.EMail] : []
-            }
+            ///Changes for backup users multiple
+            //defaultSelectedUsers={curdata.Backup.EMail ? [curdata.Backup.EMail] : []}
             resolveDelay={1000}
             onChange={(items: any[]) => {
               if (items.length > 0) {
@@ -1331,7 +1336,8 @@ const UserClientDB = (props): JSX.Element => {
               sortable
               style={cellStyle}
             />
-            <Column
+            {/*///Changes for backup users multiple*/}
+            {/* <Column
               field="Assitant"
               header="Assitant"
               sortable
@@ -1344,7 +1350,7 @@ const UserClientDB = (props): JSX.Element => {
               sortable
               style={cellStyle}
               body={(obj: any) => _addTextField(obj, "Backup")}
-            />
+            /> */}
             <Column
               field="DueDate"
               header="Due date"

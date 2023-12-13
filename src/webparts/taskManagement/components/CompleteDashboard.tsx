@@ -16,39 +16,11 @@ let subArray = [];
 const CompleteDashboard = (props) => {
   const UserEmail = props.context.pageContext.user.email;
   const [Userdata, setUserdata] = useState([]);
+  const [masterdata, setMasterdata] = useState([]);
+  const [search, setSearch] = useState("");
+
   const [loader, setLoader] = useState(false);
-  let data = [
-    {
-      TaskName: "123",
-      DueDate: "08/11/1997",
-      PriorityLevel: "High",
-      Status: "Completed",
-    },
-    {
-      TaskName: "123",
-      DueDate: "08/11/1997",
-      PriorityLevel: "High",
-      Status: "Completed",
-    },
-    {
-      TaskName: "123",
-      DueDate: "08/11/1997",
-      PriorityLevel: "High",
-      Status: "Completed",
-    },
-    {
-      TaskName: "123",
-      DueDate: "08/11/1997",
-      PriorityLevel: "High",
-      Status: "Completed",
-    },
-    {
-      TaskName: "123",
-      DueDate: "08/11/1997",
-      PriorityLevel: "High",
-      Status: "Completed",
-    },
-  ];
+
   let userid = null;
   const [curuser, setCuruser] = useState(null);
   const getcurUser = () => {
@@ -112,8 +84,9 @@ const CompleteDashboard = (props) => {
             key: "",
             TaskName: resdata.TaskName,
             Id: resdata.Id,
-            // ClientName: resdata.ClientId ? resdata.Client.FirstName : "",
-            // ClientID: resdata.ClientId ? resdata.Client.ID : "",
+            NotifyDate: resdata?.NotifyDate
+              ? SPServices.displayDate(resdata.NotifyDate)
+              : "",
             Creator: {
               Id: resdata.Author.ID,
               EMail: resdata.Author.EMail,
@@ -124,6 +97,8 @@ const CompleteDashboard = (props) => {
               EMail: resdata.Backup?.EMail,
               Title: resdata.Backup?.Title,
             },
+            TaskAge: resdata?.TaskAge ? resdata.TaskAge : null,
+            DoneFormula: resdata?.DoneFormula ? resdata.DoneFormula : "",
             DueDate: SPServices.displayDate(resdata.DueDate),
             PriorityLevel: resdata.PriorityLevel,
             Status: resdata.Status,
@@ -170,21 +145,18 @@ const CompleteDashboard = (props) => {
         console.log(val, "val");
         subArray = [];
 
-        /* Start Of Subtaks */
-
-        //   var res = val.filter(function (data: any) {
-        //     return data.MainTaskID.ID == val[i].Id;
-        //   });
         val.forEach((val: any, index) => {
           val.ClientName == null &&
             subArray.push({
-              // key: `${mainarray[i].Id}-${index + 1}`,
-              // Index: index,
               Id: val.Id,
               subId: val.MainTaskID?.ID,
+              NotifyDate: val?.NotifyDate
+                ? SPServices.displayDate(val.NotifyDate)
+                : "",
               parentTasKName: val.MainTaskID?.TaskName,
               TaskName: val?.TaskName,
-              // ClientID: mainarray[i].data.ClientID,
+              TaskAge: val?.TaskAge ? val.TaskAge : null,
+              DoneFormula: val?.DoneFormula ? val.DoneFormula : "",
               Creator: {
                 Id: val.Author.ID,
                 EMail: val.Author.EMail,
@@ -202,54 +174,6 @@ const CompleteDashboard = (props) => {
             });
         });
 
-        //   MainArray.push({
-        //     ...MainTask[i],
-        //     children: SubTask,
-        //   });
-
-        //   if (i + 1 === mainarray.length) {
-        //     debugger;
-        //     console.log(subArray, "subarray");
-        //     Binddata();
-
-        // console.log(MainArray, "MainArray");
-        // let tempClient=[];
-        // for(let i=0;i<MyClients.length;i++)
-        // {
-        //     tempClient.push({ClientName:MyClients[i].Name,ID:MyClients[i].ID,Tasks:[]});
-        //     for(let j=0;j<MainArray.length;j++)
-        //     {
-        //         if(MainArray[j].data.ClientID==MyClients[i].ID)
-        //         tempClient[i].Tasks.push(MainArray[j]);
-        //     }
-        // }
-        // setCurMyTask([...MainArray]);
-        // setMasterdata([...MainArray]);
-        // setClientdata([...tempClient]);
-        // Binddata();
-        //   }
-        /* End Of Subtaks */
-
-        // val.forEach((resdata: any) => {
-        //   subArray.push({
-        //     TaskName: resdata.TaskName,
-        //     ClientID: resdata.ClientId ? resdata.Client.ID : "",
-        //     Creator: {
-        //       Id: resdata.Author.ID,
-        //       EMail: resdata.Author.EMail,
-        //       Title: resdata.Author.Title,
-        //     },
-        //     Backup: {
-        //       Id: resdata.Backup?.ID,
-        //       EMail: resdata.Backup?.EMail,
-        //       Title: resdata.Backup?.Title,
-        //     },
-        //     DueDate: SPServices.displayDate(resdata.DueDate),
-        //     PriorityLevel: resdata.PriorityLevel,
-        //     Status: resdata.Status,
-        //     Created: SPServices.displayDate(resdata.Created),
-        //   });
-        // });
         Binddata();
         console.log(subArray, "subarray");
       })
@@ -277,7 +201,6 @@ const CompleteDashboard = (props) => {
         globalArray.push(mainarray[i]);
         subfield = false;
       }
-      // subArray.filter((val)=>val.Status=="Completed")
     }
     globalArray.sort((a, b) => {
       if (a.Id > b.Id) {
@@ -288,9 +211,22 @@ const CompleteDashboard = (props) => {
       }
     });
     setUserdata([...globalArray]);
+    setMasterdata([...globalArray]);
     setLoader(false);
-    // console.log(globalArray, "globalarray");
   };
+  //   const SearchFilter=()=>{
+  //     const Filter
+  //     const searchableFields = [
+  //         "FirstName",
+  //         "LastName",
+  //         "Assistant",
+  //         "CompanyName",
+  //         "Backup",
+  //       ];
+  //       return searchableFields.some(()=>{
+
+  //       })const fieldValue=i
+  //   }
 
   useEffect(() => {
     setLoader(true);
@@ -301,57 +237,35 @@ const CompleteDashboard = (props) => {
       {loader ? (
         <Loader></Loader>
       ) : (
-        <DataTable
-          value={Userdata}
-          sortMode="multiple"
-          tableStyle={{ minWidth: "60rem" }}
-        >
-          <Column
-            field="TaskName"
-            header="Task name"
-            //   expander
-            sortable
-            //   style={TaskCellStyle}
-            //   body={(obj: any) => _addTextField(obj, "TaskName")}
-          />
-          <Column
-            field="parentTasKName"
-            header="parent Taskname"
-            //   expander
-            sortable
-            //   style={TaskCellStyle}
-            //   body={(obj: any) => _addTextField(obj, "TaskName")}
-          />
-          <Column
-            field="DueDate"
-            header="Due date"
-            sortable
-            //   style={cellStyle}
-            //   body={(obj: any) => _addTextField(obj, "DueDate")}
-          />
+        <div>
+          <div></div>
+          <DataTable
+            paginator
+            rows={10}
+            value={Userdata}
+            sortMode="multiple"
+            tableStyle={{ minWidth: "60rem" }}
+          >
+            <Column
+              field="TaskName"
+              header="Task name"
+              //   expander
+              sortable
+            />
+            <Column field="parentTasKName" header="parent Taskname" sortable />
+            <Column field="DueDate" header="Due date" sortable />
 
-          <Column
-            field="PriorityLevel"
-            header=" Priority level"
-            sortable
-            //   style={cellStyle}
-            //   body={(obj: any) => _addTextField(obj, "PriorityLevel")}
-          />
-          <Column
-            field="Status"
-            header="Status"
-            sortable
-            //   style={cellStyle}
-            //   body={(obj: any) => _addTextField(obj, "Status")}
-          />
+            <Column field="PriorityLevel" header=" Priority level" sortable />
+            <Column field="Status" header="Status" sortable />
 
-          {/* <Column
+            {/* <Column
                   header="Action"
                   style={{ width: "200px" }}
                   body={(obj) => _action(obj)}
                 ></Column>
             */}
-        </DataTable>
+          </DataTable>
+        </div>
       )}
     </div>
   );

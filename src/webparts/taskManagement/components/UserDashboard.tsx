@@ -194,7 +194,7 @@ export default function UserDashboard(props) {
               />
               <Button
                 className={styles.btnColor}
-                label="Completed"
+                label="Done"
                 onClick={() => {
                   props.HandleCompleted("Completed", user);
                 }}

@@ -362,11 +362,15 @@ const MainComponent = (props: any): JSX.Element => {
                     // }
                   >
                     {menuExpand ? val.team : ""}
-                    <i
+                    <p title={`${val.team}`} className={styles.teamNameShort}>
+                      {" "}
+                      {!menuExpand ? val.team.split("-")[0] : ""}
+                    </p>
+                    {/* <i
                       title={val.team}
                       className="pi pi-star-fill"
                       style={{ fontSize: "1.25rem" }}
-                    ></i>
+                    ></i> */}
                   </Label>
                 </div>
 
@@ -514,7 +518,7 @@ const MainComponent = (props: any): JSX.Element => {
       <div
         style={{
           width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
-          padding: 0,
+          padding: "0 16px 0 0",
         }}
       >
         {value == "mytasks" ? (

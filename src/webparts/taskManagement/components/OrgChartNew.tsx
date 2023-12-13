@@ -28,6 +28,7 @@ let teamArr: any[] = [];
 let userTeams: any[] = [];
 let _formattedData: any[] = [];
 let _curArray: any[] = [];
+let teamChoices=[];
 let _isAdmin: boolean = false;
 let _isTL: boolean = false;
 let _isTC: boolean = false;
@@ -1355,6 +1356,28 @@ const OrgChart = (props) => {
       });
   };
 
+
+  function getTeamChoices() {
+    teamChoices = [];
+    SPServices.SPGetChoices({
+      Listname: "Configuration",
+      FieldName: "Team",
+    })
+      .then(function (data) {
+        
+        for (let i = 0; i < data["Choices"].length; i++) {
+          teamChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+        team=teamChoices;
+      })
+      .catch(function (error) {
+        errFunction("getTeamChoices",error);
+      });
+  }
+
   const getdatas = () => {
     SPServices.SPReadItems({
       Listname: "Configuration",
@@ -1723,6 +1746,7 @@ const OrgChart = (props) => {
   useEffect(() => {
     setLoader(true);
     // getdatas();
+    getTeamChoices();
     _getPrialtoAdmin();
   }, []);
   return (

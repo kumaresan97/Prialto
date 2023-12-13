@@ -12,12 +12,13 @@ import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 import { Toast } from "primereact/toast";
 import exportToExcel from "../../../Global/ExportExcel";
+import { Dialog } from "primereact/dialog";
 let MyClients = [];
-let MyCategories=[];
+let MyCategories = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-let statusChoices=[];
+let statusChoices = [];
 export default function MyTaskDBNewCategory(props) {
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
@@ -44,7 +45,7 @@ export default function MyTaskDBNewCategory(props) {
     EMail: "",
     Title: "",
   });
-
+  const [isCatDialog, setIsCatDialog] = useState(false);
   const errFunction = (err) => {
     setLoader(false);
     BindData();
@@ -55,21 +56,24 @@ export default function MyTaskDBNewCategory(props) {
     );
   };
 
-  function getStatus()
-  {
-    statusChoices=[];
+  function getStatus() {
+    statusChoices = [];
     SPServices.SPGetChoices({
-      Listname:"Tasks",
-      FieldName:"Status"
-    }).then(function(data){
-      console.log(data["Choices"]);
-      for(let i=0;i<data["Choices"].length;i++)
-      {
-        statusChoices.push({ name: data["Choices"][i], code: data["Choices"][i] })
-      }
-    }).catch(function(error){
-      errFunction(error);
+      Listname: "Tasks",
+      FieldName: "Status",
     })
+      .then(function (data) {
+        console.log(data["Choices"]);
+        for (let i = 0; i < data["Choices"].length; i++) {
+          statusChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
   }
 
   //getcuruser
@@ -144,12 +148,10 @@ export default function MyTaskDBNewCategory(props) {
     }
   };
 
-  function getCategories(id)
-  {
+  function getCategories(id) {
     SPServices.SPReadItems({
       Listname: "Categories",
-      Select:
-        "*, UserName/ID, UserName/EMail, UserName/Title",
+      Select: "*, UserName/ID, UserName/EMail, UserName/Title",
 
       Expand: "UserName",
       Orderby: "Created",
@@ -161,19 +163,17 @@ export default function MyTaskDBNewCategory(props) {
           FilterValue: id,
         },
       ],
-    }).then(function(data:any)
-    {
-      for(let i=0;i<data.length;i++)
-      {
-        MyCategories.push({ID:data[i].ID,Name:data[i].Title})
-      } 
-      if(data.length>0) 
-      getMyClients(id);
-    else
-    BindData();
-    }).catch(function(error){
-      errFunction(error);
     })
+      .then(function (data: any) {
+        for (let i = 0; i < data.length; i++) {
+          MyCategories.push({ ID: data[i].ID, Name: data[i].Title });
+        }
+        if (data.length > 0) getMyClients(id);
+        else BindData();
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
   }
 
   function getMyClients(id) {
@@ -244,7 +244,7 @@ export default function MyTaskDBNewCategory(props) {
                 TaskName: val.TaskName,
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
-                CategoryID:val.CategoryId? val.Category.ID : "",
+                CategoryID: val.CategoryId ? val.Category.ID : "",
                 Creator: {
                   Id: val.Author.ID,
                   EMail: val.Author.EMail,
@@ -414,7 +414,6 @@ export default function MyTaskDBNewCategory(props) {
     exportToExcel(curMyTask, columns, "MyTask");
   };
 
-  
   function onSpinner() {
     //setLoader(true);
   }
@@ -423,18 +422,17 @@ export default function MyTaskDBNewCategory(props) {
     //setLoader(false);
   }
 
-  function addCategory(value)
-  {
-      setLoader(true);
-      SPServices.SPAddItem({
-        Listname:"Categories",
-        RequestJSON:{
-          Title:value,
-          UserNameId:curuserId.Id
-        }
-      }).then(function(res)
-      {
-        MyCategories.push({ID:res.data.ID,Name:value});
+  function addCategory(value) {
+    setLoader(true);
+    SPServices.SPAddItem({
+      Listname: "Categories",
+      RequestJSON: {
+        Title: value,
+        UserNameId: curuserId.Id,
+      },
+    })
+      .then(function (res) {
+        MyCategories.push({ ID: res.data.ID, Name: value });
         let tempClient = [...clientdata];
         tempClient.push({
           Title: value,
@@ -443,21 +441,20 @@ export default function MyTaskDBNewCategory(props) {
         });
         setClientdata([...tempClient]);
         setCategoryValue("");
+        setIsCatDialog(false);
         setLoader(false);
-          
-      }).catch(function(error){
+      })
+      .catch(function (error) {
         errFunction(error);
       });
   }
 
-  function validation()
-  {
-      let isAllValueFilled=true;
-      if(!categoryValue)
-      {
-        isAllValueFilled=false;
-      }
-      return isAllValueFilled;
+  function validation() {
+    let isAllValueFilled = true;
+    if (!categoryValue) {
+      isAllValueFilled = false;
+    }
+    return isAllValueFilled;
   }
 
   const showMessage = (event, ref, severity) => {
@@ -471,23 +468,60 @@ export default function MyTaskDBNewCategory(props) {
     });
   };
 
-
   useEffect(() => {
     setLoader(true);
     MyClients = [];
-    MyCategories=[];
+    MyCategories = [];
     MainTask = [];
     MainArray = [];
     SubTask = [];
-    statusChoices=[];
+    statusChoices = [];
     getStatus();
     getcurUser();
-    
   }, [props.Email]);
-
 
   return (
     <>
+      <Dialog
+        header="Header"
+        style={{ width: "420px" }}
+        visible={isCatDialog}
+        onHide={() => setIsCatDialog(false)}
+      >
+        <div className={styles.addCatSection}>
+          <Label>Add New Category</Label>
+          <div>
+            <InputText
+              style={{ width: "100%" }}
+              value={categoryValue}
+              onChange={(e: any) => setCategoryValue(e.target.value)}
+            />
+          </div>
+          <div className={styles.catDialogBtnSection}>
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                if (validation()) addCategory(categoryValue);
+                else
+                  showMessage(
+                    "Please enter valid Category",
+                    toastTopRight,
+                    "warn"
+                  );
+              }}
+              label="Add"
+            />
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                setCategoryValue("");
+                setIsCatDialog(false);
+              }}
+              label="Cancel"
+            />
+          </div>
+        </div>
+      </Dialog>
       {loader ? (
         <Loader />
       ) : (
@@ -496,19 +530,10 @@ export default function MyTaskDBNewCategory(props) {
             <div>
               <Label className={styles.leftFilterSection}></Label>
               <>
-            <div>
-            <Toast ref={toastTopRight} position="top-right" />
-            <div className={styles.addCatSection}>
-            <InputText value={categoryValue} onChange={(e: any) => setCategoryValue(e.target.value)}/>
-            <Button className={styles.btnColor} label="Add Category" onClick={()=>{
-               if(validation())
-               addCategory(categoryValue);
-              else
-              showMessage("Please enter valid Category", toastTopRight, "warn");
-            }} />
-            </div>
-            </div>
-            </>
+                <div>
+                  <Toast ref={toastTopRight} position="top-right" />
+                </div>
+              </>
             </div>
             <div className={styles.rightFilterSection}>
               <div>
@@ -522,58 +547,67 @@ export default function MyTaskDBNewCategory(props) {
                   />
                 </span>
               </div>
-              <Button className={styles.btnColor} label="Automate" />
+
               <Button
                 className={styles.btnColor}
                 label="Export"
                 onClick={() => exportData()}
                 icon="pi pi-file-excel"
               />
+              <Button className={styles.btnColor} label="Automate" />
+              <Button
+                className={styles.btnColor}
+                label="Add Category"
+                onClick={() => {
+                  setIsCatDialog(true);
+                }}
+              />
             </div>
-            
           </div>
           <>
-            {
-              clientdata.length>0?(<>
+            {clientdata.length > 0 ? (
+              <>
                 {clientdata.map((val, i) => {
                   return (
                     <>
                       <MyTaskDataCategory
-                       bind={false}
-                       clientName={""}
-                       clientId={""}
-                       categoryName={val.Title}
-                       categoryId={val.ID}
-                       searchValue={search}
-                       onspinner={onSpinner}
-                       offspinner={offSpinner}
-                       context={props.context}
-                       mainData={val.Tasks}
-                       crntUserData={curuserId}
-                       crntBackData={configure}
-                       choices={statusChoices}
+                        bind={false}
+                        clientName={""}
+                        clientId={""}
+                        categoryName={val.Title}
+                        categoryId={val.ID}
+                        searchValue={search}
+                        onspinner={onSpinner}
+                        offspinner={offSpinner}
+                        context={props.context}
+                        mainData={val.Tasks}
+                        crntUserData={curuserId}
+                        crntBackData={configure}
+                        choices={statusChoices}
                       />
                     </>
                   );
                 })}
-              </>):(<>
-              <MyTaskDataCategory
-              bind={false}
-              clientName={""}
-              clientId={""}
-              categoryName={""}
-              categoryId={""}
-              searchValue={""}
-              onspinner={onSpinner}
-              offspinner={offSpinner}
-              context={props.context}
-              mainData={curMyTask}
-              crntUserData={curuserId}
-              crntBackData={configure}
-              choices={statusChoices}
-            />
-              </>)
-            }
+              </>
+            ) : (
+              <>
+                <MyTaskDataCategory
+                  bind={false}
+                  clientName={""}
+                  clientId={""}
+                  categoryName={""}
+                  categoryId={""}
+                  searchValue={""}
+                  onspinner={onSpinner}
+                  offspinner={offSpinner}
+                  context={props.context}
+                  mainData={curMyTask}
+                  crntUserData={curuserId}
+                  crntBackData={configure}
+                  choices={statusChoices}
+                />
+              </>
+            )}
           </>
         </>
       )}

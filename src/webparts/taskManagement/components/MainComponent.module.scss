@@ -17,6 +17,10 @@
         width: 15%;
         height: 100vh;
         background: #009b9f;
+        .teamNameShort {
+            margin: 0;
+            font-weight: 600;
+        }
         .menuWithIcon {
             display: flex;
         }

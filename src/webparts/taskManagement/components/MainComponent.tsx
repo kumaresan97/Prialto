@@ -24,6 +24,7 @@ import Client from "./Client";
 import Loader from "./Loader";
 import Member from "./Members";
 import OrgChartNew from "./OrgChartNew";
+import MyTaskDBNewCategory from "./MyTaskDBNewCategory";
 import {
   IPersonaSharedProps,
   Persona,
@@ -523,7 +524,7 @@ const MainComponent = (props: any): JSX.Element => {
       >
         {value == "mytasks" ? (
           <>
-            <MyTaskDBNew context={props.context} />
+            <MyTaskDBNewCategory context={props.context} />
           </>
         ) : value == "member" ? (
           // <UserClient

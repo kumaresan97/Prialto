@@ -47,7 +47,7 @@ let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
-const MyTaskData = (props): JSX.Element => {
+const MyTaskDataCategory = (props): JSX.Element => {
   // style variables
   const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
@@ -362,7 +362,7 @@ const MyTaskData = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       AssistantId: curuserId.Id,
-      //ClientId: props.clientId,
+      CategoryId: props.categoryId,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -1102,7 +1102,7 @@ const MyTaskData = (props): JSX.Element => {
   const SearchFilter = (e) => {
     setSearch(e);
 
-    let filteredResults = curMyTask.filter((item) => {
+    let filteredResults = masterdata.filter((item) => {
       if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
         return true;
       }
@@ -1238,9 +1238,24 @@ const MyTaskData = (props): JSX.Element => {
     setDeleteObj({});
   }
 
-  // useEffect(()=>{
-  //   SearchFilter(props.searchValue)
-  // },[props.searchValue])
+  function updateCategory()
+  {
+    SPServices.SPUpdateItem({
+      Listname:"Categories",
+      ID:0,
+      RequestJSON:{
+        Title:"",
+      }
+    }).then(function(res){
+      console.log(res);
+    }).catch(function(error){
+      console.log(error);
+    })
+  }
+
+  useEffect(()=>{
+    SearchFilter(props.searchValue);
+  },[props.searchValue])
 
   useEffect(() => {
     setCurMyTask([...props.mainData]);
@@ -1276,15 +1291,16 @@ const MyTaskData = (props): JSX.Element => {
 
             // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
             >
-              My Tasks
+              {props.categoryName}
             </h2>
-            <Button
+            {props.categoryName?<Button
               label="New task"
               className={styles.btnColor}
               onClick={(e) => {
                 _handleData("addParent", { ..._sampleParent });
               }}
-            />
+            />:""}
+            
           </div>
           <TreeTable
             selectionMode="checkbox"
@@ -1373,4 +1389,4 @@ const MyTaskData = (props): JSX.Element => {
   );
 };
 
-export default MyTaskData;
+export default MyTaskDataCategory;

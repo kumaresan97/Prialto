@@ -3,28 +3,32 @@ import { useState, useEffect } from "react";
 import { Label } from "@fluentui/react";
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
-import MyTaskData from "./MyTaskData";
+import MyTaskDataCategory from "./MyTaskDataCategory";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import styles from "./MyTasks.module.scss";
 import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
+import { Toast } from "primereact/toast";
 import exportToExcel from "../../../Global/ExportExcel";
 let MyClients = [];
+let MyCategories=[];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 let statusChoices=[];
-export default function UserClients(props) {
+export default function MyTaskDBNewCategory(props) {
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
     : props.Email;
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
+  const [categoryValue, setCategoryValue] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
+  const toastTopRight = React.useRef(null);
   const [teamCaptainData, setTeamCaptainData] = useState({
     EMail: "",
     Title: "",
@@ -44,8 +48,29 @@ export default function UserClients(props) {
   const errFunction = (err) => {
     setLoader(false);
     BindData();
-    console.log(err);
+    showMessage(
+      "Something went wrong, Please contact system admin",
+      toastTopRight,
+      "error"
+    );
   };
+
+  function getStatus()
+  {
+    statusChoices=[];
+    SPServices.SPGetChoices({
+      Listname:"Tasks",
+      FieldName:"Status"
+    }).then(function(data){
+      console.log(data["Choices"]);
+      for(let i=0;i<data["Choices"].length;i++)
+      {
+        statusChoices.push({ name: data["Choices"][i], code: data["Choices"][i] })
+      }
+    }).catch(function(error){
+      errFunction(error);
+    })
+  }
 
   //getcuruser
   const getcurUser = () => {
@@ -111,13 +136,45 @@ export default function UserClients(props) {
               setConfigure({ ...x });
             })
             .catch((err) => errFunction(err));
-          getMyClients(res.Id);
+          getCategories(res.Id);
         })
         .catch((err) => errFunction(err));
     } else {
       BindData();
     }
   };
+
+  function getCategories(id)
+  {
+    SPServices.SPReadItems({
+      Listname: "Categories",
+      Select:
+        "*, UserName/ID, UserName/EMail, UserName/Title",
+
+      Expand: "UserName",
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Filter: [
+        {
+          FilterKey: "UserName/ID",
+          Operator: "eq",
+          FilterValue: id,
+        },
+      ],
+    }).then(function(data:any)
+    {
+      for(let i=0;i<data.length;i++)
+      {
+        MyCategories.push({ID:data[i].ID,Name:data[i].Title})
+      } 
+      if(data.length>0) 
+      getMyClients(id);
+    else
+    BindData();
+    }).catch(function(error){
+      errFunction(error);
+    })
+  }
 
   function getMyClients(id) {
     SPServices.SPReadItems({
@@ -142,11 +199,6 @@ export default function UserClients(props) {
         res.forEach((val: any) => {
           MyClients.push({ ID: val.ID, Name: val.FirstName });
         });
-        // if (MyClients.length > 0) {
-        //   getMainTask(id);
-        // } else {
-        //   BindData();
-        // }
         getMainTask(id);
       })
       .catch(function (error) {
@@ -162,25 +214,13 @@ export default function UserClients(props) {
         Operator: "eq",
         FilterValue: id,
       },
-      // {
-      //   FilterKey: "Client/ID",
-      //   Operator: "eq",
-      //   FilterValue: "",
-      // }
     ];
-    // MyClients.forEach((val: any) => {
-    //   Filter.push({
-    //     FilterKey: "Client/ID",
-    //     Operator: "eq",
-    //     FilterValue: val.ID,
-    //   });
-    // });
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Category/ID",
 
-      Expand: "Assistant,Backup,Author,Client",
+      Expand: "Assistant,Backup,Author,Client,Category",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
@@ -204,6 +244,7 @@ export default function UserClients(props) {
                 TaskName: val.TaskName,
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
+                CategoryID:val.CategoryId? val.Category.ID : "",
                 Creator: {
                   Id: val.Author.ID,
                   EMail: val.Author.EMail,
@@ -306,20 +347,6 @@ export default function UserClients(props) {
           count++;
 
           if (count === MainTask.length) {
-            // console.log(MainArray, "MainArray");
-            // let tempClient=[];
-            // for(let i=0;i<MyClients.length;i++)
-            // {
-            //     tempClient.push({ClientName:MyClients[i].Name,ID:MyClients[i].ID,Tasks:[]});
-            //     for(let j=0;j<MainArray.length;j++)
-            //     {
-            //         if(MainArray[j].data.ClientID==MyClients[i].ID)
-            //         tempClient[i].Tasks.push(MainArray[j]);
-            //     }
-            // }
-            // setCurMyTask([...MainArray]);
-            // setMasterdata([...MainArray]);
-            // setClientdata([...tempClient]);
             BindData();
           }
           /* End Of Subtaks */
@@ -332,14 +359,14 @@ export default function UserClients(props) {
 
   function BindData() {
     let tempClient = [];
-    for (let i = 0; i < MyClients.length; i++) {
+    for (let i = 0; i < MyCategories.length; i++) {
       tempClient.push({
-        ClientName: MyClients[i].Name,
-        ID: MyClients[i].ID,
+        Title: MyCategories[i].Name,
+        ID: MyCategories[i].ID,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
-        if (MainArray[j].data.ClientID == MyClients[i].ID)
+        if (MainArray[j].data.CategoryID == MyCategories[i].ID)
           tempClient[i].Tasks.push(MainArray[j]);
       }
     }
@@ -352,23 +379,23 @@ export default function UserClients(props) {
   const SearchFilter = (e) => {
     setSearch(e);
 
-    let filteredResults = masterdata.filter((item) => {
-      if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
-        return true;
-      }
+    // let filteredResults = masterdata.filter((item) => {
+    //   if (item.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())) {
+    //     return true;
+    //   }
 
-      const childMatches = item.children.filter((child) =>
-        child.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())
-      );
+    //   const childMatches = item.children.filter((child) =>
+    //     child.data.TaskName.toLowerCase().includes(e.trim().toLowerCase())
+    //   );
 
-      if (childMatches.length > 0) {
-        return true;
-      }
+    //   if (childMatches.length > 0) {
+    //     return true;
+    //   }
 
-      return false;
-    });
+    //   return false;
+    // });
 
-    setCurMyTask([...filteredResults]);
+    // setCurMyTask([...filteredResults]);
   };
 
   let columns = [
@@ -387,32 +414,68 @@ export default function UserClients(props) {
     exportToExcel(curMyTask, columns, "MyTask");
   };
 
-  function getStatus()
-  {
-    // [
-    //   { name: "Pending", code: "Pending" },
-    //   { name: "In Progress", code: "In Progress" },
-    //   { name: "Completed", code: "Completed" },
-    //   { name: "Done", code: "Done" },
-    // ]
-    statusChoices=[];
-    SPServices.SPGetChoices({
-      Listname:"Tasks",
-      FieldName:"Status"
-    }).then(function(data){
-      console.log(data["Choices"]);
-      for(let i=0;i<data["Choices"].length;i++)
-      {
-        statusChoices.push({ name: data["Choices"][i], code: data["Choices"][i] })
-      }
-    }).catch(function(error){
-      errFunction(error);
-    })
+  
+  function onSpinner() {
+    //setLoader(true);
   }
+
+  function offSpinner() {
+    //setLoader(false);
+  }
+
+  function addCategory(value)
+  {
+      setLoader(true);
+      SPServices.SPAddItem({
+        Listname:"Categories",
+        RequestJSON:{
+          Title:value,
+          UserNameId:curuserId.Id
+        }
+      }).then(function(res)
+      {
+        MyCategories.push({ID:res.data.ID,Name:value});
+        let tempClient = [...clientdata];
+        tempClient.push({
+          Title: value,
+          ID: res.data.ID,
+          Tasks: [],
+        });
+        setClientdata([...tempClient]);
+        setCategoryValue("");
+        setLoader(false);
+          
+      }).catch(function(error){
+        errFunction(error);
+      });
+  }
+
+  function validation()
+  {
+      let isAllValueFilled=true;
+      if(!categoryValue)
+      {
+        isAllValueFilled=false;
+      }
+      return isAllValueFilled;
+  }
+
+  const showMessage = (event, ref, severity) => {
+    const label = event;
+
+    ref.current.show({
+      severity: severity,
+      summary: label,
+      // detail: label,
+      life: 3000,
+    });
+  };
+
 
   useEffect(() => {
     setLoader(true);
     MyClients = [];
+    MyCategories=[];
     MainTask = [];
     MainArray = [];
     SubTask = [];
@@ -422,13 +485,6 @@ export default function UserClients(props) {
     
   }, [props.Email]);
 
-  function onSpinner() {
-    //setLoader(true);
-  }
-
-  function offSpinner() {
-    //setLoader(false);
-  }
 
   return (
     <>
@@ -439,12 +495,21 @@ export default function UserClients(props) {
           <div className={styles.commonFilterSection}>
             <div>
               <Label className={styles.leftFilterSection}></Label>
+              <>
+            <div>
+            <Toast ref={toastTopRight} position="top-right" />
+            <div className={styles.addCatSection}>
+            <InputText value={categoryValue} onChange={(e: any) => setCategoryValue(e.target.value)}/>
+            <Button className={styles.btnColor} label="Add Category" onClick={()=>{
+               if(validation())
+               addCategory(categoryValue);
+              else
+              showMessage("Please enter valid Category", toastTopRight, "warn");
+            }} />
             </div>
-
-            {/* <InputText
-                  value={search}
-                  onChange={(e: any) => SearchFilter(e.target.value)}
-                /> */}
+            </div>
+            </>
+            </div>
             <div className={styles.rightFilterSection}>
               <div>
                 <span className="p-input-icon-left">
@@ -465,12 +530,40 @@ export default function UserClients(props) {
                 icon="pi pi-file-excel"
               />
             </div>
+            
           </div>
           <>
-            <MyTaskData
+            {
+              clientdata.length>0?(<>
+                {clientdata.map((val, i) => {
+                  return (
+                    <>
+                      <MyTaskDataCategory
+                       bind={false}
+                       clientName={""}
+                       clientId={""}
+                       categoryName={val.Title}
+                       categoryId={val.ID}
+                       searchValue={search}
+                       onspinner={onSpinner}
+                       offspinner={offSpinner}
+                       context={props.context}
+                       mainData={val.Tasks}
+                       crntUserData={curuserId}
+                       crntBackData={configure}
+                       choices={statusChoices}
+                      />
+                    </>
+                  );
+                })}
+              </>):(<>
+              <MyTaskDataCategory
               bind={false}
               clientName={""}
               clientId={""}
+              categoryName={""}
+              categoryId={""}
+              searchValue={""}
               onspinner={onSpinner}
               offspinner={offSpinner}
               context={props.context}
@@ -479,6 +572,8 @@ export default function UserClients(props) {
               crntBackData={configure}
               choices={statusChoices}
             />
+              </>)
+            }
           </>
         </>
       )}

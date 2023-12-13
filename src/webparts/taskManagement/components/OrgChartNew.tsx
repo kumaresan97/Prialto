@@ -1850,13 +1850,13 @@ const OrgChart = (props) => {
               sortable
               body={(obj: any) => _addTextField(obj, "DirectReports")}
             ></Column>
-            <Column
+            {/* <Column
               field="BackingUp"
               header="Backing up"
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "BackingUp")}
-            ></Column>
+            ></Column> */}
             <Column header="Action" body={(obj) => _action(obj)}></Column>
           </DataTable>
 

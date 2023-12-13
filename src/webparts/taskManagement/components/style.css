@@ -57,9 +57,12 @@
 td {
   font-size: 14px;
 }
-
+.p-treetable .p-treetable-tbody > tr,.p-treetable .p-treetable-thead > tr{
+  border-bottom: 1px solid #dee2e6;
+}
 .p-treetable .p-treetable-tbody > tr > td {
-  border-bottom: 1px solid #dee2e6 !important;
+  /* border-bottom: 1px solid #dee2e6 !important; */
+  border: none !important;
   /* border-top: none !important ; */
 }
 

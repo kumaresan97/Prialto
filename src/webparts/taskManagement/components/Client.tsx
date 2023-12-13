@@ -237,7 +237,6 @@ const Client = (props) => {
         };
         let updatedClientDetail = clientdetail.map((val) => {
           if (val.Id === obj.Id) {
-            debugger;
             return resobj;
           }
           return val;
@@ -282,7 +281,6 @@ const Client = (props) => {
   };
 
   function _handleDataoperationNew(key, obj) {
-    debugger;
     if (obj.Id) {
       // If the item has an Id (existing item), do nothing
       setisAdd(false);
@@ -683,7 +681,6 @@ const Client = (props) => {
     console.log(err);
   };
   const getdatas = () => {
-    debugger;
     SPServices.SPReadItems({
       Listname: "ClientDetails",
       Select:
@@ -694,7 +691,6 @@ const Client = (props) => {
       Orderbydecorasc: false,
     })
       .then((res) => {
-        debugger;
         let array: IClient[] = [];
         res.forEach((val: any) => {
           array.push({
@@ -723,7 +719,6 @@ const Client = (props) => {
             // },
           });
         });
-        debugger;
         setClientdetail([...array]);
         setMasterdata([...array]);
         setLoader(false);

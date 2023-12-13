@@ -192,6 +192,14 @@ export default function UserDashboard(props) {
                 label="Export"
                 icon="pi pi-file-excel"
               />
+              <Button
+                className={styles.btnColor}
+                label="Completed"
+                onClick={() => {
+                  props.HandleCompleted("Completed", user);
+                }}
+                // icon="pi pi-file-excel"
+              />
             </div>
           </div>
           {/* <div className={styles.TLTCSection}>

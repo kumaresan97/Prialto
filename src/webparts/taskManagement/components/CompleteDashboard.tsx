@@ -52,30 +52,31 @@ const CompleteDashboard = (props) => {
   let userid = null;
   const [curuser, setCuruser] = useState(null);
   const getcurUser = () => {
-    debugger;
     if (UserEmail) {
       let user = sp.web.siteUsers
         .getByEmail(UserEmail)
         .get()
         .then((res) => {
-          console.log("res", res.Id);
+          //   console.log("res", res.Id);
 
           let crntUserDetails = {
-            Id: res.Id,
-            EMail: res.Email,
-            Title: res.Title,
+            Id: res?.Id,
+            EMail: res?.Email,
+            Title: res?.Title,
           };
-          userid = res.Id;
+          userid = res?.Id;
 
           setCuruser(crntUserDetails);
 
           getTask(props.Completeuser);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          setLoader(false);
+        });
     }
   };
   const getTask = (id) => {
-    debugger;
     let Filter = [
       {
         FilterKey: "Assistant/EMail",
@@ -182,7 +183,7 @@ const CompleteDashboard = (props) => {
               Id: val.Id,
               subId: val.MainTaskID?.ID,
               parentTasKName: val.MainTaskID?.TaskName,
-              TaskName: val.TaskName,
+              TaskName: val?.TaskName,
               // ClientID: mainarray[i].data.ClientID,
               Creator: {
                 Id: val.Author.ID,
@@ -266,9 +267,11 @@ const CompleteDashboard = (props) => {
         if (mainarray[i].Id === subArray[j].subId) {
           globalArray.push(mainarray[i], subArray[j]);
           subfield = true;
-        } else {
-          globalArray.push(mainarray[i]);
+          break;
         }
+        //  else {
+        //   globalArray.push(mainarray[i]);
+        // }
       }
       if (!subfield) {
         globalArray.push(mainarray[i]);
@@ -286,7 +289,7 @@ const CompleteDashboard = (props) => {
     });
     setUserdata([...globalArray]);
     setLoader(false);
-    console.log(globalArray, "globalarray");
+    // console.log(globalArray, "globalarray");
   };
 
   useEffect(() => {
@@ -313,7 +316,7 @@ const CompleteDashboard = (props) => {
           />
           <Column
             field="parentTasKName"
-            header="parent TasKName"
+            header="parent Taskname"
             //   expander
             sortable
             //   style={TaskCellStyle}

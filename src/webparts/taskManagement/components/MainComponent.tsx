@@ -31,6 +31,7 @@ import {
   PersonaSize,
   PersonaPresence,
 } from "@fluentui/react/lib/Persona";
+import CompleteDashboard from "./CompleteDashboard";
 
 // Global Variables creation
 let _masterArray: any[] = [];
@@ -64,6 +65,9 @@ const MainComponent = (props: any): JSX.Element => {
   ];
 
   // State creation
+
+  const [Completeuser, setCompleteUser] = useState("");
+
   const [params, setParams] = useState({
     admin: false,
     currentUser: "",
@@ -266,6 +270,10 @@ const MainComponent = (props: any): JSX.Element => {
   const handleMemberClick = (member) => {
     setvalue("member");
     setselectedMember(member);
+  };
+  const HandleCompleted = (Status, value) => {
+    setvalue(Status);
+    setCompleteUser(value);
   };
 
   const memberFunction = (value, taskname) => {
@@ -536,12 +544,20 @@ const MainComponent = (props: any): JSX.Element => {
             selectedMember={selectedMember}
             context={props.context}
             Email={selectedMember}
+            HandleCompleted={HandleCompleted}
           />
         ) : value == "CardView" ? (
           <CardView
             context={props.context}
             memberFunction={memberFunction}
           ></CardView>
+        ) : value == "Completed" ? (
+          <CompleteDashboard
+            context={props.context}
+            // memberFunction={memberFunction}
+            Completeuser={Completeuser}
+            // HandleCompleted={HandleCompleted}
+          ></CompleteDashboard>
         ) : value == "OrgChart" ? (
           <OrgChartNew context={props.context}></OrgChartNew>
         ) : value == "Client" ? (

@@ -1689,7 +1689,6 @@ const OrgChart = (props) => {
   // }
 
   function validateObject() {
-    debugger;
     const missingFields = [];
 
     if (!curobj.Name?.Id || curobj.Name?.Id === null) {

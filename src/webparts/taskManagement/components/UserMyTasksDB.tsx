@@ -387,8 +387,7 @@ const UserMyTasksDB = (props): JSX.Element => {
   };
   //Add item
   const AddItem = (obj) => {
-    debugger;
-    console.log(obj, "obj");
+    // console.log(obj, "obj");
 
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {

@@ -527,7 +527,7 @@ const MainComponent = (props: any): JSX.Element => {
       <div
         style={{
           width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
-          padding: "0 16px 0 0",
+          padding: "16px 16px 0 0",
         }}
       >
         {value == "mytasks" ? (

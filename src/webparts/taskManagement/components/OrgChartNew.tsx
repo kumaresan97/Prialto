@@ -1710,13 +1710,13 @@ const OrgChart = (props) => {
     // if (!curobj.DirectReports[0]?.Id || curobj.DirectReports[0]?.Id === null) {
     //   missingFields.push('DirectReports');
     // }
-    else if (
-      !curobj.BackingUp ||
-      curobj.BackingUp.length === 0 ||
-      !curobj.BackingUp.some((user) => user.Id !== null)
-    ) {
-      missingFields.push("Backing up");
-    }
+    // else if (
+    //   !curobj.BackingUp ||
+    //   curobj.BackingUp.length === 0 ||
+    //   !curobj.BackingUp.some((user) => user.Id !== null)
+    // ) {
+    //   missingFields.push("Backing up");
+    // }
 
     return missingFields;
   }

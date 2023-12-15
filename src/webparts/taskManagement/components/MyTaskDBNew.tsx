@@ -15,7 +15,7 @@ let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-let statusChoices=[];
+let statusChoices = [];
 export default function UserClients(props) {
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
@@ -189,6 +189,9 @@ export default function UserClients(props) {
       .then((res) => {
         MainTask = [];
         res.forEach((val: any, index) => {
+          const createdString =
+            SPServices.displayDate(val.Created) + val.Author.Title;
+          console.log(createdString);
           if (!val.ClientId) {
             console.log(val.Id);
             MainTask.push({
@@ -217,12 +220,14 @@ export default function UserClients(props) {
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
-                Created: SPServices.displayDate(val.Created),
+                Created:
+                  SPServices.displayDate(val.Created) + val.Author?.Title,
               },
               children: [],
             });
           }
         });
+        console.log(MainTask, "MainTask");
 
         let arrFilter = [];
         for (let i = 0; i < MainTask.length; i++) {
@@ -267,6 +272,10 @@ export default function UserClients(props) {
             return data.MainTaskID.ID == MainTask[i].Id;
           });
           res.forEach((val: any, index) => {
+            const createdString =
+              SPServices.displayDate(val.Created) + val.Author.Title;
+            console.log(createdString);
+
             val.ClientName == null &&
               SubTask.push({
                 key: `${MainTask[i].Id}-${index + 1}`,
@@ -294,7 +303,9 @@ export default function UserClients(props) {
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
-                  Created: SPServices.displayDate(val.Created),
+
+                  Created:
+                    SPServices.displayDate(val.Created) + val.Author.Title,
                 },
               });
           });
@@ -387,27 +398,30 @@ export default function UserClients(props) {
     exportToExcel(curMyTask, columns, "MyTask");
   };
 
-  function getStatus()
-  {
+  function getStatus() {
     // [
     //   { name: "Pending", code: "Pending" },
     //   { name: "In Progress", code: "In Progress" },
     //   { name: "Completed", code: "Completed" },
     //   { name: "Done", code: "Done" },
     // ]
-    statusChoices=[];
+    statusChoices = [];
     SPServices.SPGetChoices({
-      Listname:"Tasks",
-      FieldName:"Status"
-    }).then(function(data){
-      console.log(data["Choices"]);
-      for(let i=0;i<data["Choices"].length;i++)
-      {
-        statusChoices.push({ name: data["Choices"][i], code: data["Choices"][i] })
-      }
-    }).catch(function(error){
-      errFunction(error);
+      Listname: "Tasks",
+      FieldName: "Status",
     })
+      .then(function (data) {
+        console.log(data["Choices"]);
+        for (let i = 0; i < data["Choices"].length; i++) {
+          statusChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
   }
 
   useEffect(() => {
@@ -416,10 +430,9 @@ export default function UserClients(props) {
     MainTask = [];
     MainArray = [];
     SubTask = [];
-    statusChoices=[];
+    statusChoices = [];
     getStatus();
     getcurUser();
-    
   }, [props.Email]);
 
   function onSpinner() {

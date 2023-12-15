@@ -11,6 +11,7 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
 import Loader from "./Loader";
+import { InputText } from "primereact/inputtext";
 let mainarray = [];
 let subArray = [];
 const CompleteDashboard = (props) => {
@@ -184,29 +185,47 @@ const CompleteDashboard = (props) => {
   };
 
   const Binddata = () => {
+    debugger;
     let globalArray = [];
+    let SubArrayId = [];
+
     for (let i = 0; i < mainarray.length; i++) {
       let subfield = false;
+
       for (let j = 0; j < subArray.length; j++) {
         if (mainarray[i].Id === subArray[j].subId) {
-          globalArray.push(mainarray[i], subArray[j]);
+          globalArray.push(subArray[j]);
+          SubArrayId.push(subArray[j].Id);
+
           subfield = true;
-          break;
         }
-        //  else {
-        //   globalArray.push(mainarray[i]);
-        // }
+
+        if (subfield && subArray.length === j + 1) {
+          globalArray.push(mainarray[i]);
+        }
       }
+
       if (!subfield) {
         globalArray.push(mainarray[i]);
-        subfield = false;
       }
     }
+
+    if (subArray.length && SubArrayId.length === 0) {
+      globalArray.push(...subArray);
+    } else if (SubArrayId.length) {
+      const output = subArray.filter((item1) =>
+        SubArrayId.some((item2) => item2 !== item1.Id)
+      );
+
+      globalArray.push(...output);
+    }
+    console.log("globalArray", globalArray);
+
     globalArray.sort((a, b) => {
-      if (a.Id > b.Id) {
+      if (a.Id > b.subId && !a.parentTasKName) {
         return 1;
       }
-      if (a.Id < b.Id) {
+      if (a.Id < b.subId) {
         return -1;
       }
     });
@@ -214,19 +233,48 @@ const CompleteDashboard = (props) => {
     setMasterdata([...globalArray]);
     setLoader(false);
   };
-  //   const SearchFilter=()=>{
-  //     const Filter
-  //     const searchableFields = [
-  //         "FirstName",
-  //         "LastName",
-  //         "Assistant",
-  //         "CompanyName",
-  //         "Backup",
-  //       ];
-  //       return searchableFields.some(()=>{
 
-  //       })const fieldValue=i
-  //   }
+  //   const Binddata = () => {
+  //     let globalArray = [];
+
+  //     for (let i = 0; i < mainarray.length; i++) {
+  //       let mainTask = mainarray[i];
+  //       let subtasks = subArray.filter(
+  //         (subTask) => subTask.subId === mainTask.Id
+  //       );
+
+  //       if (subtasks.length > 0) {
+  //         globalArray.push(mainTask, ...subtasks);
+  //       } else if (!mainTask.complete) {
+  //         globalArray.push(mainTask);
+  //       }
+  //     }
+
+  //     setUserdata([...globalArray]);
+  //     setMasterdata([...globalArray]);
+  //     setLoader(false);
+  //   };
+
+  const SearchFilter = (e) => {
+    setSearch(e);
+    console.log(e);
+    console.log(masterdata, "masterdata");
+    const Filterdata = masterdata.filter((item) => {
+      const searchableFields = [
+        "TaskName",
+        "parentTasKName",
+        "DueDate",
+        "PriorityLevel",
+        "Status",
+      ];
+      return searchableFields.some((field) => {
+        const fieldValue = item[field];
+        return fieldValue.toLowerCase().includes(e.toLowerCase());
+      });
+    });
+    console.log(Filterdata);
+    setUserdata([...Filterdata]);
+  };
 
   useEffect(() => {
     setLoader(true);
@@ -238,7 +286,22 @@ const CompleteDashboard = (props) => {
         <Loader></Loader>
       ) : (
         <div>
-          <div></div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              marginBottom: "10px",
+            }}
+          >
+            <span className="p-input-icon-left">
+              <i className="pi pi-search" />
+              <InputText
+                placeholder="Search"
+                value={search}
+                onChange={(e: any) => SearchFilter(e.target.value)}
+              />
+            </span>
+          </div>
           <DataTable
             paginator
             rows={10}

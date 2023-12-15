@@ -258,7 +258,11 @@ export default function MyTaskDBNewCategory(props) {
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
-                Created: SPServices.displayDate(val.Created),
+                Created:
+                  val.Author?.Title + " " + SPServices.displayDate(val.Created),
+
+                // Created:
+                //   SPServices.displayDate(val.Created) + " " + val.Author.Title,
               },
               children: [],
             });
@@ -335,7 +339,10 @@ export default function MyTaskDBNewCategory(props) {
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
-                  Created: SPServices.displayDate(val.Created),
+                  Created:
+                    val.Author.Title +
+                    " " +
+                    SPServices.displayDate(val.Created),
                 },
               });
           });
@@ -407,7 +414,7 @@ export default function MyTaskDBNewCategory(props) {
 
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
-    { header: "Created", key: "Created", width: 25 },
+    { header: "Creation log", key: "Created", width: 25 },
   ];
 
   const exportData = () => {

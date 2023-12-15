@@ -28,7 +28,7 @@ let teamArr: any[] = [];
 let userTeams: any[] = [];
 let _formattedData: any[] = [];
 let _curArray: any[] = [];
-let teamChoices=[];
+let teamChoices = [];
 let _isAdmin: boolean = false;
 let _isTL: boolean = false;
 let _isTC: boolean = false;
@@ -499,7 +499,7 @@ const OrgChart = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={3}
+            personSelectionLimit={20}
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
@@ -807,7 +807,7 @@ const OrgChart = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={3}
+            personSelectionLimit={20}
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
@@ -1356,7 +1356,6 @@ const OrgChart = (props) => {
       });
   };
 
-
   function getTeamChoices() {
     teamChoices = [];
     SPServices.SPGetChoices({
@@ -1364,17 +1363,16 @@ const OrgChart = (props) => {
       FieldName: "Team",
     })
       .then(function (data) {
-        
         for (let i = 0; i < data["Choices"].length; i++) {
           teamChoices.push({
             name: data["Choices"][i],
             code: data["Choices"][i],
           });
         }
-        team=teamChoices;
+        team = teamChoices;
       })
       .catch(function (error) {
-        errFunction("getTeamChoices",error);
+        errFunction("getTeamChoices", error);
       });
   }
 

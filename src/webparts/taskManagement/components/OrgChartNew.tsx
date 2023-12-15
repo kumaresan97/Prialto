@@ -1377,12 +1377,13 @@ const OrgChart = (props) => {
   }
 
   const getdatas = () => {
+    debugger;
     SPServices.SPReadItems({
       Listname: "Configuration",
       Select:
-        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title,DirectReports/ID, DirectReports/EMail, DirectReports/Title",
-
-      Expand: "Name,Manager,TeamCaptain,TeamLeader,DirectReports,BackingUp",
+        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title, DirectReports/ID, DirectReports/EMail, DirectReports/Title",
+      Expand:
+        "Name, Manager, TeamCaptain, TeamLeader, DirectReports, BackingUp",
       Orderby: "Created",
       Orderbydecorasc: false,
     })
@@ -1467,8 +1468,8 @@ const OrgChart = (props) => {
           EMail: val.TeamLeader?.EMail,
           Title: val.TeamLeader?.Title,
         },
-        DirectReports: Array.isArray(val.DirectReports)
-          ? val.DirectReports.map((response) => ({
+        DirectReports: Array.isArray(val?.DirectReports)
+          ? val?.DirectReports.map((response) => ({
               Id: response?.ID,
               EMail: response?.EMail,
               Title: response?.Title,

@@ -21,6 +21,7 @@ import Loader from "./Loader";
 
 import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import { Dialog } from "primereact/dialog";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -46,6 +47,13 @@ let MyClients = [];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
+const editIconStyle = {
+  backgroundColor: "transparent",
+  color: "#007C81",
+  border: "none",
+  // height: 26,
+  // width: 26,
+};
 
 const MyTaskDataCategory = (props): JSX.Element => {
   // style variables
@@ -99,7 +107,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     },
   };
 
-  dropStatus=props.choices;
+  dropStatus = props.choices;
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
@@ -217,8 +225,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
-    }
-    else{
+    } else {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
     }
@@ -336,7 +343,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      AssistantId:curuserId.Id,
+      AssistantId: curuserId.Id,
       // BackupId: curdata.Backup.Id
       //   ? curdata.Backup.Id
       //   : configure.backupId
@@ -1238,24 +1245,25 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setDeleteObj({});
   }
 
-  function updateCategory()
-  {
+  function updateCategory() {
     SPServices.SPUpdateItem({
-      Listname:"Categories",
-      ID:0,
-      RequestJSON:{
-        Title:"",
-      }
-    }).then(function(res){
-      console.log(res);
-    }).catch(function(error){
-      console.log(error);
+      Listname: "Categories",
+      ID: 0,
+      RequestJSON: {
+        Title: "",
+      },
     })
+      .then(function (res) {
+        console.log(res);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     SearchFilter(props.searchValue);
-  },[props.searchValue])
+  }, [props.searchValue]);
 
   useEffect(() => {
     setCurMyTask([...props.mainData]);
@@ -1287,20 +1295,38 @@ const MyTaskDataCategory = (props): JSX.Element => {
               margin: "15px 0px",
             }}
           >
-            <h2
+            <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+              <h2
 
-            // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
-            >
-              {props.categoryName}
-            </h2>
-            {props.categoryName?<Button
-              label="New task"
-              className={styles.btnColor}
-              onClick={(e) => {
-                _handleData("addParent", { ..._sampleParent });
-              }}
-            />:""}
-            
+              // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
+              >
+                {props.categoryName}
+              </h2>
+
+              <Button
+                type="button"
+                icon="pi pi-pencil"
+                style={editIconStyle}
+                onClick={() => {
+                  props.Editcategory(
+                    true,
+                    props.categoryName,
+                    props.categoryId
+                  );
+                }}
+              ></Button>
+            </div>
+            {props.categoryName ? (
+              <Button
+                label="New task"
+                className={styles.btnColor}
+                onClick={(e) => {
+                  _handleData("addParent", { ..._sampleParent });
+                }}
+              />
+            ) : (
+              ""
+            )}
           </div>
           <TreeTable
             selectionMode="checkbox"
@@ -1383,6 +1409,47 @@ const MyTaskDataCategory = (props): JSX.Element => {
               }
             />
           </TreeTable>
+
+          {/* <Dialog
+        header="Header"
+        style={{ width: "420px" }}
+        visible={isCatDialog}
+        onHide={() => setIsCatDialog(false)}
+      >
+        <div className={styles.addCatSection}>
+          <Label>Add New Category</Label>
+          <div>
+            <InputText
+              style={{ width: "100%" }}
+              value={categoryValue}
+              onChange={(e: any) => setCategoryValue(e.target.value)}
+            />
+          </div>
+          <div className={styles.catDialogBtnSection}>
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                if (validation()) addCategory(categoryValue);
+                else
+                  showMessage(
+                    "Please enter valid Category",
+                    toastTopRight,
+                    "warn"
+                  );
+              }}
+              label="Add"
+            />
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                setCategoryValue("");
+                setIsCatDialog(false);
+              }}
+              label="Cancel"
+            />
+          </div>
+        </div>
+      </Dialog> */}
         </div>
       )}
     </>

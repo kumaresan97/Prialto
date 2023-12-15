@@ -29,8 +29,13 @@ export default function MyTaskDBNewCategory(props) {
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
+  const [isAutomate, setIsautomate] = useState(false);
+  const [automate, setautomate] = useState({
+    notification: true,
+    recurringtask: false,
+  });
   const toastTopRight = React.useRef(null);
-  
+
   const [teamCaptainData, setTeamCaptainData] = useState({
     EMail: "",
     Title: "",
@@ -476,22 +481,18 @@ export default function MyTaskDBNewCategory(props) {
       life: 3000,
     });
   };
-  
-  function updateCategory(categryValue,categryId)
-  {
-        let tempClientNew=[...clientdata];    
-        let categoryIndex=tempClientNew.findIndex((val)=> val.ID==categryId);
-        let arrIndex=MyCategories.findIndex((val)=> val.ID==categryId);
-        if(arrIndex<0)
-        {
-          console.log('Category not found');
-        }
-        else
-        {
-          tempClientNew[categoryIndex].Title=categryValue;
-          MyCategories[arrIndex].Name=categryValue;
-        }
-        setClientdata([...tempClientNew]);
+
+  function updateCategory(categryValue, categryId) {
+    let tempClientNew = [...clientdata];
+    let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
+    let arrIndex = MyCategories.findIndex((val) => val.ID == categryId);
+    if (arrIndex < 0) {
+      console.log("Category not found");
+    } else {
+      tempClientNew[categoryIndex].Title = categryValue;
+      MyCategories[arrIndex].Name = categryValue;
+    }
+    setClientdata([...tempClientNew]);
   }
 
   useEffect(() => {
@@ -548,6 +549,108 @@ export default function MyTaskDBNewCategory(props) {
           </div>
         </div>
       </Dialog>
+
+      <Dialog
+        header="Header"
+        position="top"
+        style={{ width: "420px" }}
+        visible={isAutomate}
+        onHide={() => setIsautomate(false)}
+      >
+        <div className={styles.addCatSection}>
+          <Label>Automate</Label>
+
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              margin: "10px 0px 20px 0px",
+            }}
+            className={styles.Automatebutton}
+          >
+            <Button
+              className={
+                automate.notification
+                  ? styles.Activebutton
+                  : styles.inActivebutton
+              }
+              onClick={() => {
+                (automate.notification = true),
+                  (automate.recurringtask = false);
+                setautomate({ ...automate });
+              }}
+            >
+              Notification
+            </Button>
+            {/* <Button
+              className={
+                automate.recurringtask
+                  ? styles.Activebutton
+                  : styles.inActivebutton
+              }
+              onClick={() => {
+                (automate.notification = false),
+                  (automate.recurringtask = true);
+                setautomate({ ...automate });
+              }}
+            >
+              Recurring Task
+            </Button> */}
+          </div>
+          {automate.notification && (
+            <>
+              <div style={{ display: "flex", gap: "10px" }}>
+                <div style={{ display: "flex", gap: "5px" }}>
+                  <Label>Notify</Label>
+                  <InputText
+                    style={{ width: "100%" }}
+                    value={categoryValue}
+                    // onChange={(e: any) => setCategoryValue(e.target.value)}
+                  />
+                </div>
+                <div style={{ display: "flex", gap: "5px" }}>
+                  <Label>Before </Label>
+                  <Label>08/11/1997</Label>
+                </div>
+              </div>
+            </>
+          )}
+          {/* {automate.recurringtask && (
+            <>
+              <div style={{ display: "flex", gap: "5px" }}>
+                <Label>Create this task when status changed to </Label>
+                <InputText
+                  style={{ width: "33%" }}
+                  value={categoryValue}
+                  onChange={(e: any) => setCategoryValue(e.target.value)}
+                />
+              </div>
+            </>
+          )} */}
+
+          <div className={styles.catDialogBtnSection}>
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                setCategoryValue("");
+                setIsautomate(false);
+              }}
+              // onClick={() => {
+              //   if (validation()) UpdateCategory(categoryValue, categoryId);
+              //   else
+              //     showMessage(
+              //       "Please enter valid Category",
+              //       toastTopRight,
+              //       "warn"
+              //     );
+              // }}
+              label="Cancel"
+            />
+            <Button className={styles.btnColor} label="Submit" />
+          </div>
+        </div>
+      </Dialog>
+
       {loader ? (
         <Loader />
       ) : (
@@ -580,7 +683,11 @@ export default function MyTaskDBNewCategory(props) {
                 onClick={() => exportData()}
                 icon="pi pi-file-excel"
               />
-              <Button className={styles.btnColor} label="Automate" />
+              <Button
+                className={styles.btnColor}
+                label="Automate"
+                onClick={() => setIsautomate(true)}
+              />
               <Button
                 className={styles.btnColor}
                 label="Add Category"

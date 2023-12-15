@@ -114,8 +114,12 @@ const MyTaskDataCategory = (props): JSX.Element => {
   const [loader, setLoader] = useState(false);
   const [visible, setVisible] = useState(false);
   const [deleteObj, setDeleteObj] = useState<any>({});
-
   const [curuserId, setCuruserId] = useState(props.crntUserData);
+  const [iseditdialog, setIseditdialog] = useState(false);
+
+  const [categoryValue, setCategoryValue] = useState("");
+  const [categoryId, setCategoryId] = useState(null);
+  const [isCatDialog, setIsCatDialog] = useState(false);
 
   const data: IMyTasks = {
     TaskName: "",
@@ -1234,6 +1238,14 @@ const MyTaskDataCategory = (props): JSX.Element => {
     return isAllValueFilled;
   }
 
+  function validationCategory() {
+    let isAllValueFilled = true;
+    if (!categoryValue) {
+      isAllValueFilled = false;
+    }
+    return isAllValueFilled;
+  }
+
   function accept() {
     deleteData(deleteObj);
     setVisible(false);
@@ -1245,21 +1257,33 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setDeleteObj({});
   }
 
-  function updateCategory() {
+  const UpdateCategory = (value, Id) => {
+    setLoader(true);
     SPServices.SPUpdateItem({
       Listname: "Categories",
-      ID: 0,
+      ID: Id,
       RequestJSON: {
-        Title: "",
+        Title: value,
       },
     })
-      .then(function (res) {
-        console.log(res);
+      .then((val) => {
+        props.categoryName=categoryValue;
+        props.updateCategory(categoryValue,Id);
+        setLoader(false);
+        setCategoryId(null);
+        setIseditdialog(false);
+        setCategoryValue("");
+        
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((err) => {
+        errFunction(err);
       });
-  }
+  };
+  const Editcategory = (value, value1, value3) => {
+    setIseditdialog(value);
+    setCategoryValue(value1);
+    setCategoryId(value3);
+  };
 
   useEffect(() => {
     SearchFilter(props.searchValue);
@@ -1272,6 +1296,47 @@ const MyTaskDataCategory = (props): JSX.Element => {
 
   return (
     <>
+    <Dialog
+        header="Header"
+        style={{ width: "420px" }}
+        visible={iseditdialog}
+        onHide={() => setIsCatDialog(false)}
+      >
+        <div className={styles.addCatSection}>
+          <Label>Update Category</Label>
+          <div>
+            <InputText
+              style={{ width: "100%" }}
+              value={categoryValue}
+              onChange={(e: any) => setCategoryValue(e.target.value)}
+            />
+          </div>
+          <div className={styles.catDialogBtnSection}>
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                if (validationCategory()) UpdateCategory(categoryValue, categoryId);
+                else
+                  showMessage(
+                    "Please enter valid Category",
+                    toastTopRight,
+                    "warn"
+                  );
+              }}
+              label="Update"
+            />
+            <Button
+              className={styles.btnColor}
+              onClick={() => {
+                setCategoryValue("");
+                setCategoryId(null);
+                setIseditdialog(false);
+              }}
+              label="Cancel"
+            />
+          </div>
+        </div>
+      </Dialog>
       {loader ? (
         <Loader />
       ) : (
@@ -1302,19 +1367,19 @@ const MyTaskDataCategory = (props): JSX.Element => {
               >
                 {props.categoryName}
               </h2>
-
-              <Button
+              {props.categoryName?<Button
                 type="button"
                 icon="pi pi-pencil"
                 style={editIconStyle}
                 onClick={() => {
-                  props.Editcategory(
+                  Editcategory(
                     true,
                     props.categoryName,
                     props.categoryId
                   );
                 }}
-              ></Button>
+              ></Button>:""}
+              
             </div>
             {props.categoryName ? (
               <Button

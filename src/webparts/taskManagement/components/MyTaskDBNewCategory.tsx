@@ -30,7 +30,7 @@ export default function MyTaskDBNewCategory(props) {
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
   const toastTopRight = React.useRef(null);
-  const [categoryId, setCategoryId] = useState(null);
+  
   const [teamCaptainData, setTeamCaptainData] = useState({
     EMail: "",
     Title: "",
@@ -47,7 +47,7 @@ export default function MyTaskDBNewCategory(props) {
     Title: "",
   });
   const [isCatDialog, setIsCatDialog] = useState(false);
-  const [iseditdialog, setIseditdialog] = useState(false);
+
   const errFunction = (err) => {
     setLoader(false);
     BindData();
@@ -476,32 +476,23 @@ export default function MyTaskDBNewCategory(props) {
       life: 3000,
     });
   };
-  const UpdateCategory = (value, Id) => {
-    setLoader(true);
-    SPServices.SPUpdateItem({
-      Listname: "Categories",
-      ID: Id,
-      RequestJSON: {
-        Title: value,
-      },
-    })
-      .then((val) => {
-        console.log(val);
-        setLoader(false);
-        setCategoryId(null);
-        setIseditdialog(false);
-        setCategoryValue("");
-      })
-      .catch((err) => {
-        errFunction(err);
-      });
-  };
-  const Editcategory = (value, value1, value3) => {
-    setIseditdialog(value);
-    setCategoryValue(value1);
-    setCategoryId(value3);
-    console.log(value, value1, value3);
-  };
+  
+  function updateCategory(categryValue,categryId)
+  {
+        let tempClientNew=[...clientdata];    
+        let categoryIndex=tempClientNew.findIndex((val)=> val.ID==categryId);
+        let arrIndex=MyCategories.findIndex((val)=> val.ID==categryId);
+        if(arrIndex<0)
+        {
+          console.log('Category not found');
+        }
+        else
+        {
+          tempClientNew[categoryIndex].Title=categryValue;
+          MyCategories[arrIndex].Name=categryValue;
+        }
+        setClientdata([...tempClientNew]);
+  }
 
   useEffect(() => {
     setLoader(true);
@@ -557,47 +548,6 @@ export default function MyTaskDBNewCategory(props) {
           </div>
         </div>
       </Dialog>
-      <Dialog
-        header="Header"
-        style={{ width: "420px" }}
-        visible={iseditdialog}
-        onHide={() => setIsCatDialog(false)}
-      >
-        <div className={styles.addCatSection}>
-          <Label>Update Category</Label>
-          <div>
-            <InputText
-              style={{ width: "100%" }}
-              value={categoryValue}
-              onChange={(e: any) => setCategoryValue(e.target.value)}
-            />
-          </div>
-          <div className={styles.catDialogBtnSection}>
-            <Button
-              className={styles.btnColor}
-              onClick={() => {
-                if (validation()) UpdateCategory(categoryValue, categoryId);
-                else
-                  showMessage(
-                    "Please enter valid Category",
-                    toastTopRight,
-                    "warn"
-                  );
-              }}
-              label="Update"
-            />
-            <Button
-              className={styles.btnColor}
-              onClick={() => {
-                setCategoryValue("");
-                setIseditdialog(false);
-              }}
-              label="Cancel"
-            />
-          </div>
-        </div>
-      </Dialog>
-
       {loader ? (
         <Loader />
       ) : (
@@ -653,11 +603,11 @@ export default function MyTaskDBNewCategory(props) {
                         categoryName={val.Title}
                         categoryId={val.ID}
                         searchValue={search}
-                        Editcategory={Editcategory}
                         onspinner={onSpinner}
                         offspinner={offSpinner}
                         context={props.context}
                         mainData={val.Tasks}
+                        updateCategory={updateCategory}
                         crntUserData={curuserId}
                         crntBackData={configure}
                         choices={statusChoices}

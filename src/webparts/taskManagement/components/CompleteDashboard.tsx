@@ -221,16 +221,28 @@ const CompleteDashboard = (props) => {
     }
     console.log("globalArray", globalArray);
 
-    globalArray.sort((a, b) => {
-      if (a.Id > b.subId && !a.parentTasKName) {
-        return 1;
-      }
-      if (a.Id < b.subId) {
+    const sortedArray = globalArray.sort((a, b) => {
+      if (!a.parentTasKName && b.parentTasKName) {
         return -1;
+      } else if (a.parentTasKName && !b.parentTasKName) {
+        return 1;
+      } else if (!a.parentTasKName && !b.parentTasKName && a.subId === b.Id) {
+        return -1;
+      } else {
+        return 0;
       }
     });
-    setUserdata([...globalArray]);
-    setMasterdata([...globalArray]);
+
+    // globalArray.sort((a, b) => {
+    //   if (a.Id > b.subId && !a.parentTasKName) {
+    //     return 1;
+    //   }
+    //   if (a.Id < b.subId) {
+    //     return -1;
+    //   }
+    // });
+    setUserdata([...sortedArray]);
+    setMasterdata([...sortedArray]);
     setLoader(false);
   };
 
@@ -255,6 +267,51 @@ const CompleteDashboard = (props) => {
   //     setLoader(false);
   //   };
 
+  const priorityLevelStyle = (PLevel) => {
+    let bgColor: string = "";
+    let color: string = "";
+    if (PLevel == "Urgent") {
+      color = "#bf4927";
+      bgColor = "#ffded5";
+    } else if (PLevel == "High") {
+      bgColor = "#ffd5b8";
+      color = "#f46906";
+    } else if (PLevel == "Normal") {
+      bgColor = "#bbfcff";
+      color = "#4b6164";
+    } else if (PLevel == "In Progress") {
+      bgColor = "#defffd";
+      color = "#666666";
+    } else if (PLevel == "Pending") {
+      bgColor = "#f5ffbd";
+      color = "#5c5c5c";
+    } else if (PLevel == "Completed") {
+      bgColor = "#c7ffc7";
+      color = "#1a8100";
+    } else if (PLevel == "Done") {
+      bgColor = "#dfffbb";
+      color = "#6e6e6e";
+    } else {
+      bgColor = "#dfffbb";
+      color = "#6e6e6e";
+    }
+    return (
+      <div
+        // className={styles.pLevelStyle}
+        style={{
+          backgroundColor: bgColor,
+          color: color,
+          padding: "6px 0px",
+          textAlign: "center",
+          borderRadius: "12px",
+          width: "96px",
+        }}
+      >
+        {PLevel}
+      </div>
+    );
+  };
+
   const SearchFilter = (e) => {
     setSearch(e);
     console.log(e);
@@ -274,6 +331,9 @@ const CompleteDashboard = (props) => {
     });
     console.log(Filterdata);
     setUserdata([...Filterdata]);
+  };
+  const bodyTemplate = (obj) => {
+    console.log(obj.PriorityLevel, "obj");
   };
 
   useEffect(() => {
@@ -318,8 +378,18 @@ const CompleteDashboard = (props) => {
             <Column field="parentTasKName" header="parent Taskname" sortable />
             <Column field="DueDate" header="Due date" sortable />
 
-            <Column field="PriorityLevel" header=" Priority level" sortable />
-            <Column field="Status" header="Status" sortable />
+            <Column
+              field="PriorityLevel"
+              header=" Priority level"
+              sortable
+              body={(obj) => priorityLevelStyle(obj.PriorityLevel)}
+            />
+            <Column
+              field="Status"
+              header="Status"
+              sortable
+              body={(obj) => priorityLevelStyle(obj.Status)}
+            />
 
             {/* <Column
                   header="Action"

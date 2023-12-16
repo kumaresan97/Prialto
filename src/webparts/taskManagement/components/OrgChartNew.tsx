@@ -50,16 +50,16 @@ interface clinet {
     Title: string;
   };
   Team: any;
-  TeamCaptain: {
-    Id: number;
-    EMail: string;
-    Title: string;
-  };
-  TeamLeader: {
-    Id: number;
-    EMail: string;
-    Title: string;
-  };
+  // TeamCaptain: {
+  //   Id: number;
+  //   EMail: string;
+  //   Title: string;
+  // };
+  // TeamLeader: {
+  //   Id: number;
+  //   EMail: string;
+  //   Title: string;
+  // };
   Cohort: string;
 
   DirectReports: {
@@ -89,8 +89,8 @@ let requiredFields = [
   "Cohort",
   "Role",
   "Team",
-  "TeamCaptain",
-  "TeamLeader",
+  // "TeamCaptain",
+  // "TeamLeader",
 ];
 const OrgChart = (props) => {
   // style variables
@@ -171,16 +171,16 @@ const OrgChart = (props) => {
       Title: "",
     },
     Team: team[0],
-    TeamCaptain: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    TeamLeader: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
+    // TeamCaptain: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
+    // TeamLeader: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
     Cohort: "",
 
     DirectReports: [
@@ -214,16 +214,16 @@ const OrgChart = (props) => {
       Title: "",
     },
     Team: team[0].name,
-    TeamCaptain: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    TeamLeader: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
+    // TeamCaptain: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
+    // TeamLeader: {
+    //   Id: null,
+    //   EMail: "",
+    //   Title: "",
+    // },
     Cohort: "",
 
     DirectReports: [
@@ -357,9 +357,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
-            }
+            // peoplePickerCntrlclassName={
+            //   !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
+            // }
             // required={true}
             placeholder="Enter user"
             ensureUser={true}
@@ -400,83 +400,83 @@ const OrgChart = (props) => {
           />
         );
       }
-      if (fieldType == "TeamCaptain") {
-        let clsValid = "";
-        !curobj.TeamCaptain?.Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            peoplePickerCntrlclassName={
-              !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
-            }
-            styles={multiPeoplePickerStyle}
-            // required={true}
-            placeholder=" Enter user"
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.TeamCaptain.EMail ? [curobj.TeamCaptain.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("TeamCaptain", selectedItem);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("TeamCaptain", null);
-              }
-            }}
-          />
-        );
-      }
+      // if (fieldType == "TeamCaptain") {
+      //   let clsValid = "";
+      //   !curobj.TeamCaptain?.Id
+      //     ? (clsValid = "md:w-20rem w-full p-invalid")
+      //     : "";
+      //   return (
+      //     <PeoplePicker
+      //       context={props.context}
+      //       personSelectionLimit={1}
+      //       groupName={""}
+      //       showtooltip={true}
+      //       peoplePickerCntrlclassName={
+      //         !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
+      //       }
+      //       styles={multiPeoplePickerStyle}
+      //       // required={true}
+      //       placeholder=" Enter user"
+      //       ensureUser={true}
+      //       // showHiddenInUI={false}
+      //       showHiddenInUI={true}
+      //       principalTypes={[PrincipalType.User]}
+      //       defaultSelectedUsers={
+      //         curobj.TeamCaptain.EMail ? [curobj.TeamCaptain.EMail] : []
+      //       }
+      //       resolveDelay={1000}
+      //       onChange={(items: any[]) => {
+      //         if (items.length > 0) {
+      //           const selectedItem = items[0];
+      //           getOnchange("TeamCaptain", selectedItem);
+      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         } else {
+      //           // No selection, pass null or handle as needed
+      //           getOnchange("TeamCaptain", null);
+      //         }
+      //       }}
+      //     />
+      //   );
+      // }
 
-      if (fieldType == "TeamLeader") {
-        let clsValid = "";
-        !curobj.TeamLeader?.Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
-            }
-            // required={true}
-            placeholder="Enter user"
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.TeamLeader.EMail ? [curobj.TeamLeader.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("TeamLeader", selectedItem);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("TeamLeader", null);
-              }
-            }}
-          />
-        );
-      }
+      // if (fieldType == "TeamLeader") {
+      //   let clsValid = "";
+      //   !curobj.TeamLeader?.Id
+      //     ? (clsValid = "md:w-20rem w-full p-invalid")
+      //     : "";
+      //   return (
+      //     <PeoplePicker
+      //       context={props.context}
+      //       personSelectionLimit={1}
+      //       groupName={""}
+      //       showtooltip={true}
+      //       styles={multiPeoplePickerStyle}
+      //       peoplePickerCntrlclassName={
+      //         !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
+      //       }
+      //       // required={true}
+      //       placeholder="Enter user"
+      //       ensureUser={true}
+      //       // showHiddenInUI={false}
+      //       showHiddenInUI={true}
+      //       principalTypes={[PrincipalType.User]}
+      //       defaultSelectedUsers={
+      //         curobj.TeamLeader.EMail ? [curobj.TeamLeader.EMail] : []
+      //       }
+      //       resolveDelay={1000}
+      //       onChange={(items: any[]) => {
+      //         if (items.length > 0) {
+      //           const selectedItem = items[0];
+      //           getOnchange("TeamLeader", selectedItem);
+      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         } else {
+      //           // No selection, pass null or handle as needed
+      //           getOnchange("TeamLeader", null);
+      //         }
+      //       }}
+      //     />
+      //   );
+      // }
       if (fieldType == "Cohort") {
         let clsValid = "";
         !curobj.Cohort ? (clsValid = "md:w-20rem w-full p-invalid") : "";
@@ -661,8 +661,6 @@ const OrgChart = (props) => {
       }
 
       if (fieldType == "Manager") {
-        let clsValid = "";
-        !curobj.Manager?.Id ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
           <PeoplePicker
             context={props.context}
@@ -670,9 +668,9 @@ const OrgChart = (props) => {
             groupName={""}
             showtooltip={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
-            }
+            // peoplePickerCntrlclassName={
+            //   !curobj.Manager?.Id ? styles.peoplepickerErrStyle : ""
+            // }
             // required={true}
             placeholder="Enter user"
             ensureUser={true}
@@ -713,82 +711,82 @@ const OrgChart = (props) => {
           />
         );
       }
-      if (fieldType == "TeamCaptain") {
-        let clsValid = "";
-        !curobj.TeamCaptain?.Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
-            }
-            // required={true}
-            placeholder="Enter user"
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.TeamCaptain.EMail ? [curobj.TeamCaptain.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("TeamCaptain", selectedItem);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("TeamCaptain", null);
-              }
-            }}
-          />
-        );
-      }
-      if (fieldType == "TeamLeader") {
-        let clsValid = "";
-        !curobj.TeamLeader?.Id
-          ? (clsValid = "md:w-20rem w-full p-invalid")
-          : "";
-        return (
-          <PeoplePicker
-            context={props.context}
-            personSelectionLimit={1}
-            groupName={""}
-            showtooltip={true}
-            styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
-            }
-            // required={true}
-            placeholder="Enter user"
-            ensureUser={true}
-            // showHiddenInUI={false}
-            showHiddenInUI={true}
-            principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={
-              curobj.TeamLeader.EMail ? [curobj.TeamLeader.EMail] : []
-            }
-            resolveDelay={1000}
-            onChange={(items: any[]) => {
-              if (items.length > 0) {
-                const selectedItem = items[0];
-                getOnchange("TeamLeader", selectedItem);
-                // getonChange("PeopleEmail", selectedItem.secondaryText);
-              } else {
-                // No selection, pass null or handle as needed
-                getOnchange("TeamLeader", null);
-              }
-            }}
-          />
-        );
-      }
+      // if (fieldType == "TeamCaptain") {
+      //   let clsValid = "";
+      //   !curobj.TeamCaptain?.Id
+      //     ? (clsValid = "md:w-20rem w-full p-invalid")
+      //     : "";
+      //   return (
+      //     <PeoplePicker
+      //       context={props.context}
+      //       personSelectionLimit={1}
+      //       groupName={""}
+      //       showtooltip={true}
+      //       styles={multiPeoplePickerStyle}
+      //       peoplePickerCntrlclassName={
+      //         !curobj.TeamCaptain?.Id ? styles.peoplepickerErrStyle : ""
+      //       }
+      //       // required={true}
+      //       placeholder="Enter user"
+      //       ensureUser={true}
+      //       // showHiddenInUI={false}
+      //       showHiddenInUI={true}
+      //       principalTypes={[PrincipalType.User]}
+      //       defaultSelectedUsers={
+      //         curobj.TeamCaptain.EMail ? [curobj.TeamCaptain.EMail] : []
+      //       }
+      //       resolveDelay={1000}
+      //       onChange={(items: any[]) => {
+      //         if (items.length > 0) {
+      //           const selectedItem = items[0];
+      //           getOnchange("TeamCaptain", selectedItem);
+      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         } else {
+      //           // No selection, pass null or handle as needed
+      //           getOnchange("TeamCaptain", null);
+      //         }
+      //       }}
+      //     />
+      //   );
+      // }
+      // if (fieldType == "TeamLeader") {
+      //   let clsValid = "";
+      //   !curobj.TeamLeader?.Id
+      //     ? (clsValid = "md:w-20rem w-full p-invalid")
+      //     : "";
+      //   return (
+      //     <PeoplePicker
+      //       context={props.context}
+      //       personSelectionLimit={1}
+      //       groupName={""}
+      //       showtooltip={true}
+      //       styles={multiPeoplePickerStyle}
+      //       peoplePickerCntrlclassName={
+      //         !curobj.TeamLeader?.Id ? styles.peoplepickerErrStyle : ""
+      //       }
+      //       // required={true}
+      //       placeholder="Enter user"
+      //       ensureUser={true}
+      //       // showHiddenInUI={false}
+      //       showHiddenInUI={true}
+      //       principalTypes={[PrincipalType.User]}
+      //       defaultSelectedUsers={
+      //         curobj.TeamLeader.EMail ? [curobj.TeamLeader.EMail] : []
+      //       }
+      //       resolveDelay={1000}
+      //       onChange={(items: any[]) => {
+      //         if (items.length > 0) {
+      //           const selectedItem = items[0];
+      //           getOnchange("TeamLeader", selectedItem);
+      //           // getonChange("PeopleEmail", selectedItem.secondaryText);
+      //         } else {
+      //           // No selection, pass null or handle as needed
+      //           getOnchange("TeamLeader", null);
+      //         }
+      //       }}
+      //     />
+      //   );
+      // }
       if (fieldType == "Cohort") {
         let clsValid = "";
         !curobj.Cohort ? (clsValid = "md:w-20rem w-full p-invalid") : "";
@@ -892,8 +890,8 @@ const OrgChart = (props) => {
       }
     } else {
       if (
-        fieldType == "TeamCaptain" ||
-        fieldType == "TeamLeader" ||
+        // fieldType == "TeamCaptain" ||
+        // fieldType == "TeamLeader" ||
         fieldType == "Manager" ||
         fieldType == "Name"
       ) {
@@ -977,20 +975,18 @@ const OrgChart = (props) => {
       (FormData.Manager.Id = _value ? _value.id : null),
         (FormData.Manager.EMail = _value ? _value.secondaryText : ""),
         (FormData.Manager.Title = _value ? _value.text : "");
-    } else if (key == "TeamCaptain") {
-      (FormData.TeamCaptain.Id = _value ? _value.id : null),
-        (FormData.TeamCaptain.EMail = _value ? _value.secondaryText : ""),
-        (FormData.TeamCaptain.Title = _value ? _value.text : "");
-    } else if (key == "TeamLeader") {
-      (FormData.TeamLeader.Id = _value ? _value.id : null),
-        (FormData.TeamLeader.EMail = _value ? _value.secondaryText : ""),
-        (FormData.TeamLeader.Title = _value ? _value.text : "");
-      // } else if (key == "DirectReports") {
-      //   FormData.DirectReports[0].Id = _value;
-      // } else if (key == "BackingUp") {
-      //   FormData.BackingUp[0].Id = _value;
-      // }
-    } else if (key == "Name") {
+    }
+    //  else if (key == "TeamCaptain") {
+    //   (FormData.TeamCaptain.Id = _value ? _value.id : null),
+    //     (FormData.TeamCaptain.EMail = _value ? _value.secondaryText : ""),
+    //     (FormData.TeamCaptain.Title = _value ? _value.text : "");
+    // } else if (key == "TeamLeader") {
+    //   (FormData.TeamLeader.Id = _value ? _value.id : null),
+    //     (FormData.TeamLeader.EMail = _value ? _value.secondaryText : ""),
+    //     (FormData.TeamLeader.Title = _value ? _value.text : "");
+
+    // }
+    else if (key == "Name") {
       (FormData.Name.Id = _value ? _value.id : null),
         (FormData.Name.EMail = _value ? _value.secondaryText : ""),
         (FormData.Name.Title = _value ? _value.text : "");
@@ -1044,8 +1040,8 @@ const OrgChart = (props) => {
       BackingUpId: { results: BackupId },
 
       // BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
-      TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
-      TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
+      // TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
+      // TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
       // DirectReportsId: curobj.DirectReports[0].Id
       //   ? curobj.DirectReports[0].Id
       //   : null,
@@ -1073,16 +1069,16 @@ const OrgChart = (props) => {
             EMail: curobj.Manager?.EMail,
             Title: curobj.Manager?.Title,
           },
-          TeamCaptain: {
-            Id: curobj.TeamCaptain?.Id,
-            EMail: curobj.TeamCaptain?.EMail,
-            Title: curobj.TeamCaptain?.Title,
-          },
-          TeamLeader: {
-            Id: curobj.TeamLeader?.Id,
-            EMail: curobj.TeamLeader?.EMail,
-            Title: curobj.TeamLeader?.Title,
-          },
+          // TeamCaptain: {
+          //   Id: curobj.TeamCaptain?.Id,
+          //   EMail: curobj.TeamCaptain?.EMail,
+          //   Title: curobj.TeamCaptain?.Title,
+          // },
+          // TeamLeader: {
+          //   Id: curobj.TeamLeader?.Id,
+          //   EMail: curobj.TeamLeader?.EMail,
+          //   Title: curobj.TeamLeader?.Title,
+          // },
           DirectReports: Array.isArray(curobj.DirectReports)
             ? curobj.DirectReports.map((response) => ({
                 Id: response?.Id,
@@ -1264,8 +1260,8 @@ const OrgChart = (props) => {
       BackingUpId: { results: BackupId },
 
       // BackingUpId: curobj.BackingUp[0].Id ? curobj.BackingUp[0].Id : null,
-      TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
-      TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
+      // TeamCaptainId: curobj.TeamCaptain.Id ? curobj.TeamCaptain.Id : null,
+      // TeamLeaderId: curobj.TeamLeader.Id ? curobj.TeamLeader.Id : null,
       // DirectReportsId: curobj.DirectReports[0].Id
       //   ? curobj.DirectReports[0].Id
       //   : null,
@@ -1294,16 +1290,16 @@ const OrgChart = (props) => {
             EMail: curobj.Manager?.EMail,
             Title: curobj.Manager?.Title,
           },
-          TeamCaptain: {
-            Id: curobj.TeamCaptain?.Id,
-            EMail: curobj.TeamCaptain?.EMail,
-            Title: curobj.TeamCaptain?.Title,
-          },
-          TeamLeader: {
-            Id: curobj.TeamLeader?.Id,
-            EMail: curobj.TeamLeader?.EMail,
-            Title: curobj.TeamLeader?.Title,
-          },
+          // TeamCaptain: {
+          //   Id: curobj.TeamCaptain?.Id,
+          //   EMail: curobj.TeamCaptain?.EMail,
+          //   Title: curobj.TeamCaptain?.Title,
+          // },
+          // TeamLeader: {
+          //   Id: curobj.TeamLeader?.Id,
+          //   EMail: curobj.TeamLeader?.EMail,
+          //   Title: curobj.TeamLeader?.Title,
+          // },
           DirectReports: Array.isArray(curobj.DirectReports)
             ? curobj.DirectReports.map((response) => ({
                 Id: response?.Id,
@@ -1458,16 +1454,18 @@ const OrgChart = (props) => {
           EMail: val.Manager?.EMail,
           Title: val.Manager?.Title,
         },
-        TeamCaptain: {
-          Id: val.TeamCaptain?.ID,
-          EMail: val.TeamCaptain?.EMail,
-          Title: val.TeamCaptain?.Title,
-        },
-        TeamLeader: {
-          Id: val.TeamLeader?.ID,
-          EMail: val.TeamLeader?.EMail,
-          Title: val.TeamLeader?.Title,
-        },
+
+        // TeamCaptain: {
+        //   Id: val.TeamCaptain?.ID,
+        //   EMail: val.TeamCaptain?.EMail,
+        //   Title: val.TeamCaptain?.Title,
+        // },
+        // TeamLeader: {
+        //   Id: val.TeamLeader?.ID,
+        //   EMail: val.TeamLeader?.EMail,
+        //   Title: val.TeamLeader?.Title,
+        // },
+
         DirectReports: Array.isArray(val?.DirectReports)
           ? val?.DirectReports.map((response) => ({
               Id: response?.ID,
@@ -1560,8 +1558,8 @@ const OrgChart = (props) => {
         "Team",
         "Cohort",
         "Manager", // Add fields from the nested objects to search within them
-        "TeamCaptain",
-        "TeamLeader",
+        // "TeamCaptain",
+        // "TeamLeader",
       ];
       return searchableFields.some((field) => {
         const fieldValue = item[field];
@@ -1625,15 +1623,15 @@ const OrgChart = (props) => {
   let columns = [
     { header: "Name", key: "Name", width: 15 },
     { header: "Role", key: "Role", width: 25 },
-    { header: "Team", key: "Team", width: 25 },
-    { header: "Cohort", key: "Cohort", width: 25 },
+    { header: "Cohort", key: "Team", width: 25 },
+    // { header: "Cohort", key: "Cohort", width: 25 },
 
     { header: "Manager", key: "Manager", width: 25 },
 
-    { header: "Team Captain", key: "TeamCaptain", width: 25 },
-    { header: "Team Leader", key: "TeamLeader", width: 25 },
+    // { header: "Team Captain", key: "TeamCaptain", width: 25 },
+    // { header: "Team Leader", key: "TeamLeader", width: 25 },
     { header: "Direct Reports", key: "DirectReports", width: 25 },
-    { header: "Backing Up", key: "BackingUp", width: 25 },
+    // { header: "Backing Up", key: "BackingUp", width: 25 },
   ];
 
   const ExportExcel = async () => {
@@ -1717,15 +1715,20 @@ const OrgChart = (props) => {
       missingFields.push("Name");
     } else if (!curobj.Role || curobj.Role === "") {
       missingFields.push("Role");
-    } else if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
-      missingFields.push("Manager");
-    } else if (!curobj.Team || curobj.Team === "") {
-      missingFields.push("Cohort");
-    } else if (!curobj.TeamCaptain?.Id || curobj.TeamCaptain?.Id === null) {
-      missingFields.push("Team captain");
-    } else if (!curobj.TeamLeader?.Id || curobj.TeamLeader?.Id === null) {
-      missingFields.push("Team leader");
     }
+    //  else if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
+    //   missingFields.push("Manager");
+    // }
+    else if (!curobj.Team || curobj.Team === "") {
+      missingFields.push("Cohort");
+    }
+
+    //  else if (!curobj.TeamCaptain?.Id || curobj.TeamCaptain?.Id === null) {
+    //   missingFields.push("Team captain");
+    // }
+    // else if (!curobj.TeamLeader?.Id || curobj.TeamLeader?.Id === null) {
+    //   missingFields.push("Team leader");
+    // }
     //  else if (!curobj.Cohort || curobj.Cohort === "") {
     //   missingFields.push("cohort");
     // }
@@ -1839,7 +1842,7 @@ const OrgChart = (props) => {
               body={(obj: any) => _addTextField(obj, "Team")}
             ></Column>
 
-            <Column
+            {/* <Column
               field="TeamCaptain"
               header="Team captain"
               sortable
@@ -1851,7 +1854,7 @@ const OrgChart = (props) => {
               style={{ width: "20%" }}
               sortable
               body={(obj: any) => _addTextField(obj, "TeamLeader")}
-            ></Column>
+            ></Column> */}
             {/* <Column
               field="Cohort"
               header="Cohort"

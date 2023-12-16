@@ -41,12 +41,12 @@ const exportToExcel = async (data, headers, sheetName) => {
           Name: item.Name?.Title,
           Role: item.Role,
           Team: item.Team,
-          Cohort: item.Cohort,
+          // Cohort: item.Cohort,
           Manager: item.Manager?.Title,
-          TeamCaptain: item.TeamCaptain?.Title,
-          TeamLeader: item.TeamLeader?.Title,
+          // TeamCaptain: item.TeamCaptain?.Title,
+          // TeamLeader: item.TeamLeader?.Title,
           DirectReports: item.DirectReports[0]?.Title,
-          BackingUp: item.BackingUp[0]?.Title,
+          // BackingUp: item.BackingUp[0]?.Title,
         });
       });
     } else if (sheetName == "Client") {

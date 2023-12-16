@@ -59,6 +59,22 @@ const exportToExcel = async (data, headers, sheetName) => {
           // Backup: item.Backup?.Title,
         });
       });
+    } else if (sheetName == "DoneDashboard") {
+      data.forEach((item) => {
+        worksheet.addRow({
+          TaskName: item?.TaskName,
+          ParenTaskName: item?.ParenTaskName,
+          // Creator:item?.Creator.Title,
+          // Backup: item?.Backup.Title,
+          DueDate: item?.DueDate,
+          PriorityLevel: item?.PriorityLevel,
+          TaskAge: item?.TaskAge,
+          NotifyDate: item?.NotifyDate,
+          Status: item?.Status,
+          DoneFormula: item?.DoneFormula,
+          // Created: item?.Created,
+        });
+      });
     } else if (sheetName == "MyTask") {
       for (const parent of data) {
         worksheet.addRow({
@@ -76,7 +92,7 @@ const exportToExcel = async (data, headers, sheetName) => {
           for (const child of parent.children) {
             worksheet.addRow({
               TaskName: child.data?.TaskName,
-              ParenTask:parent.data?.TaskName,
+              ParenTask: parent.data?.TaskName,
               Creator: child.data?.Creator.Title,
               Backup: child.data?.Backup.Title,
               PriorityLevel: child.data?.PriorityLevel,

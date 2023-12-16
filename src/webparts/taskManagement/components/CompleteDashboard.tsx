@@ -12,6 +12,7 @@ import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
 import Loader from "./Loader";
 import { InputText } from "primereact/inputtext";
+import exportToExcel from "../../../Global/ExportExcel";
 let mainarray = [];
 let subArray = [];
 const CompleteDashboard = (props) => {
@@ -103,7 +104,10 @@ const CompleteDashboard = (props) => {
             DueDate: SPServices.displayDate(resdata.DueDate),
             PriorityLevel: resdata.PriorityLevel,
             Status: resdata.Status,
-            Created: SPServices.displayDate(resdata.Created),
+            Created:
+              resdata.Author.Title +
+              "" +
+              SPServices.displayDate(resdata.Created),
           });
         });
         console.log("mainarray", mainarray);
@@ -171,7 +175,8 @@ const CompleteDashboard = (props) => {
               DueDate: SPServices.displayDate(val.DueDate),
               PriorityLevel: val.PriorityLevel,
               Status: val.Status,
-              Created: SPServices.displayDate(val.Created),
+              Created:
+                val.Author.Title + "" + SPServices.displayDate(val.Created),
             });
         });
 
@@ -332,8 +337,24 @@ const CompleteDashboard = (props) => {
     console.log(Filterdata);
     setUserdata([...Filterdata]);
   };
-  const bodyTemplate = (obj) => {
-    console.log(obj.PriorityLevel, "obj");
+
+  let columns = [
+    { header: "Task Name", key: "TaskName", width: 15 },
+    { header: "Parent Task Name", key: "ParenTaskName", width: 15 },
+    // { header: "Creator", key: "Creator", width: 25 },
+    // { header: "Backup", key: "Backup", width: 25 },
+    { header: "DueDate", key: "DueDate", width: 25 },
+
+    { header: "Priority Level", key: "PriorityLevel", width: 25 },
+    { header: "Status", key: "Status", width: 25 },
+    { header: "Task Age", key: "TaskAge", width: 25 },
+    { header: "Notify Date", key: "NotifyDate", width: 25 },
+    { header: "Done Formula", key: "DoneFormula", width: 25 },
+    // { header: "Created", key: "Created", width: 25 },
+  ];
+  const Exportexcel = () => {
+    exportToExcel(Userdata, columns, "DoneDashboard");
+    // console.log(obj.PriorityLevel, "obj");
   };
 
   useEffect(() => {
@@ -349,6 +370,7 @@ const CompleteDashboard = (props) => {
           <div
             style={{
               display: "flex",
+              gap: "10px",
               justifyContent: "end",
               marginBottom: "10px",
             }}
@@ -361,6 +383,19 @@ const CompleteDashboard = (props) => {
                 onChange={(e: any) => SearchFilter(e.target.value)}
               />
             </span>
+
+            <Button
+              style={{
+                backgroundColor: "#f46906",
+                border: "none",
+                padding: "8px 18px",
+                height: "38px",
+              }}
+              // className={styles.btnColor}
+              label="Export"
+              onClick={() => Exportexcel()}
+              icon="pi pi-file-excel"
+            />
           </div>
           <DataTable
             paginator

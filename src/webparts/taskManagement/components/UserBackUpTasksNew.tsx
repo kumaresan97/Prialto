@@ -448,6 +448,7 @@ export default function UserBackUpTasksNew(props) {
           tempClient[i].Tasks.push(MainArray[j]);
       }
     }
+    props.backupdatafunction([...tempClient]);
     setCurMyTask([...MainArray]);
     setMasterdata([...MainArray]);
     setClientdata([...tempClient]);
@@ -526,7 +527,8 @@ export default function UserBackUpTasksNew(props) {
                     assistant={val.Assistant?val.Assistant:curuserId}
                     crntUserData={curuserId}
                     crntBackData={configure}
-                  backupUsers={val.BackupUsers}///Changes for backup users multiple
+                    choices={props.choices}
+                    backupUsers={val.BackupUsers}///Changes for backup users multiple
                   />
                 </>
               );
@@ -541,6 +543,7 @@ export default function UserBackUpTasksNew(props) {
             mainData={masterdata}
             crntUserData={curuserId}
             crntBackData={configure}
+            choices={props.choices}
             backupUsers={[]}
           />
         )}

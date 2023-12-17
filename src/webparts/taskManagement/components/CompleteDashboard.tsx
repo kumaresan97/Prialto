@@ -86,9 +86,9 @@ const CompleteDashboard = (props) => {
             key: "",
             TaskName: resdata.TaskName,
             Id: resdata.Id,
-            NotifyDate: resdata?.NotifyDate
-              ? SPServices.displayDate(resdata.NotifyDate)
-              : "",
+            // NotifyDate: resdata?.NotifyDate
+            //   ? SPServices.displayDate(resdata.NotifyDate)
+            //   : "",
             Creator: {
               Id: resdata.Author.ID,
               EMail: resdata.Author.EMail,
@@ -100,10 +100,14 @@ const CompleteDashboard = (props) => {
               Title: resdata.Backup?.Title,
             },
             TaskAge: resdata?.TaskAge ? resdata.TaskAge : null,
+            DaysOnEarly: resdata ? resdata.DaysOnEarly : null,
+            CompletedDate: resdata
+              ? SPServices.displayDate(resdata.CompletedDate)
+              : null,
             DoneFormula: resdata?.DoneFormula ? resdata.DoneFormula : "",
-            DueDate: SPServices.displayDate(resdata.DueDate),
-            PriorityLevel: resdata.PriorityLevel,
-            Status: resdata.Status,
+            DueDate: resdata ? SPServices.displayDate(resdata.DueDate) : null,
+            PriorityLevel: resdata ? resdata.PriorityLevel : "",
+            Status: resdata ? resdata.Status : "",
             Created:
               resdata.Author.Title +
               "" +
@@ -155,12 +159,16 @@ const CompleteDashboard = (props) => {
             subArray.push({
               Id: val.Id,
               subId: val.MainTaskID?.ID,
-              NotifyDate: val?.NotifyDate
-                ? SPServices.displayDate(val.NotifyDate)
-                : "",
+              //   NotifyDate: val?.NotifyDate
+              //     ? SPServices.displayDate(val.NotifyDate)
+              //     : "",
               parentTasKName: val.MainTaskID?.TaskName,
               TaskName: val?.TaskName,
               TaskAge: val?.TaskAge ? val.TaskAge : null,
+              DaysOnEarly: val ? val.DaysOnEarly : null,
+              CompletedDate: val
+                ? SPServices.displayDate(val.CompletedDate)
+                : null,
               DoneFormula: val?.DoneFormula ? val.DoneFormula : "",
               Creator: {
                 Id: val.Author.ID,
@@ -168,13 +176,13 @@ const CompleteDashboard = (props) => {
                 Title: val.Author.Title,
               },
               Backup: {
-                Id: val.Backup?.ID,
-                EMail: val.Backup?.EMail,
-                Title: val.Backup?.Title,
+                Id: val?.Backup?.ID,
+                EMail: val?.Backup?.EMail,
+                Title: val?.Backup?.Title,
               },
-              DueDate: SPServices.displayDate(val.DueDate),
-              PriorityLevel: val.PriorityLevel,
-              Status: val.Status,
+              DueDate: val ? SPServices.displayDate(val.DueDate) : null,
+              PriorityLevel: val ? val.PriorityLevel : "",
+              Status: val ? val.Status : "",
               Created:
                 val.Author.Title + "" + SPServices.displayDate(val.Created),
             });
@@ -348,9 +356,10 @@ const CompleteDashboard = (props) => {
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
     { header: "Task Age", key: "TaskAge", width: 25 },
-    { header: "Notify Date", key: "NotifyDate", width: 25 },
+    { header: "Completed Date", key: "CompletedDate", width: 25 },
     { header: "Done Formula", key: "DoneFormula", width: 25 },
-    // { header: "Created", key: "Created", width: 25 },
+    { header: "Days OnEarly", key: "DaysOnEarly", width: 25 },
+    { header: "Created", key: "Created", width: 25 },
   ];
   const Exportexcel = () => {
     exportToExcel(Userdata, columns, "DoneDashboard");

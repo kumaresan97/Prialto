@@ -33,6 +33,7 @@ let _isAdmin: boolean = false;
 let _isTL: boolean = false;
 let _isTC: boolean = false;
 let _isPA: boolean = false;
+let test: any = {};
 
 interface clinet {
   Id: number;
@@ -316,7 +317,9 @@ const OrgChart = (props) => {
             // showHiddenInUI={false}
             showHiddenInUI={true}
             principalTypes={[PrincipalType.User]}
-            defaultSelectedUsers={curobj.Name.EMail ? [curobj.Name.EMail] : []}
+            defaultSelectedUsers={
+              curobj.Name?.EMail ? [curobj?.Name.EMail] : []
+            }
             // defaultSelectedUsers={[]}
             resolveDelay={1000}
             onChange={(items: any[]) => {
@@ -325,7 +328,6 @@ const OrgChart = (props) => {
                 getOnchange("Name", selectedItem);
                 // getonChange("PeopleEmail", selectedItem.secondaryText);
               } else {
-                // No selection, pass null or handle as needed
                 getOnchange("Name", null);
               }
             }}
@@ -968,14 +970,59 @@ const OrgChart = (props) => {
   };
 
   const getOnchange = (key, _value) => {
-    let FormData = { ...curobj };
+    // let FormData = { ...curobj };
     // let err = { ...error };
+    let previousData = { ...curobj };
+    let FormDataNew = {
+      Id: previousData.Id,
+      Name:
+        key == "Name"
+          ? {
+              Id: _value ? _value.id : null,
+              EMail: _value ? _value.secondaryText : "",
+              Title: _value ? _value.text : "",
+            }
+          : previousData.Name,
 
-    if (key == "Manager") {
+      Manager:
+        key == "Manager"
+          ? {
+              Id: _value ? _value.id : null,
+              EMail: _value ? _value.secondaryText : "",
+              Title: _value ? _value.text : "",
+            }
+          : previousData.Manager,
+      Role: key == "Role" ? (previousData[key] = _value) : previousData.Role,
+      Team: key == "Team" ? (previousData[key] = _value) : previousData.Team,
+      Cohort: "",
+      // Manager: previousData.Manager,
+
+      DirectReports:
+        key == "DirectReports"
+          ? (previousData[key] = _value?.map((item) => ({
+              Id: item.id,
+              EMail: item.secondaryText,
+              Title: item.text,
+            })))
+          : previousData.DirectReports,
+      BackingUp:
+        key == "BackingUp"
+          ? _value?.map((item) => ({
+              Id: item.id,
+              EMail: item.secondaryText,
+              Title: item.text,
+            }))
+          : previousData.BackingUp,
+    };
+    /*if (key == "Manager") {
       (FormData.Manager.Id = _value ? _value.id : null),
         (FormData.Manager.EMail = _value ? _value.secondaryText : ""),
         (FormData.Manager.Title = _value ? _value.text : "");
-    }
+    } FormData[key] = _value.map((item) => ({
+        Id: item.id,
+        EMail: item.secondaryText,
+        Title: item.text,
+      }));
     //  else if (key == "TeamCaptain") {
     //   (FormData.TeamCaptain.Id = _value ? _value.id : null),
     //     (FormData.TeamCaptain.EMail = _value ? _value.secondaryText : ""),
@@ -1004,9 +1051,9 @@ const OrgChart = (props) => {
       }));
     } else {
       FormData[key] = _value;
-    }
+    }*/
 
-    setcurobj({ ...FormData });
+    setcurobj({ ...FormDataNew });
   };
 
   const AddItem = (obj) => {
@@ -1112,35 +1159,12 @@ const OrgChart = (props) => {
     setLoader(false);
     console.log(type, err);
   };
-  const _handleDataoperation = (key, obj) => {
-    if (edit && obj.Id) {
-      Editfunction(obj);
-    } else if (!obj.Id && add && key == "check") {
-      AddItem(obj);
-    }
-  };
-  function _handleDataoperationNew(key, obj) {
-    if (obj.Id) {
-      // If the item has an Id (existing item), do nothing
-      setAdd(false);
-      setEdit(false);
-      setcurobj({ ...addparent });
-    } else {
-      // If the item doesn't have an Id (new item), remove it
-      const updatedClientDetail = value.filter((val) => val.Id !== null);
-
-      setValue(updatedClientDetail);
-      // setValue({ ...Data });
-      setAdd(false);
-      setEdit(false);
-    }
-  }
 
   const handledata = (obj) => {
+    previousvalue = obj;
+    debugger;
     setAdd(false);
-
     let editobj: any = { ...obj };
-
     editobj.Team = {
       name: obj.Team,
       code: obj.Team,
@@ -1149,8 +1173,35 @@ const OrgChart = (props) => {
       name: obj.Role,
       code: obj.Role,
     };
+    console.log(editobj, "editobj");
     setcurobj({ ...editobj });
   };
+  const _handleDataoperation = (key, obj) => {
+    if (edit && obj.Id) {
+      Editfunction(obj);
+    } else if (!obj.Id && add && key == "check") {
+      AddItem(obj);
+    }
+  };
+  function _handleDataoperationNew(key, obj) {
+    console.log(previousvalue, "previous");
+
+    debugger;
+    if (obj.Id) {
+      setAdd(false);
+      setEdit(false);
+      setcurobj({ ...addparent });
+    } else {
+      const updatedClientDetail = value.filter((val) => val.Id !== null);
+
+      setValue(updatedClientDetail);
+      // setValue({ ...Data });
+      setAdd(false);
+      setEdit(false);
+    }
+  }
+  let previousvalue = null;
+
   const _action = (obj: any): JSX.Element => {
     return (
       <div>
@@ -1161,6 +1212,7 @@ const OrgChart = (props) => {
               icon="pi pi-pencil"
               style={editIconStyle}
               onClick={(_) => {
+                test = obj;
                 handledata(obj);
                 setEdit(true);
               }}
@@ -1229,10 +1281,8 @@ const OrgChart = (props) => {
 
   const Editfunction = (obj) => {
     setLoader(true);
-
     let directorId = [];
     let BackupId = [];
-
     if (curobj.DirectReports && curobj.DirectReports.length >= 1) {
       curobj.DirectReports.forEach((val) => {
         if (val && val.Id) {
@@ -1382,6 +1432,7 @@ const OrgChart = (props) => {
         "Name, Manager, TeamCaptain, TeamLeader, DirectReports, BackingUp",
       Orderby: "Created",
       Orderbydecorasc: false,
+      Topcount: 5000,
     })
       .then((res: any) => {
         _masterArray = res;

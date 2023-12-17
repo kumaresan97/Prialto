@@ -71,8 +71,10 @@ const exportToExcel = async (data, headers, sheetName) => {
           TaskAge: item?.TaskAge,
           NotifyDate: item?.NotifyDate,
           Status: item?.Status,
+          CompletedDate: item ? item.CompletedDate : null,
+          DaysOnEarly: item?.DaysOnEarly,
           DoneFormula: item?.DoneFormula,
-          // Created: item?.Created,
+          Created: item?.Created,
         });
       });
     } else if (sheetName == "MyTask") {

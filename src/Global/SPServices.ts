@@ -160,7 +160,7 @@ const batchInsert = async (params: {
 }): Promise<any> => {
   const list = sp.web.lists.getByTitle(params.ListName);
   const batch = sp.web.createBatch();
-  const promises:any[] = [];
+  const promises: any[] = [];
 
   for (const data of params.responseData) {
     const promise = list.items.inBatch(batch).add(data);
@@ -275,9 +275,8 @@ const formatFilterValue = (
   return strFilter;
 };
 
-function displayDate(inputDate)
-{
-   return moment(inputDate).format("YYYY-MM-DD");
+function displayDate(inputDate) {
+  return inputDate ? moment(inputDate).format("YYYY-MM-DD") : null;
 }
 
 export default {
@@ -295,5 +294,5 @@ export default {
   batchInsert,
   batchUpdate,
   batchDelete,
-  displayDate
+  displayDate,
 };

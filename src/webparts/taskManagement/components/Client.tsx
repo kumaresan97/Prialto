@@ -281,6 +281,7 @@ const Client = (props) => {
   };
 
   function _handleDataoperationNew(key, obj) {
+    debugger;
     if (obj.Id) {
       // If the item has an Id (existing item), do nothing
       setisAdd(false);
@@ -466,7 +467,7 @@ const Client = (props) => {
         return (
           <PeoplePicker
             context={props.context}
-            personSelectionLimit={3}
+            personSelectionLimit={20}
             groupName={""}
             showtooltip={false}
             // required={true}
@@ -605,7 +606,7 @@ const Client = (props) => {
           <>
             <PeoplePicker
               context={props.context}
-              personSelectionLimit={3}
+              personSelectionLimit={20}
               styles={multiPeoplePickerStyle}
               peoplePickerCntrlclassName={
                 !value.Backup ||
@@ -689,6 +690,7 @@ const Client = (props) => {
       Expand: "Assistant,Backup,Author",
       Orderby: "Created",
       Orderbydecorasc: false,
+      Topcount: 5000,
     })
       .then((res) => {
         let array: IClient[] = [];
@@ -728,28 +730,47 @@ const Client = (props) => {
 
   const getOnchange = (key, _value) => {
     let FormData = { ...value };
+    let Newdata = {
+      Id: FormData.Id,
+      FirstName: key == "FirstName" ? _value : FormData.FirstName,
+      LastName: key == "LastName" ? _value : FormData.LastName,
+      CompanyName: key == "CompanyName" ? _value : FormData.CompanyName,
+      Assistant:
+        key == "Assistant"
+          ? {
+              Id: _value ? _value.id : null,
+              EMail: _value ? _value.secondaryText : "",
+              Title: _value ? _value.text : "",
+            }
+          : FormData.Assistant,
+      Backup:
+        key == "Backup"
+          ? _value.map((item) => ({
+              Id: item.id,
+              EMail: item.secondaryText,
+              Title: item.text,
+            }))
+          : FormData.Backup,
+    };
     // let err = { ...error };
 
-    if (key == "Assistant") {
-      (FormData.Assistant.Id = _value ? _value.id : null),
-        (FormData.Assistant.EMail = _value ? _value.secondaryText : ""),
-        (FormData.Assistant.Title = _value ? _value.text : "");
-    } else if (key === "Backup") {
-      // Handle arrays of objects for DirectReports, BackingUp
-      FormData[key] = _value.map((item) => ({
-        Id: item.id,
-        EMail: item.secondaryText,
-        Title: item.text,
-      }));
-    }
-    // else if (key == "Backup") {
-    //   FormData.Backup.Id = _value;
+    // if (key == "Assistant") {
+    //   (FormData.Assistant.Id = _value ? _value.id : null),
+    //     (FormData.Assistant.EMail = _value ? _value.secondaryText : ""),
+    //     (FormData.Assistant.Title = _value ? _value.text : "");
+    // } else if (key === "Backup") {
+    //   FormData[key] = _value.map((item) => ({
+    //     Id: item.id,
+    //     EMail: item.secondaryText,
+    //     Title: item.text,
+    //   }));
     // }
-    else {
-      FormData[key] = _value;
-    }
 
-    setValue({ ...FormData });
+    // else {
+    //   FormData[key] = _value;
+    // }
+
+    setValue({ ...Newdata });
   };
 
   const confirmDelete = (item: any) => {

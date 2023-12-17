@@ -110,6 +110,80 @@ const exportToExcel = async (data, headers, sheetName) => {
         //worksheet.addRow(); // Empty row after each parent's children
       }
     }
+    else if (sheetName == "ClientandBackup") {
+
+      for (const parent of data[0].clientData) {
+        worksheet.addRow({
+          TaskName: parent.data?.TaskName,
+          Creator: parent.data?.Creator.Title,
+          Backup: parent.data?.Backup.Title,
+          PriorityLevel: parent.data?.PriorityLevel,
+          DueDate: parent.data?.DueDate,
+          ClientName: parent.data?.ClientName,
+          Status: parent.data?.Status,
+          Created: parent.data?.Created,
+          Category:"ClientTasks"
+        });
+        //worksheet.addRow();
+        // Add child data for each parent
+        if (parent.children.length > 0) {
+          for (const child of parent.children) {
+            worksheet.addRow({
+              TaskName: child.data?.TaskName,
+              ParenTask: parent.data?.TaskName,
+              Creator: child.data?.Creator.Title,
+              Backup: child.data?.Backup.Title,
+              PriorityLevel: child.data?.PriorityLevel,
+              ClientName: parent.data?.ClientName,
+              DueDate: child.data?.DueDate,
+              Status: child.data?.Status,
+              Created: child.data?.Created,
+              Category:"ClientTasks"
+            });
+          }
+        } else {
+          //worksheet.addRow({}); // Add an empty row
+        }
+
+        //worksheet.addRow(); // Empty row after each parent's children
+      }
+
+      for (const parent of data[0].backupData) {
+        worksheet.addRow({
+          TaskName: parent.data?.TaskName,
+          Creator: parent.data?.Creator.Title,
+          Backup: parent.data?.Backup.Title,
+          PriorityLevel: parent.data?.PriorityLevel,
+          DueDate: parent.data?.DueDate,
+          ClientName: parent.data?.ClientName,
+          Status: parent.data?.Status,
+          Created: parent.data?.Created,
+          Category:"BackupTasks"
+        });
+        //worksheet.addRow();
+        // Add child data for each parent
+        if (parent.children.length > 0) {
+          for (const child of parent.children) {
+            worksheet.addRow({
+              TaskName: child.data?.TaskName,
+              ParenTask: parent.data?.TaskName,
+              Creator: child.data?.Creator.Title,
+              Backup: child.data?.Backup.Title,
+              PriorityLevel: child.data?.PriorityLevel,
+              ClientName: parent.data?.ClientName,
+              DueDate: child.data?.DueDate,
+              Status: child.data?.Status,
+              Created: child.data?.Created,
+              Category:"BackupTasks"
+            });
+          }
+        } else {
+          //worksheet.addRow({}); // Add an empty row
+        }
+
+        //worksheet.addRow(); // Empty row after each parent's children
+      }
+    }
 
     workbook.xlsx
       .writeBuffer()

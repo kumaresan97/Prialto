@@ -13,12 +13,17 @@ import Loader from "./Loader";
 import { Toast } from "primereact/toast";
 import exportToExcel from "../../../Global/ExportExcel";
 import { Dialog } from "primereact/dialog";
+import { InputNumber } from "primereact/inputnumber";
+import * as moment from "moment";
 let MyClients = [];
 let MyCategories = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 let statusChoices = [];
+let ParentTask=[];
+let ChildTask=[];
+let automationTasks=[];
 export default function MyTaskDBNewCategory(props) {
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
@@ -26,6 +31,7 @@ export default function MyTaskDBNewCategory(props) {
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
+  const [days,setDays]=useState(0);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -495,6 +501,98 @@ export default function MyTaskDBNewCategory(props) {
     setClientdata([...tempClientNew]);
   }
 
+  const onselect = (event) => {
+    if(event.node.isParent)
+    {
+      ParentTask.push(event.node);
+    }
+    else
+    {
+      ChildTask.push(event.node);
+    }
+
+    console.log(ParentTask);
+    console.log(ChildTask);
+  };
+
+  const unselect = (event) => {
+  
+    
+  };
+  
+  function prepareAutomationData()
+  {
+    automationTasks=[];
+    let noOfDays=days;
+    for(let i=0;i<ParentTask.length;i++)
+    {
+      automationTasks.push({
+        Title:"Reminder",
+            TaskIDId:ParentTask[i].Id,
+            SubTaskIDId:null,
+            Before:days,
+            Status:ParentTask[i].Status,
+            NotifyDate:moment(ParentTask[i].DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
+      })
+
+      for(let j=0;j<ParentTask[i].children.length;j++)
+      {
+        automationTasks.push({
+          Title:"Reminder",
+              TaskIDId:null,
+              SubTaskIDId:ParentTask[i].children[j].Id,
+              Before:days,
+              Status:ParentTask[i].children[j].Status,
+              NotifyDate:moment(ParentTask[i].children[j].data.DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
+        })  
+      }
+    }
+
+    for(let i=0;i<ChildTask.length;i++)
+    {
+      automationTasks.push({
+        Title:"Reminder",
+            TaskIDId:null,
+            SubTaskIDId:ChildTask[i].Id,
+            Before:days,
+            Status:ChildTask[i].Status,
+            NotifyDate:moment(ParentTask[i].DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
+      })
+    }
+
+    let parentFilteredTasks=automationTasks.filter((val)=> val.TaskIDId!=null);
+    let childFilteredTasks=automationTasks.filter((val)=> val.SubTaskIDId!=null);
+    let parentDuplicateRemove=removeDuplicates(parentFilteredTasks,'TaskIDId');
+    let childDuplicateremove=removeDuplicates(childFilteredTasks,'SubTaskIDId');
+
+    insertReminder([...parentDuplicateRemove,...childDuplicateremove]);
+
+  }
+
+
+  function removeDuplicates(arr, prop) {
+    const uniqueArray = arr.filter((obj, index, array) => {
+      return array.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === index;
+    });
+  
+    return uniqueArray;
+  }
+
+
+  function insertReminder(TasksDetails)
+  {
+  
+    SPServices.SPAddItem({
+        Listname:"Reminder",
+        RequestJSON:TasksDetails[0]
+      }).then(function(data){
+        setIsautomate(false);
+        setDays(0);
+      }).catch(function(error){
+        errFunction(error);
+      })
+  }
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -506,6 +604,8 @@ export default function MyTaskDBNewCategory(props) {
     getStatus();
     getcurUser();
   }, [props.Email]);
+
+  let BeforeData=ParentTask.length>0?moment(ParentTask[0].data.DueDate).format("MM/DD/YYYY"):ChildTask.length>0?moment(ChildTask[0].data.DueDate).format("MM/DD/YYYY"):""
 
   return (
     <>
@@ -602,15 +702,17 @@ export default function MyTaskDBNewCategory(props) {
               <div style={{ display: "flex", gap: "10px" }}>
                 <div style={{ display: "flex", gap: "5px" }}>
                   <Label>Notify</Label>
-                  <InputText
+                  <InputNumber
                     style={{ width: "100%" }}
-                    value={categoryValue}
-                    // onChange={(e: any) => setCategoryValue(e.target.value)}
+                    value={days}
+                    onChange={(e: any) => 
+                      setDays(e.value)
+                    }
                   />
                 </div>
                 <div style={{ display: "flex", gap: "5px" }}>
                   <Label>Before </Label>
-                  <Label>08/11/1997</Label>
+                  <Label>{BeforeData}</Label>
                 </div>
               </div>
             </>
@@ -646,7 +748,9 @@ export default function MyTaskDBNewCategory(props) {
               // }}
               label="Cancel"
             />
-            <Button className={styles.btnColor} label="Submit" />
+            <Button className={styles.btnColor} label="Submit" onClick={()=>{
+              prepareAutomationData();
+            }}/>
           </div>
         </div>
       </Dialog>
@@ -686,7 +790,21 @@ export default function MyTaskDBNewCategory(props) {
               <Button
                 className={styles.btnColor}
                 label="Automate"
-                onClick={() => setIsautomate(true)}
+                onClick={() => {
+                  
+                  if(ParentTask.length>0||ChildTask.length>0)
+                  {
+                    setIsautomate(true);
+                  }
+                  else
+                  {
+                    showMessage(
+                      "Please select any record to automate",
+                      toastTopRight,
+                      "warn"
+                    );
+                  }
+                }}
               />
               <Button
                 className={styles.btnColor}
@@ -712,6 +830,8 @@ export default function MyTaskDBNewCategory(props) {
                         searchValue={search}
                         onspinner={onSpinner}
                         offspinner={offSpinner}
+                        onselect={onselect}
+                        unselect={unselect}
                         context={props.context}
                         mainData={val.Tasks}
                         updateCategory={updateCategory}

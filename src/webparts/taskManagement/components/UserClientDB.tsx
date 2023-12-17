@@ -33,11 +33,11 @@ const dropval = [
   { name: "Urgent", code: "Normal" },
 ];
 
-const dropStatus = [
-  { name: "Pending", code: "Pending" },
-  { name: "In Progress", code: "In Progress" },
-  { name: "Completed", code: "Completed" },
-  { name: "Done", code: "Done" },
+let dropStatus = [
+//   { name: "Pending", code: "Pending" },
+//   { name: "In Progress", code: "In Progress" },
+//   { name: "Completed", code: "Completed" },
+//   { name: "Done", code: "Done" },
 ];
 
 let MyClients = [];
@@ -47,6 +47,7 @@ let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
   // style variables
+  dropStatus = props.choices;
   const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
   // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
@@ -241,6 +242,10 @@ const UserClientDB = (props): JSX.Element => {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
     }
+    else{
+      bgColor = "#dfffbb";
+      color = "#6e6e6e";
+    }
     return (
       <div
         className={styles.pLevelStyle}
@@ -393,6 +398,23 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: Json,
     })
       .then((res) => {
+
+        /*For Recurrence Insert */
+        let newJson={
+          TaskIDId:res.data.ID,
+          RecurrenceType:curdata.Status["name"]
+        }
+
+        let newSubJson={
+          SubTaskIDId:res.data.ID,
+          RecurrenceType:curdata.Status["name"]
+        }
+
+        let inputJson=obj.isParent?newJson:newSubJson;
+        AddRecurrence(curdata.Status["name"],inputJson);
+        /*For Recurrence Insert End*/
+
+
         let newData = {};
         //Preparing Parent or Child object here.
         if (obj.isParent) {
@@ -515,6 +537,80 @@ const UserClientDB = (props): JSX.Element => {
     }
   }
 
+  /* for recurrence add and update */
+  async function AddRecurrence(Status,dataJson)
+  {
+    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+      await SPServices.SPAddItem({
+      Listname:"Recurrence",
+      RequestJSON:dataJson
+      }).then(function(data){}).catch(function(error){
+        errFunction(error);
+      })
+      }
+  }
+
+  async function UpdateRecurrence(Status,dataJson,ListID)
+  {
+    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+      await SPServices.SPUpdateItem({
+      Listname:"Recurrence",
+      ID:ListID,
+      RequestJSON:dataJson
+      }).then(function(data){}).catch(function(error){
+        errFunction(error);
+      })
+      }
+  }
+
+  async function InsertOrUpdateRecurrence(recordID,obj,Status)
+  {
+      /*For Recurrence Update */
+      let newJson={
+        TaskIDId:recordID,
+        RecurrenceType:Status
+      }
+
+      let newSubJson={
+        SubTaskIDId:recordID,
+        RecurrenceType:Status
+      }
+
+      let inputJson=obj.isParent?newJson:newSubJson;
+      let filterValue=obj.isParent?"TaskID/ID":"SubTaskID/ID";
+
+      SPServices.SPReadItems({
+        Listname:"Recurrence",
+        Select:"*,TaskID/ID,SubTaskID/ID",
+        Expand:"TaskID,SubTaskID",
+        Filter:[
+          {
+            FilterKey: filterValue,
+            FilterValue: recordID,
+            Operator: "eq",
+          },
+        ],
+      }).then(function(data:any)
+      {
+          if(data.length>0)
+          {
+              UpdateRecurrence(Status,inputJson,data[0].ID)
+          }
+          else
+          {
+            AddRecurrence(Status,inputJson);
+          }
+      
+      }).catch(function(error)
+      {
+
+      })
+      /*For Recurrence Update */
+
+  }
+
+  /* for recurrence add and update end*/
+
   //editfunction
   const Editfunction = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
@@ -534,6 +630,7 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
+        InsertOrUpdateRecurrence(obj.Id,obj,curdata.Status["name"]);
         let newData = {};
         if (obj.isParent) {
           newData = {

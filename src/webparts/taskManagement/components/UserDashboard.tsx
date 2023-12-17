@@ -14,6 +14,11 @@ import UserTasks from "./UserTasks";
 import UserBackUpTasks from "./UserBackUpTasks";
 import UserBackUpTasksNew from "./UserBackUpTasksNew";
 import UserClients from "./UserClient";
+import exportToExcel from "../../../Global/ExportExcel";
+let statusChoices=[];
+let arrClientData=[];
+let arrBackupData=[];
+let ExportDataItems=[];
 
 export default function UserDashboard(props) {
   const UserEmail = !props.Email
@@ -152,10 +157,66 @@ export default function UserDashboard(props) {
     setSearch(e);
   }
 
+  function getStatus() {
+    statusChoices = [];
+    SPServices.SPGetChoices({
+      Listname: "Tasks",
+      FieldName: "Status",
+    })
+      .then(function (data) {
+        console.log(data["Choices"]);
+        for (let i = 0; i < data["Choices"].length; i++) {
+          statusChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
+  }
+
   useEffect(() => {
     setLoader(true);
+    getStatus();
     getcurUser();
   }, [props.Email]);
+
+
+  function getDataFromClient(data)
+  { 
+    arrClientData=[...data];
+    console.log(arrClientData);
+  }
+
+  function getDataFromBackup(data)
+  {
+    arrBackupData=[...data];
+    console.log(arrBackupData);
+  }
+
+  function BindExportData()
+  {
+    let columns = [
+      { header: "Task Name", key: "TaskName", width: 15 },
+      { header: "Parent Task Name", key: "ParenTask", width: 15 },
+      { header: "Category", key: "Category", width: 25 },
+      { header: "Creator", key: "Creator", width: 25 },
+      { header: "Backup", key: "Backup", width: 25 },
+      { header: "DueDate", key: "DueDate", width: 25 },
+      { header: "Client Name", key: "ClientName", width: 25 },
+      { header: "Priority Level", key: "PriorityLevel", width: 25 },
+      { header: "Status", key: "Status", width: 25 },
+      { header: "Creation log", key: "Created", width: 25 },
+    ];
+
+    let data=[{
+      clientData:arrClientData,
+      backupData:arrBackupData
+    }]
+    exportToExcel(data, columns, "ClientandBackup");
+  }
 
   return (
     <>
@@ -191,6 +252,9 @@ export default function UserDashboard(props) {
                 className={styles.btnColor}
                 label="Export"
                 icon="pi pi-file-excel"
+                onClick={()=>{
+                  BindExportData();
+                }}
               />
               <Button
                 className={styles.btnColor}
@@ -234,12 +298,16 @@ export default function UserDashboard(props) {
             searchValue={search}
             context={props.context}
             Email={user}
+            choices={statusChoices}
+            clientdatafunction={getDataFromClient}
           />
           {/* <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/> */}
           <UserBackUpTasksNew
             searchValue={search}
             context={props.context}
             Email={user}
+            choices={statusChoices}
+            backupdatafunction={getDataFromBackup}
           />
         </>
       )}

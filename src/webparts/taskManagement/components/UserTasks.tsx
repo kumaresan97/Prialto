@@ -348,6 +348,7 @@ export default function UserTasks(props) {
           tempClient[i].Tasks.push(MainArray[j]);
       }
     }
+    props.clientdatafunction([...MainArray]);
     setCurMyTask([...MainArray]);
     setMasterdata([...MainArray]);
     setClientdata([...tempClient]);
@@ -388,6 +389,7 @@ export default function UserTasks(props) {
                     crntUserData={curuserId}
                     crntBackData={configure}
                     backupUsers={val.BackupUsers}
+                    choices={props.choices}
                   />
                 </>
               );

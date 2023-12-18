@@ -56,7 +56,7 @@ $btnColor: #f46906;
   padding: 6px 0px;
   text-align: center;
   border-radius: 12px;
-  width: 96px;
+  width: 134px;
 }
 
 .actionContainer {
@@ -141,6 +141,7 @@ $btnColor: #f46906;
   display: flex;
   gap: 20px;
   margin: 10px 0px 20px 0px;
+
   .Activebutton {
     border: none;
     background: transparent;
@@ -158,7 +159,39 @@ $btnColor: #f46906;
     color: #000;
   }
 }
+.NotifyContainer {
+  display: flex;
+  gap: 12px;
+  .ProjectName {
+    width: 35%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
+  }
+  span {
+    width: 25%;
+    input {
+      width: 100%;
+    }
+  }
+}
+.cancelBtn {
+  background-color: #a49890;
+  border: none;
+  padding: 4px 18px;
+  height: 38px;
+}
+.Submitbtn {
+  background-color: #009b9f;
+  border: none;
+  padding: 4px 18px;
 
+  height: 38px;
+}
+.Automatelabel {
+  font-size: 18px;
+  font-weight: 600;
+}
 .catDialogBtnSection {
   display: flex;
   gap: 20px;

@@ -21,9 +21,9 @@ let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 let statusChoices = [];
-let ParentTask=[];
-let ChildTask=[];
-let automationTasks=[];
+let ParentTask = [];
+let ChildTask = [];
+let automationTasks = [];
 export default function MyTaskDBNewCategory(props) {
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
@@ -31,7 +31,7 @@ export default function MyTaskDBNewCategory(props) {
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
-  const [days,setDays]=useState(0);
+  const [days, setDays] = useState(0);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -60,6 +60,7 @@ export default function MyTaskDBNewCategory(props) {
   const [isCatDialog, setIsCatDialog] = useState(false);
 
   const errFunction = (err) => {
+    console.log(err);
     setLoader(false);
     BindData();
     showMessage(
@@ -271,6 +272,12 @@ export default function MyTaskDBNewCategory(props) {
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
+                TaskAge: val.TaskAge ? val.TaskAge : null,
+                CompletedDate: val.CompletedDate
+                  ? SPServices.displayDate(val.CompletedDate)
+                  : null,
+                DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   val.Author?.Title + " " + SPServices.displayDate(val.Created),
 
@@ -352,6 +359,13 @@ export default function MyTaskDBNewCategory(props) {
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
+
+                  TaskAge: val.TaskAge ? val.TaskAge : null,
+                  CompletedDate: val.CompletedDate
+                    ? SPServices.displayDate(val.CompletedDate)
+                    : null,
+                  DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                  DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                   Created:
                     val.Author.Title +
                     " " +
@@ -424,6 +438,10 @@ export default function MyTaskDBNewCategory(props) {
     { header: "Creator", key: "Creator", width: 25 },
     { header: "Backup", key: "Backup", width: 25 },
     { header: "DueDate", key: "DueDate", width: 25 },
+    { header: "Task Age", key: "TaskAge", width: 25 },
+    { header: "Completed Date", key: "CompletedDate", width: 25 },
+    { header: "Done Formula", key: "DoneFormula", width: 25 },
+    { header: "Days OnEarly", key: "DaysOnEarly", width: 25 },
 
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
@@ -502,12 +520,9 @@ export default function MyTaskDBNewCategory(props) {
   }
 
   const onselect = (event) => {
-    if(event.node.isParent)
-    {
+    if (event.node.isParent) {
       ParentTask.push(event.node);
-    }
-    else
-    {
+    } else {
       ChildTask.push(event.node);
     }
 
@@ -515,82 +530,88 @@ export default function MyTaskDBNewCategory(props) {
     console.log(ChildTask);
   };
 
-  const unselect = (event) => {
-  
-    
-  };
-  
-  function prepareAutomationData()
-  {
-    automationTasks=[];
-    let noOfDays=days;
-    for(let i=0;i<ParentTask.length;i++)
-    {
-      automationTasks.push({
-        Title:"Reminder",
-            TaskIDId:ParentTask[i].Id,
-            SubTaskIDId:null,
-            Before:days,
-            Status:ParentTask[i].Status,
-            NotifyDate:moment(ParentTask[i].DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
-      })
+  const unselect = (event) => {};
 
-      for(let j=0;j<ParentTask[i].children.length;j++)
-      {
+  function prepareAutomationData() {
+    automationTasks = [];
+    let noOfDays = days;
+    for (let i = 0; i < ParentTask.length; i++) {
+      automationTasks.push({
+        Title: "Reminder",
+        TaskIDId: ParentTask[i].Id,
+        SubTaskIDId: null,
+        Before: days,
+        Status: ParentTask[i].Status,
+        NotifyDate: moment(ParentTask[i].DueDate)
+          .subtract(noOfDays, "days")
+          .format("YYYY-MM-DD"),
+      });
+
+      for (let j = 0; j < ParentTask[i].children.length; j++) {
         automationTasks.push({
-          Title:"Reminder",
-              TaskIDId:null,
-              SubTaskIDId:ParentTask[i].children[j].Id,
-              Before:days,
-              Status:ParentTask[i].children[j].Status,
-              NotifyDate:moment(ParentTask[i].children[j].data.DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
-        })  
+          Title: "Reminder",
+          TaskIDId: null,
+          SubTaskIDId: ParentTask[i].children[j].Id,
+          Before: days,
+          Status: ParentTask[i].children[j].Status,
+          NotifyDate: moment(ParentTask[i].children[j].data.DueDate)
+            .subtract(noOfDays, "days")
+            .format("YYYY-MM-DD"),
+        });
       }
     }
 
-    for(let i=0;i<ChildTask.length;i++)
-    {
+    for (let i = 0; i < ChildTask.length; i++) {
       automationTasks.push({
-        Title:"Reminder",
-            TaskIDId:null,
-            SubTaskIDId:ChildTask[i].Id,
-            Before:days,
-            Status:ChildTask[i].Status,
-            NotifyDate:moment(ParentTask[i].DueDate).subtract(noOfDays,"days").format('YYYY-MM-DD'),
-      })
+        Title: "Reminder",
+        TaskIDId: null,
+        SubTaskIDId: ChildTask[i].Id,
+        Before: days,
+        Status: ChildTask[i].Status,
+        NotifyDate: moment(ParentTask[i].DueDate)
+          .subtract(noOfDays, "days")
+          .format("YYYY-MM-DD"),
+      });
     }
 
-    let parentFilteredTasks=automationTasks.filter((val)=> val.TaskIDId!=null);
-    let childFilteredTasks=automationTasks.filter((val)=> val.SubTaskIDId!=null);
-    let parentDuplicateRemove=removeDuplicates(parentFilteredTasks,'TaskIDId');
-    let childDuplicateremove=removeDuplicates(childFilteredTasks,'SubTaskIDId');
+    let parentFilteredTasks = automationTasks.filter(
+      (val) => val.TaskIDId != null
+    );
+    let childFilteredTasks = automationTasks.filter(
+      (val) => val.SubTaskIDId != null
+    );
+    let parentDuplicateRemove = removeDuplicates(
+      parentFilteredTasks,
+      "TaskIDId"
+    );
+    let childDuplicateremove = removeDuplicates(
+      childFilteredTasks,
+      "SubTaskIDId"
+    );
 
-    insertReminder([...parentDuplicateRemove,...childDuplicateremove]);
-
+    insertReminder([...parentDuplicateRemove, ...childDuplicateremove]);
   }
-
 
   function removeDuplicates(arr, prop) {
     const uniqueArray = arr.filter((obj, index, array) => {
-      return array.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === index;
+      return array.map((mapObj) => mapObj[prop]).indexOf(obj[prop]) === index;
     });
-  
+
     return uniqueArray;
   }
 
-
-  function insertReminder(TasksDetails)
-  {
-  
+  function insertReminder(TasksDetails) {
     SPServices.SPAddItem({
-        Listname:"Reminder",
-        RequestJSON:TasksDetails[0]
-      }).then(function(data){
+      Listname: "Reminder",
+      RequestJSON: TasksDetails[0],
+    })
+      .then(function (data) {
         setIsautomate(false);
         setDays(0);
-      }).catch(function(error){
-        errFunction(error);
       })
+      .catch(function (error) {
+        errFunction(error);
+      });
   }
 
   useEffect(() => {
@@ -605,7 +626,12 @@ export default function MyTaskDBNewCategory(props) {
     getcurUser();
   }, [props.Email]);
 
-  let BeforeData=ParentTask.length>0?moment(ParentTask[0].data.DueDate).format("MM/DD/YYYY"):ChildTask.length>0?moment(ChildTask[0].data.DueDate).format("MM/DD/YYYY"):""
+  let BeforeData =
+    ParentTask.length > 0
+      ? moment(ParentTask[0].data.DueDate).format("MM/DD/YYYY")
+      : ChildTask.length > 0
+      ? moment(ChildTask[0].data.DueDate).format("MM/DD/YYYY")
+      : "";
 
   return (
     <>
@@ -658,9 +684,9 @@ export default function MyTaskDBNewCategory(props) {
         onHide={() => setIsautomate(false)}
       >
         <div className={styles.addCatSection}>
-          <Label>Automate</Label>
+          <Label className={styles.Automatelabel}>Automate</Label>
 
-          <div
+          {/* <div
             style={{
               display: "flex",
               gap: "20px",
@@ -682,7 +708,7 @@ export default function MyTaskDBNewCategory(props) {
             >
               Notification
             </Button>
-            {/* <Button
+            <Button
               className={
                 automate.recurringtask
                   ? styles.Activebutton
@@ -695,28 +721,32 @@ export default function MyTaskDBNewCategory(props) {
               }}
             >
               Recurring Task
-            </Button> */}
-          </div>
-          {automate.notification && (
-            <>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <div style={{ display: "flex", gap: "5px" }}>
-                  <Label>Notify</Label>
-                  <InputNumber
-                    style={{ width: "100%" }}
-                    value={days}
-                    onChange={(e: any) => 
-                      setDays(e.value)
-                    }
-                  />
-                </div>
-                <div style={{ display: "flex", gap: "5px" }}>
-                  <Label>Before </Label>
-                  <Label>{BeforeData}</Label>
-                </div>
+            </Button> 
+          </div> */}
+          {/* {automate.notification && ( */}
+          <>
+            <div style={{ display: "flex", gap: "10px", margin: "10px 0px" }}>
+              <div
+                // style={{ display: "flex", gap: "5px" }}
+                className={styles.NotifyContainer}
+              >
+                <Label>Notify</Label>{" "}
+                <Label className={styles.ProjectName} title={"ProjectName"}>
+                  Testproject
+                </Label>
+                <InputNumber
+                  // style={{ width: "10%" }}
+                  value={days}
+                  onChange={(e: any) => setDays(e.value)}
+                />
               </div>
-            </>
-          )}
+              <div style={{ display: "flex", gap: "5px" }}>
+                <Label>Before </Label>
+                <Label>{BeforeData}</Label>
+              </div>
+            </div>
+          </>
+          {/* )} */}
           {/* {automate.recurringtask && (
             <>
               <div style={{ display: "flex", gap: "5px" }}>
@@ -732,7 +762,7 @@ export default function MyTaskDBNewCategory(props) {
 
           <div className={styles.catDialogBtnSection}>
             <Button
-              className={styles.btnColor}
+              className={styles.cancelBtn}
               onClick={() => {
                 setCategoryValue("");
                 setIsautomate(false);
@@ -748,9 +778,13 @@ export default function MyTaskDBNewCategory(props) {
               // }}
               label="Cancel"
             />
-            <Button className={styles.btnColor} label="Submit" onClick={()=>{
-              prepareAutomationData();
-            }}/>
+            <Button
+              className={styles.Submitbtn}
+              label="Submit"
+              onClick={() => {
+                prepareAutomationData();
+              }}
+            />
           </div>
         </div>
       </Dialog>
@@ -791,13 +825,9 @@ export default function MyTaskDBNewCategory(props) {
                 className={styles.btnColor}
                 label="Automate"
                 onClick={() => {
-                  
-                  if(ParentTask.length>0||ChildTask.length>0)
-                  {
+                  if (ParentTask.length > 0 || ChildTask.length > 0) {
                     setIsautomate(true);
-                  }
-                  else
-                  {
+                  } else {
                     showMessage(
                       "Please select any record to automate",
                       toastTopRight,

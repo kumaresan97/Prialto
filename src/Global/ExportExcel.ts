@@ -25,6 +25,11 @@ const exportToExcel = async (data, headers, sheetName) => {
       "H1",
       "I1",
       "J1",
+      "K1",
+      "L1",
+      "M1",
+      "N1",
+      "O1",
     ];
     headerRows.map((key: any) => {
       worksheet.getCell(key).fill = {
@@ -85,6 +90,10 @@ const exportToExcel = async (data, headers, sheetName) => {
           Backup: parent.data?.Backup.Title,
           PriorityLevel: parent.data?.PriorityLevel,
           DueDate: parent.data?.DueDate,
+          TaskAge: parent.data.TaskAge,
+          CompletedDate: parent.data.CompletedDate,
+          DoneFormula: parent.data.DoneFormula,
+          DaysOnEarly: parent.data.DaysOnEarly,
           Status: parent.data?.Status,
           Created: parent.data?.Created,
         });
@@ -99,6 +108,10 @@ const exportToExcel = async (data, headers, sheetName) => {
               Backup: child.data?.Backup.Title,
               PriorityLevel: child.data?.PriorityLevel,
               DueDate: child.data?.DueDate,
+              TaskAge: child.data.TaskAge,
+              CompletedDate: child.data.CompletedDate,
+              DoneFormula: child.data.DoneFormula,
+              DaysOnEarly: child.data.DaysOnEarly,
               Status: child.data?.Status,
               Created: child.data?.Created,
             });
@@ -109,9 +122,7 @@ const exportToExcel = async (data, headers, sheetName) => {
 
         //worksheet.addRow(); // Empty row after each parent's children
       }
-    }
-    else if (sheetName == "ClientandBackup") {
-
+    } else if (sheetName == "ClientandBackup") {
       for (const parent of data[0].clientData) {
         worksheet.addRow({
           TaskName: parent.data?.TaskName,
@@ -121,12 +132,16 @@ const exportToExcel = async (data, headers, sheetName) => {
           DueDate: parent.data?.DueDate,
           ClientName: parent.data?.ClientName,
           Status: parent.data?.Status,
+          TaskAge: parent.data?.TaskAge,
+          CompletedDate: parent.data?.CompletedDate,
+          DoneFormula: parent.data?.DoneFormula,
+          DaysOnEarly: parent.data?.DaysOnEarly,
           Created: parent.data?.Created,
-          Category:"ClientTasks"
+          Category: "ClientTasks",
         });
         //worksheet.addRow();
         // Add child data for each parent
-        if (parent.children.length > 0) {
+        if (parent.children?.length > 0) {
           for (const child of parent.children) {
             worksheet.addRow({
               TaskName: child.data?.TaskName,
@@ -137,8 +152,12 @@ const exportToExcel = async (data, headers, sheetName) => {
               ClientName: parent.data?.ClientName,
               DueDate: child.data?.DueDate,
               Status: child.data?.Status,
+              TaskAge: child.data?.TaskAge,
+              CompletedDate: child.data?.CompletedDate,
+              DoneFormula: child.data?.DoneFormula,
+              DaysOnEarly: child.data?.DaysOnEarly,
               Created: child.data?.Created,
-              Category:"ClientTasks"
+              Category: "ClientTasks",
             });
           }
         } else {
@@ -150,20 +169,24 @@ const exportToExcel = async (data, headers, sheetName) => {
 
       for (const parent of data[0].backupData) {
         worksheet.addRow({
-          TaskName: parent.data?.TaskName,
-          Creator: parent.data?.Creator.Title,
-          Backup: parent.data?.Backup.Title,
-          PriorityLevel: parent.data?.PriorityLevel,
-          DueDate: parent.data?.DueDate,
-          ClientName: parent.data?.ClientName,
-          Status: parent.data?.Status,
-          Created: parent.data?.Created,
-          Category:"BackupTasks"
+          TaskName: parent.Tasks[0].data?.TaskName,
+          Creator: parent.Tasks[0].data?.Creator.Title,
+          Backup: parent.Tasks[0].data?.Backup.Title,
+          PriorityLevel: parent.Tasks[0].data?.PriorityLevel,
+          DueDate: parent.Tasks[0].data?.DueDate,
+          ClientName: parent.Tasks[0].data?.ClientName,
+          Status: parent.Tasks[0].data?.Status,
+          TaskAge: parent.Tasks[0].data?.TaskAge,
+          CompletedDate: parent.Tasks[0].data?.CompletedDate,
+          DoneFormula: parent.Tasks[0].data?.DoneFormula,
+          DaysOnEarly: parent.Tasks[0].data?.DaysOnEarly,
+          Created: parent.Tasks[0].data?.Created,
+          Category: "BackupTasks",
         });
         //worksheet.addRow();
         // Add child data for each parent
-        if (parent.children.length > 0) {
-          for (const child of parent.children) {
+        if (parent.Tasks[0].children?.length > 0) {
+          for (const child of parent.Tasks[0].children) {
             worksheet.addRow({
               TaskName: child.data?.TaskName,
               ParenTask: parent.data?.TaskName,
@@ -173,8 +196,12 @@ const exportToExcel = async (data, headers, sheetName) => {
               ClientName: parent.data?.ClientName,
               DueDate: child.data?.DueDate,
               Status: child.data?.Status,
+              TaskAge: child.data?.TaskAge,
+              CompletedDate: child.data?.CompletedDate,
+              DoneFormula: child.data?.DoneFormula,
+              DaysOnEarly: child.data?.DaysOnEarly,
               Created: child.data?.Created,
-              Category:"BackupTasks"
+              Category: "BackupTasks",
             });
           }
         } else {

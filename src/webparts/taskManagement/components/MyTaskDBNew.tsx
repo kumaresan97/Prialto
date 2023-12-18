@@ -220,6 +220,12 @@ export default function UserClients(props) {
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
+                TaskAge: val.TaskAge ? val.TaskAge : null,
+                CompletedDate: val.CompletedDate
+                  ? SPServices.displayDate(val.CompletedDate)
+                  : null,
+                DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   SPServices.displayDate(val.Created) + val.Author?.Title,
               },
@@ -303,6 +309,12 @@ export default function UserClients(props) {
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
+                  TaskAge: val.TaskAge ? val.TaskAge : null,
+                  CompletedDate: val.CompletedDate
+                    ? SPServices.displayDate(val.CompletedDate)
+                    : null,
+                  DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                  DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
 
                   Created:
                     SPServices.displayDate(val.Created) + val.Author.Title,
@@ -388,7 +400,6 @@ export default function UserClients(props) {
     { header: "Creator", key: "Creator", width: 25 },
     { header: "Backup", key: "Backup", width: 25 },
     { header: "DueDate", key: "DueDate", width: 25 },
-
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
     { header: "Created", key: "Created", width: 25 },

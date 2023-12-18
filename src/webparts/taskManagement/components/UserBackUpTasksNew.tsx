@@ -11,21 +11,22 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 let MyClients = [];
-let MyTaskIds=[];
+let MyTaskIds = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 export default function UserBackUpTasksNew(props) {
-  const UserEmail = !props.Email
-    ? ""
-    : props.Email;
+  const UserEmail = !props.Email ? "" : props.Email;
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
-  const [teamCaptainData, setTeamCaptainData] = useState({ EMail: "",Title: "",});
-  const [teamTLData, setTeamTLData] = useState({ EMail: "",Title: ""});
+  const [teamCaptainData, setTeamCaptainData] = useState({
+    EMail: "",
+    Title: "",
+  });
+  const [teamTLData, setTeamTLData] = useState({ EMail: "", Title: "" });
   const [curuserId, setCuruserId] = useState({
     Id: null,
     EMail: "",
@@ -45,76 +46,73 @@ export default function UserBackUpTasksNew(props) {
 
   //getcuruser
   const getcurUser = () => {
-    if(UserEmail){
-    let user = sp.web.siteUsers
-      .getByEmail(UserEmail)
-      .get()
-      .then((res) => {
-        let crntUserDetails = {
-          Id: res.Id,
-          EMail: res.Email,
-          Title: res.Title,
-        };
+    if (UserEmail) {
+      let user = sp.web.siteUsers
+        .getByEmail(UserEmail)
+        .get()
+        .then((res) => {
+          let crntUserDetails = {
+            Id: res.Id,
+            EMail: res.Email,
+            Title: res.Title,
+          };
 
-        let crntUserBackup = {
-          backupId: res.Id,
-          EMail: res.Email,
-          Title: res.Title,
-        };
+          let crntUserBackup = {
+            backupId: res.Id,
+            EMail: res.Email,
+            Title: res.Title,
+          };
 
-        SPServices.SPReadItems({
-          Listname: "Configuration",
-          Select:
-            "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title,TeamLeader/EMail,TeamLeader/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
-          Expand: "BackingUp ,Name,TeamCaptain,TeamLeader",
-          Filter: [
-            {
-              FilterKey: "Name/ID",
-              FilterValue: res.Id.toString(),
-              Operator: "eq",
-            },
-          ],
-        })
-          .then((res: any) => {
-            let x = {
-              backupId: null,
-              EMail: "",
-              Title: "",
-            };
-            let TCData={
-              EMail: "",
-              Title: "",
-            }
-            let TLData={
-              EMail: "",
-              Title: "",
-            }
-            res.forEach((val) => 
-            {
-              // x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
-              // x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
-              // x.Title = val.BackingUp?val.BackingUp[0].Title:"";
-              
-              TCData.EMail=val.TeamCaptain?val.TeamCaptain.EMail:"N/A";
-              TCData.Title=val.TeamCaptain?val.TeamCaptain.Title:"N/A";
-
-              TLData.EMail=val.TeamLeader?val.TeamLeader.EMail:"N/A";
-              TLData.Title=val.TeamLeader?val.TeamLeader.Title:"N/A";
-
-
-            });
-            //crntUserBackup = x;
-            setTeamTLData({...TLData});
-            setTeamCaptainData({...TCData});
-            setCuruserId({ ...crntUserDetails });
-            setConfigure({ ...crntUserBackup });
+          SPServices.SPReadItems({
+            Listname: "Configuration",
+            Select:
+              "*,Name/EMail,Name/Title ,Name/ID ,TeamCaptain/EMail,TeamCaptain/Title,TeamLeader/EMail,TeamLeader/Title ,BackingUp/Title,BackingUp/EMail,BackingUp/ID",
+            Expand: "BackingUp ,Name,TeamCaptain,TeamLeader",
+            Filter: [
+              {
+                FilterKey: "Name/ID",
+                FilterValue: res.Id.toString(),
+                Operator: "eq",
+              },
+            ],
           })
-          .catch((err) => errFunction(err));
+            .then((res: any) => {
+              let x = {
+                backupId: null,
+                EMail: "",
+                Title: "",
+              };
+              let TCData = {
+                EMail: "",
+                Title: "",
+              };
+              let TLData = {
+                EMail: "",
+                Title: "",
+              };
+              res.forEach((val) => {
+                // x.EMail = val.BackingUp?val.BackingUp[0].EMail:"";
+                // x.backupId = val.BackingUp?val.BackingUp[0].ID:"";
+                // x.Title = val.BackingUp?val.BackingUp[0].Title:"";
+
+                TCData.EMail = val.TeamCaptain ? val.TeamCaptain.EMail : "N/A";
+                TCData.Title = val.TeamCaptain ? val.TeamCaptain.Title : "N/A";
+
+                TLData.EMail = val.TeamLeader ? val.TeamLeader.EMail : "N/A";
+                TLData.Title = val.TeamLeader ? val.TeamLeader.Title : "N/A";
+              });
+              //crntUserBackup = x;
+              setTeamTLData({ ...TLData });
+              setTeamCaptainData({ ...TCData });
+              setCuruserId({ ...crntUserDetails });
+              setConfigure({ ...crntUserBackup });
+            })
+            .catch((err) => errFunction(err));
           //getMyClients(res.Id);
           getAllTaskID(res.Id);
-      }).catch((err) => errFunction(err));
-    }else
-    {
+        })
+        .catch((err) => errFunction(err));
+    } else {
       BindData();
     }
   };
@@ -152,8 +150,7 @@ export default function UserBackUpTasksNew(props) {
       });
   }
 
-  function getAllTaskID(id)
-  {
+  function getAllTaskID(id) {
     let Filter = [
       {
         FilterKey: "Backup/ID",
@@ -169,7 +166,7 @@ export default function UserBackUpTasksNew(props) {
         FilterKey: "Client/ID",
         Operator: "gt",
         FilterValue: 0,
-      }
+      },
     ];
     SPServices.SPReadItems({
       Listname: "Tasks",
@@ -180,22 +177,21 @@ export default function UserBackUpTasksNew(props) {
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
-      FilterCondition:"and"
+      FilterCondition: "and",
     })
       .then((res) => {
         MyTaskIds = [];
         res.forEach((val: any) => {
-          MyTaskIds.push({ ID: val.ID});
+          MyTaskIds.push({ ID: val.ID });
         });
-        getAllSubTaskID(id)
+        getAllSubTaskID(id);
       })
       .catch(function (error) {
         errFunction(error);
       });
   }
 
-  function getAllSubTaskID(id)
-  {
+  function getAllSubTaskID(id) {
     let Filter = [
       {
         FilterKey: "Backup/ID",
@@ -206,7 +202,7 @@ export default function UserBackUpTasksNew(props) {
         FilterKey: "Assistant/ID",
         Operator: "ne",
         FilterValue: id,
-      }
+      },
     ];
     SPServices.SPReadItems({
       Listname: "SubTasks",
@@ -217,39 +213,34 @@ export default function UserBackUpTasksNew(props) {
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
-      FilterCondition:"and"
+      FilterCondition: "and",
     })
       .then((res) => {
-        res.forEach((val: any) => 
-        {
-          if(val.MainTaskID)
-          MyTaskIds.push({ ID: val.MainTaskID.ID});
+        res.forEach((val: any) => {
+          if (val.MainTaskID) MyTaskIds.push({ ID: val.MainTaskID.ID });
         });
 
         const ids = MyTaskIds.map(({ ID }) => ID);
-        const filtered = MyTaskIds.filter(({ ID }, index) => !ids.includes(ID, index + 1));
-        
-        MyTaskIds=filtered;
-        if(MyTaskIds.length<0)
-          {
-            BindData();
-          }
-          else
-          {
-            getMainTask(id);
-          }
+        const filtered = MyTaskIds.filter(
+          ({ ID }, index) => !ids.includes(ID, index + 1)
+        );
+
+        MyTaskIds = filtered;
+        if (MyTaskIds.length < 0) {
+          BindData();
+        } else {
+          getMainTask(id);
+        }
       })
       .catch(function (error) {
         errFunction(error);
       });
   }
 
-
   //getmaintask
   const getMainTask = (id) => {
     let Filter = [];
-    if(MyTaskIds.length>0)
-    {
+    if (MyTaskIds.length > 0) {
       MyTaskIds.forEach((val: any) => {
         Filter.push({
           FilterKey: "ID",
@@ -257,16 +248,14 @@ export default function UserBackUpTasksNew(props) {
           FilterValue: val.ID,
         });
       });
-    }
-    else
-    {
+    } else {
       Filter.push({
         FilterKey: "ID",
         Operator: "eq",
         FilterValue: 0,
       });
     }
-    
+
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
@@ -295,7 +284,7 @@ export default function UserBackUpTasksNew(props) {
                 TaskName: val.TaskName,
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
-                BackupUsers:val.BackupId?val.BackupId:[],
+                BackupUsers: val.BackupId ? val.BackupId : [],
                 Creator: {
                   Id: val.Assistant.ID,
                   EMail: val.Assistant.EMail,
@@ -309,26 +298,44 @@ export default function UserBackUpTasksNew(props) {
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
-                Created: SPServices.displayDate(val.Created),
+                TaskAge: val.TaskAge ? val.TaskAge : null,
+                CompletedDate: val.CompletedDate
+                  ? SPServices.displayDate(val.CompletedDate)
+                  : null,
+                DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
+                Created:
+                  val.Author?.Title + " " + SPServices.displayDate(val.Created),
               },
               children: [],
             });
         });
 
         let arrFilter = [];
-        MyClients=[];
+        MyClients = [];
         for (let i = 0; i < MainTask.length; i++) {
-
-          let IDtoCompare=MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "";
-          let duplicate=MyClients.some(person => person.ID === IDtoCompare)
-          if(!duplicate){
-          MyClients.push({ ID: MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "", Name: MainTask[i].data.ClientName?MainTask[i].data.ClientName:"", Assistant:
-          {
-            Id: MainTask[i].data.Creator?MainTask[i].data.Creator.Id:"",
-            EMail: MainTask[i].data.Creator?MainTask[i].data.Creator.EMail:"",
-            Title: MainTask[i].data.Creator?MainTask[i].data.Creator.Title:""
-          },BackupUsers:MainTask[i].data.BackupUsers});
-        }
+          let IDtoCompare = MainTask[i].data.ClientID
+            ? MainTask[i].data.ClientID
+            : "";
+          let duplicate = MyClients.some((person) => person.ID === IDtoCompare);
+          if (!duplicate) {
+            MyClients.push({
+              ID: MainTask[i].data.ClientID ? MainTask[i].data.ClientID : "",
+              Name: MainTask[i].data.ClientName
+                ? MainTask[i].data.ClientName
+                : "",
+              Assistant: {
+                Id: MainTask[i].data.Creator ? MainTask[i].data.Creator.Id : "",
+                EMail: MainTask[i].data.Creator
+                  ? MainTask[i].data.Creator.EMail
+                  : "",
+                Title: MainTask[i].data.Creator
+                  ? MainTask[i].data.Creator.Title
+                  : "",
+              },
+              BackupUsers: MainTask[i].data.BackupUsers,
+            });
+          }
 
           arrFilter.push({
             FilterKey: "MainTaskID/ID",
@@ -339,7 +346,7 @@ export default function UserBackUpTasksNew(props) {
         if (arrFilter.length > 0) {
           getsubTask(arrFilter);
         } else {
-          MainArray=[...MainTask];
+          MainArray = [...MainTask];
           BindData();
         }
       })
@@ -371,35 +378,42 @@ export default function UserBackUpTasksNew(props) {
             return data.MainTaskID.ID == MainTask[i].Id;
           });
           res.forEach((val: any, index) => {
-              SubTask.push({
-                key: `${MainTask[i].Id}-${index + 1}`,
-                Index: index,
-                Id: val.Id,
-                subId: MainTask[i].Id,
-                isClick: false,
-                isParent: false,
-                isAdd: false,
-                isEdit: false,
-                data: {
-                  TaskName: val.TaskName,
-                  ClientName: MainTask[i].data.ClientName,
-                  ClientID: MainTask[i].data.ClientID,
-                  Creator: {
-                    Id: val.Assistant?.ID,
-                    EMail: val.Assistant?.EMail,
-                    Title: val.Assistant?.Title,
-                  },
-                  Backup: {
-                    Id: val.Backup?.ID,
-                    EMail: val.Backup?.EMail,
-                    Title: val.Backup?.Title,
-                  },
-                  DueDate: SPServices.displayDate(val.DueDate),
-                  PriorityLevel: val.PriorityLevel,
-                  Status: val.Status,
-                  Created: SPServices.displayDate(val.Created),
+            SubTask.push({
+              key: `${MainTask[i].Id}-${index + 1}`,
+              Index: index,
+              Id: val.Id,
+              subId: MainTask[i].Id,
+              isClick: false,
+              isParent: false,
+              isAdd: false,
+              isEdit: false,
+              data: {
+                TaskName: val.TaskName,
+                ClientName: MainTask[i].data.ClientName,
+                ClientID: MainTask[i].data.ClientID,
+                Creator: {
+                  Id: val.Assistant?.ID,
+                  EMail: val.Assistant?.EMail,
+                  Title: val.Assistant?.Title,
                 },
-              });
+                Backup: {
+                  Id: val.Backup?.ID,
+                  EMail: val.Backup?.EMail,
+                  Title: val.Backup?.Title,
+                },
+                DueDate: SPServices.displayDate(val.DueDate),
+                PriorityLevel: val.PriorityLevel,
+                Status: val.Status,
+                TaskAge: val.TaskAge ? val.TaskAge : null,
+                CompletedDate: val.CompletedDate
+                  ? SPServices.displayDate(val.CompletedDate)
+                  : null,
+                DoneFormula: val.DoneFormula ? val.DoneFormula : "",
+                DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
+                Created:
+                  val.Author?.Title + " " + SPServices.displayDate(val.Created),
+              },
+            });
           });
 
           MainArray.push({
@@ -439,8 +453,8 @@ export default function UserBackUpTasksNew(props) {
       tempClient.push({
         ClientName: MyClients[i].Name,
         ID: MyClients[i].ID,
-        Assistant:MyClients[i].Assistant,
-        BackupUsers:MainTask[i].data.BackupUsers,
+        Assistant: MyClients[i].Assistant,
+        BackupUsers: MainTask[i].data.BackupUsers,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {
@@ -494,9 +508,9 @@ export default function UserBackUpTasksNew(props) {
   //   //setCurMyTask([...filteredResults]);
   // };
 
-  useEffect(()=>{
+  useEffect(() => {
     setSearch(props.searchValue);
-  },[props.searchValue])
+  }, [props.searchValue]);
 
   useEffect(() => {
     setLoader(true);
@@ -509,46 +523,50 @@ export default function UserBackUpTasksNew(props) {
 
   return (
     <>
-      {loader?<Loader />:(<>
-      <Label className={styles.clientHeader}>Backup Tasks</Label>
-      <>
-        {clientdata.length > 0 ? (
+      {loader ? (
+        <Loader />
+      ) : (
+        <>
+          <Label className={styles.clientHeader}>Backup Tasks</Label>
           <>
-            {clientdata.map((val, i) => {
-              return (
-                <>
-                  <UserClientDB
-                    bind={false}
-                    searchValue={props.searchValue}
-                    clientName={val.ClientName}
-                    clientId={val.ID}
-                    context={props.context}
-                    mainData={val.Tasks}
-                    assistant={val.Assistant?val.Assistant:curuserId}
-                    crntUserData={curuserId}
-                    crntBackData={configure}
-                    choices={props.choices}
-                    backupUsers={val.BackupUsers}///Changes for backup users multiple
-                  />
-                </>
-              );
-            })}
+            {clientdata.length > 0 ? (
+              <>
+                {clientdata.map((val, i) => {
+                  return (
+                    <>
+                      <UserClientDB
+                        bind={false}
+                        searchValue={props.searchValue}
+                        clientName={val.ClientName}
+                        clientId={val.ID}
+                        context={props.context}
+                        mainData={val.Tasks}
+                        assistant={val.Assistant ? val.Assistant : curuserId}
+                        crntUserData={curuserId}
+                        crntBackData={configure}
+                        choices={props.choices}
+                        backupUsers={val.BackupUsers} ///Changes for backup users multiple
+                      />
+                    </>
+                  );
+                })}
+              </>
+            ) : (
+              <UserClientDB
+                bind={false}
+                searchValue={props.searchValue}
+                context={props.context}
+                assistant={curuserId}
+                mainData={masterdata}
+                crntUserData={curuserId}
+                crntBackData={configure}
+                choices={props.choices}
+                backupUsers={[]}
+              />
+            )}
           </>
-        ) : (
-          <UserClientDB
-            bind={false}
-            searchValue={props.searchValue}
-            context={props.context}
-            assistant={curuserId}
-            mainData={masterdata}
-            crntUserData={curuserId}
-            crntBackData={configure}
-            choices={props.choices}
-            backupUsers={[]}
-          />
-        )}
-      </>
-      </>)}
+        </>
+      )}
     </>
   );
 }

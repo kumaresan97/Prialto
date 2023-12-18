@@ -32,6 +32,7 @@ import {
   PersonaPresence,
 } from "@fluentui/react/lib/Persona";
 import CompleteDashboard from "./CompleteDashboard";
+import { InputText } from "primereact/inputtext";
 
 // Global Variables creation
 let _masterArray: any[] = [];
@@ -67,6 +68,7 @@ const MainComponent = (props: any): JSX.Element => {
   // State creation
 
   const [Completeuser, setCompleteUser] = useState("");
+  const [navsearch, setnavsearch] = useState("");
 
   const [params, setParams] = useState({
     admin: false,
@@ -79,6 +81,7 @@ const MainComponent = (props: any): JSX.Element => {
   const [selectedMember, setselectedMember] = useState(null);
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [teams, setTeams] = useState([]);
+  const [masterTeam, setMasterTeam] = useState([]);
   const [selectedTeamMember, setSelectedTeamMember] = useState([]);
   const [menuExpand, setMenuExpand] = useState(false);
   // Styles creation
@@ -261,6 +264,10 @@ const MainComponent = (props: any): JSX.Element => {
     }
 
     setTeams([..._formattedData]);
+    setMasterTeam([..._formattedData]);
+    console.log(_formattedData, "teams");
+
+    console.log("masterteam", masterTeam);
   };
 
   const toggleTeam = (index) => {
@@ -280,6 +287,20 @@ const MainComponent = (props: any): JSX.Element => {
     setvalue(taskname ? taskname : "");
     setSelectedTeamMember(value ? [...value] : []);
   };
+  const searchFilter = (val) => {
+    setnavsearch(val);
+
+    const results = masterTeam.filter((team) => {
+      const teamMatch = team.team.toLowerCase().includes(val.toLowerCase());
+      const memberMatch = team.members.some((member) =>
+        member.Name.toLowerCase().includes(val.toLowerCase())
+      );
+      return teamMatch || memberMatch;
+    });
+
+    setTeams(results);
+    // setTeams([...results]);
+  };
 
   useEffect(() => {
     _getPrialtoAdmin();
@@ -293,15 +314,32 @@ const MainComponent = (props: any): JSX.Element => {
           width: `${menuExpand ? "260px" : "92px"}`,
         }}
       >
-        <div className={styles.leftNavExpandController}>
-          <i
-            title={menuExpand ? "Collapse" : "Expand"}
-            className="pi pi-bars"
-            style={{ fontSize: "1.25rem", color: "#fff" }}
-            onClick={() => {
-              setMenuExpand(!menuExpand);
-            }}
-          ></i>
+        <div
+          className={styles.iconsearchcontainer}
+          // style={{ display: "flex", gap: "10px", alignItems: "center" }}
+        >
+          <div className={styles.leftNavExpandController}>
+            <i
+              title={menuExpand ? "Collapse" : "Expand"}
+              className="pi pi-bars"
+              style={{ fontSize: "1.25rem", color: "#fff" }}
+              onClick={() => {
+                setMenuExpand(!menuExpand);
+              }}
+            ></i>
+          </div>
+          {menuExpand && (
+            <div className={styles.rightNavSearch}>
+              <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText
+                  placeholder="Search"
+                  value={navsearch}
+                  onChange={(e: any) => searchFilter(e.target.value)}
+                />
+              </span>
+            </div>
+          )}
         </div>
         <div>
           <Label

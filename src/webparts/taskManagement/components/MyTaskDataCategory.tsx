@@ -229,6 +229,42 @@ const MyTaskDataCategory = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
+    } else if (PLevel == "One time") {
+      bgColor = "#b7bfeb";
+      color = "#182154";
+    } else if (PLevel == "Daily") {
+      bgColor = "#ebb7b7";
+      color = "#f92e2e";
+    } else if (PLevel == "Every Monday") {
+      bgColor = "#ebcdb7";
+      color = "#b55d1d";
+    } else if (PLevel == "Every Tuesday") {
+      bgColor = "#e1f7c0";
+      color = "#4d7216";
+    } else if (PLevel == "Every Wednesday") {
+      bgColor = "#e6f7c0";
+      color = "#626262";
+    } else if (PLevel == "Every Thursday") {
+      bgColor = "#f7c0eb";
+      color = "#680d54";
+    } else if (PLevel == "Every Friday") {
+      bgColor = "#ffeaea";
+      color = "#a55b5b";
+    } else if (PLevel == "Every Saturday") {
+      bgColor = "#f0eaff";
+      color = "#6539d3";
+    } else if (PLevel == "Every Sunday") {
+      bgColor = "#ffeaf4";
+      color = "#f30074";
+    } else if (PLevel == "Weekly") {
+      bgColor = "#fcbdbd";
+      color = "#812727";
+    } else if (PLevel == "Monthly") {
+      bgColor = "#b7e1eb";
+      color = "#225662";
+    } else if (PLevel == "On-hold") {
+      bgColor = "#f7f6da";
+      color = "#4a4a3b";
     } else {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
@@ -345,15 +381,16 @@ const MyTaskDataCategory = (props): JSX.Element => {
   //Add item
   const AddItem = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
-    let strDoneOnTime="Overdue";
-    let daysEarly=0;
+    let strDoneOnTime = "Overdue";
+    let daysEarly = 0;
 
-    if(curdata.DueDate>=moment().format('YYYY-MM-DD')&&curdata.Status["name"]=="Completed")
-    {
-      strDoneOnTime="Done On Time";
-      var TDate = moment(moment().format('YYYY-MM-DD'));
-      daysEarly=moment(curdata.DueDate).diff(TDate, 'days');
-      
+    if (
+      curdata.DueDate >= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Completed"
+    ) {
+      strDoneOnTime = "Done On Time";
+      var TDate = moment(moment().format("YYYY-MM-DD"));
+      daysEarly = moment(curdata.DueDate).diff(TDate, "days");
     }
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -369,10 +406,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
-      TaskAge:0,
-      CompletedDate:curdata.Status["name"]=="Completed"?moment().format():null,
-      DoneFormula:strDoneOnTime,
-      DaysOnEarly:daysEarly
+      TaskAge: 0,
+      CompletedDate:
+        curdata.Status["name"] == "Completed" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -388,10 +426,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       AssistantId: curuserId.Id,
       CategoryId: props.categoryId,
-      TaskAge:0,
-      CompletedDate:curdata.Status["name"]=="Completed"?moment().format():null,
-      DoneFormula:strDoneOnTime,
-      DaysOnEarly:daysEarly
+      TaskAge: 0,
+      CompletedDate:
+        curdata.Status["name"] == "Completed" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -400,21 +439,20 @@ const MyTaskDataCategory = (props): JSX.Element => {
       Listname: ListName,
       RequestJSON: Json,
     })
-      .then(async(res) => {
-
+      .then(async (res) => {
         /*For Recurrence Insert */
-        let newJson={
-          TaskIDId:res.data.ID,
-          RecurrenceType:curdata.Status["name"]
-        }
+        let newJson = {
+          TaskIDId: res.data.ID,
+          RecurrenceType: curdata.Status["name"],
+        };
 
-        let newSubJson={
-          SubTaskIDId:res.data.ID,
-          RecurrenceType:curdata.Status["name"]
-        }
+        let newSubJson = {
+          SubTaskIDId: res.data.ID,
+          RecurrenceType: curdata.Status["name"],
+        };
 
-        let inputJson=obj.isParent?newJson:newSubJson;
-        AddRecurrence(curdata.Status["name"],inputJson);
+        let inputJson = obj.isParent ? newJson : newSubJson;
+        AddRecurrence(curdata.Status["name"], inputJson);
 
         // if(curdata.Status["name"]!="Completed"&&curdata.Status["name"]!="On-hold"&&curdata.Status["name"]!="one time"){
         // await SPServices.SPAddItem({
@@ -424,7 +462,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         //   errFunction(error);
         // })
         //}
-      /*For Recurrence Update */
+        /*For Recurrence Update */
 
         let newData = {};
         //Preparing Parent or Child object here.
@@ -548,87 +586,83 @@ const MyTaskDataCategory = (props): JSX.Element => {
     }
   }
 
-  async function AddRecurrence(Status,dataJson)
-  {
-    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+  async function AddRecurrence(Status, dataJson) {
+    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPAddItem({
-      Listname:"Recurrence",
-      RequestJSON:dataJson
-      }).then(function(data){}).catch(function(error){
-        errFunction(error);
+        Listname: "Recurrence",
+        RequestJSON: dataJson,
       })
-      }
+        .then(function (data) {})
+        .catch(function (error) {
+          errFunction(error);
+        });
+    }
   }
 
-  async function UpdateRecurrence(Status,dataJson,ListID)
-  {
-    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+  async function UpdateRecurrence(Status, dataJson, ListID) {
+    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPUpdateItem({
-      Listname:"Recurrence",
-      ID:ListID,
-      RequestJSON:dataJson
-      }).then(function(data){}).catch(function(error){
-        errFunction(error);
+        Listname: "Recurrence",
+        ID: ListID,
+        RequestJSON: dataJson,
       })
-      }
+        .then(function (data) {})
+        .catch(function (error) {
+          errFunction(error);
+        });
+    }
   }
 
-  async function InsertOrUpdateRecurrence(recordID,obj,Status)
-  {
-      /*For Recurrence Update */
-      let newJson={
-        TaskIDId:recordID,
-        RecurrenceType:Status
-      }
+  async function InsertOrUpdateRecurrence(recordID, obj, Status) {
+    /*For Recurrence Update */
+    let newJson = {
+      TaskIDId: recordID,
+      RecurrenceType: Status,
+    };
 
-      let newSubJson={
-        SubTaskIDId:recordID,
-        RecurrenceType:Status
-      }
+    let newSubJson = {
+      SubTaskIDId: recordID,
+      RecurrenceType: Status,
+    };
 
-      let inputJson=obj.isParent?newJson:newSubJson;
-      let filterValue=obj.isParent?"TaskID/ID":"SubTaskID/ID";
+    let inputJson = obj.isParent ? newJson : newSubJson;
+    let filterValue = obj.isParent ? "TaskID/ID" : "SubTaskID/ID";
 
-      SPServices.SPReadItems({
-        Listname:"Recurrence",
-        Select:"*,TaskID/ID,SubTaskID/ID",
-        Expand:"TaskID,SubTaskID",
-        Filter:[
-          {
-            FilterKey: filterValue,
-            FilterValue: recordID,
-            Operator: "eq",
-          },
-        ],
-      }).then(function(data:any)
-      {
-          if(data.length>0)
-          {
-              UpdateRecurrence(Status,inputJson,data[0].ID)
-          }
-          else
-          {
-            AddRecurrence(Status,inputJson);
-          }
-      
-      }).catch(function(error)
-      {
-
+    SPServices.SPReadItems({
+      Listname: "Recurrence",
+      Select: "*,TaskID/ID,SubTaskID/ID",
+      Expand: "TaskID,SubTaskID",
+      Filter: [
+        {
+          FilterKey: filterValue,
+          FilterValue: recordID,
+          Operator: "eq",
+        },
+      ],
+    })
+      .then(function (data: any) {
+        if (data.length > 0) {
+          UpdateRecurrence(Status, inputJson, data[0].ID);
+        } else {
+          AddRecurrence(Status, inputJson);
+        }
       })
-      /*For Recurrence Update */
-
+      .catch(function (error) {});
+    /*For Recurrence Update */
   }
 
   //editfunction
   const Editfunction = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
-    let daysEarly=0;
-    let strDoneOnTime="Overdue";
-    if(curdata.DueDate>=moment().format('YYYY-MM-DD')&&curdata.Status["name"]=="Completed")
-    {
-      strDoneOnTime="Done On Time";
-      var TDate = moment(moment().format('YYYY-MM-DD'));
-      daysEarly=moment(curdata.DueDate).diff(TDate, 'days');
+    let daysEarly = 0;
+    let strDoneOnTime = "Overdue";
+    if (
+      curdata.DueDate >= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Completed"
+    ) {
+      strDoneOnTime = "Done On Time";
+      var TDate = moment(moment().format("YYYY-MM-DD"));
+      daysEarly = moment(curdata.DueDate).diff(TDate, "days");
     }
     let editval = {
       TaskName: curdata.TaskName,
@@ -638,19 +672,19 @@ const MyTaskDataCategory = (props): JSX.Element => {
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
-      CompletedDate:curdata.Status["name"]=="Completed"?moment().format():null,
-      DoneFormula:strDoneOnTime,
-      DaysOnEarly:daysEarly
+      CompletedDate:
+        curdata.Status["name"] == "Completed" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
 
-    
     SPServices.SPUpdateItem({
       Listname: ListName,
       ID: obj.Id,
       RequestJSON: editval,
     })
       .then((res) => {
-        InsertOrUpdateRecurrence(obj.Id,obj,curdata.Status["name"]);
+        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Status["name"]);
         let newData = {};
         if (obj.isParent) {
           newData = {
@@ -1237,7 +1271,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
     x = x.filter((removeId) => {
       return removeId != event.node.Id;
     });
-    
   };
   const SearchFilter = (e) => {
     setSearch(e);
@@ -1396,13 +1429,12 @@ const MyTaskDataCategory = (props): JSX.Element => {
       },
     })
       .then((val) => {
-        props.categoryName=categoryValue;
-        props.updateCategory(categoryValue,Id);
+        props.categoryName = categoryValue;
+        props.updateCategory(categoryValue, Id);
         setLoader(false);
         setCategoryId(null);
         setIseditdialog(false);
         setCategoryValue("");
-        
       })
       .catch((err) => {
         errFunction(err);
@@ -1425,7 +1457,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
 
   return (
     <>
-    <Dialog
+      <Dialog
         header="Header"
         style={{ width: "420px" }}
         visible={iseditdialog}
@@ -1444,7 +1476,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
             <Button
               className={styles.btnColor}
               onClick={() => {
-                if (validationCategory()) UpdateCategory(categoryValue, categoryId);
+                if (validationCategory())
+                  UpdateCategory(categoryValue, categoryId);
                 else
                   showMessage(
                     "Please enter valid Category",
@@ -1496,19 +1529,18 @@ const MyTaskDataCategory = (props): JSX.Element => {
               >
                 {props.categoryName}
               </h2>
-              {props.categoryName?<Button
-                type="button"
-                icon="pi pi-pencil"
-                style={editIconStyle}
-                onClick={() => {
-                  Editcategory(
-                    true,
-                    props.categoryName,
-                    props.categoryId
-                  );
-                }}
-              ></Button>:""}
-              
+              {props.categoryName ? (
+                <Button
+                  type="button"
+                  icon="pi pi-pencil"
+                  style={editIconStyle}
+                  onClick={() => {
+                    Editcategory(true, props.categoryName, props.categoryId);
+                  }}
+                ></Button>
+              ) : (
+                ""
+              )}
             </div>
             {props.categoryName ? (
               <Button
@@ -1526,11 +1558,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
             selectionMode="checkbox"
             sortMode="multiple"
             selectionKeys={selectedNodeKeys}
-            onSelect={(event)=>{
+            onSelect={(event) => {
               onSelect(event);
               props.onselect(event);
             }}
-            onUnselect={(event)=>{
+            onUnselect={(event) => {
               unselect(event);
               props.unselect(event);
             }}

@@ -49,6 +49,18 @@
       }
     }
   }
+  .rightNavSearch {
+    width: 70%;
+    input {
+      width: 100%;
+    }
+  }
+  .iconsearchcontainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
 }
 
 .lefticon {

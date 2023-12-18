@@ -15,10 +15,10 @@ import UserBackUpTasks from "./UserBackUpTasks";
 import UserBackUpTasksNew from "./UserBackUpTasksNew";
 import UserClients from "./UserClient";
 import exportToExcel from "../../../Global/ExportExcel";
-let statusChoices=[];
-let arrClientData=[];
-let arrBackupData=[];
-let ExportDataItems=[];
+let statusChoices = [];
+let arrClientData = [];
+let arrBackupData = [];
+let ExportDataItems = [];
 
 export default function UserDashboard(props) {
   const UserEmail = !props.Email
@@ -183,21 +183,17 @@ export default function UserDashboard(props) {
     getcurUser();
   }, [props.Email]);
 
-
-  function getDataFromClient(data)
-  { 
-    arrClientData=[...data];
+  function getDataFromClient(data) {
+    arrClientData = [...data];
     console.log(arrClientData);
   }
 
-  function getDataFromBackup(data)
-  {
-    arrBackupData=[...data];
+  function getDataFromBackup(data) {
+    arrBackupData = [...data];
     console.log(arrBackupData);
   }
 
-  function BindExportData()
-  {
+  function BindExportData() {
     let columns = [
       { header: "Task Name", key: "TaskName", width: 15 },
       { header: "Parent Task Name", key: "ParenTask", width: 15 },
@@ -208,13 +204,19 @@ export default function UserDashboard(props) {
       { header: "Client Name", key: "ClientName", width: 25 },
       { header: "Priority Level", key: "PriorityLevel", width: 25 },
       { header: "Status", key: "Status", width: 25 },
+      { header: "Task Age", key: "TaskAge", width: 25 },
+      { header: "Completed Date", key: "CompletedDate", width: 25 },
+      { header: "Done Formula", key: "DoneFormula", width: 25 },
+      { header: "Days OnEarly", key: "DaysOnEarly", width: 25 },
       { header: "Creation log", key: "Created", width: 25 },
     ];
 
-    let data=[{
-      clientData:arrClientData,
-      backupData:arrBackupData
-    }]
+    let data = [
+      {
+        clientData: arrClientData,
+        backupData: arrBackupData,
+      },
+    ];
     exportToExcel(data, columns, "ClientandBackup");
   }
 
@@ -252,7 +254,7 @@ export default function UserDashboard(props) {
                 className={styles.btnColor}
                 label="Export"
                 icon="pi pi-file-excel"
-                onClick={()=>{
+                onClick={() => {
                   BindExportData();
                 }}
               />

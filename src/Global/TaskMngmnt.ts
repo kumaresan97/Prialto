@@ -9,6 +9,11 @@ export interface IMyTasks {
   PriorityLevel: string | any;
   Status: string | any;
   Created: string;
+  TaskAge?: number;
+  CompletedDate?: string;
+  DoneFormula?: string;
+  DaysOnEarly?: number;
+  isRecurrence?: boolean;
 }
 
 export interface IPeoplePicker {

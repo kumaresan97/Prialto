@@ -207,7 +207,7 @@ export default function UserBackUpTasksNew(props) {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,MainTaskID/ID",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Client/LastName,Client/CompanyName,MainTaskID/ID",
 
       Expand: "Assistant,Backup,Author,Client,MainTaskID",
       Orderby: "Created",
@@ -259,7 +259,7 @@ export default function UserBackUpTasksNew(props) {
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Client/LastName,Client/CompanyName",
 
       Expand: "Assistant,Backup,Author,Client",
       Orderby: "Created",
@@ -268,6 +268,7 @@ export default function UserBackUpTasksNew(props) {
       FilterCondition: "or",
     })
       .then((res) => {
+        console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
           val.ClientId &&
@@ -282,6 +283,11 @@ export default function UserBackUpTasksNew(props) {
 
               data: {
                 TaskName: val.TaskName,
+                Clientdatas: {
+                  FirstName: val.ClientId ? val.Client.FirstName : "",
+                  LastName: val.ClientId ? val.Client.LastName : "",
+                  CompanyName: val.ClientId ? val.Client.CompanyName : "",
+                },
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
                 BackupUsers: val.BackupId ? val.BackupId : [],
@@ -314,6 +320,8 @@ export default function UserBackUpTasksNew(props) {
         let arrFilter = [];
         MyClients = [];
         for (let i = 0; i < MainTask.length; i++) {
+          console.log(MainTask[i], "backupdata");
+
           let IDtoCompare = MainTask[i].data.ClientID
             ? MainTask[i].data.ClientID
             : "";
@@ -324,6 +332,7 @@ export default function UserBackUpTasksNew(props) {
               Name: MainTask[i].data.ClientName
                 ? MainTask[i].data.ClientName
                 : "",
+              CompanyDatas: MainTask[i].data.Clientdatas,
               Assistant: {
                 Id: MainTask[i].data.Creator ? MainTask[i].data.Creator.Id : "",
                 EMail: MainTask[i].data.Creator
@@ -390,6 +399,11 @@ export default function UserBackUpTasksNew(props) {
               data: {
                 TaskName: val.TaskName,
                 ClientName: MainTask[i].data.ClientName,
+                // Clientdatas: {
+                //   FirstName: val.ClientId ? val.Client?.FirstName : "",
+                //   LastName: val.ClientId ? val.Client?.LastName : "",
+                //   CompanyName: val.ClientId ? val.Client?.CompanyName : "",
+                // },
                 ClientID: MainTask[i].data.ClientID,
                 Creator: {
                   Id: val.Assistant?.ID,
@@ -452,6 +466,8 @@ export default function UserBackUpTasksNew(props) {
     for (let i = 0; i < MyClients.length; i++) {
       tempClient.push({
         ClientName: MyClients[i].Name,
+        CompanyDatas: MainTask[i].data.Clientdatas,
+
         ID: MyClients[i].ID,
         Assistant: MyClients[i].Assistant,
         BackupUsers: MainTask[i].data.BackupUsers,
@@ -462,6 +478,8 @@ export default function UserBackUpTasksNew(props) {
           tempClient[i].Tasks.push(MainArray[j]);
       }
     }
+    console.log(tempClient, "tempclient");
+
     props.backupdatafunction([...tempClient]);
     setCurMyTask([...MainArray]);
     setMasterdata([...MainArray]);
@@ -532,11 +550,13 @@ export default function UserBackUpTasksNew(props) {
             {clientdata.length > 0 ? (
               <>
                 {clientdata.map((val, i) => {
+                  console.log(val, "valdb");
                   return (
                     <>
                       <UserClientDB
                         bind={false}
                         searchValue={props.searchValue}
+                        Clientdatas={val.CompanyDatas}
                         clientName={val.ClientName}
                         clientId={val.ID}
                         context={props.context}
@@ -561,6 +581,7 @@ export default function UserBackUpTasksNew(props) {
                 crntUserData={curuserId}
                 crntBackData={configure}
                 choices={props.choices}
+                Clientdatas={{ FirstName: "", LastName: "", CompanyName: "" }}
                 backupUsers={[]}
               />
             )}

@@ -135,9 +135,16 @@ export default function UserTasks(props) {
       .then((res) => {
         MyClients = [];
         res.forEach((val: any) => {
+          console.log(val, "usertasks");
+
           MyClients.push({
             ID: val.ID,
             Name: val.FirstName,
+            clientNames: {
+              FirstName: val ? val.FirstName : "",
+              LastName: val ? val.LastName : "",
+              CompanyName: val ? val.CompanyName : "",
+            },
             Assistant: {
               Id: val.Assistant ? val.Assistant.ID : "",
               EMail: val.Assistant ? val.Assistant.EMail : "",
@@ -351,6 +358,8 @@ export default function UserTasks(props) {
     for (let i = 0; i < MyClients.length; i++) {
       tempClient.push({
         ClientName: MyClients[i].Name,
+        clientNames: MyClients[i].clientNames,
+
         ID: MyClients[i].ID,
         Assistant: MyClients[i].Assistant,
         BackupUsers: MyClients[i].BackupUsers, ///Changes for backup users multiple
@@ -398,6 +407,7 @@ export default function UserTasks(props) {
                         bind={false}
                         searchValue={props.searchValue}
                         clientName={val.ClientName}
+                        Clientdatas={val.clientNames}
                         clientId={val.ID}
                         assistant={val.Assistant ? val.Assistant : curuserId}
                         context={props.context}
@@ -420,6 +430,7 @@ export default function UserTasks(props) {
                 mainData={masterdata}
                 crntUserData={curuserId}
                 crntBackData={configure}
+                Clientdatas={{ FirstName: "", LastName: "", CompanyName: "" }}
                 backupUsers={[]}
               />
             )}

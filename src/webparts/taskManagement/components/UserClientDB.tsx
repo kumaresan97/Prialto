@@ -34,10 +34,10 @@ const dropval = [
 ];
 
 let dropStatus = [
-//   { name: "Pending", code: "Pending" },
-//   { name: "In Progress", code: "In Progress" },
-//   { name: "Completed", code: "Completed" },
-//   { name: "Done", code: "Done" },
+  //   { name: "Pending", code: "Pending" },
+  //   { name: "In Progress", code: "In Progress" },
+  //   { name: "Completed", code: "Completed" },
+  //   { name: "Done", code: "Done" },
 ];
 
 let MyClients = [];
@@ -46,6 +46,8 @@ let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
+  console.log(props, "userclientdb");
+
   // style variables
   dropStatus = props.choices;
   const cellStyle = { backgroundColor: "#fff", width: 176 };
@@ -241,8 +243,7 @@ const UserClientDB = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
-    }
-    else{
+    } else {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
     }
@@ -364,7 +365,7 @@ const UserClientDB = (props): JSX.Element => {
       //   : configure.backupId
       //   ? configure.backupId
       //   : null,
-      BackupId:{ 'results': props.backupUsers },
+      BackupId: { results: props.backupUsers },
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -381,7 +382,7 @@ const UserClientDB = (props): JSX.Element => {
       //   : configure.backupId
       //   ? configure.backupId
       //   : null,
-      BackupId:{ 'results': props.backupUsers },
+      BackupId: { results: props.backupUsers },
       DueDate: curdata.DueDate ? new Date(curdata.DueDate).toISOString() : null,
       PriorityLevel: curdata.PriorityLevel["name"]
         ? curdata.PriorityLevel["name"]
@@ -398,22 +399,20 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: Json,
     })
       .then((res) => {
-
         /*For Recurrence Insert */
-        let newJson={
-          TaskIDId:res.data.ID,
-          RecurrenceType:curdata.Status["name"]
-        }
+        let newJson = {
+          TaskIDId: res.data.ID,
+          RecurrenceType: curdata.Status["name"],
+        };
 
-        let newSubJson={
-          SubTaskIDId:res.data.ID,
-          RecurrenceType:curdata.Status["name"]
-        }
+        let newSubJson = {
+          SubTaskIDId: res.data.ID,
+          RecurrenceType: curdata.Status["name"],
+        };
 
-        let inputJson=obj.isParent?newJson:newSubJson;
-        AddRecurrence(curdata.Status["name"],inputJson);
+        let inputJson = obj.isParent ? newJson : newSubJson;
+        AddRecurrence(curdata.Status["name"], inputJson);
         /*For Recurrence Insert End*/
-
 
         let newData = {};
         //Preparing Parent or Child object here.
@@ -538,75 +537,69 @@ const UserClientDB = (props): JSX.Element => {
   }
 
   /* for recurrence add and update */
-  async function AddRecurrence(Status,dataJson)
-  {
-    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+  async function AddRecurrence(Status, dataJson) {
+    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPAddItem({
-      Listname:"Recurrence",
-      RequestJSON:dataJson
-      }).then(function(data){}).catch(function(error){
-        errFunction(error);
+        Listname: "Recurrence",
+        RequestJSON: dataJson,
       })
-      }
+        .then(function (data) {})
+        .catch(function (error) {
+          errFunction(error);
+        });
+    }
   }
 
-  async function UpdateRecurrence(Status,dataJson,ListID)
-  {
-    if(Status!="Completed"&&Status!="On-hold"&&Status!="One time"){
+  async function UpdateRecurrence(Status, dataJson, ListID) {
+    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPUpdateItem({
-      Listname:"Recurrence",
-      ID:ListID,
-      RequestJSON:dataJson
-      }).then(function(data){}).catch(function(error){
-        errFunction(error);
+        Listname: "Recurrence",
+        ID: ListID,
+        RequestJSON: dataJson,
       })
-      }
+        .then(function (data) {})
+        .catch(function (error) {
+          errFunction(error);
+        });
+    }
   }
 
-  async function InsertOrUpdateRecurrence(recordID,obj,Status)
-  {
-      /*For Recurrence Update */
-      let newJson={
-        TaskIDId:recordID,
-        RecurrenceType:Status
-      }
+  async function InsertOrUpdateRecurrence(recordID, obj, Status) {
+    /*For Recurrence Update */
+    let newJson = {
+      TaskIDId: recordID,
+      RecurrenceType: Status,
+    };
 
-      let newSubJson={
-        SubTaskIDId:recordID,
-        RecurrenceType:Status
-      }
+    let newSubJson = {
+      SubTaskIDId: recordID,
+      RecurrenceType: Status,
+    };
 
-      let inputJson=obj.isParent?newJson:newSubJson;
-      let filterValue=obj.isParent?"TaskID/ID":"SubTaskID/ID";
+    let inputJson = obj.isParent ? newJson : newSubJson;
+    let filterValue = obj.isParent ? "TaskID/ID" : "SubTaskID/ID";
 
-      SPServices.SPReadItems({
-        Listname:"Recurrence",
-        Select:"*,TaskID/ID,SubTaskID/ID",
-        Expand:"TaskID,SubTaskID",
-        Filter:[
-          {
-            FilterKey: filterValue,
-            FilterValue: recordID,
-            Operator: "eq",
-          },
-        ],
-      }).then(function(data:any)
-      {
-          if(data.length>0)
-          {
-              UpdateRecurrence(Status,inputJson,data[0].ID)
-          }
-          else
-          {
-            AddRecurrence(Status,inputJson);
-          }
-      
-      }).catch(function(error)
-      {
-
+    SPServices.SPReadItems({
+      Listname: "Recurrence",
+      Select: "*,TaskID/ID,SubTaskID/ID",
+      Expand: "TaskID,SubTaskID",
+      Filter: [
+        {
+          FilterKey: filterValue,
+          FilterValue: recordID,
+          Operator: "eq",
+        },
+      ],
+    })
+      .then(function (data: any) {
+        if (data.length > 0) {
+          UpdateRecurrence(Status, inputJson, data[0].ID);
+        } else {
+          AddRecurrence(Status, inputJson);
+        }
       })
-      /*For Recurrence Update */
-
+      .catch(function (error) {});
+    /*For Recurrence Update */
   }
 
   /* for recurrence add and update end*/
@@ -630,7 +623,7 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        InsertOrUpdateRecurrence(obj.Id,obj,curdata.Status["name"]);
+        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Status["name"]);
         let newData = {};
         if (obj.isParent) {
           newData = {
@@ -1361,6 +1354,14 @@ const UserClientDB = (props): JSX.Element => {
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
 
+  let ClientFullName = props.Clientdatas["FirstName"]
+    ? props.Clientdatas["FirstName"] +
+      props.Clientdatas["LastName"] +
+      " (" +
+      props.Clientdatas["CompanyName"] +
+      ")"
+    : "";
+
   return (
     <>
       {loader ? (
@@ -1390,7 +1391,8 @@ const UserClientDB = (props): JSX.Element => {
               className={styles.leftFilterSection}
               style={{ color: "#009b9f" }}
             >
-              {props.clientName ? props.clientName : ""}
+              {ClientFullName}
+              {/* {props.clientName ? props.clientName : ""} */}
             </Label>
             <Button
               label="New task"

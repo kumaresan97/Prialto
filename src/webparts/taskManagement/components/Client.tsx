@@ -181,7 +181,10 @@ const Client = (props) => {
         setisEdit(false);
 
         setValue({ ...Data });
+
         setLoader(false);
+        showMessage("Data Added Successfully", toastTopRight, "success");
+
         // getdatas();
         // getcurUser();
       })
@@ -250,6 +253,7 @@ const Client = (props) => {
         setisEdit(false);
         setValue({ ...Data });
         setLoader(false);
+        showMessage("Data Edited Successfully", toastTopRight, "success");
 
         // getdatas();
       })
@@ -792,6 +796,8 @@ const Client = (props) => {
           (val) => val.Id !== itemToDelete.Id
         );
         setClientdetail([...deleteobj]);
+        showMessage("Data Deleted Successfully", toastTopRight, "success");
+
         // getdatas();
       });
     } else {
@@ -1037,7 +1043,7 @@ const Client = (props) => {
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
               ></Column>
-              {props._isAdmin && (
+              {(props._isAdmin || props._isTC) && (
                 <Column
                   header="Action"
                   style={{ width: "200px" }}

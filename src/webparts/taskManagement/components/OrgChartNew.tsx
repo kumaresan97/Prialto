@@ -1144,6 +1144,7 @@ const OrgChart = (props) => {
 
         let filterdatas = value.filter((val) => val.Id !== null);
         setValue([...filterdatas, resjson]);
+        showMessage("Data Added Successfully", toastTopRight, "success");
 
         setAdd(false);
         setEdit(false);
@@ -1377,6 +1378,7 @@ const OrgChart = (props) => {
         setEdit(false);
         setcurobj({ ...addparent });
         setLoader(false);
+        showMessage("Data Edited Successfully", toastTopRight, "success");
 
         // getdatas();
       })
@@ -1660,6 +1662,7 @@ const OrgChart = (props) => {
         setValue([...deleteobj]);
         setShowDialog(false);
         setLoader(false);
+        showMessage("Data Deleted Successfully", toastTopRight, "success");
 
         // getdatas();
       });

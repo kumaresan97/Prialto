@@ -218,3 +218,15 @@ th[role="columnheader"] a {
 .colorchange {
   color: red;
 }
+/* automate popup style start */
+.AutomateDialog .p-dialog-content {
+  padding: 10px 15px;
+}
+.AutomateDialog .p-dialog-content label {
+  padding: 0px;
+}
+.AutomateDialog .p-dialog-content input {
+  height: 32px;
+  width: 100%;
+}
+/* automate popup style end */

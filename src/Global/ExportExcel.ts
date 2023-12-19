@@ -13,6 +13,44 @@ const exportToExcel = async (data, headers, sheetName) => {
       key: header.key,
       width: header.width || 15,
     }));
+
+    const Colorchange = (item, index) => {
+      let statusBgColor = "";
+      let statusColor = "";
+      let priorityBgColor = "";
+      let priorityColor = "";
+      if (item.Status === "Completed") {
+        statusBgColor = "bf4927";
+        statusColor = "ffded5";
+      }
+      if (item.PriorityLevel === "High") {
+        priorityBgColor = "ffd5b8";
+        priorityColor = "f46906";
+      } else if (item.PriorityLevel === "Urgent") {
+        priorityBgColor = "ffded5";
+        priorityColor = "bf4927";
+      } else if (item.PriorityLevel == "Normal") {
+        priorityBgColor = "#bbfcff";
+        priorityColor = "#4b6164";
+      }
+      worksheet._rows[index + 1]._cells[3].fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: priorityBgColor },
+      };
+      worksheet._rows[index + 1]._cells[3].font = {
+        color: { argb: priorityColor },
+      };
+      worksheet._rows[index + 1]._cells[4].fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: statusBgColor },
+      };
+      worksheet._rows[index + 1]._cells[4].font = {
+        color: { argb: statusColor },
+      };
+    };
+
     //  Header color change */
     const headerRows: string[] = [
       "A1",
@@ -41,7 +79,20 @@ const exportToExcel = async (data, headers, sheetName) => {
     });
 
     if (sheetName == "OrgChart") {
-      data.forEach((item) => {
+      data.forEach((item, index) => {
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "F3F3F3" }, // Set your desired odd row color here (Hex color code)
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" }, // Set your desired even row color here (Hex color code)
+        };
+        const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
+
         worksheet.addRow({
           Name: item.Name?.Title,
           Role: item.Role,
@@ -52,7 +103,7 @@ const exportToExcel = async (data, headers, sheetName) => {
           // TeamLeader: item.TeamLeader?.Title,
           DirectReports: item.DirectReports[0]?.Title,
           // BackingUp: item.BackingUp[0]?.Title,
-        });
+        }).fill = rowFill;
       });
     } else if (sheetName == "Client") {
       data.forEach((item) => {
@@ -65,7 +116,7 @@ const exportToExcel = async (data, headers, sheetName) => {
         });
       });
     } else if (sheetName == "DoneDashboard") {
-      data.forEach((item) => {
+      data.forEach((item, index) => {
         worksheet.addRow({
           TaskName: item?.TaskName,
           ParenTaskName: item?.ParenTaskName,
@@ -81,6 +132,54 @@ const exportToExcel = async (data, headers, sheetName) => {
           DoneFormula: item?.DoneFormula,
           Created: item?.Created,
         });
+
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "F3F3F3" }, // Set your desired odd row color here (Hex color code)
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" }, // Set your desired even row color here (Hex color code)
+        };
+        Colorchange(item, index);
+
+        // let statusBgColor = "";
+        // let statusColor = "";
+        // let priorityBgColor = "";
+        // let priorityColor = "";
+        // if (item.Status === "Completed") {
+        //   statusBgColor = "bf4927";
+        //   statusColor = "ffded5";
+        // }
+        // if (item.PriorityLevel === "High") {
+        //   priorityBgColor = "ffd5b8";
+        //   priorityColor = "f46906";
+        // } else if (item.PriorityLevel === "Urgent") {
+        //   priorityBgColor = "ffded5";
+        //   priorityColor = "bf4927";
+        // } else if (item.PriorityLevel == "Normal") {
+        //   priorityBgColor = "#bbfcff";
+        //   priorityColor = "#4b6164";
+        // }
+        // worksheet._rows[index + 1]._cells[3].fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: priorityBgColor },
+        // };
+        // worksheet._rows[index + 1]._cells[3].font = {
+        //   color: { argb: priorityColor },
+        // };
+        // worksheet._rows[index + 1]._cells[4].fill = {
+        //   type: "pattern",
+        //   pattern: "solid",
+        //   fgColor: { argb: statusBgColor },
+        // };
+        // worksheet._rows[index + 1]._cells[4].font = {
+        //   color: { argb: statusColor },
+        // };
       });
     } else if (sheetName == "MyTask") {
       for (const parent of data) {
@@ -211,7 +310,6 @@ const exportToExcel = async (data, headers, sheetName) => {
         //worksheet.addRow(); // Empty row after each parent's children
       }
     }
-
     workbook.xlsx
       .writeBuffer()
       .then((buffer) => {

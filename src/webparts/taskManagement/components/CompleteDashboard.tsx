@@ -350,19 +350,19 @@ const CompleteDashboard = (props) => {
     { header: "Task Name", key: "TaskName", width: 15 },
     { header: "Creation Log", key: "Created", width: 25 },
 
-    { header: "Parent Task Name", key: "ParenTaskName", width: 15 },
+    { header: "Parent Task Name", key: "ParenTaskName", width: 25 },
     // { header: "Creator", key: "Creator", width: 25 },
     // { header: "Backup", key: "Backup", width: 25 },
 
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
-    { header: "Status", key: "Status", width: 25 },
-    { header: "DueDate", key: "DueDate", width: 25 },
+    { header: "Status", key: "Status", width: 20 },
+    { header: "DueDate", key: "DueDate", width: 15 },
 
-    { header: "Task Age", key: "TaskAge", width: 25 },
+    { header: "Task Age", key: "TaskAge", width: 15 },
     { header: "Completed Date", key: "CompletedDate", width: 25 },
-    { header: "Days OnEarly", key: "DaysOnEarly", width: 25 },
+    { header: "Days OnEarly", key: "DaysOnEarly", width: 20 },
 
-    { header: "Done Formula", key: "DoneFormula", width: 25 },
+    { header: "Done Formula", key: "DoneFormula", width: 20 },
   ];
   const Exportexcel = () => {
     exportToExcel(Userdata, columns, "DoneDashboard");

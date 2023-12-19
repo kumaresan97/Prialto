@@ -53,6 +53,9 @@ let TA: any[] = [];
 
 const MainComponent = (props: any): JSX.Element => {
   // Local Variables creation
+  const Sitename = window.location.href;
+  let path = Sitename.split("/")[4];
+  console.log(path, "sitename");
   const _curUser: string = props.context._pageContext._user.email;
   const Teams = [
     {
@@ -287,20 +290,20 @@ const MainComponent = (props: any): JSX.Element => {
     setvalue(taskname ? taskname : "");
     setSelectedTeamMember(value ? [...value] : []);
   };
-  const searchFilter = (val) => {
-    setnavsearch(val);
+  // const searchFilter = (val) => {
+  //   setnavsearch(val);
 
-    const results = masterTeam.filter((team) => {
-      const teamMatch = team.team.toLowerCase().includes(val.toLowerCase());
-      const memberMatch = team.members.some((member) =>
-        member.Name.toLowerCase().includes(val.toLowerCase())
-      );
-      return teamMatch || memberMatch;
-    });
+  //   const results = masterTeam.filter((team) => {
+  //     const teamMatch = team.team.toLowerCase().includes(val.toLowerCase());
+  //     const memberMatch = team.members.some((member) =>
+  //       member.Name.toLowerCase().includes(val.toLowerCase())
+  //     );
+  //     return teamMatch || memberMatch;
+  //   });
 
-    setTeams(results);
-    // setTeams([...results]);
-  };
+  //   setTeams(results);
+  //   // setTeams([...results]);
+  // };
 
   useEffect(() => {
     _getPrialtoAdmin();
@@ -330,14 +333,25 @@ const MainComponent = (props: any): JSX.Element => {
           </div>
           {menuExpand && (
             <div className={styles.rightNavSearch}>
-              <span className="p-input-icon-left">
+              <Label
+                style={{
+                  width: "100%",
+                  color: "#ffff",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                }}
+              >
+                Member Task Tracker
+                {/* Member Task Tracker */}
+              </Label>
+              {/* <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
                   placeholder="Search"
                   value={navsearch}
                   onChange={(e: any) => searchFilter(e.target.value)}
                 />
-              </span>
+              </span> */}
             </div>
           )}
         </div>
@@ -496,7 +510,7 @@ const MainComponent = (props: any): JSX.Element => {
                 </Label>
               )}
               {/* Org Chart */}
-              {(_isAdmin || _isTL) && (
+              {(_isAdmin || _isTL || _isTC) && (
                 <Label
                   onClick={() => setvalue("OrgChart")}
                   style={{
@@ -599,7 +613,11 @@ const MainComponent = (props: any): JSX.Element => {
         ) : value == "OrgChart" ? (
           <OrgChartNew context={props.context}></OrgChartNew>
         ) : value == "Client" ? (
-          <Client context={props.context} _isAdmin={_isAdmin}></Client>
+          <Client
+            context={props.context}
+            _isAdmin={_isAdmin}
+            _isTC={_isTC}
+          ></Client>
         ) : value == "TeamMembers" && selectedTeamMember.length ? (
           <Member
             context={props.context}

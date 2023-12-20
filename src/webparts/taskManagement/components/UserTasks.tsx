@@ -40,6 +40,7 @@ export default function UserTasks(props) {
 
   const errFunction = (err) => {
     setLoader(false);
+    SPServices.ErrorHandling(err,"UserTasks");
     BindData();
     console.log(err);
   };

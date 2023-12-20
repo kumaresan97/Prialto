@@ -73,6 +73,7 @@ export default function UserDashboard(props) {
 
   const errFunction = (err) => {
     console.log(err);
+    SPServices.ErrorHandling(err,"userDashboard");
     setLoader(false);
     showMessage(
       "Something went wrong, Please contact system admin",

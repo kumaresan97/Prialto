@@ -41,6 +41,7 @@ export default function UserBackUpTasksNew(props) {
 
   const errFunction = (err) => {
     setLoader(false);
+    SPServices.ErrorHandling(err,"userBackupTaksNew");
     BindData();
     console.log(err);
   };

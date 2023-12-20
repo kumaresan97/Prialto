@@ -67,6 +67,7 @@ export default function MyTaskDBNewCategory(props) {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
+    SPServices.ErrorHandling(err,"MyTasksDBNewCategory");
     BindData();
     showMessage(
       "Something went wrong, Please contact system admin",
@@ -614,7 +615,8 @@ export default function MyTaskDBNewCategory(props) {
       }
     }
 
-    for (let i = 0; i < selectedTasks.length; i++) {
+    for (let i = 0; i < selectedTasks.length; i++) 
+    {
       try{
       let categoryIndex = tempClientNew.findIndex(
         (val) => val.ID == selectedTasks[i].categoryID
@@ -629,23 +631,21 @@ export default function MyTaskDBNewCategory(props) {
           tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
             noOfDays;
         }
-      } else {
-        for (let i = 0; i < tempClientNew[categoryIndex].Tasks.length; i++) {
-          for (
-            let j = 0;
-            j < tempClientNew[categoryIndex].Tasks[i].children.length;
-            j++
-          ) {
-            if (
-              tempClientNew[categoryIndex].Tasks[i].children[j].Id ==
-              selectedTasks[i].data.Id
-            ) {
-              tempClientNew[categoryIndex].Tasks[i].children[
-                j
-              ].data.ReminderDays = noOfDays;
+      } else 
+      {
+        if(categoryIndex>=0){
+          for(let i=0;i<tempClientNew[categoryIndex].Tasks.length;i++)
+            {
+              for(let j=0;j<tempClientNew[categoryIndex].Tasks[i].children.length;j++)
+              {
+                  if(tempClientNew[categoryIndex].Tasks[i].children[j].Id==selectedTasks[i].data.Id)
+                  {
+                    tempClientNew[categoryIndex].Tasks[i].children[j].data.ReminderDays=noOfDays;
+                  }
+              }
             }
           }
-        }
+
       }
     }
     catch(e){

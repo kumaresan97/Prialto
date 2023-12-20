@@ -35,8 +35,10 @@ const Member = (props) => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   margin: "10px 0px",
+                  cursor:'pointer',
                   borderBottom: "1px solid #d9d9d9",
                 }}
+                onClick={() => ShareMember(val.Email)}
               >
                 <div
                   style={{ display: "flex", gap: "10px", alignItems: "center" }}

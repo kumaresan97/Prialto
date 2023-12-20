@@ -45,9 +45,13 @@ const CompleteDashboard = (props) => {
           getTask(props.Completeuser);
         })
         .catch((err) => {
-          console.log(err);
           setLoader(false);
+          SPServices.ErrorHandling(err, "Completedashboard");
         });
+      // .catch((err) => {
+      //   console.log(err);
+      //   setLoader(false);
+      // });
     }
   };
   const getTask = (id) => {
@@ -120,9 +124,13 @@ const CompleteDashboard = (props) => {
       })
       .catch((err) => {
         setLoader(false);
-
-        console.log(err);
+        SPServices.ErrorHandling(err, "Completedashboard");
       });
+    // .catch((err) => {
+    //   setLoader(false);
+
+    //   console.log(err);
+    // });
   };
   const getDSubTask = () => {
     let Filter = [
@@ -191,9 +199,13 @@ const CompleteDashboard = (props) => {
         Binddata();
         console.log(subArray, "subarray");
       })
+      // .catch((err) => {
+      //   setLoader(false);
+      //   console.log(err);
+      // });
       .catch((err) => {
         setLoader(false);
-        console.log(err);
+        SPServices.ErrorHandling(err, "Completedashboard");
       });
   };
 

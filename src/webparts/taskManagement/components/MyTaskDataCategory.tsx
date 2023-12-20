@@ -484,6 +484,9 @@ const MyTaskDataCategory = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
+              CategoryID: props.categoryId,
+              ReminderRef:0,
+              ReminderDays:0
             },
             children: [],
           };
@@ -515,6 +518,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             data: {
               TaskName: curdata.TaskName,
               ClientName: props.clientName,
+              CategoryID: props.categoryId,
               //ClientID: props.clientId,
               Creator: curdata.Creator,
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
@@ -522,6 +526,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
               Created: moment().format("YYYY-MM-DD"),
+              ReminderRef:0,
+              ReminderDays:0
             },
           };
 
@@ -697,6 +703,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             data: {
               TaskName: editval.TaskName,
               ClientName: props.clientName,
+              CategoryID: props.categoryId,
               //ClientID: props.clientId,
               DueDate: SPServices.displayDate(editval.DueDate),
               PriorityLevel: editval.PriorityLevel,
@@ -704,6 +711,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
+              ReminderRef:0,
+              ReminderDays:0
             },
             children: obj.children,
           };
@@ -721,6 +730,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             data: {
               TaskName: curdata.TaskName,
               ClientName: props.clientName,
+              CategoryID: props.categoryId,
               //ClientID: props.clientId,
               Creator: curdata.Creator,
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
@@ -728,6 +738,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Created: moment().format("YYYY-MM-DD"),
+              ReminderRef:0,
+              ReminderDays:0
             },
           };
           let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
@@ -1315,6 +1327,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
   }
 
@@ -1331,9 +1344,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
         tempData[i].children[j].isEdit = false;
       }
     }
+    
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
   }
 
@@ -1356,6 +1371,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
   }
 
@@ -1368,6 +1384,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
   }
 
@@ -1378,6 +1395,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
   }
 

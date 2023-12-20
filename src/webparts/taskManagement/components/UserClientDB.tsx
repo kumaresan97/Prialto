@@ -1431,7 +1431,7 @@ const UserClientDB = (props): JSX.Element => {
             <Column style={cellStyle} body={(obj: any) => _action(obj)} />
             <Column
               field="ClientName"
-              header="Client name"
+              header="Member name"
               sortable
               style={cellStyle}
             />

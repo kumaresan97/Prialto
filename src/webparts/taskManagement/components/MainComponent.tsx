@@ -564,7 +564,7 @@ const MainComponent = (props: any): JSX.Element => {
                     value == "Client" ? styles.activeBtn : styles.inActive
                   }
                 >
-                  {menuExpand ? "Client list" : ""}
+                  {menuExpand ? "Member list" : ""}
                   <i
                     className="pi pi-users"
                     style={{ fontSize: "1.25rem" }}

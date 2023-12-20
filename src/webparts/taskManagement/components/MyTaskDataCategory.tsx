@@ -139,6 +139,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
       Id: curuserId.Id,
       Title: curuserId.Title,
     },
+    ReminderRef:0,
+    ReminderDays:0
   };
   const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
@@ -168,6 +170,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
+      ReminderRef:0,
+      ReminderDays:0
     },
     children: [],
   };
@@ -197,6 +201,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
+      ReminderRef:0,
+      ReminderDays:0
     },
   };
 
@@ -711,8 +717,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
-              ReminderRef:0,
-              ReminderDays:0
+              ReminderRef:curdata.ReminderRef,
+              ReminderDays:curdata.ReminderDays
             },
             children: obj.children,
           };
@@ -738,8 +744,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Created: moment().format("YYYY-MM-DD"),
-              ReminderRef:0,
-              ReminderDays:0
+              ReminderRef:curdata.ReminderRef,
+              ReminderDays:curdata.ReminderDays
             },
           };
           let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
@@ -1266,8 +1272,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
   };
 
   const errFunction = (err) => {
-    console.log(err);
     setLoader(false);
+    SPServices.ErrorHandling(err,"MyTasksDB");
     showMessage(
       "Something went wrong, Please contact system admin",
       toastTopRight,
@@ -1329,6 +1335,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurdata({ ...data });
     props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task added successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfternewChildData(newData, parentIndex, childIndex) {
@@ -1350,6 +1361,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurdata({ ...data });
     props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task added successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterDataEdit(newData, oldObject) {
@@ -1373,6 +1389,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurdata({ ...data });
     props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task updated successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterDataDelete(ID) {
@@ -1386,6 +1407,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurdata({ ...data });
     props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task deleted successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterChildDataDelete(ID, parentId, childIndex) {
@@ -1397,6 +1423,11 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurdata({ ...data });
     props.updateDataFromChildComponent(props.categoryId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task deleted successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   const showMessage = (event, ref, severity) => {
@@ -1472,6 +1503,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...props.mainData]);
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
+
+  let displayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
 
   return (
     <>
@@ -1589,7 +1622,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             onSelectionChange={(e) => {
               setSelectedNodeKeys(e.value);
             }}
-            value={[...curMyTask]}
+            value={[...displayItems]}
             tableStyle={{ minWidth: "50rem" }}
             // paginator
             // rows={10}

@@ -1425,7 +1425,6 @@ const OrgChart = (props) => {
   }
 
   const getdatas = () => {
-    debugger;
     SPServices.SPReadItems({
       Listname: "Configuration",
       Select:

@@ -1236,6 +1236,7 @@ const UserClientDB = (props): JSX.Element => {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
+    SPServices.ErrorHandling(err,"UserClientDB");
     showMessage(
       "Something went wrong, Please contact system admin",
       toastTopRight,

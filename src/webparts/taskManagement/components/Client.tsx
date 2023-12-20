@@ -15,7 +15,11 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import Loader from "./Loader";
 import exportToExcel from "../../../Global/ExportExcel";
 import { Toast } from "primereact/toast";
+let _isTL: boolean = false;
+let _isTC: boolean = false;
+let _isPA: boolean = false;
 const Client = (props) => {
+  const _curUser: string = props.context._pageContext._user.email;
   const multiPeoplePickerStyle = {
     root: {
       minWidth: 200,
@@ -685,7 +689,7 @@ const Client = (props) => {
     setLoader(false);
     console.log(err);
   };
-  const getdatas = () => {
+  const getdatas = (MyTeamMembers) => {
     SPServices.SPReadItems({
       Listname: "ClientDetails",
       Select:
@@ -697,8 +701,23 @@ const Client = (props) => {
       Topcount: 5000,
     })
       .then((res) => {
+        console.log(MyTeamMembers);
         let array: IClient[] = [];
         res.forEach((val: any) => {
+
+          let isTeamMemberinAssitant=false;
+          isTeamMemberinAssitant=MyTeamMembers.includes(val.Assistant?.EMail)
+          let isTeamMemberinBackup=false;
+
+          for(let i=0;i<val.Backup.length;i++)
+          {
+              if(MyTeamMembers.includes(val.Backup[i].EMail))
+              {
+                isTeamMemberinBackup=true;
+              }
+          }
+
+          if(isTeamMemberinAssitant||isTeamMemberinBackup||props._isAdmin){
           array.push({
             Id: val.Id,
             FirstName: val.FirstName ? val.FirstName : "",
@@ -723,7 +742,7 @@ const Client = (props) => {
             //   EMail: val.Backup?.EMail,
             //   Title: val.Backup?.Title,
             // },
-          });
+          });}
         });
         setClientdetail([...array]);
         setMasterdata([...array]);
@@ -935,9 +954,63 @@ const Client = (props) => {
 
     return missingFields;
   }
+
+  const getTeamMembers = () => {
+    SPServices.SPReadItems({
+      Listname: "Configuration",
+      Select:
+        "*,Name/ID,Name/EMail,Name/Title, Manager/ID, Manager/EMail, Manager/Title, BackingUp/ID, BackingUp/EMail, BackingUp/Title, TeamLeader/ID, TeamLeader/EMail, TeamLeader/Title, TeamCaptain/ID, TeamCaptain/EMail, TeamCaptain/Title, DirectReports/ID, DirectReports/EMail, DirectReports/Title",
+      Expand:
+        "Name, Manager, TeamCaptain, TeamLeader, DirectReports, BackingUp",
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Topcount: 5000,
+    })
+      .then((res: any) => 
+      {
+        dataManipulation(res);
+      })
+      .catch((err: any) => {
+        errFunction("Configuration List Nave Details get issue.");
+      });
+  };
+
+  function dataManipulation(data) {
+    let arrDisplay = [];
+    let myTeams = [];
+    let myTeamMembers=[];
+    _isTL = false;
+    _isTC = false;
+    _isPA = false;
+
+    data.forEach((val: any) => {
+      if (val.Role === "TL" && val.Name.EMail == _curUser) {
+        _isTL = true;
+        myTeams.push(val.Team);
+      } else if (val.Role === "TC" && val.Name.EMail == _curUser) {
+        _isTC = true;
+        myTeams.push(val.Team);
+      } else if (val.Role === "PA") {
+        _isPA = true;
+      }
+    });
+
+    for (let i = 0; i < data.length; i++) {
+      let ismyTeam = myTeams.includes(data[i].Team);
+
+      if (((_isTL||_isTC) && ismyTeam) || props._isAdmin) 
+      {
+        myTeamMembers.push(data[i].Name.EMail);
+        arrDisplay.push(data[i]);
+      }
+    }
+    getdatas(myTeamMembers);
+  }
+
+
   useEffect(() => {
     setLoader(true);
-    getdatas();
+    getTeamMembers();
   }, []);
 
   return (
@@ -984,7 +1057,7 @@ const Client = (props) => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
               />
-              {props._isAdmin && (
+              {(
                 <Button
                   label="Add Client"
                   className={styles.btnColor}
@@ -1043,7 +1116,7 @@ const Client = (props) => {
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
               ></Column>
-              {(props._isAdmin || props._isTC) && (
+              {(
                 <Column
                   header="Action"
                   style={{ width: "200px" }}

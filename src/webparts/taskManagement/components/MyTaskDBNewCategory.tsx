@@ -445,21 +445,24 @@ export default function MyTaskDBNewCategory(props) {
 
   let columns = [
     { header: "Task Name", key: "TaskName", width: 15 },
-    { header: "Parent Task Name", key: "ParenTask", width: 15 },
-    { header: "Creator", key: "Creator", width: 25 },
-    { header: "Backup", key: "Backup", width: 25 },
-    { header: "DueDate", key: "DueDate", width: 25 },
-    { header: "Task Age", key: "TaskAge", width: 25 },
-    { header: "Completed Date", key: "CompletedDate", width: 25 },
-    { header: "Done Formula", key: "DoneFormula", width: 25 },
-    { header: "Days OnEarly", key: "DaysOnEarly", width: 25 },
-
+    { header: "Creation log", key: "Created", width: 25 },
+ 
+    { header: "Parent Task Name", key: "ParenTask", width: 25 },
+ 
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
-    { header: "Creation log", key: "Created", width: 25 },
+    // { header: "Creator", key: "Creator", width: 25 },
+    // { header: "Backup", key: "Backup", width: 25 },
+    { header: "DueDate", key: "DueDate", width: 15 },
+    { header: "Task Age", key: "TaskAge", width: 15 },
+    { header: "Completed Date", key: "CompletedDate", width: 20 },
+    { header: "Days OnEarly", key: "DaysOnEarly", width: 20 },
+ 
+    { header: "Done Formula", key: "DoneFormula", width: 20 },
   ];
 
-  const exportData = () => {
+  const exportData = () => 
+  {
     exportToExcel(curMyTask, columns, "MyTask");
   };
 
@@ -633,18 +636,18 @@ export default function MyTaskDBNewCategory(props) {
         }
       } else 
       {
-        if(categoryIndex>=0){
-          for(let i=0;i<tempClientNew[categoryIndex].Tasks.length;i++)
-            {
-              for(let j=0;j<tempClientNew[categoryIndex].Tasks[i].children.length;j++)
-              {
-                  if(tempClientNew[categoryIndex].Tasks[i].children[j].Id==selectedTasks[i].data.Id)
-                  {
-                    tempClientNew[categoryIndex].Tasks[i].children[j].data.ReminderDays=noOfDays;
-                  }
-              }
-            }
-          }
+        // if(categoryIndex>=0){
+        //   for(let k=0;i<tempClientNew[categoryIndex].Tasks.length;k++)
+        //     {
+        //       for(let j=0;j<tempClientNew[categoryIndex].Tasks[k].children.length;j++)
+        //       {
+        //           if(tempClientNew[categoryIndex].Tasks[k].children[j].Id==selectedTasks[i].data.Id)
+        //           {
+        //             tempClientNew[categoryIndex].Tasks[k].children[j].data.ReminderDays=noOfDays;
+        //           }
+        //       }
+        //     }
+        //   }
 
       }
     }

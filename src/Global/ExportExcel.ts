@@ -200,6 +200,14 @@ const exportToExcel = (data, headers, sheetName) => {
         };
         const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
 
+        let DirectReports="";
+        if(item.DirectReports.length>0)
+        {
+          item.DirectReports.forEach((val)=>{
+            DirectReports+=val.Title+";";
+          })
+        }
+
         const row = worksheet.addRow({
           Name: item.Name?.Title,
           Role: item.Role,
@@ -208,7 +216,7 @@ const exportToExcel = (data, headers, sheetName) => {
           Manager: item.Manager?.Title,
           // TeamCaptain: item.TeamCaptain?.Title,
           // TeamLeader: item.TeamLeader?.Title,
-          DirectReports: item.DirectReports[0]?.Title,
+          DirectReports: DirectReports,
           // BackingUp: item.BackingUp[0]?.Title,
         });
 
@@ -235,12 +243,20 @@ const exportToExcel = (data, headers, sheetName) => {
           fgColor: { argb: "FFFFFF" },
         };
         const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
+
+        let backupUsers="";
+        if(item.Backup.length>0)
+        {
+          item.Backup.forEach((val)=>{
+            backupUsers+=val.Title+";";
+          })
+        }
         const row = worksheet.addRow({
           FirstName: item.FirstName,
           LastName: item?.LastName,
           CompanyName: item.CompanyName,
           Assistant: item.Assistant?.Title,
-          Backup: item.Backup?.Title,
+          Backup: backupUsers,
         });
         row.fill = rowFill;
 

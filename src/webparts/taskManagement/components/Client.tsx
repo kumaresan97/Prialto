@@ -192,7 +192,11 @@ const Client = (props) => {
         // getdatas();
         // getcurUser();
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "Member");
+      });
   };
   const Editfunction = (obj) => {
     setLoader(true);
@@ -261,7 +265,12 @@ const Client = (props) => {
 
         // getdatas();
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "Member");
+      });
+    // .catch((err) => errFunction(err));
   };
 
   const _handleDataoperation = (key, obj) => {
@@ -687,6 +696,11 @@ const Client = (props) => {
   };
   const errFunction = (err) => {
     setLoader(false);
+    showMessage(
+      "Something went wrong, Please contact system admin",
+      toastTopRight,
+      "error"
+    );
     console.log(err);
   };
   const getdatas = (MyTeamMembers) => {
@@ -750,7 +764,12 @@ const Client = (props) => {
         setMasterdata([...array]);
         setLoader(false);
       })
-      .catch((err) => errFunction(err));
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "Member");
+      });
+    // .catch((err) => errFunction(err));
   };
 
   const getOnchange = (key, _value) => {
@@ -971,9 +990,14 @@ const Client = (props) => {
       .then((res: any) => {
         dataManipulation(res);
       })
-      .catch((err: any) => {
-        errFunction("Configuration List Nave Details get issue.");
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "Member");
       });
+    // .catch((err: any) => {
+    //   errFunction("Configuration List Nave Details get issue.");
+    // });
   };
 
   function dataManipulation(data) {

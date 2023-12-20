@@ -1153,12 +1153,24 @@ const OrgChart = (props) => {
 
         // getdatas();
       })
-      .catch((err) => errFunction("Configuration err ", err));
+
+      .catch((err) => {
+        setLoader(false);
+        SPServices.ErrorHandling(err, "OrgChart");
+        errFunction(err);
+      });
+    // .catch((err) => errFunction("Configuration err ", err));
   };
 
-  const errFunction = (type, err) => {
+  const errFunction = (err) => {
+    showMessage(
+      "Something went wrong, Please contact system admin",
+      toastTopRight,
+      "error"
+    );
+
     setLoader(false);
-    console.log(type, err);
+    console.log(err);
   };
 
   const handledata = (obj) => {
@@ -1382,7 +1394,12 @@ const OrgChart = (props) => {
 
         // getdatas();
       })
-      .catch((err) => errFunction("Configuration json", err));
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "OrgChart");
+      });
+    // .catch((err) => errFunction("Configuration json", err));
   };
 
   //get admin
@@ -1399,9 +1416,14 @@ const OrgChart = (props) => {
         // _getConfigurationDatas();
         getdatas();
       })
-      .catch((err: any) => {
-        errFunction("", "Admin group users get issue.");
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+        SPServices.ErrorHandling(err, "OrgChart");
       });
+    // .catch((err: any) => {
+    //   errFunction("", "Admin group users get issue.");
+    // });
   };
 
   function getTeamChoices() {
@@ -1419,8 +1441,14 @@ const OrgChart = (props) => {
         }
         team = teamChoices;
       })
-      .catch(function (error) {
-        errFunction("getTeamChoices", error);
+      // .catch(function (error) {
+      //   errFunction("getTeamChoices", error);
+      // });
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+
+        SPServices.ErrorHandling(err, "OrgChart");
       });
   }
 
@@ -1453,8 +1481,14 @@ const OrgChart = (props) => {
           : setValue([]);
         setLoader(false);*/
       })
-      .catch((err: any) => {
-        errFunction("Configuration List Nave Details get issue.", "");
+      // .catch((err: any) => {
+      //   errFunction("Configuration List Nave Details get issue.", "");
+      // });
+      .catch((err) => {
+        setLoader(false);
+        errFunction(err);
+
+        SPServices.ErrorHandling(err, "OrgChart");
       });
   };
 

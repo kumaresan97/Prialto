@@ -15,7 +15,7 @@ import exportToExcel from "../../../Global/ExportExcel";
 import { Dialog } from "primereact/dialog";
 import { InputNumber } from "primereact/inputnumber";
 import * as moment from "moment";
-import { Check } from "office-ui-fabric-react";
+import "../../../Global/Style.css";
 
 let MyClients = [];
 let MyCategories = [];
@@ -26,9 +26,8 @@ let statusChoices = [];
 
 /*For automation */
 let automationTasks = [];
-let selectedTasks=[];
+let selectedTasks = [];
 /* For automation */
-
 
 export default function MyTaskDBNewCategory(props) {
   const UserEmail = !props.Email
@@ -37,7 +36,7 @@ export default function MyTaskDBNewCategory(props) {
   const [loader, setLoader] = useState(false);
   const [search, setSearch] = useState("");
   const [categoryValue, setCategoryValue] = useState("");
-  
+
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
@@ -64,7 +63,6 @@ export default function MyTaskDBNewCategory(props) {
   const [isAutomate, setIsautomate] = useState(false);
   const [days, setDays] = useState(0);
   /*For automation */
-
 
   const errFunction = (err) => {
     console.log(err);
@@ -277,8 +275,8 @@ export default function MyTaskDBNewCategory(props) {
                   Title: val.Backup?.Title,
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
-                ReminderRef:val.ReminderRef,
-                ReminderDays:val.ReminderDays,
+                ReminderRef: val.ReminderRef,
+                ReminderDays: val.ReminderDays,
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
@@ -355,7 +353,7 @@ export default function MyTaskDBNewCategory(props) {
                   TaskName: val.TaskName,
                   ClientName: MainTask[i].data.ClientName,
                   ClientID: MainTask[i].data.ClientID,
-                  CategoryID:MainTask[i].data.CategoryID,
+                  CategoryID: MainTask[i].data.CategoryID,
                   Creator: {
                     Id: val.Author.ID,
                     EMail: val.Author.EMail,
@@ -367,8 +365,8 @@ export default function MyTaskDBNewCategory(props) {
                     Title: val.Backup?.Title,
                   },
                   DueDate: SPServices.displayDate(val.DueDate),
-                  ReminderRef:val.ReminderRef,
-                  ReminderDays:val.ReminderDays,
+                  ReminderRef: val.ReminderRef,
+                  ReminderDays: val.ReminderDays,
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
 
@@ -518,69 +516,69 @@ export default function MyTaskDBNewCategory(props) {
     });
   };
 
-
   /* Start for automate single */
 
-  
-  const onselect = (event) => 
-  {
-    if(event.node.isParent)
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:"",isSelected:true,isParent:true,categoryID:event.node.data.CategoryID});
-      
-      for(let i=0;i<event.node.children.length;i++)
-      {
-        selectedTasks.push({data:event.node.children[i],Id:event.node.children[i].Id,subId:event.node.Id,isSelected:true,isParent:false,categoryID:event.node.data.CategoryID});
+  const onselect = (event) => {
+    if (event.node.isParent) {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: "",
+        isSelected: true,
+        isParent: true,
+        categoryID: event.node.data.CategoryID,
+      });
+
+      for (let i = 0; i < event.node.children.length; i++) {
+        selectedTasks.push({
+          data: event.node.children[i],
+          Id: event.node.children[i].Id,
+          subId: event.node.Id,
+          isSelected: true,
+          isParent: false,
+          categoryID: event.node.data.CategoryID,
+        });
+      }
+    } else {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: event.node.subId,
+        isSelected: true,
+        isParent: false,
+        categoryID: event.node.data.CategoryID,
+      });
+    }
+  };
+
+  const unselect = (event) => {
+    if (event.node.isParent) {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].subId == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+    } else {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
       }
     }
-    else
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:event.node.subId,isSelected:true,isParent:false,categoryID:event.node.data.CategoryID});
-    }
-  };
 
-  const unselect = (event) => 
-  {
-    
-    if(event.node.isParent)
-    {
-       
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].Id==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].subId==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-        
-    }
-    else
-    {
-        for(let i=0;i<selectedTasks.length;i++)
-        {
-            if(selectedTasks[i].Id==event.node.Id)
-            {
-              selectedTasks[i].isSelected=false;
-            }
-        }
-    }
-
-    let crntSelectedTasks=selectedTasks.filter((item)=>{
-      return item.isSelected==true;
+    let crntSelectedTasks = selectedTasks.filter((item) => {
+      return item.isSelected == true;
     });
-    selectedTasks=[...crntSelectedTasks];
+    selectedTasks = [...crntSelectedTasks];
   };
 
-  function checkAutomate()
-  { 
+  function checkAutomate() {
     setIsautomate(true);
     setDays(selectedTasks[0].data.data.ReminderDays);
   }
@@ -588,12 +586,10 @@ export default function MyTaskDBNewCategory(props) {
   function prepareAutomationData() {
     automationTasks = [];
     let noOfDays = days;
-    let tempClientNew=[...clientdata];
+    let tempClientNew = [...clientdata];
 
-    for(let i=0;i<selectedTasks.length;i++)
-    {
-      if(selectedTasks[i].isParent)
-      {
+    for (let i = 0; i < selectedTasks.length; i++) {
+      if (selectedTasks[i].isParent) {
         automationTasks.push({
           Title: "Reminder",
           TaskIDId: selectedTasks[i].data.Id,
@@ -604,9 +600,7 @@ export default function MyTaskDBNewCategory(props) {
             .subtract(noOfDays, "days")
             .format("YYYY-MM-DD"),
         });
-      }
-      else
-      {
+      } else {
         automationTasks.push({
           Title: "Reminder",
           TaskIDId: null,
@@ -620,109 +614,113 @@ export default function MyTaskDBNewCategory(props) {
       }
     }
 
-    for(let i=0;i<selectedTasks.length;i++)
-    {
-      let categoryIndex = tempClientNew.findIndex((val) => val.ID == selectedTasks[i].categoryID);
-      if(selectedTasks[i].isParent)
-      {
-        if(categoryIndex>=0)
-        {
-        let taskIndex=tempClientNew[categoryIndex].Tasks.findIndex((item)=>{
-          return item.key==selectedTasks[i].data.Id
-        })
-        tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays = noOfDays;
+    for (let i = 0; i < selectedTasks.length; i++) {
+      let categoryIndex = tempClientNew.findIndex(
+        (val) => val.ID == selectedTasks[i].categoryID
+      );
+      if (selectedTasks[i].isParent) {
+        if (categoryIndex >= 0) {
+          let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
+            (item) => {
+              return item.key == selectedTasks[i].data.Id;
+            }
+          );
+          tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+            noOfDays;
         }
-      }
-      else
-      {
-        for(let i=0;i<tempClientNew[categoryIndex].Tasks.length;i++)
-          {
-            for(let j=0;j<tempClientNew[categoryIndex].Tasks[i].children.length;j++)
-            {
-                if(tempClientNew[categoryIndex].Tasks[i].children[j].Id==selectedTasks[i].data.Id)
-                {
-                  tempClientNew[categoryIndex].Tasks[i].children[j].data.ReminderDays=noOfDays;
-                }
+      } else {
+        for (let i = 0; i < tempClientNew[categoryIndex].Tasks.length; i++) {
+          for (
+            let j = 0;
+            j < tempClientNew[categoryIndex].Tasks[i].children.length;
+            j++
+          ) {
+            if (
+              tempClientNew[categoryIndex].Tasks[i].children[j].Id ==
+              selectedTasks[i].data.Id
+            ) {
+              tempClientNew[categoryIndex].Tasks[i].children[
+                j
+              ].data.ReminderDays = noOfDays;
             }
           }
+        }
       }
     }
 
     insertReminderNew([...automationTasks]);
-    selectedTasks=[];
-    setClientdata([...tempClientNew]); 
+    selectedTasks = [];
+    setClientdata([...tempClientNew]);
   }
-
 
   /* for the multiple automation */
 
-  function insertReminderNew(TasksDetails)
-  {
-    let tasksListData=TasksDetails.filter((data)=>{
-      return data.TaskIDId!=null
+  function insertReminderNew(TasksDetails) {
+    let tasksListData = TasksDetails.filter((data) => {
+      return data.TaskIDId != null;
     });
 
-    let subTasksListData=TasksDetails.filter((data)=>{
-      return data.SubTaskIDId!=null
+    let subTasksListData = TasksDetails.filter((data) => {
+      return data.SubTaskIDId != null;
     });
 
     const batch = sp.web.createBatch();
-    
-    let list = sp.web.lists.getByTitle('Tasks');
-    tasksListData.forEach(item => 
-      {
-        list.items.getById(item.TaskIDId).inBatch(batch).update({
-          ReminderDays:item.Before,
-          NotifyDate:item.NotifyDate
-        });
-      });
-    batch.execute().then(() => {
-      console.log('All done in Batch 1!');
-    }).catch((error)=>{
-      console.log('Error in Batch 1!');
-      errFunction(error);
-    });
 
+    let list = sp.web.lists.getByTitle("Tasks");
+    tasksListData.forEach((item) => {
+      list.items.getById(item.TaskIDId).inBatch(batch).update({
+        ReminderDays: item.Before,
+        NotifyDate: item.NotifyDate,
+      });
+    });
+    batch
+      .execute()
+      .then(() => {
+        console.log("All done in Batch 1!");
+      })
+      .catch((error) => {
+        console.log("Error in Batch 1!");
+        errFunction(error);
+      });
 
     const batch2 = sp.web.createBatch();
-    let list2 = sp.web.lists.getByTitle('SubTasks');
-    subTasksListData.forEach((item) => 
-      {
-        list2.items.getById(item.SubTaskIDId).inBatch(batch2).update({
-          ReminderDays:item.Before,
-          NotifyDate:item.NotifyDate
-        });
+    let list2 = sp.web.lists.getByTitle("SubTasks");
+    subTasksListData.forEach((item) => {
+      list2.items.getById(item.SubTaskIDId).inBatch(batch2).update({
+        ReminderDays: item.Before,
+        NotifyDate: item.NotifyDate,
       });
-
-    batch2.execute().then(() => {
-      console.log('All done in Batch 2!');
-    }).catch((error)=>{
-      console.log('Error in Batch 2!');
-      errFunction(error);
     });
 
+    batch2
+      .execute()
+      .then(() => {
+        console.log("All done in Batch 2!");
+      })
+      .catch((error) => {
+        console.log("Error in Batch 2!");
+        errFunction(error);
+      });
 
     const batch3 = sp.web.createBatch();
-    let list3 = sp.web.lists.getByTitle('Reminder');
-    TasksDetails.forEach((item:any) =>  
-      {
-        list3.items.inBatch(batch3).add(item);
-      });
+    let list3 = sp.web.lists.getByTitle("Reminder");
+    TasksDetails.forEach((item: any) => {
+      list3.items.inBatch(batch3).add(item);
+    });
 
-      batch3.execute().then(() => {
-      console.log('All done in Batch 3!');
-      setLoader(false);
+    batch3
+      .execute()
+      .then(() => {
+        console.log("All done in Batch 3!");
+        setLoader(false);
         setIsautomate(false);
         setDays(0);
-        showMessage(
-          "Reminder Added Successfully",
-          toastTopRight,
-          "success"
-        );
-    }).catch((error)=>{
-      console.log('Error in Batch 3!');
-      errFunction(error);
-    });
+        showMessage("Reminder Added Successfully", toastTopRight, "success");
+      })
+      .catch((error) => {
+        console.log("Error in Batch 3!");
+        errFunction(error);
+      });
   }
   /* for the multiple automation */
 
@@ -732,7 +730,7 @@ export default function MyTaskDBNewCategory(props) {
       RequestJSON: TasksDetails[0],
     })
       .then(function (data) {
-        addRemainderInTask(TasksDetails,data.data.ID);
+        addRemainderInTask(TasksDetails, data.data.ID);
       })
       .catch(function (error) {
         setIsautomate(false);
@@ -740,33 +738,35 @@ export default function MyTaskDBNewCategory(props) {
       });
   }
 
-  function addRemainderInTask(TasksDetails,reminderID)
-  {
-    let ListID=TasksDetails[0].TaskIDId?TasksDetails[0].TaskIDId:TasksDetails[0].SubTaskIDId;
-    let ListName=TasksDetails[0].TaskIDId?"Tasks":"SubTasks";
-    let isParent=TasksDetails[0].TaskIDId?true:false;
-    let notifyDate=TasksDetails[0].NotifyDate;
-    let reminderDays=TasksDetails[0].Before;
+  function addRemainderInTask(TasksDetails, reminderID) {
+    let ListID = TasksDetails[0].TaskIDId
+      ? TasksDetails[0].TaskIDId
+      : TasksDetails[0].SubTaskIDId;
+    let ListName = TasksDetails[0].TaskIDId ? "Tasks" : "SubTasks";
+    let isParent = TasksDetails[0].TaskIDId ? true : false;
+    let notifyDate = TasksDetails[0].NotifyDate;
+    let reminderDays = TasksDetails[0].Before;
 
     SPServices.SPUpdateItem({
       Listname: ListName,
-      ID:ListID,
+      ID: ListID,
       RequestJSON: {
-        ReminderRef:reminderID,
-        ReminderDays:reminderDays,
-        NotifyDate:notifyDate
+        ReminderRef: reminderID,
+        ReminderDays: reminderDays,
+        NotifyDate: notifyDate,
       },
     })
       .then(function (data) {
-        updateDataAfterReminderAdded(selectedTasks[0].data.data.CategoryID,ListID,isParent,reminderDays);
+        updateDataAfterReminderAdded(
+          selectedTasks[0].data.data.CategoryID,
+          ListID,
+          isParent,
+          reminderDays
+        );
         setLoader(false);
         setIsautomate(false);
         setDays(0);
-        showMessage(
-          "Reminder Added Successfully",
-          toastTopRight,
-          "success"
-        );
+        showMessage("Reminder Added Successfully", toastTopRight, "success");
       })
       .catch(function (error) {
         setIsautomate(false);
@@ -774,36 +774,38 @@ export default function MyTaskDBNewCategory(props) {
       });
   }
 
-  function updateDataAfterReminderAdded(categryId,TaskID,isParent,newdays)
-  {
+  function updateDataAfterReminderAdded(categryId, TaskID, isParent, newdays) {
     let tempClientNew = [...clientdata];
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
     if (categoryIndex < 0) {
       console.log("Category not found");
-    } else 
-    {
-      let taskIndex="";
-      if(isParent){
-        taskIndex=tempClientNew[categoryIndex].Tasks.findIndex((item)=>{
-          return item.key==TaskID
-        })
-        tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays = newdays;
-      }
-      else
-      {
-          for(let i=0;i<tempClientNew[categoryIndex].Tasks.length;i++)
-          {
-            for(let j=0;j<tempClientNew[categoryIndex].Tasks[i].children.length;j++)
-            {
-                if(tempClientNew[categoryIndex].Tasks[i].children[j].Id==TaskID)
-                {
-                  tempClientNew[categoryIndex].Tasks[i].children[j].data.ReminderDays=newdays;
-                }
+    } else {
+      let taskIndex = "";
+      if (isParent) {
+        taskIndex = tempClientNew[categoryIndex].Tasks.findIndex((item) => {
+          return item.key == TaskID;
+        });
+        tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+          newdays;
+      } else {
+        for (let i = 0; i < tempClientNew[categoryIndex].Tasks.length; i++) {
+          for (
+            let j = 0;
+            j < tempClientNew[categoryIndex].Tasks[i].children.length;
+            j++
+          ) {
+            if (
+              tempClientNew[categoryIndex].Tasks[i].children[j].Id == TaskID
+            ) {
+              tempClientNew[categoryIndex].Tasks[i].children[
+                j
+              ].data.ReminderDays = newdays;
             }
           }
+        }
       }
     }
-    selectedTasks=[];
+    selectedTasks = [];
     setClientdata([...tempClientNew]);
   }
 
@@ -822,8 +824,7 @@ export default function MyTaskDBNewCategory(props) {
     setClientdata([...tempClientNew]);
   }
 
-  function updateDataFromChildComponent(categryId,Tasks)
-  {
+  function updateDataFromChildComponent(categryId, Tasks) {
     let tempClientNew = [...clientdata];
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
     if (categoryIndex < 0) {
@@ -849,11 +850,10 @@ export default function MyTaskDBNewCategory(props) {
   let BeforeData =
     selectedTasks.length > 0
       ? moment(selectedTasks[0].data.data.DueDate).format("MM/DD/YYYY")
-      :"";
+      : "";
 
-  let strTaskName= selectedTasks.length > 0
-  ? selectedTasks[0].data.data.TaskName
-  :"";
+  let strTaskName =
+    selectedTasks.length > 0 ? selectedTasks[0].data.data.TaskName : "";
 
   return (
     <>
@@ -902,14 +902,17 @@ export default function MyTaskDBNewCategory(props) {
         header="Header"
         position="top"
         style={{ width: "420px" }}
+        className="AutomateDialog"
         visible={isAutomate}
         onHide={() => setIsautomate(false)}
       >
         <div className={styles.addCatSection}>
           <Label className={styles.Automatelabel}>Automate</Label>
-
+          <h4 style={{ margin: "10px 0px 15px 0px" }}>
+            Task name : <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
+          </h4>
           {/* <div
-            style={{
+            style={{-
               display: "flex",
               gap: "20px",
               margin: "10px 0px 20px 0px",
@@ -947,26 +950,30 @@ export default function MyTaskDBNewCategory(props) {
           </div> */}
           {/* {automate.notification && ( */}
           <>
-            <div style={{ display: "flex", gap: "10px", margin: "10px 0px" }}>
-              <div
-                // style={{ display: "flex", gap: "5px" }}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                margin: "10px 0px",
+                alignItems: "center",
+              }}
+            >
+              {/* <div
                 className={styles.NotifyContainer}
-              >
-                <Label>Notify</Label>{" "}
-                <Label className={styles.ProjectName} title={"ProjectName"}>
-                  {strTaskName}
-                </Label>
+              > */}
+              <Label>Notify</Label>{" "}
+              {/* <Label className={styles.ProjectName} title={"ProjectName"}>
+                  Testproject
+                </Label> */}
+              <div style={{ width: "14%" }}>
                 <InputNumber
                   // style={{ width: "10%" }}
                   value={days}
                   onChange={(e: any) => setDays(e.value)}
                 />
               </div>
-              <Label className={styles.ProjectName} title={"ProjectName"}>
-                  days
-                </Label>
-              <div style={{ display: "flex", gap: "5px" }}>
-                <Label>Before </Label>
+              <div style={{ display: "flex", gap: 10 }}>
+                <Label>days before </Label>
                 <Label>{BeforeData}</Label>
               </div>
             </div>
@@ -1007,6 +1014,75 @@ export default function MyTaskDBNewCategory(props) {
               className={styles.Submitbtn}
               label="Submit"
               onClick={() => {
+                if (days) {
+                  setLoader(true);
+                  setIsautomate(false);
+                  prepareAutomationData();
+                } else {
+                  showMessage("Please enter value", toastTopRight, "warn");
+                }
+
+                // setLoader(true);
+                // setIsautomate(false);
+                // prepareAutomationData();
+              }}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/* <Dialog
+        header="Header"
+        position="top"
+        style={{ width: "420px" }}
+        visible={isAutomate}
+        onHide={() => setIsautomate(false)}
+      >
+        <div className={styles.addCatSection}>
+          <Label className={styles.Automatelabel}>Automate</Label>
+
+         
+          <>
+            <div style={{ display: "flex", gap: "10px", margin: "10px 0px" }}>
+              <div
+               
+                className={styles.NotifyContainer}
+              >
+                <Label>Notify</Label>{" "}
+                <Label className={styles.ProjectName} title={"ProjectName"}>
+                  {strTaskName}
+                </Label>
+                <InputNumber
+                 
+                  value={days}
+                  onChange={(e: any) => setDays(e.value)}
+                />
+              </div>
+              <Label className={styles.ProjectName} title={"ProjectName"}>
+                  days
+                </Label>
+              <div style={{ display: "flex", gap: "5px" }}>
+                <Label>Before </Label>
+                <Label>{BeforeData}</Label>
+              </div>
+            </div>
+          </>
+   
+
+          <div className={styles.catDialogBtnSection}>
+            <Button
+              className={styles.cancelBtn}
+              onClick={() => {
+                setCategoryValue("");
+                setIsautomate(false);
+              }}
+          
+              label="Cancel"
+            />
+            <Button
+              className={styles.Submitbtn}
+              label="Submit"
+              onClick={() => {
                 setLoader(true);
                 setIsautomate(false);
                 prepareAutomationData();
@@ -1014,7 +1090,7 @@ export default function MyTaskDBNewCategory(props) {
             />
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
 
       {loader ? (
         <Loader />
@@ -1053,7 +1129,6 @@ export default function MyTaskDBNewCategory(props) {
                 label="Automate"
                 onClick={() => {
                   if (selectedTasks.length > 0) {
-                    
                     checkAutomate();
                   } else {
                     showMessage(
@@ -1093,7 +1168,9 @@ export default function MyTaskDBNewCategory(props) {
                         context={props.context}
                         mainData={val.Tasks}
                         updateCategory={updateCategory}
-                        updateDataFromChildComponent={updateDataFromChildComponent}
+                        updateDataFromChildComponent={
+                          updateDataFromChildComponent
+                        }
                         crntUserData={curuserId}
                         crntBackData={configure}
                         choices={statusChoices}

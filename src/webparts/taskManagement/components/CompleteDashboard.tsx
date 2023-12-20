@@ -422,7 +422,7 @@ const CompleteDashboard = (props) => {
               //   expander
               sortable
             />
-            <Column field="parentTasKName" header="parent Taskname" sortable />
+            <Column field="parentTasKName" header="Parent task name" sortable />
             <Column field="DueDate" header="Due date" sortable />
 
             <Column

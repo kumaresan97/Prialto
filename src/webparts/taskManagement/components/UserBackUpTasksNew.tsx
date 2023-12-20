@@ -15,6 +15,7 @@ let MyTaskIds = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
+let selectedTasks=[];
 export default function UserBackUpTasksNew(props) {
   const UserEmail = !props.Email ? "" : props.Email;
   const [loader, setLoader] = useState(false);
@@ -303,6 +304,8 @@ export default function UserBackUpTasksNew(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
+                ReminderRef:val.ReminderRef,
+                ReminderDays:val.ReminderDays,
                 Status: val.Status,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
@@ -417,6 +420,8 @@ export default function UserBackUpTasksNew(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
+                ReminderRef:val.ReminderRef,
+                ReminderDays:val.ReminderDays,
                 Status: val.Status,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
@@ -481,6 +486,7 @@ export default function UserBackUpTasksNew(props) {
     console.log(tempClient, "tempclient");
 
     props.backupdatafunction([...tempClient]);
+    props.getBackupTasks([...tempClient]);
     setCurMyTask([...MainArray]);
     setMasterdata([...MainArray]);
     setClientdata([...tempClient]);
@@ -526,6 +532,84 @@ export default function UserBackUpTasksNew(props) {
   //   //setCurMyTask([...filteredResults]);
   // };
 
+  const onselect = (event) => 
+  {
+    if(event.node.isParent)
+    {
+      selectedTasks.push({data:event.node,Id:event.node.Id,subId:"",isSelected:true,isParent:true,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
+      
+      for(let i=0;i<event.node.children.length;i++)
+      {
+        selectedTasks.push({data:event.node.children[i],Id:event.node.children[i].Id,subId:event.node.Id,isSelected:true,isParent:false,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
+      }
+    }
+    else
+    {
+      selectedTasks.push({data:event.node,Id:event.node.Id,subId:event.node.subId,isSelected:true,isParent:false,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
+    }
+
+    props.getBackupSelectedTasks([...selectedTasks]);
+  };
+
+  const unselect = (event) => 
+  {
+    
+    if(event.node.isParent)
+    {
+       
+          for(let i=0;i<selectedTasks.length;i++)
+          {
+              if(selectedTasks[i].Id==event.node.Id)
+              {
+                selectedTasks[i].isSelected=false;
+              }
+          }
+
+          for(let i=0;i<selectedTasks.length;i++)
+          {
+              if(selectedTasks[i].subId==event.node.Id)
+              {
+                selectedTasks[i].isSelected=false;
+              }
+          }
+        
+    }
+    else
+    {
+        for(let i=0;i<selectedTasks.length;i++)
+        {
+            if(selectedTasks[i].Id==event.node.Id)
+            {
+              selectedTasks[i].isSelected=false;
+            }
+        }
+    }
+
+    let crntSelectedTasks=selectedTasks.filter((item)=>{
+      return item.isSelected==true;
+    });
+    selectedTasks=[...crntSelectedTasks];
+    props.getBackupSelectedTasks([...selectedTasks]);
+  };
+
+  function updateDataFromChildComponent(clientId,Tasks)
+  {
+    let tempClientNew = [...clientdata];
+    let categoryIndex = tempClientNew.findIndex((val) => val.ID == clientId);
+    if (categoryIndex < 0) {
+      console.log("Category not found");
+    } else {
+      tempClientNew[categoryIndex].Tasks = Tasks;
+    }
+    setClientdata([...tempClientNew]);
+    props.getBackupTasks([...tempClientNew]);
+  }
+
+  useEffect(() => {
+    selectedTasks=[];
+    setClientdata([...props.UpdatedData]);
+  }, [props.UpdatedData]);
+
   useEffect(() => {
     setSearch(props.searchValue);
   }, [props.searchValue]);
@@ -566,6 +650,9 @@ export default function UserBackUpTasksNew(props) {
                         crntBackData={configure}
                         choices={props.choices}
                         backupUsers={val.BackupUsers} ///Changes for backup users multiple
+                        onselect={onselect}
+                        unselect={unselect}
+                        updateDataFromChildComponent={updateDataFromChildComponent}
                       />
                     </>
                   );

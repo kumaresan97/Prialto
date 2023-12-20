@@ -46,8 +46,6 @@ let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
-  console.log(props, "userclientdb");
-
   // style variables
   dropStatus = props.choices;
   const cellStyle = { backgroundColor: "#fff", width: 176 };
@@ -122,6 +120,8 @@ const UserClientDB = (props): JSX.Element => {
       Id: curuserId.Id,
       Title: curuserId.Title,
     },
+    ReminderRef:0,
+    ReminderDays:0
   };
   const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
@@ -151,6 +151,8 @@ const UserClientDB = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
+      ReminderRef:0,
+      ReminderDays:0
     },
     children: [],
   };
@@ -180,6 +182,8 @@ const UserClientDB = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
+      ReminderRef:0,
+      ReminderDays:0
     },
   };
 
@@ -243,6 +247,42 @@ const UserClientDB = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
+    } else if (PLevel == "One time") {
+      bgColor = "#b7bfeb";
+      color = "#182154";
+    } else if (PLevel == "Daily") {
+      bgColor = "#ebb7b7";
+      color = "#f92e2e";
+    } else if (PLevel == "Every Monday") {
+      bgColor = "#ebcdb7";
+      color = "#b55d1d";
+    } else if (PLevel == "Every Tuesday") {
+      bgColor = "#e1f7c0";
+      color = "#4d7216";
+    } else if (PLevel == "Every Wednesday") {
+      bgColor = "#e6f7c0";
+      color = "#626262";
+    } else if (PLevel == "Every Thursday") {
+      bgColor = "#f7c0eb";
+      color = "#680d54";
+    } else if (PLevel == "Every Friday") {
+      bgColor = "#ffeaea";
+      color = "#a55b5b";
+    } else if (PLevel == "Every Saturday") {
+      bgColor = "#f0eaff";
+      color = "#6539d3";
+    } else if (PLevel == "Every Sunday") {
+      bgColor = "#ffeaf4";
+      color = "#f30074";
+    } else if (PLevel == "Weekly") {
+      bgColor = "#fcbdbd";
+      color = "#812727";
+    } else if (PLevel == "Monthly") {
+      bgColor = "#b7e1eb";
+      color = "#225662";
+    } else if (PLevel == "On-hold") {
+      bgColor = "#f7f6da";
+      color = "#4a4a3b";
     } else {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
@@ -434,6 +474,8 @@ const UserClientDB = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
+              ReminderRef:0,
+              ReminderDays:0
             },
             children: [],
           };
@@ -472,6 +514,8 @@ const UserClientDB = (props): JSX.Element => {
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
               Created: moment().format("YYYY-MM-DD"),
+              ReminderRef:0,
+              ReminderDays:0
             },
           };
 
@@ -643,6 +687,8 @@ const UserClientDB = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
+              ReminderRef:curdata.ReminderRef,
+              ReminderDays:curdata.ReminderDays
             },
             children: obj.children,
           };
@@ -667,6 +713,8 @@ const UserClientDB = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Created: moment().format("YYYY-MM-DD"),
+              ReminderRef:curdata.ReminderRef,
+              ReminderDays:curdata.ReminderDays
             },
           };
           let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
@@ -1249,7 +1297,13 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.clientId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task added successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfternewChildData(newData, parentIndex, childIndex) {
@@ -1268,7 +1322,13 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.clientId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task updated successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterDataEdit(newData, oldObject) {
@@ -1290,7 +1350,13 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.clientId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task updated successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterDataDelete(ID) {
@@ -1302,7 +1368,13 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.clientId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task deleted successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   function BindAfterChildDataDelete(ID, parentId, childIndex) {
@@ -1312,7 +1384,13 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
+    props.updateDataFromChildComponent(props.clientId,[...tempData]);
     setLoader(false);
+    showMessage(
+      "Task deleted successfully",
+      toastTopRight,
+      "success"
+    );
   }
 
   const showMessage = (event, ref, severity) => {
@@ -1362,6 +1440,8 @@ const UserClientDB = (props): JSX.Element => {
       ")"
     : "";
 
+    let displayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
+
   return (
     <>
       {loader ? (
@@ -1407,15 +1487,21 @@ const UserClientDB = (props): JSX.Element => {
             selectionMode="checkbox"
             sortMode="multiple"
             selectionKeys={selectedNodeKeys}
-            onSelect={onSelect}
-            onUnselect={unselect}
+            onSelect={(event) => {
+              onSelect(event);
+              props.onselect(event);
+            }}
+            onUnselect={(event) => {
+              unselect(event);
+              props.unselect(event);
+            }}
             disabled={true}
             expandedKeys={expandedKeys}
             onToggle={(e) => setExpandedKeys(e.value)}
             onSelectionChange={(e) => {
               setSelectedNodeKeys(e.value);
             }}
-            value={[...curMyTask]}
+            value={[...displayItems]}
             tableStyle={{ minWidth: "50rem" }}
             // paginator
             // rows={10}

@@ -14,6 +14,7 @@ let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
+let selectedTasks=[];
 export default function UserTasks(props) {
   const UserEmail = !props.Email ? "" : props.Email;
   const [loader, setLoader] = useState(false);
@@ -223,6 +224,8 @@ export default function UserTasks(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
+                ReminderRef:val.ReminderRef,
+                ReminderDays:val.ReminderDays,
                 Status: val.Status,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
@@ -309,6 +312,8 @@ export default function UserTasks(props) {
                   },
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
+                  ReminderRef:val.ReminderRef,
+                  ReminderDays:val.ReminderDays,
                   Status: val.Status,
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
@@ -371,11 +376,91 @@ export default function UserTasks(props) {
       }
     }
     props.clientdatafunction([...MainArray]);
+    props.getClientTasks([...tempClient]);
     setCurMyTask([...MainArray]);
     setMasterdata([...MainArray]);
     setClientdata([...tempClient]);
     setLoader(false);
   }
+
+  const onselect = (event) => 
+  {
+    if(event.node.isParent)
+    {
+      selectedTasks.push({data:event.node,Id:event.node.Id,subId:"",isSelected:true,isParent:true,categoryID:event.node.data.clientId,taskType:"clientTasks"});
+      
+      for(let i=0;i<event.node.children.length;i++)
+      {
+        selectedTasks.push({data:event.node.children[i],Id:event.node.children[i].Id,subId:event.node.Id,isSelected:true,isParent:false,categoryID:event.node.data.clientId,taskType:"clientTasks"});
+      }
+    }
+    else
+    {
+      selectedTasks.push({data:event.node,Id:event.node.Id,subId:event.node.subId,isSelected:true,isParent:false,categoryID:event.node.data.clientId,taskType:"clientTasks"});
+    }
+
+    props.getClientSelectedTasks([...selectedTasks]);
+  };
+
+  const unselect = (event) => 
+  {
+    
+    if(event.node.isParent)
+    {
+       
+          for(let i=0;i<selectedTasks.length;i++)
+          {
+              if(selectedTasks[i].Id==event.node.Id)
+              {
+                selectedTasks[i].isSelected=false;
+              }
+          }
+
+          for(let i=0;i<selectedTasks.length;i++)
+          {
+              if(selectedTasks[i].subId==event.node.Id)
+              {
+                selectedTasks[i].isSelected=false;
+              }
+          }
+        
+    }
+    else
+    {
+        for(let i=0;i<selectedTasks.length;i++)
+        {
+            if(selectedTasks[i].Id==event.node.Id)
+            {
+              selectedTasks[i].isSelected=false;
+            }
+        }
+    }
+
+    let crntSelectedTasks=selectedTasks.filter((item)=>{
+      return item.isSelected==true;
+    });
+    selectedTasks=[...crntSelectedTasks];
+    props.getClientSelectedTasks([...selectedTasks]);
+  };
+
+
+  function updateDataFromChildComponent(clientId,Tasks)
+  {
+    let tempClientNew = [...clientdata];
+    let categoryIndex = tempClientNew.findIndex((val) => val.ID == clientId);
+    if (categoryIndex < 0) {
+      console.log("Category not found");
+    } else {
+      tempClientNew[categoryIndex].Tasks = Tasks;
+    }
+    setClientdata([...tempClientNew]);
+    props.getClientTasks([...tempClientNew]);
+  }
+
+  useEffect(() => {
+    selectedTasks=[];
+    setClientdata([...props.UpdatedData]);
+  }, [props.UpdatedData]);
 
   useEffect(() => {
     setSearch(props.searchValue);
@@ -416,6 +501,9 @@ export default function UserTasks(props) {
                         crntBackData={configure}
                         backupUsers={val.BackupUsers}
                         choices={props.choices}
+                        onselect={onselect}
+                        unselect={unselect}
+                        updateDataFromChildComponent={updateDataFromChildComponent}
                       />
                     </>
                   );

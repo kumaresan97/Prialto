@@ -587,7 +587,7 @@ export default function MyTaskDBNewCategory(props) {
     automationTasks = [];
     let noOfDays = days;
     let tempClientNew = [...clientdata];
-
+    //selectedTasks=selectedTasks[0];//need to remove for this to mulitple..
     for (let i = 0; i < selectedTasks.length; i++) {
       if (selectedTasks[i].isParent) {
         automationTasks.push({
@@ -615,6 +615,7 @@ export default function MyTaskDBNewCategory(props) {
     }
 
     for (let i = 0; i < selectedTasks.length; i++) {
+      try{
       let categoryIndex = tempClientNew.findIndex(
         (val) => val.ID == selectedTasks[i].categoryID
       );
@@ -646,6 +647,10 @@ export default function MyTaskDBNewCategory(props) {
           }
         }
       }
+    }
+    catch(e){
+      errFunction(e);
+    }
     }
 
     insertReminderNew([...automationTasks]);

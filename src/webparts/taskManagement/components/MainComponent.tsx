@@ -310,6 +310,8 @@ const MainComponent = (props: any): JSX.Element => {
   }, []);
 
   return (
+    <>
+    <h1 className={styles.pageHeader}>Member Task Tracker</h1>
     <div className={styles.TaskManagementSection}>
       <div
         className={styles.leftNav}
@@ -341,7 +343,7 @@ const MainComponent = (props: any): JSX.Element => {
                   fontWeight: 700,
                 }}
               >
-                Member Task Tracker
+                
                 {/* Member Task Tracker */}
               </Label>
               {/* <span className="p-input-icon-left">
@@ -630,6 +632,7 @@ const MainComponent = (props: any): JSX.Element => {
         )}
       </div>
     </div>
+    </>
   );
 };
 export default MainComponent;

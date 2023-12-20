@@ -14,6 +14,8 @@ export interface IMyTasks {
   DoneFormula?: string;
   DaysOnEarly?: number;
   isRecurrence?: boolean;
+  ReminderRef?:number;
+  ReminderDays?:number;
 }
 
 export interface IPeoplePicker {

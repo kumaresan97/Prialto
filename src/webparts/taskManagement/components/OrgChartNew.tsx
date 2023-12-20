@@ -1480,7 +1480,7 @@ const OrgChart = (props) => {
     for (let i = 0; i < data.length; i++) {
       let ismyTeam = myTeams.includes(data[i].Team);
 
-      if (((_isTL||_isTC) && ismyTeam) || _isAdmin) {
+      if (((_isTL || _isTC) && ismyTeam) || _isAdmin) {
         arrDisplay.push(data[i]);
       }
     }

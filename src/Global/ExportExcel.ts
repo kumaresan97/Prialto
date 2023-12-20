@@ -6,6 +6,7 @@ const exportToExcel = (data, headers, sheetName) => {
   return new Promise<void>((resolve, reject) => {
     const workbook = new Excel.Workbook();
     const worksheet = workbook.addWorksheet(sheetName);
+    console.log("data", data);
 
     // Set headers dynamically
     worksheet.columns = headers.map((header) => ({
@@ -14,27 +15,36 @@ const exportToExcel = (data, headers, sheetName) => {
       width: header.width || 15,
     }));
 
-    const Colorchange = async (item, index, CellStatus, cellPrioritylevel) => {
+    const Colorchange = (item, index, CellStatus, cellPrioritylevel) => {
       let x = item.Status || item.data.Status;
       let y = item.PriorityLevel || item.data.PriorityLevel;
       let statusBgColor = "";
       let statusColor = "";
       let priorityBgColor = "";
       let priorityColor = "";
+
       if (item.Status || item.data.Status) {
         if (item.Status === "Completed" || item.data.Status == "Completed") {
           statusBgColor = "bf4927";
           statusColor = "ffded5";
-        } else if (item.Status === "Weekly" || item.data.Status == "Weekly") {
+        }
+        if (item.Status === "Weekly" || item.data.Status == "Weekly") {
           statusBgColor = "bf4927";
           statusColor = "ffff";
-        } else if (item.Status === "Daily" || item.data.Status == "Daily") {
+        }
+        if (item.Status === "Daily" || item.data.Status == "Daily") {
           statusBgColor = "faa1f1";
           statusColor = "ffff";
-        } else if (item.Status === "Monthly" || item.data.Status == "Monthly") {
+        }
+        if (item.Status === "Monthly" || item.data.Status == "Monthly") {
           statusBgColor = "ff70cf";
           statusColor = "ffff";
-        } else if (item.Status === "On-hold" || item.data.Status == "On-hold") {
+        }
+        // if (item.Status === "On-hold" || item.data.Status == "On-hold") {
+        //   statusBgColor = "225091";
+        //   statusColor = "ffff";
+        // }
+        if (item.Status === "One time" || item.data.Status == "One time") {
           statusBgColor = "225091";
           statusColor = "ffff";
         }
@@ -44,6 +54,7 @@ const exportToExcel = (data, headers, sheetName) => {
           pattern: "solid",
           fgColor: { argb: statusBgColor },
         };
+
         worksheet._rows[index + 1]._cells[CellStatus].font = {
           color: { argb: statusColor },
           name: "Arial",
@@ -59,24 +70,28 @@ const exportToExcel = (data, headers, sheetName) => {
         ) {
           priorityBgColor = "4bbd17";
           priorityColor = "f46906";
-        } else if (
+        }
+        if (
           item.PriorityLevel === "Urgent" ||
           item.data.PriorityLevel == "Urgent"
         ) {
-          priorityBgColor = "ffded5";
+          priorityBgColor = "f2e307";
           priorityColor = "bf4927";
-        } else if (
+        }
+        if (
           item.PriorityLevel == "Normal" ||
           item.data.PriorityLevel == "Normal"
         ) {
           priorityBgColor = "68a1bd";
-          priorityColor = "#4b6164";
+          priorityColor = "4b6164";
         }
+
         worksheet._rows[index + 1]._cells[cellPrioritylevel].fill = {
           type: "pattern",
           pattern: "solid",
           fgColor: { argb: priorityBgColor },
         };
+
         worksheet._rows[index + 1]._cells[cellPrioritylevel].font = {
           color: { argb: priorityColor },
           name: "Arial",
@@ -127,12 +142,14 @@ const exportToExcel = (data, headers, sheetName) => {
       "N1",
       "O1",
     ];
+
     headerRows.map((key: any) => {
       worksheet.getCell(key).fill = {
         type: "pattern",
         pattern: "solid",
         fgColor: { argb: "d6d6d6" },
       };
+
       worksheet.getCell(key).font = {
         // type: "pattern",
         // pattern: "solid",
@@ -229,8 +246,8 @@ const exportToExcel = (data, headers, sheetName) => {
         //   priorityBgColor = "ffded5";
         //   priorityColor = "bf4927";
         // } else if (item.PriorityLevel == "Normal") {
-        //   priorityBgColor = "#bbfcff";
-        //   priorityColor = "#4b6164";
+        //   priorityBgColor = "bbfcff";
+        //   priorityColor = "4b6164";
         // }
         // worksheet._rows[index + 1]._cells[3].fill = {
         //   type: "pattern",
@@ -292,8 +309,11 @@ const exportToExcel = (data, headers, sheetName) => {
     //   }
     // }
     else if (sheetName == "MyTask") {
+      let _count: number = -1;
       // data.forEach(async (item, index) => {
       for (let i = 0; i < data.length; i++) {
+        _count++;
+
         const oddRowFill = {
           type: "pattern",
           pattern: "solid",
@@ -305,7 +325,7 @@ const exportToExcel = (data, headers, sheetName) => {
           pattern: "solid",
           fgColor: { argb: "FFFFFF" },
         };
-        const rowFill = i % 2 === 0 ? evenRowFill : oddRowFill;
+        const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
         const row = worksheet.addRow({
           TaskName: data[i].data?.TaskName,
           Creator: data[i].data?.Creator.Title,
@@ -328,59 +348,84 @@ const exportToExcel = (data, headers, sheetName) => {
           };
         });
 
-        Colorchange(data[i], i, 10, 9);
+        Colorchange(data[i], _count, 10, 9);
 
         //worksheet.addRow();
         // Add child data for each item
-        if (data[i].children.length > 0) {
-          // item.children.forEach(async (child, index) => {
-          // for (const child of item.children) {
-          for (let j = 0; j < data[i].children.length; j++) {
-            const oddRowFill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "fce4d6" },
-            };
+        // if (data[i].children.length) {
+        // item.children.forEach(async (child, index) => {
+        // for (const child of item.children) {
 
-            const evenRowFill = {
-              type: "pattern",
-              pattern: "solid",
-              fgColor: { argb: "FFFFFF" }, // Set your desired even row color here (Hex color code)
+        for (let j = 0; j < data[i].children.length; j++) {
+          _count++;
+
+          const oddRowFill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "fce4d6" },
+          };
+
+          const evenRowFill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FFFFFF" }, // Set your desired even row color here (Hex color code)
+          };
+
+          const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+
+          const childrow = worksheet.addRow({
+            TaskName: data[i].children[j].data?.TaskName,
+            ParenTask: data[i].data?.TaskName,
+            Creator: data[i].children[j].data?.Creator.Title,
+            Backup: data[i].children[j].data?.Backup.Title,
+            PriorityLevel: data[i].children[j].data?.PriorityLevel,
+            DueDate: data[i].children[j].data?.DueDate,
+            TaskAge: data[i].children[j].data.TaskAge,
+            CompletedDate: data[i].children[j].data.CompletedDate,
+            DoneFormula: data[i].children[j].data.DoneFormula,
+            DaysOnEarly: data[i].children[j].data.DaysOnEarly,
+            Status: data[i].children[j].data?.Status,
+            Created: data[i].children[j].data?.Created,
+          });
+
+          childrow.fill = rowFill;
+
+          childrow.eachCell({ includeEmpty: true }, (cell) => {
+            cell.font = {
+              name: "Arial", // Font name
+              size: 10, // Font size in points
             };
-            const rowFill = j % 2 === 0 ? evenRowFill : oddRowFill;
-            const childrow = worksheet.addRow({
-              TaskName: data[i].children[j].data?.TaskName,
-              ParenTask: data[i].data?.TaskName,
-              Creator: data[i].children[j].data?.Creator.Title,
-              Backup: data[i].children[j].data?.Backup.Title,
-              PriorityLevel: data[i].children[j].data?.PriorityLevel,
-              DueDate: data[i].children[j].data?.DueDate,
-              TaskAge: data[i].children[j].data.TaskAge,
-              CompletedDate: data[i].children[j].data.CompletedDate,
-              DoneFormula: data[i].children[j].data.DoneFormula,
-              DaysOnEarly: data[i].children[j].data.DaysOnEarly,
-              Status: data[i].children[j].data?.Status,
-              Created: data[i].children[j].data?.Created,
-            });
-            childrow.fill = rowFill;
-            childrow.eachCell({ includeEmpty: true }, (cell) => {
-              cell.font = {
-                name: "Arial", // Font name
-                size: 10, // Font size in points
-              };
-            });
-            Colorchange(data[i].children[j], j, 10, 9);
-          }
-        } else {
-          //worksheet.addRow({}); // Add an empty row
+          });
+
+          Colorchange(data[i].children[j], _count, 10, 9);
+          // if (!data[i].children.length) continue outerloop;
         }
+        // }
+        // else {
+        //   //worksheet.addRow({}); // Add an empty row
+        // }
       }
 
       //worksheet.addRow(); // Empty row after each parent's children
       // });
     } else if (sheetName == "ClientandBackup") {
+      let _count: number = -1;
+
       for (const parent of data[0].clientData) {
-        worksheet.addRow({
+        _count++;
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "fce4d6" },
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" },
+        };
+        const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+        const row = worksheet.addRow({
           TaskName: parent.data?.TaskName,
           Creator: parent.data?.Creator.Title,
           Backup: parent.data?.Backup.Title,
@@ -395,12 +440,33 @@ const exportToExcel = (data, headers, sheetName) => {
           Created: parent.data?.Created,
           Category: "ClientTasks",
         });
+        row.fill = rowFill;
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = {
+            name: "Arial",
+            size: 10,
+          };
+        });
+        Colorchange(parent, _count, 10, 9);
 
         //worksheet.addRow();
         // Add child data for each parent
         if (parent.children?.length > 0) {
           for (const child of parent.children) {
-            worksheet.addRow({
+            const oddRowFill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "fce4d6" },
+            };
+
+            const evenRowFill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFFFFF" },
+            };
+            const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+            _count++;
+            const row = worksheet.addRow({
               TaskName: child.data?.TaskName,
               ParenTask: parent.data?.TaskName,
               Creator: child.data?.Creator.Title,
@@ -416,6 +482,16 @@ const exportToExcel = (data, headers, sheetName) => {
               Created: child.data?.Created,
               Category: "ClientTasks",
             });
+
+            row.fill = rowFill;
+            row.eachCell({ includeEmpty: true }, (cell) => {
+              cell.font = {
+                name: "Arial",
+                size: 10,
+              };
+            });
+
+            Colorchange(child, _count, 10, 9);
           }
         } else {
           //worksheet.addRow({}); // Add an empty row
@@ -425,7 +501,22 @@ const exportToExcel = (data, headers, sheetName) => {
       }
 
       for (const parent of data[0].backupData) {
-        worksheet.addRow({
+        _count++;
+
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "fce4d6" },
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" },
+        };
+        const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+
+        const row = worksheet.addRow({
           TaskName: parent.Tasks[0].data?.TaskName,
           Creator: parent.Tasks[0].data?.Creator.Title,
           Backup: parent.Tasks[0].data?.Backup.Title,
@@ -440,11 +531,35 @@ const exportToExcel = (data, headers, sheetName) => {
           Created: parent.Tasks[0].data?.Created,
           Category: "BackupTasks",
         });
+        row.fill = rowFill;
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = {
+            name: "Arial",
+            size: 10,
+          };
+        });
+
+        Colorchange(parent, _count, 10, 9);
+
         //worksheet.addRow();
         // Add child data for each parent
         if (parent.Tasks[0].children?.length > 0) {
           for (const child of parent.Tasks[0].children) {
-            worksheet.addRow({
+            _count++;
+
+            const oddRowFill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "fce4d6" },
+            };
+
+            const evenRowFill = {
+              type: "pattern",
+              pattern: "solid",
+              fgColor: { argb: "FFFFFF" },
+            };
+            const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+            const row = worksheet.addRow({
               TaskName: child.data?.TaskName,
               ParenTask: parent.data?.TaskName,
               Creator: child.data?.Creator.Title,
@@ -460,6 +575,15 @@ const exportToExcel = (data, headers, sheetName) => {
               Created: child.data?.Created,
               Category: "BackupTasks",
             });
+            row.fill = rowFill;
+            row.eachCell({ includeEmpty: true }, (cell) => {
+              cell.font = {
+                name: "Arial",
+                size: 10,
+              };
+            });
+
+            Colorchange(child, _count, 10, 9);
           }
         } else {
           //worksheet.addRow({}); // Add an empty row

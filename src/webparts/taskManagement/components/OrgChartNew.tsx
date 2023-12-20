@@ -1674,7 +1674,7 @@ const OrgChart = (props) => {
   //dummy mytaskheader
 
   let columns = [
-    { header: "Name", key: "Name", width: 15 },
+    { header: "Name", key: "Name", width: 25 },
     { header: "Role", key: "Role", width: 25 },
     { header: "Cohort", key: "Team", width: 25 },
     // { header: "Cohort", key: "Cohort", width: 25 },
@@ -1691,11 +1691,10 @@ const OrgChart = (props) => {
     setLoader(true);
     try {
       await exportToExcel(value, columns, "OrgChart");
-      setLoader(false); // Set loader to false after export is done
+      setLoader(false);
     } catch (err) {
-      setLoader(false); // Handle error by setting loader to false
+      setLoader(false);
       console.error("Export error:", err);
-      // Add additional error handling if required
     }
   };
 

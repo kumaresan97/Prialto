@@ -704,45 +704,47 @@ const Client = (props) => {
         console.log(MyTeamMembers);
         let array: IClient[] = [];
         res.forEach((val: any) => {
+          let isTeamMemberinAssitant = false;
+          isTeamMemberinAssitant = MyTeamMembers.includes(val.Assistant?.EMail);
+          let isTeamMemberinBackup = false;
 
-          let isTeamMemberinAssitant=false;
-          isTeamMemberinAssitant=MyTeamMembers.includes(val.Assistant?.EMail)
-          let isTeamMemberinBackup=false;
-
-          for(let i=0;i<val.Backup.length;i++)
-          {
-              if(MyTeamMembers.includes(val.Backup[i].EMail))
-              {
-                isTeamMemberinBackup=true;
-              }
+          for (let i = 0; i < val.Backup.length; i++) {
+            if (MyTeamMembers.includes(val.Backup[i].EMail)) {
+              isTeamMemberinBackup = true;
+            }
           }
 
-          if(isTeamMemberinAssitant||isTeamMemberinBackup||props._isAdmin){
-          array.push({
-            Id: val.Id,
-            FirstName: val.FirstName ? val.FirstName : "",
-            LastName: val.LastName ? val.LastName : "",
-            CompanyName: val.CompanyName ? val.CompanyName : "",
-            Assistant: {
-              Id: val.Assistant?.ID,
-              EMail: val.Assistant?.EMail,
-              Title: val.Assistant?.Title,
-            },
+          if (
+            isTeamMemberinAssitant ||
+            isTeamMemberinBackup ||
+            props._isAdmin
+          ) {
+            array.push({
+              Id: val.Id,
+              FirstName: val.FirstName ? val.FirstName : "",
+              LastName: val.LastName ? val.LastName : "",
+              CompanyName: val.CompanyName ? val.CompanyName : "",
+              Assistant: {
+                Id: val.Assistant?.ID,
+                EMail: val.Assistant?.EMail,
+                Title: val.Assistant?.Title,
+              },
 
-            Backup: Array.isArray(val.Backup)
-              ? val.Backup?.map((response) => ({
-                  Id: response?.ID,
-                  EMail: response?.EMail,
-                  Title: response?.Title,
-                }))
-              : [],
+              Backup: Array.isArray(val.Backup)
+                ? val.Backup?.map((response) => ({
+                    Id: response?.ID,
+                    EMail: response?.EMail,
+                    Title: response?.Title,
+                  }))
+                : [],
 
-            // Backup: {
-            //   Id: val.Backup?.ID,
-            //   EMail: val.Backup?.EMail,
-            //   Title: val.Backup?.Title,
-            // },
-          });}
+              // Backup: {
+              //   Id: val.Backup?.ID,
+              //   EMail: val.Backup?.EMail,
+              //   Title: val.Backup?.Title,
+              // },
+            });
+          }
         });
         setClientdetail([...array]);
         setMasterdata([...array]);
@@ -896,7 +898,7 @@ const Client = (props) => {
   };
 
   let columns = [
-    { header: "First name", key: "FirstName", width: 15 },
+    { header: "First name", key: "FirstName", width: 25 },
     { header: "Last name", key: "LastName", width: 25 },
     { header: "Company name", key: "CompanyName", width: 25 },
     { header: "Assistant", key: "Assistant", width: 25 },
@@ -966,8 +968,7 @@ const Client = (props) => {
       Orderbydecorasc: false,
       Topcount: 5000,
     })
-      .then((res: any) => 
-      {
+      .then((res: any) => {
         dataManipulation(res);
       })
       .catch((err: any) => {
@@ -978,7 +979,7 @@ const Client = (props) => {
   function dataManipulation(data) {
     let arrDisplay = [];
     let myTeams = [];
-    let myTeamMembers=[];
+    let myTeamMembers = [];
     _isTL = false;
     _isTC = false;
     _isPA = false;
@@ -998,15 +999,13 @@ const Client = (props) => {
     for (let i = 0; i < data.length; i++) {
       let ismyTeam = myTeams.includes(data[i].Team);
 
-      if (((_isTL||_isTC) && ismyTeam) || props._isAdmin) 
-      {
+      if (((_isTL || _isTC) && ismyTeam) || props._isAdmin) {
         myTeamMembers.push(data[i].Name.EMail);
         arrDisplay.push(data[i]);
       }
     }
     getdatas(myTeamMembers);
   }
-
 
   useEffect(() => {
     setLoader(true);
@@ -1057,7 +1056,7 @@ const Client = (props) => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
               />
-              {(
+              {
                 <Button
                   label="Add Client"
                   className={styles.btnColor}
@@ -1072,7 +1071,7 @@ const Client = (props) => {
                     // _handleData("addParent", { ..._sampleParent });
                   }}
                 />
-              )}
+              }
             </div>
           </div>
           <div className={styles.dataTableContainer}>
@@ -1116,13 +1115,13 @@ const Client = (props) => {
                 sortable
                 body={(obj: any) => _addTextField(obj, "Backup")}
               ></Column>
-              {(
+              {
                 <Column
                   header="Action"
                   style={{ width: "200px" }}
                   body={(obj) => _action(obj)}
                 ></Column>
-              )}
+              }
             </DataTable>
           </div>
 

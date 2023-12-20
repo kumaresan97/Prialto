@@ -957,7 +957,7 @@ const Client = (props) => {
             // }}
             className={styles.clientContainer}
           >
-            <h2>Client list</h2>
+            <h2>Member list</h2>
             {/* <InputText
           value={search}
           onChange={(e: any) => SearchFilter(e.target.value)}

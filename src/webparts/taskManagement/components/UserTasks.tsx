@@ -396,7 +396,7 @@ export default function UserTasks(props) {
         <Loader />
       ) : (
         <>
-          <Label className={styles.clientHeader}>Client Tasks</Label>
+          <Label className={styles.clientHeader}>Member Tasks</Label>
           <>
             {clientdata.length > 0 ? (
               <>

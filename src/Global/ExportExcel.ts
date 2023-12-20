@@ -16,27 +16,41 @@ const exportToExcel = (data, headers, sheetName) => {
     }));
 
     const Colorchange = (item, index, CellStatus, cellPrioritylevel) => {
-      let x = item.Status || item.data.Status;
-      let y = item.PriorityLevel || item.data.PriorityLevel;
       let statusBgColor = "";
       let statusColor = "";
       let priorityBgColor = "";
       let priorityColor = "";
 
-      if (item.Status || item.data.Status) {
-        if (item.Status === "Completed" || item.data.Status == "Completed") {
+      if (item?.Status || item?.data?.Status || item?.Tasks?.data?.Status) {
+        if (
+          item?.Status === "Completed" ||
+          item.data?.Status == "Completed" ||
+          item.Tasks?.data.Status == "Completed"
+        ) {
           statusBgColor = "bf4927";
           statusColor = "ffded5";
         }
-        if (item.Status === "Weekly" || item.data.Status == "Weekly") {
+        if (
+          item.Status === "Weekly" ||
+          item?.data?.Status == "Weekly" ||
+          item?.Tasks?.data.Status == "Weekly"
+        ) {
           statusBgColor = "bf4927";
           statusColor = "ffff";
         }
-        if (item.Status === "Daily" || item.data.Status == "Daily") {
+        if (
+          item?.Status === "Daily" ||
+          item?.data.Status == "Daily" ||
+          item?.Tasks?.data.Status == "Daily"
+        ) {
           statusBgColor = "faa1f1";
           statusColor = "ffff";
         }
-        if (item.Status === "Monthly" || item.data.Status == "Monthly") {
+        if (
+          item?.Status === "Monthly" ||
+          item?.data.Status == "Monthly" ||
+          item?.Tasks?.data.Status == "Monthly"
+        ) {
           statusBgColor = "ff70cf";
           statusColor = "ffff";
         }
@@ -44,7 +58,11 @@ const exportToExcel = (data, headers, sheetName) => {
         //   statusBgColor = "225091";
         //   statusColor = "ffff";
         // }
-        if (item.Status === "One time" || item.data.Status == "One time") {
+        if (
+          item?.Status === "One time" ||
+          item?.data?.Status == "One time" ||
+          item?.Tasks?.data?.Status == "One time"
+        ) {
           statusBgColor = "225091";
           statusColor = "ffff";
         }
@@ -63,24 +81,31 @@ const exportToExcel = (data, headers, sheetName) => {
         };
       }
 
-      if (item.PriorityLevel || item.data.PriorityLevel) {
+      if (
+        item?.PriorityLevel ||
+        item?.data?.PriorityLevel ||
+        item.Tasks?.data?.PriorityLevel
+      ) {
         if (
-          item.PriorityLevel === "High" ||
-          item.data.PriorityLevel == "High"
+          item?.PriorityLevel === "High" ||
+          item.data?.PriorityLevel == "High" ||
+          item?.Tasks?.data?.PriorityLevel == "High"
         ) {
           priorityBgColor = "4bbd17";
           priorityColor = "f46906";
         }
         if (
           item.PriorityLevel === "Urgent" ||
-          item.data.PriorityLevel == "Urgent"
+          item.data?.PriorityLevel == "Urgent" ||
+          item?.Tasks?.data?.PriorityLevel == "Urgent"
         ) {
           priorityBgColor = "f2e307";
           priorityColor = "bf4927";
         }
         if (
           item.PriorityLevel == "Normal" ||
-          item.data.PriorityLevel == "Normal"
+          item.data?.PriorityLevel == "Normal" ||
+          item?.Tasks?.data?.PriorityLevel == "Normal"
         ) {
           priorityBgColor = "68a1bd";
           priorityColor = "4b6164";
@@ -175,7 +200,7 @@ const exportToExcel = (data, headers, sheetName) => {
         };
         const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
 
-        worksheet.addRow({
+        const row = worksheet.addRow({
           Name: item.Name?.Title,
           Role: item.Role,
           Team: item.Team,
@@ -185,21 +210,63 @@ const exportToExcel = (data, headers, sheetName) => {
           // TeamLeader: item.TeamLeader?.Title,
           DirectReports: item.DirectReports[0]?.Title,
           // BackingUp: item.BackingUp[0]?.Title,
-        }).fill = rowFill;
+        });
+
+        row.fill = rowFill;
+
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = {
+            name: "Arial",
+            size: 10,
+          };
+        });
       });
     } else if (sheetName == "Client") {
-      data.forEach((item) => {
-        worksheet.addRow({
+      data.forEach((item, index) => {
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "F3F3F3" },
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" },
+        };
+        const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
+        const row = worksheet.addRow({
           FirstName: item.FirstName,
           LastName: item?.LastName,
           CompanyName: item.CompanyName,
           Assistant: item.Assistant?.Title,
-          // Backup: item.Backup?.Title,
+          Backup: item.Backup?.Title,
+        });
+        row.fill = rowFill;
+
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = {
+            name: "Arial",
+            size: 10,
+          };
         });
       });
     } else if (sheetName == "DoneDashboard") {
       data.forEach((item, index) => {
-        worksheet.addRow({
+        const oddRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "F3F3F3" },
+        };
+
+        const evenRowFill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFFFFF" },
+        };
+        const rowFill = index % 2 === 0 ? evenRowFill : oddRowFill;
+
+        const row = worksheet.addRow({
           TaskName: item?.TaskName,
           ParenTaskName: item?.ParenTaskName,
           // Creator:item?.Creator.Title,
@@ -213,22 +280,16 @@ const exportToExcel = (data, headers, sheetName) => {
           DaysOnEarly: item?.DaysOnEarly,
           DoneFormula: item?.DoneFormula,
           Created: item?.Created,
-        }).font = {
-          name: "Arial",
-          size: 10,
-        };
+        });
+        row.fill = rowFill;
 
-        const oddRowFill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "F3F3F3" },
-        };
+        row.eachCell({ includeEmpty: true }, (cell) => {
+          cell.font = {
+            name: "Arial",
+            size: 10,
+          };
+        });
 
-        const evenRowFill = {
-          type: "pattern",
-          pattern: "solid",
-          fgColor: { argb: "FFFFFF" },
-        };
         Colorchange(item, index, 4, 3);
 
         // let statusBgColor = "";
@@ -328,8 +389,8 @@ const exportToExcel = (data, headers, sheetName) => {
         const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
         const row = worksheet.addRow({
           TaskName: data[i].data?.TaskName,
-          Creator: data[i].data?.Creator.Title,
-          Backup: data[i].data?.Backup.Title,
+          // Creator: data[i].data?.Creator.Title,
+          // Backup: data[i].data?.Backup.Title,
           PriorityLevel: data[i].data?.PriorityLevel,
           DueDate: data[i].data?.DueDate,
           TaskAge: data[i].data.TaskAge,
@@ -348,7 +409,7 @@ const exportToExcel = (data, headers, sheetName) => {
           };
         });
 
-        Colorchange(data[i], _count, 10, 9);
+        Colorchange(data[i], _count, 4, 3);
 
         //worksheet.addRow();
         // Add child data for each item
@@ -376,8 +437,8 @@ const exportToExcel = (data, headers, sheetName) => {
           const childrow = worksheet.addRow({
             TaskName: data[i].children[j].data?.TaskName,
             ParenTask: data[i].data?.TaskName,
-            Creator: data[i].children[j].data?.Creator.Title,
-            Backup: data[i].children[j].data?.Backup.Title,
+            // Creator: data[i].children[j].data?.Creator.Title,
+            // Backup: data[i].children[j].data?.Backup.Title,
             PriorityLevel: data[i].children[j].data?.PriorityLevel,
             DueDate: data[i].children[j].data?.DueDate,
             TaskAge: data[i].children[j].data.TaskAge,
@@ -397,7 +458,7 @@ const exportToExcel = (data, headers, sheetName) => {
             };
           });
 
-          Colorchange(data[i].children[j], _count, 10, 9);
+          Colorchange(data[i].children[j], _count, 4, 3);
           // if (!data[i].children.length) continue outerloop;
         }
         // }
@@ -409,6 +470,7 @@ const exportToExcel = (data, headers, sheetName) => {
       //worksheet.addRow(); // Empty row after each parent's children
       // });
     } else if (sheetName == "ClientandBackup") {
+      debugger;
       let _count: number = -1;
 
       for (const parent of data[0].clientData) {
@@ -427,8 +489,8 @@ const exportToExcel = (data, headers, sheetName) => {
         const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
         const row = worksheet.addRow({
           TaskName: parent.data?.TaskName,
-          Creator: parent.data?.Creator.Title,
-          Backup: parent.data?.Backup.Title,
+          // Creator: parent.data?.Creator.Title,
+          // Backup: parent.data?.Backup.Title,
           PriorityLevel: parent.data?.PriorityLevel,
           DueDate: parent.data?.DueDate,
           ClientName: parent.data?.ClientName,
@@ -447,7 +509,7 @@ const exportToExcel = (data, headers, sheetName) => {
             size: 10,
           };
         });
-        Colorchange(parent, _count, 10, 9);
+        Colorchange(parent, _count, 6, 5);
 
         //worksheet.addRow();
         // Add child data for each parent
@@ -469,8 +531,8 @@ const exportToExcel = (data, headers, sheetName) => {
             const row = worksheet.addRow({
               TaskName: child.data?.TaskName,
               ParenTask: parent.data?.TaskName,
-              Creator: child.data?.Creator.Title,
-              Backup: child.data?.Backup.Title,
+              // Creator: child.data?.Creator.Title,
+              // Backup: child.data?.Backup.Title,
               PriorityLevel: child.data?.PriorityLevel,
               ClientName: parent.data?.ClientName,
               DueDate: child.data?.DueDate,
@@ -491,7 +553,7 @@ const exportToExcel = (data, headers, sheetName) => {
               };
             });
 
-            Colorchange(child, _count, 10, 9);
+            Colorchange(child, _count, 6, 5);
           }
         } else {
           //worksheet.addRow({}); // Add an empty row
@@ -518,8 +580,8 @@ const exportToExcel = (data, headers, sheetName) => {
 
         const row = worksheet.addRow({
           TaskName: parent.Tasks[0].data?.TaskName,
-          Creator: parent.Tasks[0].data?.Creator.Title,
-          Backup: parent.Tasks[0].data?.Backup.Title,
+          // Creator: parent.Tasks[0].data?.Creator.Title,
+          // Backup: parent.Tasks[0].data?.Backup.Title,
           PriorityLevel: parent.Tasks[0].data?.PriorityLevel,
           DueDate: parent.Tasks[0].data?.DueDate,
           ClientName: parent.Tasks[0].data?.ClientName,
@@ -539,7 +601,7 @@ const exportToExcel = (data, headers, sheetName) => {
           };
         });
 
-        Colorchange(parent, _count, 10, 9);
+        Colorchange(parent, _count, 6, 5);
 
         //worksheet.addRow();
         // Add child data for each parent
@@ -562,8 +624,8 @@ const exportToExcel = (data, headers, sheetName) => {
             const row = worksheet.addRow({
               TaskName: child.data?.TaskName,
               ParenTask: parent.data?.TaskName,
-              Creator: child.data?.Creator.Title,
-              Backup: child.data?.Backup.Title,
+              // Creator: child.data?.Creator.Title,
+              // Backup: child.data?.Backup.Title,
               PriorityLevel: child.data?.PriorityLevel,
               ClientName: parent.data?.ClientName,
               DueDate: child.data?.DueDate,
@@ -583,7 +645,7 @@ const exportToExcel = (data, headers, sheetName) => {
               };
             });
 
-            Colorchange(child, _count, 10, 9);
+            Colorchange(child, _count, 6, 5);
           }
         } else {
           //worksheet.addRow({}); // Add an empty row

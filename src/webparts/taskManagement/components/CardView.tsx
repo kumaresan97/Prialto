@@ -86,21 +86,37 @@ const CardView = (props) => {
                 Email: arr.Name?.EMail,
                 Id: arr.NameId,
               });
+
+              if (arr.Role == "TL") {
+                TeamLeader.push({
+                  Title: arr.Name?.Title,
+                  Email: arr.Name?.EMail,
+                  Id: arr.NameId,
+                });
+              }
+
+              if (arr.Role == "TC") {
+                TeamCaptain.push({
+                  Title: arr.Name?.Title,
+                  Email: arr.Name?.EMail,
+                  Id: arr.NameId,
+                });
+              }
             }
-            if (arr.TeamLeaderId) {
-              TeamLeader.push({
-                Title: arr.TeamLeader?.Title,
-                Email: arr.TeamLeader?.EMail,
-                Id: arr.TeamLeader?.ID,
-              });
-            }
-            if (arr.TeamCaptainId) {
-              TeamCaptain.push({
-                Title: arr.TeamCaptain?.Title,
-                Email: arr.TeamCaptain?.EMail,
-                Id: arr.TeamCaptain?.ID,
-              });
-            }
+            // if (arr.TeamLeaderId) {
+            //   TeamLeader.push({
+            //     Title: arr.TeamLeader?.Title,
+            //     Email: arr.TeamLeader?.EMail,
+            //     Id: arr.TeamLeader?.ID,
+            //   });
+            // }
+            // if (arr.TeamCaptainId) {
+            //   TeamCaptain.push({
+            //     Title: arr.TeamCaptain?.Title,
+            //     Email: arr.TeamCaptain?.EMail,
+            //     Id: arr.TeamCaptain?.ID,
+            //   });
+            // }
           });
           teamArr.push({
             TeamName: team,
@@ -172,18 +188,54 @@ const CardView = (props) => {
                                 Team Captain
                               </Label>
                               <div className={styles.teaCaptianSec}>
-                                <Avatar
+                                {/* <Avatar
                                   image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0]?.Email}`}
                                   size="normal"
                                   shape="circle"
                                   label={val.TeamCaptain[0]?.Title}
+                                  data-pr-tooltip="test"
                                 />
                                 <Label
                                   className={styles.noPaddingLable}
                                   style={{ marginLeft: 6 }}
                                 >
                                   {val.TeamCaptain[0]?.Title}
-                                </Label>
+                                </Label> */}
+
+                                {val.TeamCaptain.length>0?
+                                val.TeamCaptain.map((item) => {
+                                  return (
+                                    <>
+                                      <div title={item?.Title}>
+                                      <Avatar
+                                        image={`/_layouts/15/userphoto.aspx?size=S&username=${item?.Email}`}
+                                        size="normal"
+                                        shape="circle"
+                                        label={item?.Title}
+                                        data-pr-tooltip={item?.Title}
+                                      />
+                                      </div>
+                                      {/* <Label
+                                        className={styles.noPaddingLable}
+                                        style={{ marginLeft: 6 }}
+                                      >
+                                        {item?.Title}
+                                      </Label> */}
+                                    </>
+                                  );
+                                }):<><Avatar
+                                image={`/_layouts/15/userphoto.aspx?size=S&username=''`}
+                                size="normal"
+                                shape="circle"
+                                label={""}
+                                data-pr-tooltip=""
+                              />
+                              <Label
+                                className={styles.noPaddingLable}
+                                style={{ marginLeft: 6 }}
+                              >
+                                {''}
+                              </Label></>}
                               </div>
                             </div>
                           </div>
@@ -221,12 +273,12 @@ const CardView = (props) => {
                                 <AvatarGroup>
                                   {val.members.length &&
                                     val.members.slice(0, 5).map((res) => {
-                                      let test =
+                                      let username =
                                         "/_layouts/15/userphoto.aspx?size=S&username=" +
                                         res?.Email;
                                       return (
                                         <Avatar
-                                          image={test}
+                                          image={username}
                                           size="normal"
                                           shape="circle"
                                         />
@@ -236,7 +288,7 @@ const CardView = (props) => {
                                     <Avatar
                                       size="normal"
                                       shape="circle"
-                                      label={`+${val.members.length - 3} `}
+                                      label={`+${val.members.length - 5} `}
                                     />
                                   )}
                                 </AvatarGroup>

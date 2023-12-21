@@ -23,6 +23,7 @@ let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 let statusChoices = [];
+let recurrenceChoices=[];
 
 /*For automation */
 let automationTasks = [];
@@ -83,9 +84,28 @@ export default function MyTaskDBNewCategory(props) {
       FieldName: "Status",
     })
       .then(function (data) {
-        console.log(data["Choices"]);
         for (let i = 0; i < data["Choices"].length; i++) {
           statusChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
+  }
+
+  function getRecurrence() {
+    recurrenceChoices = [];
+    SPServices.SPGetChoices({
+      Listname: "Tasks",
+      FieldName: "Recurrence",
+    })
+      .then(function (data) {
+        console.log(data["Choices"]);
+        for (let i = 0; i < data["Choices"].length; i++) {
+          recurrenceChoices.push({
             name: data["Choices"][i],
             code: data["Choices"][i],
           });
@@ -280,6 +300,7 @@ export default function MyTaskDBNewCategory(props) {
                 ReminderDays: val.ReminderDays,
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
+                Recurrence:val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -370,7 +391,7 @@ export default function MyTaskDBNewCategory(props) {
                   ReminderDays: val.ReminderDays,
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
-
+                  Recurrence:val.Recurrence,
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)
@@ -851,8 +872,11 @@ export default function MyTaskDBNewCategory(props) {
     MainArray = [];
     SubTask = [];
     statusChoices = [];
+    recurrenceChoices=[];
     getStatus();
+    getRecurrence();
     getcurUser();
+    
   }, [props.Email]);
 
   let BeforeData =
@@ -1154,6 +1178,14 @@ export default function MyTaskDBNewCategory(props) {
                   setIsCatDialog(true);
                 }}
               />
+              <Button
+                className={styles.btnColor}
+                label="Done"
+                onClick={() => {
+                  props.HandleCompleted("Completed", UserEmail);
+                }}
+                // icon="pi pi-file-excel"
+              />
             </div>
           </div>
           <>
@@ -1182,6 +1214,7 @@ export default function MyTaskDBNewCategory(props) {
                         crntUserData={curuserId}
                         crntBackData={configure}
                         choices={statusChoices}
+                        recChoices={recurrenceChoices}
                       />
                     </>
                   );
@@ -1203,6 +1236,7 @@ export default function MyTaskDBNewCategory(props) {
                   crntUserData={curuserId}
                   crntBackData={configure}
                   choices={statusChoices}
+                  recChoices={recurrenceChoices}
                 />
               </>
             )}

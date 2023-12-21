@@ -308,6 +308,7 @@ export default function UserBackUpTasksNew(props) {
                 ReminderRef:val.ReminderRef,
                 ReminderDays:val.ReminderDays,
                 Status: val.Status,
+                Recurrence:val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -424,6 +425,7 @@ export default function UserBackUpTasksNew(props) {
                 ReminderRef:val.ReminderRef,
                 ReminderDays:val.ReminderDays,
                 Status: val.Status,
+                Recurrence:val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -650,6 +652,7 @@ export default function UserBackUpTasksNew(props) {
                         crntUserData={curuserId}
                         crntBackData={configure}
                         choices={props.choices}
+                        recChoices={props.recChoices}
                         backupUsers={val.BackupUsers} ///Changes for backup users multiple
                         onselect={onselect}
                         unselect={unselect}

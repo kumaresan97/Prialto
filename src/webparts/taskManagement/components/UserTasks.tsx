@@ -228,6 +228,7 @@ export default function UserTasks(props) {
                 ReminderRef:val.ReminderRef,
                 ReminderDays:val.ReminderDays,
                 Status: val.Status,
+                Recurrence:val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -316,6 +317,7 @@ export default function UserTasks(props) {
                   ReminderRef:val.ReminderRef,
                   ReminderDays:val.ReminderDays,
                   Status: val.Status,
+                  Recurrence:val.Recurrence,
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)
@@ -502,6 +504,7 @@ export default function UserTasks(props) {
                         crntBackData={configure}
                         backupUsers={val.BackupUsers}
                         choices={props.choices}
+                        recChoices={props.recChoices}
                         onselect={onselect}
                         unselect={unselect}
                         updateDataFromChildComponent={updateDataFromChildComponent}

@@ -8,6 +8,7 @@ export interface IMyTasks {
   DueDate: string;
   PriorityLevel: string | any;
   Status: string | any;
+  Recurrence?:string|any;
   Created: string;
   TaskAge?: number;
   CompletedDate?: string;

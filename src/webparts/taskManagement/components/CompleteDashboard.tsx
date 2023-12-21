@@ -64,7 +64,7 @@ const CompleteDashboard = (props) => {
       {
         FilterKey: "Status",
         Operator: "eq",
-        FilterValue: "Completed",
+        FilterValue: "Done",
       },
     ];
 
@@ -142,7 +142,7 @@ const CompleteDashboard = (props) => {
       {
         FilterKey: "Status",
         Operator: "eq",
-        FilterValue: "Completed",
+        FilterValue: "Done",
       },
     ];
 
@@ -210,7 +210,6 @@ const CompleteDashboard = (props) => {
   };
 
   const Binddata = () => {
-    debugger;
     let globalArray = [];
     let SubArrayId = [];
 
@@ -362,7 +361,7 @@ const CompleteDashboard = (props) => {
     { header: "Task Name", key: "TaskName", width: 15 },
     { header: "Creation Log", key: "Created", width: 25 },
 
-    { header: "Parent Task Name", key: "ParenTaskName", width: 25 },
+    { header: "Parent Task Name", key: "parentTasKName", width: 25 },
     // { header: "Creator", key: "Creator", width: 25 },
     // { header: "Backup", key: "Backup", width: 25 },
 

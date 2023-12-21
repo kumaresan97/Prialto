@@ -672,131 +672,130 @@ const exportToExcel = (data, headers, sheetName) => {
 
         //worksheet.addRow(); // Empty row after each parent's children
       }
+      if (data[0].backupData.length) {
+        for (const parent of data[0].backupData[0]?.Tasks) {
+          _count++;
 
-      for (const parent of data[0].backupData[0]?.Tasks) {
-        console.log("parent", parent);
+          // const oddRowFill = {
+          //   type: "pattern",
+          //   pattern: "solid",
+          //   fgColor: { argb: "fce4d6" },
+          // };
 
-        _count++;
+          // const evenRowFill = {
+          //   type: "pattern",
+          //   pattern: "solid",
+          //   fgColor: { argb: "FFFFFF" },
+          // };
+          const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
 
-        // const oddRowFill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "fce4d6" },
-        // };
+          const row = worksheet.addRow({
+            TaskName: parent.data?.TaskName,
+            // Creator: parent.Tasks[0].data?.Creator.Title,
+            // Backup: parent.Tasks[0].data?.Backup.Title,
+            PriorityLevel: parent.data?.PriorityLevel,
+            DueDate: parent.data?.DueDate,
+            ClientName: parent.data?.ClientName,
+            Status: parent.data?.Status,
+            TaskAge: parent.data?.TaskAge,
+            CompletedDate: parent.data?.CompletedDate,
+            DoneFormula: parent.data?.DoneFormula,
+            DaysOnEarly: parent.data?.DaysOnEarly,
+            Created: parent.data?.Created,
+            Category: "BackupTasks",
 
-        // const evenRowFill = {
-        //   type: "pattern",
-        //   pattern: "solid",
-        //   fgColor: { argb: "FFFFFF" },
-        // };
-        const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+            // TaskName: parent.Tasks[0].data?.TaskName,
+            // // Creator: parent.Tasks[0].data?.Creator.Title,
+            // // Backup: parent.Tasks[0].data?.Backup.Title,
+            // PriorityLevel: parent.Tasks[0].data?.PriorityLevel,
+            // DueDate: parent.Tasks[0].data?.DueDate,
+            // ClientName: parent.Tasks[0].data?.ClientName,
+            // Status: parent.Tasks[0].data?.Status,
+            // TaskAge: parent.Tasks[0].data?.TaskAge,
+            // CompletedDate: parent.Tasks[0].data?.CompletedDate,
+            // DoneFormula: parent.Tasks[0].data?.DoneFormula,
+            // DaysOnEarly: parent.Tasks[0].data?.DaysOnEarly,
+            // Created: parent.Tasks[0].data?.Created,
+            // Category: "BackupTasks",
+          });
+          row.fill = rowFill;
+          row.eachCell({ includeEmpty: true }, (cell) => {
+            cell.border = {
+              top: { style: "thin" },
+              left: { style: "thin" },
+              bottom: { style: "thin" },
+              right: { style: "thin" },
+            };
+          });
+          row.eachCell({ includeEmpty: true }, (cell) => {
+            cell.font = {
+              name: "Arial",
+              size: 10,
+            };
+          });
 
-        const row = worksheet.addRow({
-          TaskName: parent.data?.TaskName,
-          // Creator: parent.Tasks[0].data?.Creator.Title,
-          // Backup: parent.Tasks[0].data?.Backup.Title,
-          PriorityLevel: parent.data?.PriorityLevel,
-          DueDate: parent.data?.DueDate,
-          ClientName: parent.data?.ClientName,
-          Status: parent.data?.Status,
-          TaskAge: parent.data?.TaskAge,
-          CompletedDate: parent.data?.CompletedDate,
-          DoneFormula: parent.data?.DoneFormula,
-          DaysOnEarly: parent.data?.DaysOnEarly,
-          Created: parent.data?.Created,
-          Category: "BackupTasks",
+          Colorchange(parent, _count, 6, 5);
 
-          // TaskName: parent.Tasks[0].data?.TaskName,
-          // // Creator: parent.Tasks[0].data?.Creator.Title,
-          // // Backup: parent.Tasks[0].data?.Backup.Title,
-          // PriorityLevel: parent.Tasks[0].data?.PriorityLevel,
-          // DueDate: parent.Tasks[0].data?.DueDate,
-          // ClientName: parent.Tasks[0].data?.ClientName,
-          // Status: parent.Tasks[0].data?.Status,
-          // TaskAge: parent.Tasks[0].data?.TaskAge,
-          // CompletedDate: parent.Tasks[0].data?.CompletedDate,
-          // DoneFormula: parent.Tasks[0].data?.DoneFormula,
-          // DaysOnEarly: parent.Tasks[0].data?.DaysOnEarly,
-          // Created: parent.Tasks[0].data?.Created,
-          // Category: "BackupTasks",
-        });
-        row.fill = rowFill;
-        row.eachCell({ includeEmpty: true }, (cell) => {
-          cell.border = {
-            top: { style: "thin" },
-            left: { style: "thin" },
-            bottom: { style: "thin" },
-            right: { style: "thin" },
-          };
-        });
-        row.eachCell({ includeEmpty: true }, (cell) => {
-          cell.font = {
-            name: "Arial",
-            size: 10,
-          };
-        });
+          //worksheet.addRow();
+          // Add child data for each parent
+          if (parent.children?.length > 0) {
+            // if (parent.Tasks && parent.Tasks?.children?.length > 0) {
+            for (const child of parent.children) {
+              console.log("child", child);
+              _count++;
 
-        Colorchange(parent, _count, 6, 5);
+              // const oddRowFill = {
+              //   type: "pattern",
+              //   pattern: "solid",
+              //   fgColor: { argb: "fce4d6" },
+              // };
 
-        //worksheet.addRow();
-        // Add child data for each parent
-        if (parent.children?.length > 0) {
-          // if (parent.Tasks && parent.Tasks?.children?.length > 0) {
-          for (const child of parent.children) {
-            console.log("child", child);
-            _count++;
+              // const evenRowFill = {
+              //   type: "pattern",
+              //   pattern: "solid",
+              //   fgColor: { argb: "FFFFFF" },
+              // };
+              const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
+              const row = worksheet.addRow({
+                TaskName: child.data?.TaskName,
+                ParenTask: parent.data?.TaskName,
+                // Creator: child.data?.Creator.Title,
+                // Backup: child.data?.Backup.Title,
+                PriorityLevel: child.data?.PriorityLevel,
+                ClientName: parent.data?.ClientName,
+                DueDate: child.data?.DueDate,
+                Status: child.data?.Status,
+                TaskAge: child.data?.TaskAge,
+                CompletedDate: child.data?.CompletedDate,
+                DoneFormula: child.data?.DoneFormula,
+                DaysOnEarly: child.data?.DaysOnEarly,
+                Created: child.data?.Created,
+                Category: "BackupTasks",
+              });
+              row.fill = rowFill;
+              row.eachCell({ includeEmpty: true }, (cell) => {
+                cell.border = {
+                  top: { style: "thin" }, // Add top border to each cell
+                  left: { style: "thin" }, // Add left border to each cell
+                  bottom: { style: "thin" }, // Add bottom border to each cell
+                  right: { style: "thin" }, // Add right border to each cell
+                };
+              });
+              row.eachCell({ includeEmpty: true }, (cell) => {
+                cell.font = {
+                  name: "Arial",
+                  size: 10,
+                };
+              });
 
-            // const oddRowFill = {
-            //   type: "pattern",
-            //   pattern: "solid",
-            //   fgColor: { argb: "fce4d6" },
-            // };
-
-            // const evenRowFill = {
-            //   type: "pattern",
-            //   pattern: "solid",
-            //   fgColor: { argb: "FFFFFF" },
-            // };
-            const rowFill = _count % 2 === 0 ? evenRowFill : oddRowFill;
-            const row = worksheet.addRow({
-              TaskName: child.data?.TaskName,
-              ParenTask: parent.data?.TaskName,
-              // Creator: child.data?.Creator.Title,
-              // Backup: child.data?.Backup.Title,
-              PriorityLevel: child.data?.PriorityLevel,
-              ClientName: parent.data?.ClientName,
-              DueDate: child.data?.DueDate,
-              Status: child.data?.Status,
-              TaskAge: child.data?.TaskAge,
-              CompletedDate: child.data?.CompletedDate,
-              DoneFormula: child.data?.DoneFormula,
-              DaysOnEarly: child.data?.DaysOnEarly,
-              Created: child.data?.Created,
-              Category: "BackupTasks",
-            });
-            row.fill = rowFill;
-            row.eachCell({ includeEmpty: true }, (cell) => {
-              cell.border = {
-                top: { style: "thin" }, // Add top border to each cell
-                left: { style: "thin" }, // Add left border to each cell
-                bottom: { style: "thin" }, // Add bottom border to each cell
-                right: { style: "thin" }, // Add right border to each cell
-              };
-            });
-            row.eachCell({ includeEmpty: true }, (cell) => {
-              cell.font = {
-                name: "Arial",
-                size: 10,
-              };
-            });
-
-            Colorchange(child, _count, 6, 5);
+              Colorchange(child, _count, 6, 5);
+            }
+          } else {
+            //worksheet.addRow({}); // Add an empty row
           }
-        } else {
-          //worksheet.addRow({}); // Add an empty row
-        }
 
-        //worksheet.addRow(); // Empty row after each parent's children
+          //worksheet.addRow(); // Empty row after each parent's children
+        }
       }
     }
     workbook.xlsx

@@ -20,6 +20,7 @@ import { InputNumber } from "primereact/inputnumber";
 import * as moment from "moment";
 import { Toast } from "primereact/toast";
 let statusChoices = [];
+let recurrenceChoices=[];
 let arrClientData = [];//For export function..
 let arrBackupData = [];
 let ExportDataItems = [];
@@ -208,9 +209,30 @@ export default function UserDashboard(props) {
       });
   }
 
+  function getRecurrence() {
+    recurrenceChoices = [];
+    SPServices.SPGetChoices({
+      Listname: "Tasks",
+      FieldName: "Recurrence",
+    })
+      .then(function (data) {
+        console.log(data["Choices"]);
+        for (let i = 0; i < data["Choices"].length; i++) {
+          recurrenceChoices.push({
+            name: data["Choices"][i],
+            code: data["Choices"][i],
+          });
+        }
+      })
+      .catch(function (error) {
+        errFunction(error);
+      });
+  }
+
   useEffect(() => {
     setLoader(true);
     getStatus();
+    getRecurrence();
     getcurUser();
   }, [props.Email]);
 
@@ -626,10 +648,12 @@ export default function UserDashboard(props) {
             Email={user}
             choices={statusChoices}
             clientdatafunction={getDataFromClient}
+            recChoices={recurrenceChoices}
 
             getClientTasks={getClientTasks}
             getClientSelectedTasks={getClientSelectedTasks}
             UpdatedData={clientTasks}
+            
 
           />
           {/* <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/> */}
@@ -639,6 +663,7 @@ export default function UserDashboard(props) {
             Email={user}
             choices={statusChoices}
             backupdatafunction={getDataFromBackup}
+            recChoices={recurrenceChoices}
 
             getBackupTasks={getBackupTasks}
             getBackupSelectedTasks={getBackupSelectedTasks}

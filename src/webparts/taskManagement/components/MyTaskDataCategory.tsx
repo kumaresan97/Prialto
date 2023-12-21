@@ -43,6 +43,8 @@ let dropStatus = [
   // { name: "Done", code: "Done" },
 ];
 
+let dropRecurrence=[];
+
 let MyClients = [];
 let MainTask: IParent[] = [];
 let SubTask: IChild[] = [];
@@ -108,6 +110,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   };
 
   dropStatus = props.choices;
+  dropRecurrence= props.recChoices;
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
@@ -128,6 +131,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     DueDate: "",
     PriorityLevel: "",
     Status: "",
+    Recurrence:"",
     Created: new Date().toString(),
     Backup: {
       EMail: "",
@@ -159,6 +163,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       DueDate: "",
       PriorityLevel: "",
       Status: "",
+      Recurrence:"",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -190,6 +195,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       DueDate: "",
       PriorityLevel: "",
       Status: "",
+      Recurrence:"",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -411,6 +417,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
+      Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
       TaskAge: 0,
       CompletedDate:
@@ -430,6 +437,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
+      Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       AssistantId: curuserId.Id,
       CategoryId: props.categoryId,
       TaskAge: 0,
@@ -458,7 +466,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         };
 
         let inputJson = obj.isParent ? newJson : newSubJson;
-        AddRecurrence(curdata.Status["name"], inputJson);
+        AddRecurrence(curdata.Recurrence["name"], inputJson);
 
         // if(curdata.Status["name"]!="Completed"&&curdata.Status["name"]!="On-hold"&&curdata.Status["name"]!="one time"){
         // await SPServices.SPAddItem({
@@ -487,6 +495,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               DueDate: SPServices.displayDate(Json.DueDate),
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
+              Recurrence: Json.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
@@ -531,6 +540,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               DueDate: SPServices.displayDate(Json.DueDate),
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
+              Recurrence: Json.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
               ReminderRef:0,
               ReminderDays:0
@@ -684,6 +694,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         ? curdata.PriorityLevel["name"]
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
+      Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       CompletedDate:
         curdata.Status["name"] == "Completed" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
@@ -696,7 +707,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Status["name"]);
+        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Recurrence["name"]);
         let newData = {};
         if (obj.isParent) {
           newData = {
@@ -714,6 +725,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               DueDate: SPServices.displayDate(editval.DueDate),
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
+              Recurrence: editval.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
@@ -743,6 +755,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               DueDate: SPServices.displayDate(editval.DueDate),
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
+              Recurrence: editval.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
               ReminderRef:curdata.ReminderRef,
               ReminderDays:curdata.ReminderDays
@@ -806,6 +819,10 @@ const MyTaskDataCategory = (props): JSX.Element => {
           name: obj.data.PriorityLevel,
           code: obj.data.PriorityLevel,
         };
+        curdata.Recurrence = {
+          name: obj.data.Recurrence,
+          code: obj.data.Recurrence,
+        };
         curdata.Status = {
           name: obj.data.Status,
           code: obj.data.Status,
@@ -820,6 +837,10 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.PriorityLevel = {
           name: obj.data.PriorityLevel,
           code: obj.data.PriorityLevel,
+        };
+        curdata.Recurrence = {
+          name: obj.data.Recurrence,
+          code: obj.data.Recurrence,
         };
         curdata.Status = {
           name: obj.data.Status,
@@ -1080,6 +1101,27 @@ const MyTaskDataCategory = (props): JSX.Element => {
           />
         );
       }
+      if (fieldType == "Recurrence") {
+        let indexOfDrop = dropRecurrence.findIndex(
+          (data) => data.name == curdata.Recurrence.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.Recurrence.name) {
+          curdata.Recurrence = dropRecurrence[indexOfDrop];
+        }
+        return (
+          <Dropdown
+            options={dropRecurrence}
+            style={{ width: "85%" }}
+            placeholder="Select a status"
+            optionLabel="name"
+            value={dropRecurrence[indexOfDrop]}
+            onChange={(e: any) => getOnchange("Recurrence", e.value)}
+
+            // className="w-full md:w-14rem"
+          />
+        );
+      }
       if (fieldType == "Created") {
         return (
           <Calendar
@@ -1227,6 +1269,27 @@ const MyTaskDataCategory = (props): JSX.Element => {
           />
         );
       }
+      if (fieldType == "Recurrence") {
+        let indexOfDrop = dropRecurrence.findIndex(
+          (data) => data.name == curdata.Recurrence.name
+        );
+        indexOfDrop < 0 ? (indexOfDrop = 0) : "";
+        if (!curdata.Recurrence.name) {
+          curdata.Recurrence = dropRecurrence[indexOfDrop];
+        }
+        return (
+          <Dropdown
+            options={dropRecurrence}
+            style={{ width: "85%" }}
+            placeholder="Select a status"
+            optionLabel="name"
+            value={dropRecurrence[indexOfDrop]}
+            onChange={(e: any) => getOnchange("Recurrence", e.value)}
+
+            // className="w-full md:w-14rem"
+          />
+        );
+      }
       if (fieldType == "Created") {
         return (
           <Calendar
@@ -1251,7 +1314,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             {data[fieldType].Title}
           </span>
         );
-      } else if (fieldType == "Status" || fieldType == "PriorityLevel") {
+      } else if (fieldType == "Status" || fieldType == "PriorityLevel" || fieldType == "Recurrence") {
         return priorityLevelStyle(data[fieldType]);
       } else {
         return (
@@ -1670,6 +1733,13 @@ const MyTaskDataCategory = (props): JSX.Element => {
               sortable
               style={cellStyle}
               body={(obj: any) => _addTextField(obj, "PriorityLevel")}
+            />
+            <Column
+              field="Recurrence"
+              header="Recurrence"
+              sortable
+              style={cellStyle}
+              body={(obj: any) => _addTextField(obj, "Recurrence")}
             />
             <Column
               field="Status"

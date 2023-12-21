@@ -586,7 +586,7 @@ const MainComponent = (props: any): JSX.Element => {
       >
         {value == "mytasks" ? (
           <>
-            <MyTaskDBNewCategory context={props.context} />
+            <MyTaskDBNewCategory context={props.context} HandleCompleted={HandleCompleted}/>
           </>
         ) : value == "member" ? (
           // <UserClient

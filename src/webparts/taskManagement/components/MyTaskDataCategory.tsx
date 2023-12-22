@@ -23,6 +23,7 @@ import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 let x = [];
+let arrdisplayItems=[];//manipulation array just for data store..
 const cities = [
   { name: "New York", code: "NY" },
   { name: "Rome", code: "RM" },
@@ -55,6 +56,15 @@ const editIconStyle = {
   border: "none",
   // height: 26,
   // width: 26,
+};
+
+const pencilIconBtnStyle = {
+  color: "#007C81",
+  border: "none",
+  backgroundColor: "transparent",
+  height: 26,
+  width: 26,
+  marginLeft: 4,
 };
 
 const MyTaskDataCategory = (props): JSX.Element => {
@@ -1614,7 +1624,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
 
-  let arrdisplayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
+  arrdisplayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
     for(let i=0;i<arrdisplayItems.length;i++)
     {
       let newChildrens=[];  
@@ -1706,7 +1716,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               margin: "15px 0px",
             }}
           >
-            <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               <h2
 
               // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
@@ -1717,19 +1727,19 @@ const MyTaskDataCategory = (props): JSX.Element => {
                 <Button
                   type="button"
                   icon="pi pi-pencil"
-                  style={editIconStyle}
+                  style={pencilIconBtnStyle}
                   onClick={() => {
                     Editcategory(true, props.categoryName, props.categoryId);
                   }}
                 ></Button>
-                <Button
+                {arrdisplayItems.length==0?<Button
                 type="button"
                 icon="pi pi-trash"
-                style={editIconStyle}
+                style={delIconBtnStyle}
                 onClick={() => {
                   DeleteCategory(true, props.categoryName, props.categoryId);
                 }}
-              ></Button></>
+              ></Button>:""}</>
               ) : (
                 ""
               )}

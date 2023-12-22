@@ -867,12 +867,14 @@ export default function MyTaskDBNewCategory(props) {
   function RemoveCategory(Id)
   {
     let tempClientNew = [...clientdata];
+    let arrIndex = MyCategories.findIndex((val) => val.ID == Id);
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == Id);
     if (categoryIndex < 0) 
     {
       console.log("Category not found");
     } else {
       tempClientNew.splice(categoryIndex,1);
+      MyCategories.splice(arrIndex,1);
     }
     setClientdata([...tempClientNew]);
   }

@@ -123,6 +123,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   const [categoryValue, setCategoryValue] = useState("");
   const [categoryId, setCategoryId] = useState(null);
   const [isCatDialog, setIsCatDialog] = useState(false);
+  const[displayItems,setDisplayItems]= useState([]);
 
   const data: IMyTasks = {
     TaskName: "",
@@ -1567,7 +1568,20 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
 
-  let displayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
+  let arrdisplayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
+    for(let i=0;i<arrdisplayItems.length;i++)
+    {
+      let newChildrens=[];  
+      //remove the done data from child array..
+      for(let j=0;j<arrdisplayItems[i].children.length;j++)
+      { 
+          if(arrdisplayItems[i].children[j].data.Status!="Done")
+          {
+            newChildrens.push(arrdisplayItems[i].children[j]);
+          }
+      }
+      arrdisplayItems[i].children=newChildrens;
+    }
 
   return (
     <>
@@ -1685,7 +1699,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
             onSelectionChange={(e) => {
               setSelectedNodeKeys(e.value);
             }}
-            value={[...displayItems]}
+            value={[...arrdisplayItems]}
             tableStyle={{ minWidth: "50rem" }}
             // paginator
             // rows={10}

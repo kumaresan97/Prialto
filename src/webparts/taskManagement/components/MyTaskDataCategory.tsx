@@ -119,6 +119,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   const [deleteObj, setDeleteObj] = useState<any>({});
   const [curuserId, setCuruserId] = useState(props.crntUserData);
   const [iseditdialog, setIseditdialog] = useState(false);
+  const [isDeletedialog, setIsDeletedialog] = useState(false);
 
   const [categoryValue, setCategoryValue] = useState("");
   const [categoryId, setCategoryId] = useState(null);
@@ -398,13 +399,20 @@ const MyTaskDataCategory = (props): JSX.Element => {
     let daysEarly = 0;
 
     if (
-      curdata.DueDate >= moment().format("YYYY-MM-DD") &&
-      curdata.Status["name"] == "Completed"
+      moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Done"
     ) {
       strDoneOnTime = "Done On Time";
       var TDate = moment(moment().format("YYYY-MM-DD"));
       daysEarly = moment(curdata.DueDate).diff(TDate, "days");
     }
+    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+    curdata.Status["name"] != "Done")
+    {
+      strDoneOnTime = "On Track";
+    }
+
+
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
       AssistantId: curuserId.Id,
@@ -420,6 +428,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       MainTaskIDId: Number(obj.key.split("-")[0]),
+      CategoryId: props.categoryId,
       TaskAge: 0,
       CompletedDate:
         curdata.Status["name"] == "Completed" ? moment().format() : null,
@@ -680,12 +689,17 @@ const MyTaskDataCategory = (props): JSX.Element => {
     let daysEarly = 0;
     let strDoneOnTime = "Overdue";
     if (
-      curdata.DueDate >= moment().format("YYYY-MM-DD") &&
-      curdata.Status["name"] == "Completed"
+      moment(curdata.DueDate).format('YYYY-MM-DD')>= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Done"
     ) {
       strDoneOnTime = "Done On Time";
       var TDate = moment(moment().format("YYYY-MM-DD"));
       daysEarly = moment(curdata.DueDate).diff(TDate, "days");
+    }
+    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+    curdata.Status["name"] != "Done")
+    {
+      strDoneOnTime = "On Track";
     }
     let editval = {
       TaskName: curdata.TaskName,
@@ -1532,6 +1546,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setDeleteObj({});
   }
 
+
+
   const UpdateCategory = (value, Id) => {
     setLoader(true);
     SPServices.SPUpdateItem({
@@ -1558,6 +1574,36 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCategoryValue(value1);
     setCategoryId(value3);
   };
+
+  function DeleteCategory(value, value1, value3)
+  {
+    setIsDeletedialog(value);
+    setCategoryId(value3);
+  }
+
+  function acceptDeleteCategory()
+  {
+    setLoader(true);  
+    SPServices.SPDeleteItem({
+        Listname:"Categories",
+        ID:categoryId
+      }).then(function(res){
+        props.RemoveCategory(categoryId);
+        setIsDeletedialog(false);
+        setCategoryId("");
+        setLoader(false);
+      }).catch(function(error){
+        errFunction(error);
+      })
+  }
+
+  function rejectDeleteCategory()
+  {
+    
+    setIsDeletedialog(false);
+    setCategoryId("");
+  }
+
 
   useEffect(() => {
     SearchFilter(props.searchValue);
@@ -1641,6 +1687,16 @@ const MyTaskDataCategory = (props): JSX.Element => {
             accept={accept}
             reject={reject}
           />
+
+            <ConfirmDialog
+            visible={isDeletedialog}
+            onHide={() => setIsDeletedialog(false)}
+            message="Are you sure you want to delete?"
+            // header="Confirmation"
+            // icon="pi pi-exclamation-triangle"
+            accept={acceptDeleteCategory}
+            reject={rejectDeleteCategory}
+          />
           <div
             className={styles.myTaskHeader}
             style={{
@@ -1657,7 +1713,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               >
                 {props.categoryName}
               </h2>
-              {props.categoryName ? (
+              {props.categoryName ? (<>
                 <Button
                   type="button"
                   icon="pi pi-pencil"
@@ -1666,6 +1722,14 @@ const MyTaskDataCategory = (props): JSX.Element => {
                     Editcategory(true, props.categoryName, props.categoryId);
                   }}
                 ></Button>
+                <Button
+                type="button"
+                icon="pi pi-trash"
+                style={editIconStyle}
+                onClick={() => {
+                  DeleteCategory(true, props.categoryName, props.categoryId);
+                }}
+              ></Button></>
               ) : (
                 ""
               )}

@@ -72,9 +72,9 @@ const CompleteDashboard = (props) => {
       Listname: "Tasks",
 
       Select:
-        "*, Assistant/ID,Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+        "*, Assistant/ID,Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Category/Title",
 
-      Expand: "Assistant,Backup,Author,Client",
+      Expand: "Assistant,Backup,Author,Client,Category",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
@@ -89,6 +89,8 @@ const CompleteDashboard = (props) => {
             parentTasKName: "",
             key: "",
             TaskName: resdata.TaskName,
+            Category:resdata.Category?.Title,
+            Client:resdata.Client?.FirstName,
             Id: resdata.Id,
             // NotifyDate: resdata?.NotifyDate
             //   ? SPServices.displayDate(resdata.NotifyDate)
@@ -149,9 +151,9 @@ const CompleteDashboard = (props) => {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*, Assistant/ID, MainTaskID/ID,MainTaskID/TaskName,Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+        "*, Assistant/ID, MainTaskID/ID,MainTaskID/TaskName,Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Category/Title",
 
-      Expand: "Assistant,Backup,Author,Client,MainTaskID",
+      Expand: "Assistant,Backup,Author,Client,MainTaskID,Category",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
@@ -167,6 +169,8 @@ const CompleteDashboard = (props) => {
             subArray.push({
               Id: val.Id,
               subId: val.MainTaskID?.ID,
+              Category:val.Category?.Title,
+              Client:val.Client?.FirstName,
               //   NotifyDate: val?.NotifyDate
               //     ? SPServices.displayDate(val.NotifyDate)
               //     : "",
@@ -427,6 +431,18 @@ const CompleteDashboard = (props) => {
             sortMode="multiple"
             tableStyle={{ minWidth: "60rem" }}
           >
+            <Column
+              field="Category"
+              header="Category"
+              //   expander
+              sortable
+            />
+            <Column
+              field="Client"
+              header="Client"
+              //   expander
+              sortable
+            />
             <Column
               field="TaskName"
               header="Task name"

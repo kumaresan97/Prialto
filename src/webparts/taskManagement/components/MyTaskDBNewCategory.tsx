@@ -864,6 +864,19 @@ export default function MyTaskDBNewCategory(props) {
     setClientdata([...tempClientNew]);
   }
 
+  function RemoveCategory(Id)
+  {
+    let tempClientNew = [...clientdata];
+    let categoryIndex = tempClientNew.findIndex((val) => val.ID == Id);
+    if (categoryIndex < 0) 
+    {
+      console.log("Category not found");
+    } else {
+      tempClientNew.splice(categoryIndex,1);
+    }
+    setClientdata([...tempClientNew]);
+  }
+
   useEffect(() => {
     setLoader(true);
     MyClients = [];
@@ -1215,6 +1228,7 @@ export default function MyTaskDBNewCategory(props) {
                         crntBackData={configure}
                         choices={statusChoices}
                         recChoices={recurrenceChoices}
+                        RemoveCategory={RemoveCategory}
                       />
                     </>
                   );

@@ -721,12 +721,12 @@ const Client = (props) => {
           let isTeamMemberinAssitant = false;
           isTeamMemberinAssitant = MyTeamMembers.includes(val.Assistant?.EMail);
           let isTeamMemberinBackup = false;
-
+          if(val.Backup){
           for (let i = 0; i < val.Backup.length; i++) {
             if (MyTeamMembers.includes(val.Backup[i].EMail)) {
               isTeamMemberinBackup = true;
             }
-          }
+          }}
 
           if (
             isTeamMemberinAssitant ||
@@ -965,13 +965,14 @@ const Client = (props) => {
       missingFields.push("Company name");
     } else if (!value.Assistant?.Id || value.Assistant?.Id === null) {
       missingFields.push("Assistant");
-    } else if (
-      !value.Backup ||
-      value.Backup.length === 0 ||
-      !value.Backup.some((user) => user.Id !== null)
-    ) {
-      missingFields.push("Backup");
-    }
+    } 
+    // else if (
+    //   !value.Backup ||
+    //   value.Backup.length === 0 ||
+    //   !value.Backup.some((user) => user.Id !== null)
+    // ) {
+    //   missingFields.push("Backup");
+    // }
 
     return missingFields;
   }

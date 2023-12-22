@@ -1496,16 +1496,23 @@ const UserClientDB = (props): JSX.Element => {
     setMasterdata([...props.mainData]);
   }, [props.mainData]);
 
-  let ClientFullName = props.Clientdatas["FirstName"]
-    ? props.Clientdatas["FirstName"] +
-      props.Clientdatas["LastName"] +
-      " (" +
-      props.Clientdatas["CompanyName"] +
-      ")"
-    : "";
+  // let ClientFullName = props.Clientdatas["FirstName"]
+  //   ? props.Clientdatas["FirstName"]+ " "+
+  //     props.Clientdatas["LastName"]?props.Clientdatas["LastName"]:"" +
+  //     " (" +
+  //     props.Clientdatas["CompanyName"] +
+  //     ")"
+  //   : "";
+    let ClientFullName="";
+    let strFirstName=props.Clientdatas["FirstName"]?props.Clientdatas["FirstName"]+" ":"";
+    let stSecondName=props.Clientdatas["LastName"]?props.Clientdatas["LastName"]+" ":"";
+    let strCompanyName=props.Clientdatas["CompanyName"]?props.Clientdatas["CompanyName"]:"";
+
+    if(strFirstName||stSecondName||strCompanyName)
+    ClientFullName=strFirstName + stSecondName + "("+strCompanyName+")";
 
     let displayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
-
+    
   return (
     <>
       {loader ? (

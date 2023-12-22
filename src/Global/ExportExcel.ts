@@ -62,55 +62,55 @@ const exportToExcel = (data, headers, sheetName) => {
           statusBgColor = "b7e1eb";
           statusColor = "225662";
         }
-        if (item.Status === "On-hold" || item.data?.Status == "On-hold") {
+        if (item?.Status === "On-hold" || item.data?.Status == "On-hold") {
           statusBgColor = "f7f6da";
           statusColor = "4a4a3b";
         }
         if (
-          item.Status === "Every Monday" ||
+          item?.Status === "Every Monday" ||
           item.data?.Status == "Every Monday"
         ) {
           statusBgColor = "ebcdb7";
           statusColor = "b55d1d";
         }
         if (
-          item.Status === "Every Tuesday" ||
-          item.data.Status == "Every Tuesday"
+          item?.Status === "Every Tuesday" ||
+          item.data?.Status == "Every Tuesday"
         ) {
           statusBgColor = "e1f7c0";
           statusColor = "4d7216";
         }
         if (
-          item.Status === "Every Wednesday" ||
-          item.data.Status == "Every Wednesday"
+          item?.Status === "Every Wednesday" ||
+          item.data?.Status == "Every Wednesday"
         ) {
           statusBgColor = "e6f7c0";
           statusColor = "626262";
         }
         if (
-          item.Status === "Every Thursday" ||
-          item.data.Status == "Every Thursday"
+          item?.Status === "Every Thursday" ||
+          item.data?.Status == "Every Thursday"
         ) {
           statusBgColor = "f7c0eb";
           statusColor = "680d54";
         }
         if (
-          item.Status === "Every Friday" ||
-          item.data.Status == "Every Friday"
+          item?.Status === "Every Friday" ||
+          item.data?.Status == "Every Friday"
         ) {
           statusBgColor = "ffeaea";
           statusColor = "a55b5b";
         }
         if (
-          item.Status === "Every Saturday" ||
-          item.data.Status == "Every Saturday"
+          item?.Status === "Every Saturday" ||
+          item.data?.Status == "Every Saturday"
         ) {
           statusBgColor = "f0eaff";
           statusColor = "6539d3";
         }
         if (
-          item.Status === "Every Sunday" ||
-          item.data.Status == "Every Sunday"
+          item?.Status === "Every Sunday" ||
+          item.data?.Status == "Every Sunday"
         ) {
           statusBgColor = "ffeaf4";
           statusColor = "f30074";
@@ -152,7 +152,7 @@ const exportToExcel = (data, headers, sheetName) => {
           priorityColor = "f46906";
         }
         if (
-          item.PriorityLevel === "Urgent" ||
+          item?.PriorityLevel === "Urgent" ||
           item.data?.PriorityLevel == "Urgent" ||
           item?.Tasks?.data?.PriorityLevel == "Urgent"
         ) {
@@ -160,7 +160,7 @@ const exportToExcel = (data, headers, sheetName) => {
           priorityColor = "ffded5";
         }
         if (
-          item.PriorityLevel == "Normal" ||
+          item?.PriorityLevel == "Normal" ||
           item.data?.PriorityLevel == "Normal" ||
           item?.Tasks?.data?.PriorityLevel == "Normal"
         ) {

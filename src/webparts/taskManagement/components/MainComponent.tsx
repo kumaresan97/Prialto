@@ -168,8 +168,17 @@ const MainComponent = (props: any): JSX.Element => {
     _prepareFilteredData();
   };
 
+  const compare = (a: any, b: any) => {
+    if (a.Team < b.Team) {
+      return -1;
+    }
+    if (a.Team > b.Team) {
+      return 1;
+    }
+    return 0;
+  };
+
   const _prepareFilteredData = (): void => {
-    let _TLAndTCArray: any[] = [];
     let _PAArray: any[] = [];
     _curArray = [];
     uniqueTeams = [];
@@ -179,52 +188,43 @@ const MainComponent = (props: any): JSX.Element => {
     if (_isAdmin) {
       if (_masterArray.length) {
         _masterArray.forEach((val: any, i: number) => {
-          if (i === 0) {
-            uniqueTeams.push({ Team: val.Team, Role: "" });
-          } else {
-            if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(val.Team)) {
-              uniqueTeams.push({ Team: val.Team, Role: "" });
-            }
+          if (val.Team.length) {
+            val.Team.forEach((data: string, j: number) => {
+              if (i === 0 && j === 0) {
+                uniqueTeams.push({ Team: data, Role: "" });
+              } else {
+                if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(data)) {
+                  uniqueTeams.push({ Team: data, Role: "" });
+                }
+              }
+            });
           }
         });
       }
     } else {
       if (_curUserDetailsArray.length) {
         _curUserDetailsArray.forEach((val: any, i: number) => {
-          if (i === 0) {
-            uniqueTeams.push({ Team: val.Team, Role: val.Role });
-          } else {
-            if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(val.Team)) {
-              uniqueTeams.push({ Team: val.Team, Role: val.Role });
-            }
+          if (val.Team.length) {
+            val.Team.forEach((data: string, j: number) => {
+              if (i === 0 && j === 0) {
+                uniqueTeams.push({ Team: data, Role: val.Role });
+              } else {
+                if (!uniqueTeams.map((obj2: any) => obj2.Team).includes(data)) {
+                  uniqueTeams.push({ Team: data, Role: val.Role });
+                }
+              }
+            });
           }
         });
       }
     }
 
-    if (_isAdmin) {
+    uniqueTeams.sort(compare);
+    if (_isAdmin || (uniqueTeams.length && (_isTL || _isTC))) {
       userTeams = _masterArray;
-    } else if (uniqueTeams.length) {
-      for (let i: number = 0; uniqueTeams.length > i; i++) {
-        let _tempArray: any[] = [];
-        if (uniqueTeams[i].Role !== "PA") {
-          for (let j: number = 0; _masterArray.length > j; j++) {
-            if (uniqueTeams[i].Team === _masterArray[j].Team) {
-              _tempArray.push({ ..._masterArray[j] });
-            }
-
-            if (_masterArray.length === j + 1) {
-              _TLAndTCArray.push(..._tempArray);
-            }
-          }
-        }
-      }
-
-      if (_isTL || _isTC || _isPA) {
-        _PAArray = _curUserDetailsArray.filter((team) => team.Role === "PA");
-
-        userTeams = [..._TLAndTCArray, ..._PAArray];
-      }
+    } else if (_isPA) {
+      _PAArray = _curUserDetailsArray.filter((team) => team.Role === "PA");
+      userTeams = [..._PAArray];
     }
 
     _curArray = userTeams.map((data: any) => ({
@@ -251,16 +251,23 @@ const MainComponent = (props: any): JSX.Element => {
         _curMembers = [];
 
         for (let j: number = 0; _curArray.length > j; j++) {
-          if (uniqueTeams[i].Team === _curArray[j].team) {
-            delete _curArray[j].members[0].Role;
-            _curMembers.push(..._curArray[j].members);
-          }
+          if (_curArray[j].team.length) {
+            for (let k: number = 0; _curArray[j].team.length > k; k++) {
+              if (uniqueTeams[i].Team === _curArray[j].team[k]) {
+                delete _curArray[j].members[0].Role;
+                _curMembers.push(..._curArray[j].members);
+              }
 
-          if (_curArray.length === j + 1) {
-            _formattedData.push({
-              team: uniqueTeams[i].Team,
-              members: [..._curMembers],
-            });
+              if (
+                _curArray.length === j + 1 &&
+                _curArray[j].team.length === k + 1
+              ) {
+                _formattedData.push({
+                  team: uniqueTeams[i].Team,
+                  members: [..._curMembers],
+                });
+              }
+            }
           }
         }
       }
@@ -268,9 +275,6 @@ const MainComponent = (props: any): JSX.Element => {
 
     setTeams([..._formattedData]);
     setMasterTeam([..._formattedData]);
-    console.log(_formattedData, "teams");
-
-    console.log("masterteam", masterTeam);
   };
 
   const toggleTeam = (index) => {
@@ -288,7 +292,8 @@ const MainComponent = (props: any): JSX.Element => {
 
   const memberFunction = (value, taskname) => {
     setvalue(taskname ? taskname : "");
-    setSelectedTeamMember(value ? [...value] : []);
+    setSelectedTeamMember(value.members.length ? [{ ...value }] : []);
+    // setSelectedTeamMember(value ? [...value] : []);
   };
   // const searchFilter = (val) => {
   //   setnavsearch(val);
@@ -311,42 +316,41 @@ const MainComponent = (props: any): JSX.Element => {
 
   return (
     <>
-    <h1 className={styles.pageHeader}>Member Task Tracker</h1>
-    <div className={styles.TaskManagementSection}>
-      <div
-        className={styles.leftNav}
-        style={{
-          width: `${menuExpand ? "260px" : "92px"}`,
-        }}
-      >
+      <h1 className={styles.pageHeader}>Member Task Tracker</h1>
+      <div className={styles.TaskManagementSection}>
         <div
-          className={styles.iconsearchcontainer}
-          // style={{ display: "flex", gap: "10px", alignItems: "center" }}
+          className={styles.leftNav}
+          style={{
+            width: `${menuExpand ? "260px" : "92px"}`,
+          }}
         >
-          <div className={styles.leftNavExpandController}>
-            <i
-              title={menuExpand ? "Collapse" : "Expand"}
-              className="pi pi-bars"
-              style={{ fontSize: "1.25rem", color: "#fff" }}
-              onClick={() => {
-                setMenuExpand(!menuExpand);
-              }}
-            ></i>
-          </div>
-          {menuExpand && (
-            <div className={styles.rightNavSearch}>
-              <Label
-                style={{
-                  width: "100%",
-                  color: "#ffff",
-                  fontSize: "16px",
-                  fontWeight: 700,
+          <div
+            className={styles.iconsearchcontainer}
+            // style={{ display: "flex", gap: "10px", alignItems: "center" }}
+          >
+            <div className={styles.leftNavExpandController}>
+              <i
+                title={menuExpand ? "Collapse" : "Expand"}
+                className="pi pi-bars"
+                style={{ fontSize: "1.25rem", color: "#fff" }}
+                onClick={() => {
+                  setMenuExpand(!menuExpand);
                 }}
-              >
-                
-                {/* Member Task Tracker */}
-              </Label>
-              {/* <span className="p-input-icon-left">
+              ></i>
+            </div>
+            {menuExpand && (
+              <div className={styles.rightNavSearch}>
+                <Label
+                  style={{
+                    width: "100%",
+                    color: "#ffff",
+                    fontSize: "16px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {/* Member Task Tracker */}
+                </Label>
+                {/* <span className="p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText
                   placeholder="Search"
@@ -354,59 +358,143 @@ const MainComponent = (props: any): JSX.Element => {
                   onChange={(e: any) => searchFilter(e.target.value)}
                 />
               </span> */}
-            </div>
-          )}
-        </div>
-        <div>
-          <Label
-            onClick={(e) => {
-              setvalue("mytasks");
-            }}
-            className={value == "mytasks" ? styles.activeBtn : styles.inActive}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-            styles={{
-              root: {
-                width: "100%",
-                fontSize: " 16px",
-                color: "#FFFFFF",
-                padding: "10px 20px",
-                cursor: "pointer",
-                // background:
-                //   value == "mytasks" ? "#576191 !important" : "none !important",
-              },
-            }}
-          >
-            {menuExpand ? "My Tasks" : ""}
-            <i className="pi pi-file-edit" style={{ fontSize: "1.25rem" }}></i>
-          </Label>
-          {teams.map((val, i) => {
-            return (
-              <div>
-                <div
-                  className={styles.accordTeam}
-                  onClick={() => toggleTeam(i)}
-                >
-                  <Icon
-                    iconName={
-                      expandedTeam === i
-                        ? "ChevronDownSmall"
-                        : "ChevronRightSmall"
-                    }
-                    // onClick={() => toggleTeam(i)}
+              </div>
+            )}
+          </div>
+          <div>
+            <Label
+              onClick={(e) => {
+                setvalue("mytasks");
+              }}
+              className={
+                value == "mytasks" ? styles.activeBtn : styles.inActive
+              }
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+              styles={{
+                root: {
+                  width: "100%",
+                  fontSize: " 16px",
+                  color: "#FFFFFF",
+                  padding: "10px 20px",
+                  cursor: "pointer",
+                  // background:
+                  //   value == "mytasks" ? "#576191 !important" : "none !important",
+                },
+              }}
+            >
+              {menuExpand ? "My Tasks" : ""}
+              <i
+                className="pi pi-file-edit"
+                style={{ fontSize: "1.25rem" }}
+              ></i>
+            </Label>
+            {teams.map((val, i) => {
+              return (
+                <div>
+                  <div
+                    className={styles.accordTeam}
+                    onClick={() => toggleTeam(i)}
+                  >
+                    <Icon
+                      iconName={
+                        expandedTeam === i
+                          ? "ChevronDownSmall"
+                          : "ChevronRightSmall"
+                      }
+                      // onClick={() => toggleTeam(i)}
 
-                    styles={{
-                      root: {
-                        cursor: "pointer !important",
-                        fontSize: " 16px !important",
-                        fontWeight: "400 !important",
-                        color: "#FFFFFF !important",
-                      },
-                    }}
-                  />
+                      styles={{
+                        root: {
+                          cursor: "pointer !important",
+                          fontSize: " 16px !important",
+                          fontWeight: "400 !important",
+                          color: "#FFFFFF !important",
+                        },
+                      }}
+                    />
+                    <Label
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                      styles={{
+                        root: {
+                          width: "100%",
+                          fontSize: " 16px !important",
+                          fontWeight: "400 !important",
+                          color: "#FFFFFF !important",
+                          cursor: "pointer !important",
+                        },
+                      }}
+                      // className={
+                      //   value == "OrgChart" ? styles.activeBtn : styles.inActive
+                      // }
+                    >
+                      {menuExpand ? val.team : ""}
+                      <p title={`${val.team}`} className={styles.teamNameShort}>
+                        {" "}
+                        {!menuExpand ? val.team.split("-")[0] : ""}
+                      </p>
+                      {/* <i
+                      title={val.team}
+                      className="pi pi-star-fill"
+                      style={{ fontSize: "1.25rem" }}
+                    ></i> */}
+                    </Label>
+                  </div>
+
+                  {expandedTeam === i && (
+                    <ul style={{ margin: 0, padding: 0 }}>
+                      {val.members.map((member, index) => (
+                        <li
+                          // className={styles.accordTeamMembers}
+                          style={{
+                            padding: "10px 0px",
+                            cursor: "pointer",
+                            listStyle: "none",
+                            fontSize: "14px",
+                            color: "#fff",
+                            width: "100%",
+                          }}
+                          className={
+                            value == "member" && selectedMember === member.Email
+                              ? styles.activeBtn
+                              : styles.inActive
+                          }
+                        >
+                          <div
+                            key={index}
+                            onClick={() => {
+                              handleMemberClick(member.Email);
+                            }}
+                            className={styles.teamMemberSection}
+                          >
+                            {menuExpand ? member.Name : ""}
+                            <Persona
+                              title={member.Name}
+                              imageUrl={
+                                "/_layouts/15/userphoto.aspx?username=" +
+                                member.Email
+                              }
+                              size={PersonaSize.size24}
+                            />
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+            {true && (
+              <>
+                {/* Card View */}
+                {_isAdmin && (
                   <Label
+                    onClick={() => setvalue("CardView")}
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
@@ -417,221 +505,145 @@ const MainComponent = (props: any): JSX.Element => {
                         fontSize: " 16px !important",
                         fontWeight: "400 !important",
                         color: "#FFFFFF !important",
+                        padding: "6px 20px !important",
                         cursor: "pointer !important",
                       },
                     }}
-                    // className={
-                    //   value == "OrgChart" ? styles.activeBtn : styles.inActive
-                    // }
+                    className={
+                      value == "CardView" ? styles.activeBtn : styles.inActive
+                    }
                   >
-                    {menuExpand ? val.team : ""}
-                    <p title={`${val.team}`} className={styles.teamNameShort}>
-                      {" "}
-                      {!menuExpand ? val.team.split("-")[0] : ""}
-                    </p>
-                    {/* <i
-                      title={val.team}
-                      className="pi pi-star-fill"
+                    {menuExpand ? "Card View" : ""}
+                    <i
+                      className="pi pi-id-card"
                       style={{ fontSize: "1.25rem" }}
-                    ></i> */}
+                    ></i>
                   </Label>
-                </div>
-
-                {expandedTeam === i && (
-                  <ul style={{ margin: 0, padding: 0 }}>
-                    {val.members.map((member, index) => (
-                      <li
-                        // className={styles.accordTeamMembers}
-                        style={{
-                          padding: "10px 0px",
-                          cursor: "pointer",
-                          listStyle: "none",
-                          fontSize: "14px",
-                          color: "#fff",
-                          width: "100%",
-                        }}
-                        className={
-                          value == "member" && selectedMember === member.Email
-                            ? styles.activeBtn
-                            : styles.inActive
-                        }
-                      >
-                        <div
-                          key={index}
-                          onClick={() => {
-                            handleMemberClick(member.Email);
-                          }}
-                          className={styles.teamMemberSection}
-                        >
-                          {menuExpand ? member.Name : ""}
-                          <Persona
-                            title={member.Name}
-                            imageUrl={
-                              "/_layouts/15/userphoto.aspx?username=" +
-                              member.Email
-                            }
-                            size={PersonaSize.size24}
-                          />
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
                 )}
-              </div>
-            );
-          })}
-          {true && (
+                {/* Org Chart */}
+                {(_isAdmin || _isTL || _isTC) && (
+                  <Label
+                    onClick={() => setvalue("OrgChart")}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                    styles={{
+                      root: {
+                        width: "100%",
+                        fontSize: " 16px !important",
+                        fontWeight: "400 !important",
+
+                        color: "#FFFFFF !important",
+
+                        padding: "6px 20px !important",
+                        cursor: "pointer !important",
+                      },
+                    }}
+                    className={
+                      value == "OrgChart" ? styles.activeBtn : styles.inActive
+                    }
+                  >
+                    {menuExpand ? "Organization Chart" : ""}
+                    <i
+                      className="pi pi-sitemap"
+                      style={{ fontSize: "1.25rem" }}
+                    ></i>
+                  </Label>
+                )}
+                {/* Client List */}
+                {(_isAdmin || _isTC || _isTL) && (
+                  <Label
+                    onClick={() => setvalue("Client")}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                    styles={{
+                      root: {
+                        width: "100%",
+                        fontSize: " 16px !important",
+                        fontWeight: "400 !important",
+
+                        color: "#FFFFFF !important",
+
+                        padding: "6px 20px !important",
+                        cursor: "pointer !important",
+                      },
+                    }}
+                    className={
+                      value == "Client" ? styles.activeBtn : styles.inActive
+                    }
+                  >
+                    {menuExpand ? "Member list" : ""}
+                    <i
+                      className="pi pi-users"
+                      style={{ fontSize: "1.25rem" }}
+                    ></i>
+                  </Label>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+
+        <div
+          style={{
+            width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
+            padding: "16px 16px 0 0",
+          }}
+        >
+          {value == "mytasks" ? (
             <>
-              {/* Card View */}
-              {_isAdmin && (
-                <Label
-                  onClick={() => setvalue("CardView")}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                  styles={{
-                    root: {
-                      width: "100%",
-                      fontSize: " 16px !important",
-                      fontWeight: "400 !important",
-                      color: "#FFFFFF !important",
-                      padding: "6px 20px !important",
-                      cursor: "pointer !important",
-                    },
-                  }}
-                  className={
-                    value == "CardView" ? styles.activeBtn : styles.inActive
-                  }
-                >
-                  {menuExpand ? "Card View" : ""}
-                  <i
-                    className="pi pi-id-card"
-                    style={{ fontSize: "1.25rem" }}
-                  ></i>
-                </Label>
-              )}
-              {/* Org Chart */}
-              {(_isAdmin || _isTL || _isTC) && (
-                <Label
-                  onClick={() => setvalue("OrgChart")}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                  styles={{
-                    root: {
-                      width: "100%",
-                      fontSize: " 16px !important",
-                      fontWeight: "400 !important",
-
-                      color: "#FFFFFF !important",
-
-                      padding: "6px 20px !important",
-                      cursor: "pointer !important",
-                    },
-                  }}
-                  className={
-                    value == "OrgChart" ? styles.activeBtn : styles.inActive
-                  }
-                >
-                  {menuExpand ? "Organization Chart" : ""}
-                  <i
-                    className="pi pi-sitemap"
-                    style={{ fontSize: "1.25rem" }}
-                  ></i>
-                </Label>
-              )}
-              {/* Client List */}
-              {(_isAdmin || _isTC || _isTL) && (
-                <Label
-                  onClick={() => setvalue("Client")}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                  styles={{
-                    root: {
-                      width: "100%",
-                      fontSize: " 16px !important",
-                      fontWeight: "400 !important",
-
-                      color: "#FFFFFF !important",
-
-                      padding: "6px 20px !important",
-                      cursor: "pointer !important",
-                    },
-                  }}
-                  className={
-                    value == "Client" ? styles.activeBtn : styles.inActive
-                  }
-                >
-                  {menuExpand ? "Member list" : ""}
-                  <i
-                    className="pi pi-users"
-                    style={{ fontSize: "1.25rem" }}
-                  ></i>
-                </Label>
-              )}
+              <MyTaskDBNewCategory
+                context={props.context}
+                HandleCompleted={HandleCompleted}
+              />
             </>
+          ) : value == "member" ? (
+            // <UserClient
+            //   selectedMember={selectedMember}
+            //   context={props.context}
+            //   Email={selectedMember}
+            // />
+            <UserDashboard
+              selectedMember={selectedMember}
+              context={props.context}
+              Email={selectedMember}
+              HandleCompleted={HandleCompleted}
+            />
+          ) : value == "CardView" ? (
+            <CardView
+              context={props.context}
+              memberFunction={memberFunction}
+            ></CardView>
+          ) : value == "Completed" ? (
+            <CompleteDashboard
+              context={props.context}
+              // memberFunction={memberFunction}
+              Completeuser={Completeuser}
+              // HandleCompleted={HandleCompleted}
+            ></CompleteDashboard>
+          ) : value == "OrgChart" ? (
+            <OrgChartNew context={props.context}></OrgChartNew>
+          ) : value == "Client" ? (
+            <Client
+              context={props.context}
+              _isAdmin={_isAdmin}
+              _isTC={_isTC}
+            ></Client>
+          ) : value == "TeamMembers" && selectedTeamMember.length ? (
+            <Member
+              context={props.context}
+              handleMemberClick={handleMemberClick}
+              selectedTeamMember={selectedTeamMember}
+              memberFunction={memberFunction}
+            ></Member>
+          ) : (
+            <></>
           )}
         </div>
       </div>
-
-      <div
-        style={{
-          width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
-          padding: "16px 16px 0 0",
-        }}
-      >
-        {value == "mytasks" ? (
-          <>
-            <MyTaskDBNewCategory context={props.context} HandleCompleted={HandleCompleted}/>
-          </>
-        ) : value == "member" ? (
-          // <UserClient
-          //   selectedMember={selectedMember}
-          //   context={props.context}
-          //   Email={selectedMember}
-          // />
-          <UserDashboard
-            selectedMember={selectedMember}
-            context={props.context}
-            Email={selectedMember}
-            HandleCompleted={HandleCompleted}
-          />
-        ) : value == "CardView" ? (
-          <CardView
-            context={props.context}
-            memberFunction={memberFunction}
-          ></CardView>
-        ) : value == "Completed" ? (
-          <CompleteDashboard
-            context={props.context}
-            // memberFunction={memberFunction}
-            Completeuser={Completeuser}
-            // HandleCompleted={HandleCompleted}
-          ></CompleteDashboard>
-        ) : value == "OrgChart" ? (
-          <OrgChartNew context={props.context}></OrgChartNew>
-        ) : value == "Client" ? (
-          <Client
-            context={props.context}
-            _isAdmin={_isAdmin}
-            _isTC={_isTC}
-          ></Client>
-        ) : value == "TeamMembers" && selectedTeamMember.length ? (
-          <Member
-            context={props.context}
-            handleMemberClick={handleMemberClick}
-            selectedTeamMember={selectedTeamMember}
-            memberFunction={memberFunction}
-          ></Member>
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
     </>
   );
 };

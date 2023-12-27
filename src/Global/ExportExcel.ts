@@ -243,7 +243,11 @@ const exportToExcel = (data, headers, sheetName) => {
     });
 
     if (sheetName == "OrgChart") {
+      let _curTeams: string = "";
+
       data.forEach((item, index) => {
+        _curTeams = "";
+
         const oddRowFill = {
           type: "pattern",
           pattern: "solid",
@@ -264,10 +268,18 @@ const exportToExcel = (data, headers, sheetName) => {
           });
         }
 
+        item.Team?.forEach((val: string, i: number) => {
+          if (item.Team.length === i + 1) {
+            _curTeams += val + ";";
+          } else {
+            _curTeams += val + "; ";
+          }
+        });
+
         const row = worksheet.addRow({
           Name: item.Name?.Title,
           Role: item.Role,
-          Team: item.Team,
+          Team: _curTeams,
           // Cohort: item.Cohort,
           Manager: item.Manager?.Title,
           // TeamCaptain: item.TeamCaptain?.Title,

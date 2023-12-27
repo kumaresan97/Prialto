@@ -9,8 +9,10 @@ const Member = (props) => {
     border: "transparent",
     color: "#007C81",
     height: 30,
-    width: 30,
+    width: "100%",
     fontSize: "30px",
+    display: "contents",
+    padding: 0,
   };
   const ShareMember = (val) => {
     props.handleMemberClick(val);
@@ -20,14 +22,20 @@ const Member = (props) => {
       <Button
         className={styles.righticon}
         style={tickIconStyle}
+        label={
+          props.selectedTeamMember.length
+            ? props.selectedTeamMember[0].TeamName
+            : ""
+        }
         icon="pi pi-arrow-left"
+        iconPos="left"
         onClick={() => {
           props.memberFunction(null, "CardView");
         }}
       />
       <div>
         {props.selectedTeamMember.length &&
-          props.selectedTeamMember.map((val) => {
+          props.selectedTeamMember[0].members.map((val) => {
             return (
               <div
                 style={{
@@ -35,7 +43,7 @@ const Member = (props) => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   margin: "10px 0px",
-                  cursor:'pointer',
+                  cursor: "pointer",
                   borderBottom: "1px solid #d9d9d9",
                 }}
                 onClick={() => ShareMember(val.Email)}

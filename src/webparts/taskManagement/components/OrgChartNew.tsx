@@ -9,6 +9,7 @@ import {
 } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
+import { MultiSelect } from "primereact/multiselect";
 import SPServices from "../../../Global/SPServices";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import styles from "./TaskManagement.module.scss";
@@ -20,6 +21,7 @@ import { Toast } from "primereact/toast";
 
 import exportToExcel from "../../../Global/ExportExcel";
 import { sp } from "@pnp/sp/presets/all";
+import { Tooltip } from "@fluentui/react";
 
 let _masterArray: any[] = [];
 let _curUserDetailsArray: any[] = [];
@@ -74,16 +76,24 @@ interface clinet {
     Title: string;
   }[];
 }
+
+let addparent: clinet;
+let addInput: clinet;
+
 let role = [
   { name: "PA", code: "PA" },
   { name: "TC", code: "TC" },
   { name: "TL", code: "TL" },
 ];
-let team = [
-  { name: "Team1", code: "Team1" },
-  { name: "Team2", code: "Team2" },
-  { name: "Team3", code: "Team3" },
-];
+
+// let team = [
+//   { name: "Team1", code: "Team1" },
+//   { name: "Team2", code: "Team2" },
+//   { name: "Team3", code: "Team3" },
+// ];
+
+let team = [];
+
 let requiredFields = [
   "Name",
   "Manager",
@@ -93,6 +103,7 @@ let requiredFields = [
   // "TeamCaptain",
   // "TeamLeader",
 ];
+
 const OrgChart = (props) => {
   // style variables
   const multiPeoplePickerStyle = {
@@ -109,8 +120,8 @@ const OrgChart = (props) => {
       },
     },
   };
-  const [loader, setLoader] = useState(false);
 
+  const [loader, setLoader] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<any>(null);
   const toastTopRight = React.useRef(null);
@@ -155,93 +166,6 @@ const OrgChart = (props) => {
   //     ],
   //   },
   // ];
-
-  let addparent: clinet = {
-    Id: null,
-    // FirstName: "",
-    // LastName: "",
-    Name: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    Role: role[0],
-    Manager: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    Team: team[0],
-    // TeamCaptain: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
-    // TeamLeader: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
-    Cohort: "",
-
-    DirectReports: [
-      {
-        Id: null,
-        EMail: "",
-        Title: "",
-      },
-    ],
-    BackingUp: [
-      {
-        Id: null,
-        EMail: "",
-        Title: "",
-      },
-    ],
-  };
-  let addInput: clinet = {
-    Id: null,
-    // FirstName: "",
-    // LastName: "",
-    Name: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    Role: role[0].name,
-    Manager: {
-      Id: null,
-      EMail: "",
-      Title: "",
-    },
-    Team: team[0].name,
-    // TeamCaptain: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
-    // TeamLeader: {
-    //   Id: null,
-    //   EMail: "",
-    //   Title: "",
-    // },
-    Cohort: "",
-
-    DirectReports: [
-      {
-        Id: null,
-        EMail: "",
-        Title: "",
-      },
-    ],
-    BackingUp: [
-      {
-        Id: null,
-        EMail: "",
-        Title: "",
-      },
-    ],
-  };
 
   const editIconStyle = {
     backgroundColor: "transparent",
@@ -391,7 +315,7 @@ const OrgChart = (props) => {
         let clsValid = "";
         !curobj.Team ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
-          <Dropdown
+          <MultiSelect
             options={team}
             placeholder="Cohort"
             optionLabel="name"
@@ -702,7 +626,7 @@ const OrgChart = (props) => {
         let clsValid = "";
         !curobj.Team ? (clsValid = "md:w-20rem w-full p-invalid") : "";
         return (
-          <Dropdown
+          <MultiSelect
             style={{ width: "100%" }}
             options={team}
             placeholder="Cohort"
@@ -952,7 +876,20 @@ const OrgChart = (props) => {
           </>
         );
       } else {
-        return (
+        return fieldType == "Team" ? (
+          <span
+            style={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              display: "block",
+              width: "160px",
+            }}
+            title={data[fieldType].toString()}
+          >
+            {data[fieldType].toString()}
+          </span>
+        ) : (
           <span
             style={{
               textOverflow: "ellipsis",
@@ -1060,6 +997,8 @@ const OrgChart = (props) => {
     setLoader(true);
     let directorId = [];
     let BackupId = [];
+    let _multiChoice = [];
+
     if (curobj.DirectReports && curobj.DirectReports.length >= 1) {
       curobj.DirectReports.forEach((val) => {
         if (val && val.Id) {
@@ -1075,12 +1014,17 @@ const OrgChart = (props) => {
         }
       });
     }
+
+    _multiChoice = curobj.Team?.map((e: any) => {
+      return e.name;
+    });
+
     let json = {
       // FirstName: curobj.FirstName ? curobj.FirstName : "",
       // LastName: curobj.LastName ? curobj.LastName : "",
       NameId: curobj.Name.Id ? curobj.Name.Id : null,
       Role: curobj.Role ? curobj.Role["name"] : "",
-      Team: curobj.Team ? curobj.Team["name"] : "",
+      Team: { results: [..._multiChoice] },
       // Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
       // BackingUpId: BackupId.length && { results: BackupId },
@@ -1109,7 +1053,9 @@ const OrgChart = (props) => {
             Title: curobj.Name?.Title,
           },
           Role: curobj.Role ? curobj.Role["name"] : "",
-          Team: curobj.Team ? curobj.Team["name"] : "",
+          Team: curobj.Team?.map((e: any) => {
+            return e.name;
+          }),
           Cohort: "",
           Manager: {
             Id: curobj.Manager?.Id,
@@ -1144,12 +1090,11 @@ const OrgChart = (props) => {
 
         let filterdatas = value.filter((val) => val.Id !== null);
         setValue([...filterdatas, resjson]);
-        showMessage("Data Added Successfully", toastTopRight, "success");
-
         setAdd(false);
         setEdit(false);
-        setcurobj({ ...addparent });
+        setcurobj(addparent);
         setLoader(false);
+        showMessage("Data Added Successfully", toastTopRight, "success");
 
         // getdatas();
       })
@@ -1175,13 +1120,14 @@ const OrgChart = (props) => {
 
   const handledata = (obj) => {
     previousvalue = obj;
-    debugger;
     setAdd(false);
     let editobj: any = { ...obj };
-    editobj.Team = {
-      name: obj.Team,
-      code: obj.Team,
-    };
+    editobj.Team = obj.Team?.map((val: string) => {
+      return {
+        name: val,
+        code: val,
+      };
+    });
     editobj.Role = {
       name: obj.Role,
       code: obj.Role,
@@ -1189,6 +1135,7 @@ const OrgChart = (props) => {
     console.log(editobj, "editobj");
     setcurobj({ ...editobj });
   };
+
   const _handleDataoperation = (key, obj) => {
     if (edit && obj.Id) {
       Editfunction(obj);
@@ -1196,10 +1143,10 @@ const OrgChart = (props) => {
       AddItem(obj);
     }
   };
+
   function _handleDataoperationNew(key, obj) {
     console.log(previousvalue, "previous");
 
-    debugger;
     if (obj.Id) {
       setAdd(false);
       setEdit(false);
@@ -1213,6 +1160,7 @@ const OrgChart = (props) => {
       setEdit(false);
     }
   }
+
   let previousvalue = null;
 
   const _action = (obj: any): JSX.Element => {
@@ -1296,6 +1244,8 @@ const OrgChart = (props) => {
     setLoader(true);
     let directorId = [];
     let BackupId = [];
+    let _multiChoice = [];
+
     if (curobj.DirectReports && curobj.DirectReports.length >= 1) {
       curobj.DirectReports.forEach((val) => {
         if (val && val.Id) {
@@ -1311,13 +1261,18 @@ const OrgChart = (props) => {
         }
       });
     }
+
+    _multiChoice = curobj.Team?.map((e: any) => {
+      return e.name;
+    });
+
     let json = {
       NameId: curobj.Name.Id ? curobj.Name.Id : null,
 
       // FirstName: curobj.FirstName ? curobj.FirstName : "",
       // LastName: curobj.LastName ? curobj.LastName : "",
       Role: curobj.Role ? curobj.Role["name"] : "",
-      Team: curobj.Team ? curobj.Team["name"] : "",
+      Team: { results: [..._multiChoice] },
       // Cohort: curobj.Cohort ? curobj.Cohort : "",
       ManagerId: curobj.Manager.Id ? curobj.Manager.Id : null,
       BackingUpId: { results: BackupId },
@@ -1346,7 +1301,10 @@ const OrgChart = (props) => {
             Title: curobj.Name?.Title,
           },
           Role: curobj.Role ? curobj.Role["name"] : "",
-          Team: curobj.Team ? curobj.Team["name"] : "",
+          // Team: curobj.Team ? curobj.Team["name"] : "",
+          Team: curobj.Team?.map((e: any) => {
+            return e.name;
+          }),
           Cohort: "",
           Manager: {
             Id: curobj.Manager?.Id,
@@ -1385,6 +1343,7 @@ const OrgChart = (props) => {
           }
           return val;
         });
+
         setValue([...updatedClientDetail]);
         setAdd(false);
         setEdit(false);
@@ -1440,6 +1399,96 @@ const OrgChart = (props) => {
           });
         }
         team = teamChoices;
+
+        addparent = {
+          Id: null,
+          // FirstName: "",
+          // LastName: "",
+          Name: {
+            Id: null,
+            EMail: "",
+            Title: "",
+          },
+          Role: role[0],
+          Manager: {
+            Id: null,
+            EMail: "",
+            Title: "",
+          },
+          Team: [{ name: team[0].name, code: team[0].name }],
+          // TeamCaptain: {
+          //   Id: null,
+          //   EMail: "",
+          //   Title: "",
+          // },
+          // TeamLeader: {
+          //   Id: null,
+          //   EMail: "",
+          //   Title: "",
+          // },
+          Cohort: "",
+
+          DirectReports: [
+            {
+              Id: null,
+              EMail: "",
+              Title: "",
+            },
+          ],
+          BackingUp: [
+            {
+              Id: null,
+              EMail: "",
+              Title: "",
+            },
+          ],
+        };
+
+        addInput = {
+          Id: null,
+          // FirstName: "",
+          // LastName: "",
+          Name: {
+            Id: null,
+            EMail: "",
+            Title: "",
+          },
+          Role: role[0].name,
+          Manager: {
+            Id: null,
+            EMail: "",
+            Title: "",
+          },
+          Team: [{ name: team[0].name, code: team[0].name }],
+          // TeamCaptain: {
+          //   Id: null,
+          //   EMail: "",
+          //   Title: "",
+          // },
+          // TeamLeader: {
+          //   Id: null,
+          //   EMail: "",
+          //   Title: "",
+          // },
+          Cohort: "",
+
+          DirectReports: [
+            {
+              Id: null,
+              EMail: "",
+              Title: "",
+            },
+          ],
+          BackingUp: [
+            {
+              Id: null,
+              EMail: "",
+              Title: "",
+            },
+          ],
+        };
+
+        setcurobj({ ...addparent });
       })
       // .catch(function (error) {
       //   errFunction("getTeamChoices", error);
@@ -1502,18 +1551,32 @@ const OrgChart = (props) => {
     data.forEach((val: any) => {
       if (val.Role === "TL" && val.Name.EMail == _curUser) {
         _isTL = true;
-        myTeams.push(val.Team);
+        if (val.Team.length > 0) {
+          for (let i = 0; i < val.Team.length; i++) {
+            myTeams.push(val.Team[i]);
+          }
+        }
       } else if (val.Role === "TC" && val.Name.EMail == _curUser) {
         _isTC = true;
-        myTeams.push(val.Team);
+        if (val.Team.length > 0) {
+          for (let i = 0; i < val.Team.length; i++) {
+            myTeams.push(val.Team[i]);
+          }
+        }
       } else if (val.Role === "PA") {
         _isPA = true;
       }
     });
 
     for (let i = 0; i < data.length; i++) {
-      let ismyTeam = myTeams.includes(data[i].Team);
+      let ismyTeam = false;
+      for (let j = 0; j < data[i].Team.length; j++) {
+        let availorNot = myTeams.includes(data[i].Team[j]);
 
+        if (availorNot) {
+          ismyTeam = true;
+        }
+      }
       if (((_isTL || _isTC) && ismyTeam) || _isAdmin) {
         arrDisplay.push(data[i]);
       }

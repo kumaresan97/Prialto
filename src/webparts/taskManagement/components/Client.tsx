@@ -489,13 +489,13 @@ const Client = (props) => {
             showtooltip={false}
             // required={true}
             styles={multiPeoplePickerStyle}
-            peoplePickerCntrlclassName={
-              !value.Backup ||
-              value.Backup.length === 0 ||
-              !value.Backup.some((user) => user.Id !== null)
-                ? styles.peoplepickerErrStyle
-                : ""
-            }
+            // peoplePickerCntrlclassName={
+            //   !value.Backup ||
+            //   value.Backup.length === 0 ||
+            //   !value.Backup.some((user) => user.Id !== null)
+            //     ? styles.peoplepickerErrStyle
+            //     : ""
+            // }
             // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
             placeholder="Enter Email"
             ensureUser={true}
@@ -625,13 +625,13 @@ const Client = (props) => {
               context={props.context}
               personSelectionLimit={20}
               styles={multiPeoplePickerStyle}
-              peoplePickerCntrlclassName={
-                !value.Backup ||
-                value.Backup.length === 0 ||
-                !value.Backup.some((user) => user.Id !== null)
-                  ? styles.peoplepickerErrStyle
-                  : ""
-              }
+              // peoplePickerCntrlclassName={
+              //   !value.Backup ||
+              //   value.Backup.length === 0 ||
+              //   !value.Backup.some((user) => user.Id !== null)
+              //     ? styles.peoplepickerErrStyle
+              //     : ""
+              // }
               // peoplePickerCntrlclassName={styles.peoplepickerErrStyle}
               groupName={""}
               showtooltip={true}
@@ -721,13 +721,12 @@ const Client = (props) => {
           let isTeamMemberinAssitant = false;
           isTeamMemberinAssitant = MyTeamMembers.includes(val.Assistant?.EMail);
           let isTeamMemberinBackup = false;
-          if (val.Backup) {
-            for (let i = 0; i < val.Backup.length; i++) {
-              if (MyTeamMembers.includes(val.Backup[i].EMail)) {
-                isTeamMemberinBackup = true;
-              }
+          if(val.Backup){
+          for (let i = 0; i < val.Backup.length; i++) {
+            if (MyTeamMembers.includes(val.Backup[i].EMail)) {
+              isTeamMemberinBackup = true;
             }
-          }
+          }}
 
           if (
             isTeamMemberinAssitant ||
@@ -966,7 +965,7 @@ const Client = (props) => {
       missingFields.push("Company name");
     } else if (!value.Assistant?.Id || value.Assistant?.Id === null) {
       missingFields.push("Assistant");
-    }
+    } 
     // else if (
     //   !value.Backup ||
     //   value.Backup.length === 0 ||
@@ -1034,8 +1033,9 @@ const Client = (props) => {
       let ismyTeam = false;
       for (let j = 0; j < data[i].Team.length; j++) {
         let availorNot = myTeams.includes(data[i].Team[j]);
-        if (availorNot) {
-          ismyTeam = true;
+        if(availorNot)
+        {
+          ismyTeam=true;
         }
       }
 

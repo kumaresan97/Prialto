@@ -318,6 +318,7 @@ const OrgChart = (props) => {
           <MultiSelect
             options={team}
             placeholder="Cohort"
+            filter
             optionLabel="name"
             value={curobj.Team}
             style={{ width: "100%" }}
@@ -630,6 +631,7 @@ const OrgChart = (props) => {
             style={{ width: "100%" }}
             options={team}
             placeholder="Cohort"
+            filter
             optionLabel="name"
             value={curobj.Team}
             onChange={(e: any) => getOnchange("Team", e.value)}

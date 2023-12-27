@@ -721,12 +721,13 @@ const Client = (props) => {
           let isTeamMemberinAssitant = false;
           isTeamMemberinAssitant = MyTeamMembers.includes(val.Assistant?.EMail);
           let isTeamMemberinBackup = false;
-          if(val.Backup){
-          for (let i = 0; i < val.Backup.length; i++) {
-            if (MyTeamMembers.includes(val.Backup[i].EMail)) {
-              isTeamMemberinBackup = true;
+          if (val.Backup) {
+            for (let i = 0; i < val.Backup.length; i++) {
+              if (MyTeamMembers.includes(val.Backup[i].EMail)) {
+                isTeamMemberinBackup = true;
+              }
             }
-          }}
+          }
 
           if (
             isTeamMemberinAssitant ||
@@ -965,7 +966,7 @@ const Client = (props) => {
       missingFields.push("Company name");
     } else if (!value.Assistant?.Id || value.Assistant?.Id === null) {
       missingFields.push("Assistant");
-    } 
+    }
     // else if (
     //   !value.Backup ||
     //   value.Backup.length === 0 ||
@@ -1012,17 +1013,31 @@ const Client = (props) => {
     data.forEach((val: any) => {
       if (val.Role === "TL" && val.Name.EMail == _curUser) {
         _isTL = true;
-        myTeams.push(val.Team);
+        if (val.Team.length > 0) {
+          for (let i = 0; i < val.Team.length; i++) {
+            myTeams.push(val.Team[i]);
+          }
+        }
       } else if (val.Role === "TC" && val.Name.EMail == _curUser) {
         _isTC = true;
-        myTeams.push(val.Team);
+        if (val.Team.length > 0) {
+          for (let i = 0; i < val.Team.length; i++) {
+            myTeams.push(val.Team[i]);
+          }
+        }
       } else if (val.Role === "PA") {
         _isPA = true;
       }
     });
 
     for (let i = 0; i < data.length; i++) {
-      let ismyTeam = myTeams.includes(data[i].Team);
+      let ismyTeam = false;
+      for (let j = 0; j < data[i].Team.length; j++) {
+        let availorNot = myTeams.includes(data[i].Team[j]);
+        if (availorNot) {
+          ismyTeam = true;
+        }
+      }
 
       if (((_isTL || _isTC) && ismyTeam) || props._isAdmin) {
         myTeamMembers.push(data[i].Name.EMail);

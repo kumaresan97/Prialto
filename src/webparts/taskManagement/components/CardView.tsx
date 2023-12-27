@@ -13,6 +13,7 @@ import Loader from "./Loader";
 const CardView = (props) => {
   const [Cardarr, setCardarr] = useState([]);
   const [loader, setLoader] = useState(false);
+
   // const [selectedMember, setSelectedmembers] = useState([]);
 
   //   {
@@ -58,77 +59,88 @@ const CardView = (props) => {
       .expand("Name,TeamCaptain,TeamLeader")
       .top(5000)
       .get()
-      .then((configArr) => {
+      .then((configArr: any) => {
         let uniqueTeams = [];
         let teamArr = [];
+        let _tempArr = [];
+        let teamMembers = [];
+        let TeamCaptain = [];
+        let TeamLeader = [];
 
-        configArr.forEach((config) => {
-          if (
-            uniqueTeams.findIndex((arr) => {
-              return arr == config.Team;
-            }) == -1
-          ) {
-            uniqueTeams.push(config.Team);
-          }
-        });
-        uniqueTeams.forEach((team) => {
-          let tempArr = configArr.filter((arr) => {
-            return arr.Team == team;
+        configArr?.forEach((config: any, i: number) => {
+          config.Team?.forEach((val: string, j: number) => {
+            if (i === 0 && j === 0) {
+              uniqueTeams.push(val);
+            } else {
+              if (!uniqueTeams.includes(val)) {
+                uniqueTeams.push(val);
+              }
+            }
           });
-          let teamMembers = [];
-          let TeamCaptain = [];
-          let TeamLeader = [];
+        });
 
-          tempArr.forEach((arr) => {
-            if (arr.NameId) {
-              teamMembers.push({
-                Name: arr.Name?.Title,
-                Email: arr.Name?.EMail,
-                Id: arr.NameId,
-              });
+        if (uniqueTeams.length) {
+          uniqueTeams.sort();
 
-              if (arr.Role == "TL") {
-                TeamLeader.push({
-                  Title: arr.Name?.Title,
-                  Email: arr.Name?.EMail,
-                  Id: arr.NameId,
-                });
+          for (let i: number = 0; uniqueTeams.length > i; i++) {
+            _tempArr = [];
+            teamMembers = [];
+            TeamCaptain = [];
+            TeamLeader = [];
+
+            for (let j: number = 0; configArr.length > j; j++) {
+              if (configArr[j].Team.length) {
+                _loop: for (
+                  let k: number = 0;
+                  configArr[j].Team.length > k;
+                  k++
+                ) {
+                  if (uniqueTeams[i] === configArr[j].Team[k]) {
+                    _tempArr.push({ ...configArr[j] });
+                    break _loop;
+                  }
+                }
               }
 
-              if (arr.Role == "TC") {
-                TeamCaptain.push({
-                  Title: arr.Name?.Title,
-                  Email: arr.Name?.EMail,
-                  Id: arr.NameId,
+              if (configArr.length === j + 1) {
+                _tempArr.forEach((arr: any) => {
+                  if (arr.NameId) {
+                    teamMembers.push({
+                      Name: arr.Name?.Title,
+                      Email: arr.Name?.EMail,
+                      Id: arr.NameId,
+                    });
+
+                    if (arr.Role == "TL") {
+                      TeamLeader.push({
+                        Title: arr.Name?.Title,
+                        Email: arr.Name?.EMail,
+                        Id: arr.NameId,
+                      });
+                    }
+
+                    if (arr.Role == "TC") {
+                      TeamCaptain.push({
+                        Title: arr.Name?.Title,
+                        Email: arr.Name?.EMail,
+                        Id: arr.NameId,
+                      });
+                    }
+                  }
+                });
+
+                teamArr.push({
+                  TeamName: uniqueTeams[i],
+                  TeamLeader: TeamLeader,
+                  TeamCaptain: TeamCaptain,
+                  members: teamMembers,
                 });
               }
             }
-            // if (arr.TeamLeaderId) {
-            //   TeamLeader.push({
-            //     Title: arr.TeamLeader?.Title,
-            //     Email: arr.TeamLeader?.EMail,
-            //     Id: arr.TeamLeader?.ID,
-            //   });
-            // }
-            // if (arr.TeamCaptainId) {
-            //   TeamCaptain.push({
-            //     Title: arr.TeamCaptain?.Title,
-            //     Email: arr.TeamCaptain?.EMail,
-            //     Id: arr.TeamCaptain?.ID,
-            //   });
-            // }
-          });
-          teamArr.push({
-            TeamName: team,
-            TeamLeader: TeamLeader,
-            TeamCaptain: TeamCaptain,
-
-            members: teamMembers,
-          });
-        });
+          }
+        }
 
         setCardarr([...teamArr]);
-
         setLoader(false);
       })
       .catch((err) => {
@@ -136,17 +148,21 @@ const CardView = (props) => {
         errFunction(err);
       });
   };
+
   const errFunction = (err) => {
     console.log(err);
   };
+
   const teamClick = (value, task) => {
     props.memberFunction(value, task);
     // setSelectedmembers(value ? [...value] : []);
   };
+
   useEffect(() => {
     setLoader(true);
     getchoice();
   }, []);
+
   return (
     <>
       {loader ? (
@@ -172,7 +188,8 @@ const CardView = (props) => {
                       <Card
                         style={{ width: "100%", cursor: "pointer" }}
                         onClick={() => {
-                          teamClick(val.members, "TeamMembers");
+                          teamClick(val, "TeamMembers");
+                          // teamClick(val.members, "TeamMembers");
                         }}
                       >
                         <>
@@ -202,40 +219,45 @@ const CardView = (props) => {
                                   {val.TeamCaptain[0]?.Title}
                                 </Label> */}
 
-                                {val.TeamCaptain.length>0?
-                                val.TeamCaptain.map((item) => {
-                                  return (
-                                    <>
-                                      <div title={item?.Title}>
-                                      <Avatar
-                                        image={`/_layouts/15/userphoto.aspx?size=S&username=${item?.Email}`}
-                                        size="normal"
-                                        shape="circle"
-                                        label={item?.Title}
-                                        data-pr-tooltip={item?.Title}
-                                      />
-                                      </div>
-                                      {/* <Label
+                                {val.TeamCaptain.length > 0 ? (
+                                  val.TeamCaptain.map((item) => {
+                                    return (
+                                      <>
+                                        <div title={item?.Title}>
+                                          <Avatar
+                                            image={`/_layouts/15/userphoto.aspx?size=S&username=${item?.Email}`}
+                                            size="normal"
+                                            shape="circle"
+                                            label={item?.Title}
+                                            data-pr-tooltip={item?.Title}
+                                          />
+                                        </div>
+                                        {/* <Label
                                         className={styles.noPaddingLable}
                                         style={{ marginLeft: 6 }}
                                       >
                                         {item?.Title}
                                       </Label> */}
-                                    </>
-                                  );
-                                }):<><Avatar
-                                image={`/_layouts/15/userphoto.aspx?size=S&username=''`}
-                                size="normal"
-                                shape="circle"
-                                label={""}
-                                data-pr-tooltip=""
-                              />
-                              <Label
-                                className={styles.noPaddingLable}
-                                style={{ marginLeft: 6 }}
-                              >
-                                {''}
-                              </Label></>}
+                                      </>
+                                    );
+                                  })
+                                ) : (
+                                  <>
+                                    <Avatar
+                                      image={`/_layouts/15/userphoto.aspx?size=S&username=''`}
+                                      size="normal"
+                                      shape="circle"
+                                      label={""}
+                                      data-pr-tooltip=""
+                                    />
+                                    <Label
+                                      className={styles.noPaddingLable}
+                                      style={{ marginLeft: 6 }}
+                                    >
+                                      {""}
+                                    </Label>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>

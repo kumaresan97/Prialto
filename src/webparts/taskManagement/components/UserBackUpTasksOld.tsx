@@ -110,8 +110,8 @@ export default function UserBackUpTasksNew(props) {
               setConfigure({ ...crntUserBackup });
             })
             .catch((err) => errFunction(err));
-          getMyClients(res.Id);
-          //getAllTaskID(res.Id);
+          //getMyClients(res.Id);
+          getAllTaskID(res.Id);
         })
         .catch((err) => errFunction(err));
     } else {
@@ -130,7 +130,7 @@ export default function UserBackUpTasksNew(props) {
       Orderbydecorasc: false,
       Filter: [
         {
-          FilterKey: "Backup/ID",
+          FilterKey: "Assistant/ID",
           Operator: "eq",
           FilterValue: id,
         },
@@ -139,21 +139,7 @@ export default function UserBackUpTasksNew(props) {
       .then((res) => {
         MyClients = [];
         res.forEach((val: any) => {
-          MyClients.push({
-            ID: val.ID,
-            Name: val.FirstName,
-            CompanyDatas: {
-              FirstName: val.FirstName,
-              LastName: val.LastName?val.LastName:"",
-              CompanyName: val.CompanyName,
-            },
-            Assistant: {
-              Id: val.Assistant.ID,
-              EMail: val.Assistant.EMail,
-              Title: val.Assistant.Title
-            },
-            BackupUsers: val.BackupId ? val.BackupId : [],
-          });
+          MyClients.push({ ID: val.ID, Name: val.FirstName });
         });
         if (MyClients.length > 0) {
           getMainTask(id);
@@ -256,29 +242,21 @@ export default function UserBackUpTasksNew(props) {
   //getmaintask
   const getMainTask = (id) => {
     let Filter = [];
-    // if (MyTaskIds.length > 0) {
-    //   MyTaskIds.forEach((val: any) => {
-    //     Filter.push({
-    //       FilterKey: "ID",
-    //       Operator: "eq",
-    //       FilterValue: val.ID,
-    //     });
-    //   });
-    // } else {
-    //   Filter.push({
-    //     FilterKey: "ID",
-    //     Operator: "eq",
-    //     FilterValue: 0,
-    //   });
-    // }
-
-    MyClients.forEach((val: any) => {
-      Filter.push({
-        FilterKey: "Client/ID",
-        Operator: "eq",
-        FilterValue: val.ID,
+    if (MyTaskIds.length > 0) {
+      MyTaskIds.forEach((val: any) => {
+        Filter.push({
+          FilterKey: "ID",
+          Operator: "eq",
+          FilterValue: val.ID,
+        });
       });
-    });
+    } else {
+      Filter.push({
+        FilterKey: "ID",
+        Operator: "eq",
+        FilterValue: 0,
+      });
+    }
 
     SPServices.SPReadItems({
       Listname: "Tasks",
@@ -295,7 +273,7 @@ export default function UserBackUpTasksNew(props) {
         console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId && val.AssitantId!=id &&
+          val.ClientId &&
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -345,9 +323,10 @@ export default function UserBackUpTasksNew(props) {
         });
 
         let arrFilter = [];
-        ///MyClients = [];
+        MyClients = [];
         for (let i = 0; i < MainTask.length; i++) {
-          /*
+          console.log(MainTask[i], "backupdata");
+
           let IDtoCompare = MainTask[i].data.ClientID
             ? MainTask[i].data.ClientID
             : "";
@@ -370,7 +349,7 @@ export default function UserBackUpTasksNew(props) {
               },
               BackupUsers: MainTask[i].data.BackupUsers,
             });
-          }*/
+          }
 
           arrFilter.push({
             FilterKey: "MainTaskID/ID",
@@ -493,7 +472,6 @@ export default function UserBackUpTasksNew(props) {
   function BindData() {
     let tempClient = [];
     for (let i = 0; i < MyClients.length; i++) {
-      /*
       tempClient.push({
         ClientName: MyClients[i].Name,
         CompanyDatas: MainTask[i].data.Clientdatas,
@@ -501,15 +479,6 @@ export default function UserBackUpTasksNew(props) {
         ID: MyClients[i].ID,
         Assistant: MyClients[i].Assistant,
         BackupUsers: MainTask[i].data.BackupUsers,
-        Tasks: [],
-      });
-      */
-      tempClient.push({
-        ClientName: MyClients[i].Name,
-        CompanyDatas: MyClients[i].CompanyDatas,
-        ID: MyClients[i].ID,
-        Assistant: MyClients[i].Assistant,
-        BackupUsers: MyClients[i].BackupUsers,
         Tasks: [],
       });
       for (let j = 0; j < MainArray.length; j++) {

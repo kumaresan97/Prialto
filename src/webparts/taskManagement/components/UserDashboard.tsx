@@ -352,18 +352,18 @@ export default function UserDashboard(props) {
       else
       {
         
-        // if(categoryIndex>=0){
-        // for(let i=0;i<tempClientNew[categoryIndex].Tasks.length;i++)
-        //   {
-        //     for(let j=0;j<tempClientNew[categoryIndex].Tasks[i].children.length;j++)
-        //     {
-        //         if(tempClientNew[categoryIndex].Tasks[i].children[j].Id==selectedTasks[i].data.Id)
-        //         {
-        //           tempClientNew[categoryIndex].Tasks[i].children[j].data.ReminderDays=noOfDays;
-        //         }
-        //     }
-        //   }
-        // }
+        if(categoryIndex>=0){
+          for(let k=0;k<tempClientNew[categoryIndex].Tasks.length;k++)
+            {
+              for(let j=0;j<tempClientNew[categoryIndex].Tasks[k].children.length;j++)
+              {
+                  if(tempClientNew[categoryIndex].Tasks[k].children[j].Id==selectedTasks[i].data.Id)
+                  {
+                    tempClientNew[categoryIndex].Tasks[k].children[j].data.ReminderDays=noOfDays;
+                  }
+              }
+            }
+          }
       }
 
       prepareClientandBackupTasks(tempClientNew[categoryIndex],selectedTasks[i].taskType,selectedTasks[i].categoryID);
@@ -608,7 +608,7 @@ export default function UserDashboard(props) {
                 className={styles.btnColor}
                 label="Done"
                 onClick={() => {
-                  props.HandleCompleted("Completed", user);
+                  props.HandleCompleted("Completed", user,"member");
                 }}
                 // icon="pi pi-file-excel"
               />
@@ -650,6 +650,7 @@ export default function UserDashboard(props) {
             clientdatafunction={getDataFromClient}
             recChoices={recurrenceChoices}
 
+            Module={module}
             getClientTasks={getClientTasks}
             getClientSelectedTasks={getClientSelectedTasks}
             UpdatedData={clientTasks}
@@ -665,6 +666,7 @@ export default function UserDashboard(props) {
             backupdatafunction={getDataFromBackup}
             recChoices={recurrenceChoices}
 
+            Module={module}
             getBackupTasks={getBackupTasks}
             getBackupSelectedTasks={getBackupSelectedTasks}
             UpdatedData={backupTasks}

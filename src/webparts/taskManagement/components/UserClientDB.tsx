@@ -404,6 +404,25 @@ const UserClientDB = (props): JSX.Element => {
   //Add item
   const AddItem = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
+
+    let strDoneOnTime = "Overdue";
+    let daysEarly = 0;
+
+    if (
+      moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Done"
+    ) {
+      strDoneOnTime = "Done On Time";
+      var TDate = moment(moment().format("YYYY-MM-DD"));
+      daysEarly = moment(curdata.DueDate).diff(TDate, "days");
+    }
+    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+    curdata.Status["name"] != "Done")
+    {
+      strDoneOnTime = "On Track";
+    }
+
+
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
       // BackupId: curdata.Backup.Id ///Changes for backup users multiple
@@ -421,6 +440,11 @@ const UserClientDB = (props): JSX.Element => {
       MainTaskIDId: Number(obj.key.split("-")[0]),
       ClientId: props.clientId,
       AssistantId: curuserId.Id,
+      TaskAge: 0,
+      CompletedDate:
+        curdata.Status["name"] == "Done" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -438,6 +462,11 @@ const UserClientDB = (props): JSX.Element => {
       Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       AssistantId: curuserId.Id,
       ClientId: props.clientId,
+      TaskAge: 0,
+      CompletedDate:
+        curdata.Status["name"] == "Done" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -450,12 +479,12 @@ const UserClientDB = (props): JSX.Element => {
         /*For Recurrence Insert */
         let newJson = {
           TaskIDId: res.data.ID,
-          RecurrenceType: curdata.Status["name"],
+          RecurrenceType: curdata.Recurrence["name"],
         };
 
         let newSubJson = {
           SubTaskIDId: res.data.ID,
-          RecurrenceType: curdata.Status["name"],
+          RecurrenceType: curdata.Recurrence["name"],
         };
 
         let inputJson = obj.isParent ? newJson : newSubJson;
@@ -592,7 +621,7 @@ const UserClientDB = (props): JSX.Element => {
 
   /* for recurrence add and update */
   async function AddRecurrence(Status, dataJson) {
-    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
+    if (Status != "Done" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPAddItem({
         Listname: "Recurrence",
         RequestJSON: dataJson,
@@ -605,7 +634,7 @@ const UserClientDB = (props): JSX.Element => {
   }
 
   async function UpdateRecurrence(Status, dataJson, ListID) {
-    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
+    if (Status != "Done" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPUpdateItem({
         Listname: "Recurrence",
         ID: ListID,
@@ -661,6 +690,24 @@ const UserClientDB = (props): JSX.Element => {
   //editfunction
   const Editfunction = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
+
+    let daysEarly = 0;
+    let strDoneOnTime = "Overdue";
+    if (
+      moment(curdata.DueDate).format('YYYY-MM-DD')>= moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] == "Done"
+    ) {
+      strDoneOnTime = "Done On Time";
+      var TDate = moment(moment().format("YYYY-MM-DD"));
+      daysEarly = moment(curdata.DueDate).diff(TDate, "days");
+    }
+    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+    curdata.Status["name"] != "Done")
+    {
+      strDoneOnTime = "On Track";
+    }
+
+
     let editval = {
       TaskName: curdata.TaskName,
       //BackupId: curdata.Backup.Id,
@@ -671,6 +718,11 @@ const UserClientDB = (props): JSX.Element => {
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
       ClientId: props.clientId,
+      TaskAge: 0,
+      CompletedDate:
+        curdata.Status["name"] == "Done" ? moment().format() : null,
+      DoneFormula: strDoneOnTime,
+      DaysOnEarly: daysEarly,
     };
     SPServices.SPUpdateItem({
       Listname: ListName,
@@ -1278,7 +1330,30 @@ const UserClientDB = (props): JSX.Element => {
         );
       } else if (fieldType == "Status" || fieldType == "PriorityLevel" || fieldType == "Recurrence") {
         return priorityLevelStyle(data[fieldType]);
-      } else {
+      }
+      else if (fieldType == "TaskName") {
+        return (
+          <><span
+            style={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              display: "block",
+              width: "160px",
+            }}
+          >
+            {data[fieldType]}
+          </span>
+          {data['ReminderDays']>0?<Button
+                  type="button"
+                  icon="pi pi-stopwatch"
+                  title={data['ReminderDays']+" days"}
+                  style={pencilIconBtnStyle}
+          ></Button>:""}
+          </>
+        );
+      } 
+      else {
         return (
           <span
             style={{

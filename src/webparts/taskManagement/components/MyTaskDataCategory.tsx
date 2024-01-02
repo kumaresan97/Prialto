@@ -441,7 +441,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       CategoryId: props.categoryId,
       TaskAge: 0,
       CompletedDate:
-        curdata.Status["name"] == "Completed" ? moment().format() : null,
+        curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
     };
@@ -462,7 +462,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
       CategoryId: props.categoryId,
       TaskAge: 0,
       CompletedDate:
-        curdata.Status["name"] == "Completed" ? moment().format() : null,
+        curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
     };
@@ -477,12 +477,12 @@ const MyTaskDataCategory = (props): JSX.Element => {
         /*For Recurrence Insert */
         let newJson = {
           TaskIDId: res.data.ID,
-          RecurrenceType: curdata.Status["name"],
+          RecurrenceType: curdata.Recurrence["name"],
         };
 
         let newSubJson = {
           SubTaskIDId: res.data.ID,
-          RecurrenceType: curdata.Status["name"],
+          RecurrenceType: curdata.Recurrence["name"],
         };
 
         let inputJson = obj.isParent ? newJson : newSubJson;
@@ -629,7 +629,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   }
 
   async function AddRecurrence(Status, dataJson) {
-    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
+    if (Status != "Done" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPAddItem({
         Listname: "Recurrence",
         RequestJSON: dataJson,
@@ -642,7 +642,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   }
 
   async function UpdateRecurrence(Status, dataJson, ListID) {
-    if (Status != "Completed" && Status != "On-hold" && Status != "One time") {
+    if (Status != "Done" && Status != "On-hold" && Status != "One time") {
       await SPServices.SPUpdateItem({
         Listname: "Recurrence",
         ID: ListID,
@@ -696,6 +696,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   //editfunction
   const Editfunction = (obj) => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
+
     let daysEarly = 0;
     let strDoneOnTime = "Overdue";
     if (
@@ -711,6 +712,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     {
       strDoneOnTime = "On Track";
     }
+    
     let editval = {
       TaskName: curdata.TaskName,
       //BackupId: curdata.Backup.Id ? curdata.Backup.Id : null,
@@ -720,8 +722,9 @@ const MyTaskDataCategory = (props): JSX.Element => {
         : "",
       Status: curdata.Status["name"] ? curdata.Status["name"] : "",
       Recurrence: curdata.Recurrence["name"] ? curdata.Recurrence["name"] : "",
+      TaskAge: 0,
       CompletedDate:
-        curdata.Status["name"] == "Completed" ? moment().format() : null,
+        curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
     };
@@ -1341,7 +1344,30 @@ const MyTaskDataCategory = (props): JSX.Element => {
         );
       } else if (fieldType == "Status" || fieldType == "PriorityLevel" || fieldType == "Recurrence") {
         return priorityLevelStyle(data[fieldType]);
-      } else {
+      }
+      else if (fieldType == "TaskName") {
+        return (
+          <><span
+            style={{
+              textOverflow: "ellipsis",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              display: "block",
+              width: "160px",
+            }}
+          >
+            {data[fieldType]}
+          </span>
+          {data['ReminderDays']>0?<Button
+                  type="button"
+                  icon="pi pi-stopwatch"
+                  title={data['ReminderDays']+" days"}
+                  style={pencilIconBtnStyle}
+          ></Button>:""}
+          </>
+        );
+      }
+      else {
         return (
           <span
             style={{

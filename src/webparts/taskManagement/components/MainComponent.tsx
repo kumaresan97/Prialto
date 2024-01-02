@@ -71,6 +71,7 @@ const MainComponent = (props: any): JSX.Element => {
   // State creation
 
   const [Completeuser, setCompleteUser] = useState("");
+  const [module,setModule]= useState("");
   const [navsearch, setnavsearch] = useState("");
 
   const [params, setParams] = useState({
@@ -285,10 +286,14 @@ const MainComponent = (props: any): JSX.Element => {
     setvalue("member");
     setselectedMember(member);
   };
-  const HandleCompleted = (Status, value) => {
+  const HandleCompleted = (Status, value,Module) => {
     setvalue(Status);
     setCompleteUser(value);
+    setModule(Module);
   };
+  function HandleBackBtn(){
+    setvalue(module);
+  }
 
   const memberFunction = (value, taskname) => {
     setvalue(taskname ? taskname : "");
@@ -597,6 +602,7 @@ const MainComponent = (props: any): JSX.Element => {
             <>
               <MyTaskDBNewCategory
                 context={props.context}
+                Module={module}
                 HandleCompleted={HandleCompleted}
               />
             </>
@@ -610,6 +616,7 @@ const MainComponent = (props: any): JSX.Element => {
               selectedMember={selectedMember}
               context={props.context}
               Email={selectedMember}
+              Module={module}
               HandleCompleted={HandleCompleted}
             />
           ) : value == "CardView" ? (
@@ -622,6 +629,7 @@ const MainComponent = (props: any): JSX.Element => {
               context={props.context}
               // memberFunction={memberFunction}
               Completeuser={Completeuser}
+              HandleBackBtn={HandleBackBtn}
               // HandleCompleted={HandleCompleted}
             ></CompleteDashboard>
           ) : value == "OrgChart" ? (

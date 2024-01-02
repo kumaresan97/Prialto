@@ -657,18 +657,18 @@ export default function MyTaskDBNewCategory(props) {
         }
       } else 
       {
-        // if(categoryIndex>=0){
-        //   for(let k=0;i<tempClientNew[categoryIndex].Tasks.length;k++)
-        //     {
-        //       for(let j=0;j<tempClientNew[categoryIndex].Tasks[k].children.length;j++)
-        //       {
-        //           if(tempClientNew[categoryIndex].Tasks[k].children[j].Id==selectedTasks[i].data.Id)
-        //           {
-        //             tempClientNew[categoryIndex].Tasks[k].children[j].data.ReminderDays=noOfDays;
-        //           }
-        //       }
-        //     }
-        //   }
+        if(categoryIndex>=0){
+          for(let k=0;k<tempClientNew[categoryIndex].Tasks.length;k++)
+            {
+              for(let j=0;j<tempClientNew[categoryIndex].Tasks[k].children.length;j++)
+              {
+                  if(tempClientNew[categoryIndex].Tasks[k].children[j].Id==selectedTasks[i].data.Id)
+                  {
+                    tempClientNew[categoryIndex].Tasks[k].children[j].data.ReminderDays=noOfDays;
+                  }
+              }
+            }
+          }
 
       }
     }
@@ -1197,7 +1197,7 @@ export default function MyTaskDBNewCategory(props) {
                 className={styles.btnColor}
                 label="Done"
                 onClick={() => {
-                  props.HandleCompleted("Completed", UserEmail);
+                  props.HandleCompleted("Completed", UserEmail ,"mytasks");
                 }}
                 // icon="pi pi-file-excel"
               />

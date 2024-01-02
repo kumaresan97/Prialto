@@ -15,7 +15,20 @@ import { InputText } from "primereact/inputtext";
 import exportToExcel from "../../../Global/ExportExcel";
 let mainarray = [];
 let subArray = [];
+import styles from "./MainComponent.module.scss";
+
 const CompleteDashboard = (props) => {
+  // style variables
+  const tickIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+    height: 30,
+    width: "100%",
+    fontSize: "30px",
+    display: "contents",
+    padding: 0,
+  };
   const UserEmail = props.context.pageContext.user.email;
   const [Userdata, setUserdata] = useState([]);
   const [masterdata, setMasterdata] = useState([]);
@@ -394,14 +407,32 @@ const CompleteDashboard = (props) => {
         <Loader></Loader>
       ) : (
         <div>
+          
           <div
             style={{
               display: "flex",
               gap: "10px",
-              justifyContent: "end",
+              justifyContent: "space-between",
+              alignItems:"center",
               marginBottom: "10px",
             }}
-          >
+          > <div>
+            <Button
+        className={styles.righticon}
+        style={tickIconStyle}
+        // label={
+        //   props.selectedTeamMember.length
+        //     ? props.selectedTeamMember[0].TeamName
+        //     : ""
+        // }
+        icon="pi pi-arrow-left"
+        iconPos="left"
+        onClick={() => {
+          props.HandleBackBtn();
+        }}
+      />
+      </div>
+            <div style={{display:'flex',gap:15}}>
             <span className="p-input-icon-left">
               <i className="pi pi-search" />
               <InputText
@@ -423,6 +454,7 @@ const CompleteDashboard = (props) => {
               onClick={() => Exportexcel()}
               icon="pi pi-file-excel"
             />
+            </div>
           </div>
           <DataTable
             paginator

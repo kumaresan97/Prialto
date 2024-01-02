@@ -260,3 +260,6 @@ div#spCommandBar {
 .p-paginator-element {
   border: none !important;
 }
+.pi-stopwatch{
+  font-size: 16px !important;
+}

@@ -17,6 +17,8 @@ export interface IMyTasks {
   isRecurrence?: boolean;
   ReminderRef?:number;
   ReminderDays?:number;
+  CreatedByFlow?:boolean;
+  RecurParent?:string;
 }
 
 export interface IPeoplePicker {

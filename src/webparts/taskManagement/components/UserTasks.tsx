@@ -185,9 +185,9 @@ export default function UserTasks(props) {
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,RecurParent/ID",
 
-      Expand: "Assistant,Backup,Author,Client",
+      Expand: "Assistant,Backup,Author,Client,RecurParent",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
@@ -229,6 +229,8 @@ export default function UserTasks(props) {
                 ReminderDays:val.ReminderDays,
                 Status: val.Status,
                 Recurrence:val.Recurrence,
+                CreatedByFlow:val.CreatedByFlow,
+                RecurParent:val.RecurParent?val.RecurParent.ID:"",
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -268,8 +270,8 @@ export default function UserTasks(props) {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*,  Assistant/ID, Assistant/EMail, Assistant/Title,Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
-      Expand: "MainTaskID, Backup, Author,Assistant",
+        "*,  Assistant/ID, Assistant/EMail, Assistant/Title,Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID,RecurParent/ID",
+      Expand: "MainTaskID, Backup, Author,Assistant,RecurParent",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: FilterValue,
@@ -318,6 +320,8 @@ export default function UserTasks(props) {
                   ReminderDays:val.ReminderDays,
                   Status: val.Status,
                   Recurrence:val.Recurrence,
+                  CreatedByFlow:val.CreatedByFlow,
+                  RecurParent:val.RecurParent?val.RecurParent.ID:"",
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)

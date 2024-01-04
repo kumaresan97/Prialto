@@ -494,6 +494,19 @@ export default function UserDashboard(props) {
   let strTaskName=taskname;
   let BeforeData=duedate;
 
+  let multipleEntry=false;
+  if(selectedTasks.length == 1)
+  {
+    //BeforeData=moment(selectedTasks[0].data.data.DueDate).format("MM/DD/YYYY");
+    //strTaskName=selectedTasks[0].data.data.TaskName;
+  }
+  else if(selectedTasks.length > 1)
+  {
+    BeforeData="the due date";
+    strTaskName="Apply for multiple tasks";
+    multipleEntry=true;
+  }
+
   return (
     <>
     <Toast ref={toastTopRight} position="top-right" />
@@ -507,9 +520,11 @@ export default function UserDashboard(props) {
       >
         <div className={styles.addCatSection}>
           <Label className={styles.Automatelabel}>Automate</Label>
-          <h4 style={{ margin: "10px 0px 15px 0px" }}>
+          {multipleEntry?<Label style={{color:"Red"}}><br></br>
+          You have selected more than one task. The current reminder will be applicable for all the selected item.
+          <br></br></Label>:<h4 style={{ margin: "10px 0px 15px 0px" }}>
             Task name : <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
-          </h4>
+          </h4>}
           <>
             <div
               style={{

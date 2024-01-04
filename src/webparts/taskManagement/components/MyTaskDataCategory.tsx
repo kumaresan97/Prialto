@@ -144,6 +144,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
     PriorityLevel: "",
     Status: "",
     Recurrence:"",
+    CreatedByFlow:false,
+    RecurParent:"",
     Created: new Date().toString(),
     Backup: {
       EMail: "",
@@ -176,6 +178,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
       PriorityLevel: "",
       Status: "",
       Recurrence:"",
+      CreatedByFlow:false,
+      RecurParent:"",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -208,6 +212,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
       PriorityLevel: "",
       Status: "",
       Recurrence:"",
+      CreatedByFlow:false,
+      RecurParent:"",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -444,6 +450,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
+      CreatedByFlow:false,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -465,6 +472,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
+      CreatedByFlow:false,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -478,11 +486,13 @@ const MyTaskDataCategory = (props): JSX.Element => {
         let newJson = {
           TaskIDId: res.data.ID,
           RecurrenceType: curdata.Recurrence["name"],
+          Status:"InProgress"
         };
 
         let newSubJson = {
           SubTaskIDId: res.data.ID,
           RecurrenceType: curdata.Recurrence["name"],
+          Status:"InProgress"
         };
 
         let inputJson = obj.isParent ? newJson : newSubJson;
@@ -642,7 +652,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
   }
 
   async function UpdateRecurrence(Status, dataJson, ListID) {
-    if (Status != "Done" && Status != "On-hold" && Status != "One time") {
+    if (Status != "Done" && Status != "On-hold" && Status != "One time") 
+    {
       await SPServices.SPUpdateItem({
         Listname: "Recurrence",
         ID: ListID,
@@ -655,16 +666,33 @@ const MyTaskDataCategory = (props): JSX.Element => {
     }
   }
 
+  async function UpdateParentItemRecurrence(recordID,Status,obj)
+  {
+    let listName=obj.isParent?"Tasks":"SubTasks";  
+    await SPServices.SPUpdateItem({
+        Listname:listName,
+        ID:recordID,
+        RequestJSON:{
+          Recurrence:Status
+        }
+      }).then(function()
+      {
+      })
+      .catch(function (error) {errFunction(error)});
+  }
+
   async function InsertOrUpdateRecurrence(recordID, obj, Status) {
     /*For Recurrence Update */
     let newJson = {
       TaskIDId: recordID,
       RecurrenceType: Status,
+      Status:"InProgress"
     };
 
     let newSubJson = {
       SubTaskIDId: recordID,
       RecurrenceType: Status,
+      Status:"InProgress"
     };
 
     let inputJson = obj.isParent ? newJson : newSubJson;
@@ -683,13 +711,15 @@ const MyTaskDataCategory = (props): JSX.Element => {
       ],
     })
       .then(function (data: any) {
-        if (data.length > 0) {
+        if (data.length > 0) 
+        {
           UpdateRecurrence(Status, inputJson, data[0].ID);
-        } else {
+        } else 
+        {
           AddRecurrence(Status, inputJson);
         }
       })
-      .catch(function (error) {});
+      .catch(function (error) {errFunction(error)});
     /*For Recurrence Update */
   }
 
@@ -711,6 +741,12 @@ const MyTaskDataCategory = (props): JSX.Element => {
     curdata.Status["name"] != "Done")
     {
       strDoneOnTime = "On Track";
+    }
+
+    let isRecurChanged=false;
+    if(curdata.Recurrence["name"]!=obj.data.Recurrence)
+    {
+      isRecurChanged= true;
     }
     
     let editval = {
@@ -735,7 +771,18 @@ const MyTaskDataCategory = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Recurrence["name"]);
+        if(!curdata.CreatedByFlow)
+        {
+          InsertOrUpdateRecurrence(obj.Id, obj, curdata.Recurrence["name"]);
+        }
+        else if(curdata.CreatedByFlow&&isRecurChanged)
+        {
+          if(curdata.RecurParent)
+          UpdateParentItemRecurrence(curdata.RecurParent, curdata.Recurrence["name"],obj);
+
+          //As of now disabled we need to confirm..
+        }
+
         let newData = {};
         if (obj.isParent) {
           newData = {
@@ -754,6 +801,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Recurrence: editval.Recurrence,
+              CreatedByFlow:curdata.CreatedByFlow,
+              RecurParent:curdata.RecurParent,
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
@@ -784,6 +833,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Recurrence: editval.Recurrence,
+              CreatedByFlow:curdata.CreatedByFlow,
+              RecurParent:curdata.RecurParent,
               Created: moment().format("YYYY-MM-DD"),
               ReminderRef:curdata.ReminderRef,
               ReminderDays:curdata.ReminderDays
@@ -843,6 +894,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = SPServices.displayDate(obj.data.DueDate);
         curdata.Created = obj.data.Created;
+        curdata.CreatedByFlow=obj.data.CreatedByFlow;
+        curdata.RecurParent=obj.data.RecurParent,
         curdata.PriorityLevel = {
           name: obj.data.PriorityLevel,
           code: obj.data.PriorityLevel,
@@ -862,6 +915,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = SPServices.displayDate(obj.data.DueDate);
         curdata.Created = obj.data.Created;
+        curdata.CreatedByFlow=obj.data.CreatedByFlow;
+        curdata.RecurParent=obj.data.RecurParent,
         curdata.PriorityLevel = {
           name: obj.data.PriorityLevel,
           code: obj.data.PriorityLevel,
@@ -1355,6 +1410,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               display: "block",
               width: "160px",
             }}
+            title={data[fieldType]}
           >
             {data[fieldType]}
           </span>

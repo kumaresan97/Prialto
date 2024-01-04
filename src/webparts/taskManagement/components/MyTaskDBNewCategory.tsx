@@ -258,9 +258,9 @@ export default function MyTaskDBNewCategory(props) {
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Category/ID",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Category/ID,RecurParent/ID",
 
-      Expand: "Assistant,Backup,Author,Client,Category",
+      Expand: "Assistant,Backup,Author,Client,Category,RecurParent",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: Filter,
@@ -301,6 +301,8 @@ export default function MyTaskDBNewCategory(props) {
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
                 Recurrence:val.Recurrence,
+                CreatedByFlow:val.CreatedByFlow,
+                RecurParent:val.RecurParent?val.RecurParent.ID:"",
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -344,8 +346,8 @@ export default function MyTaskDBNewCategory(props) {
     SPServices.SPReadItems({
       Listname: "SubTasks",
       Select:
-        "*,  Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID",
-      Expand: "MainTaskID, Backup, Author",
+        "*,  Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title, MainTaskID/ID,RecurParent/ID",
+      Expand: "MainTaskID, Backup, Author,RecurParent",
       Orderby: "Created",
       Orderbydecorasc: false,
       Filter: FilterValue,
@@ -392,6 +394,8 @@ export default function MyTaskDBNewCategory(props) {
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
                   Recurrence:val.Recurrence,
+                  CreatedByFlow:val.CreatedByFlow,
+                  RecurParent:val.RecurParent?val.RecurParent.ID:"",
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)
@@ -894,13 +898,21 @@ export default function MyTaskDBNewCategory(props) {
     
   }, [props.Email]);
 
-  let BeforeData =
-    selectedTasks.length > 0
-      ? moment(selectedTasks[0].data.data.DueDate).format("MM/DD/YYYY")
-      : "";
-
-  let strTaskName =
-    selectedTasks.length > 0 ? selectedTasks[0].data.data.TaskName : "";
+  let BeforeData = "";
+  let strTaskName ="";
+  let multipleEntry=false;
+  if(selectedTasks.length == 1)
+  {
+    BeforeData=moment(selectedTasks[0].data.data.DueDate).format("MM/DD/YYYY");
+    strTaskName=selectedTasks[0].data.data.TaskName;
+  }
+  else if(selectedTasks.length > 1)
+  {
+    BeforeData="the due date";
+    strTaskName="Apply for multiple tasks";
+    multipleEntry=true;
+  }
+    
 
   return (
     <>
@@ -955,9 +967,11 @@ export default function MyTaskDBNewCategory(props) {
       >
         <div className={styles.addCatSection}>
           <Label className={styles.Automatelabel}>Automate</Label>
-          <h4 style={{ margin: "10px 0px 15px 0px" }}>
+          {multipleEntry?<Label style={{color:"Red"}}><br></br>
+          You have selected more than one task. The current reminder will be applicable for all the selected item.
+          <br></br></Label>:<h4 style={{ margin: "10px 0px 15px 0px" }}>
             Task name : <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
-          </h4>
+          </h4>}
           {/* <div
             style={{-
               display: "flex",
@@ -1022,6 +1036,8 @@ export default function MyTaskDBNewCategory(props) {
               <div style={{ display: "flex", gap: 10 }}>
                 <Label>days before </Label>
                 <Label>{BeforeData}</Label>
+              </div>
+              <div>
               </div>
             </div>
           </>

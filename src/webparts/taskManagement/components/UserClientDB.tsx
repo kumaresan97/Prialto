@@ -998,7 +998,8 @@ const UserClientDB = (props): JSX.Element => {
       }
     } else if (type == "addParent") {
       let _concatArray: any[] = [];
-      _concatArray = [...curMyTask].concat([{ ...obj }]);
+      //_concatArray = [...curMyTask].concat([{ ...obj }]);
+      _concatArray = [{ ...obj }].concat([...curMyTask]);
       _curArray = [..._concatArray].map((val: any) => {
         if (!val.Id) {
           val.isClick = true;

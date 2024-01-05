@@ -496,6 +496,7 @@ const CompleteDashboard = (props) => {
               sortable
               body={(obj) => priorityLevelStyle(obj.Status)}
             />
+            <Column field="CompletedDate" header="CompletedDate" sortable />
 
             {/* <Column
                   header="Action"

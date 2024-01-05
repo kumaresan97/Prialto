@@ -180,7 +180,8 @@ const Client = (props) => {
         };
 
         let x = clientdetail.filter((val) => val.Id !== null);
-        setClientdetail([...x, resobj]);
+        //setClientdetail([...x, resobj]);
+        setClientdetail([resobj,...x]);
         setisAdd(false);
         setisEdit(false);
 
@@ -1105,8 +1106,8 @@ const Client = (props) => {
                     setisAdd(true);
 
                     setisEdit(false);
-                    setClientdetail([...clientdetail, Newdatadd]);
-
+                    //setClientdetail([...clientdetail, Newdatadd]);
+                    setClientdetail([Newdatadd,...clientdetail]);
                     setValue({ ...Data });
                     // _handleData("addParent", { ..._sampleParent });
                   }}
@@ -1119,6 +1120,8 @@ const Client = (props) => {
               value={clientdetail}
               sortMode="multiple"
               tableStyle={{ minWidth: "60rem" }}
+              paginator
+              rows={10}
             >
               <Column
                 field="FirstName"

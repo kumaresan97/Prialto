@@ -1091,7 +1091,8 @@ const OrgChart = (props) => {
         };
 
         let filterdatas = value.filter((val) => val.Id !== null);
-        setValue([...filterdatas, resjson]);
+        //setValue([...filterdatas, resjson]);
+        setValue([resjson,...filterdatas]);
         setAdd(false);
         setEdit(false);
         setcurobj(addparent);
@@ -1943,7 +1944,8 @@ const OrgChart = (props) => {
                 onClick={() => {
                   setEdit(false);
                   setAdd(true);
-                  setValue([...value, addInput]);
+                  //setValue([...value, addInput]);
+                  setValue([addInput,...value]);
 
                   // _handleData("addParent", { ..._sampleParent });
                 }}
@@ -1956,6 +1958,8 @@ const OrgChart = (props) => {
             sortMode="multiple"
             className={styles.dataTableContainer}
             tableStyle={{ minWidth: "60rem" }}
+            paginator
+            rows={10}
           >
             <Column
               field="Name"

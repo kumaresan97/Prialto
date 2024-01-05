@@ -376,10 +376,10 @@ const UserClientDB = (props): JSX.Element => {
           style={tickIconStyle}
           icon="pi pi-check"
           onClick={(_) => {
-            if (validation()) {
+            if (validation(obj)) {
               _handleDataoperation(obj);
             } else {
-              showMessage("Please enter Task name", toastTopRight, "warn");
+              //showMessage("Please enter Task name", toastTopRight, "warn");
             }
           }}
         />
@@ -1594,10 +1594,42 @@ const UserClientDB = (props): JSX.Element => {
     });
   };
 
-  function validation() {
+  function validation(objNew) {
     let isAllValueFilled = true;
+
+    let ParentDueDate=[];
+    let ChildDueDate=[];
+    let ParentDate="";
+    let isDueDateGt=true;
+    try
+    {
+      if(objNew.isParent==false)
+      {
+        ParentDueDate=[...curMyTask].filter((item)=>item.Id==objNew.subId);
+        ParentDate=moment(ParentDueDate[0].data.DueDate,'MM/DD/YYYY').format("YYYY-MM-DD");
+        isDueDateGt=ParentDate>=moment(curdata.DueDate).format("YYYY-MM-DD")
+      }
+      else
+      {
+        ChildDueDate=objNew.children.filter((item)=>moment(item.data.DueDate,'MM/DD/YYYY').format("YYYY-MM-DD")>moment(curdata.DueDate).format("YYYY-MM-DD"));
+      }
+    }
+    catch(e)
+    {
+      console.log(e);
+    }
+
     if (!curdata.TaskName) {
       isAllValueFilled = false;
+    }
+    else if(!isDueDateGt){
+      isAllValueFilled = false;
+      showMessage("Due date should be less than parent task", toastTopRight, "warn");
+    }
+    else if(ChildDueDate.length>0)
+    {
+      isAllValueFilled = false;
+      showMessage("Due date should be greater than child task", toastTopRight, "warn");
     }
     return isAllValueFilled;
   }

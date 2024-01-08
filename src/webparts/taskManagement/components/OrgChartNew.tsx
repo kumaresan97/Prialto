@@ -1871,7 +1871,7 @@ const OrgChart = (props) => {
     //  else if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
     //   missingFields.push("Manager");
     // }
-    else if (!curobj.Team || curobj.Team === "") {
+    else if (curobj.Team.length==0 || curobj.Team === ""||!curobj.Team) {
       missingFields.push("Cohort");
     }
 

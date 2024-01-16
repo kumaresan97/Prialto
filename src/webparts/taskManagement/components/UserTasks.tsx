@@ -170,11 +170,11 @@ export default function UserTasks(props) {
   //getmaintask
   const getMainTask = (id) => {
     let Filter = [
-      {
-        FilterKey: "Assistant/ID",
-        Operator: "eq",
-        FilterValue: id,
-      },
+      // {
+      //   FilterKey: "Assistant/ID",
+      //   Operator: "eq",
+      //   FilterValue: id,
+      // },
     ];
     MyClients.forEach((val: any) => {
       Filter.push({
@@ -197,7 +197,7 @@ export default function UserTasks(props) {
       .then((res) => {
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId &&
+          val.ClientId && val.Status !="Done" &&
             MainTask.push({
               key: val.Id,
               Id: val.Id,

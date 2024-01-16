@@ -295,7 +295,7 @@ export default function UserBackUpTasksNew(props) {
         console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId &&
+          val.ClientId && val.Status !="Done" &&
             val.AssitantId != id &&
             MainTask.push({
               key: val.Id,

@@ -264,6 +264,11 @@ export default function MyTaskDBNewCategory(props) {
         Operator: "eq",
         FilterValue: id,
       },
+      {
+        FilterKey: "Status",
+        Operator: "ne",
+        FilterValue: "Done",
+      }
     ];
     SPServices.SPReadItems({
       Listname: "Tasks",

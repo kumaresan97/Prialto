@@ -40,7 +40,7 @@ let dropStatus = [
   //   { name: "Done", code: "Done" },
 ];
 
-let dropRecurrence=[];
+let dropRecurrence = [];
 
 let MyClients = [];
 let MainTask: IParent[] = [];
@@ -50,7 +50,7 @@ let MainArray: IParent[] = [];
 const UserClientDB = (props): JSX.Element => {
   // style variables
   dropStatus = props.choices;
-  dropRecurrence= props.recChoices;
+  dropRecurrence = props.recChoices;
   const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
   // const TaskCellStyle = { backgroundColor: "#EAEEEE", width: 265 };
@@ -112,9 +112,9 @@ const UserClientDB = (props): JSX.Element => {
     DueDate: "",
     PriorityLevel: "",
     Status: "",
-    Recurrence:"",
-    CreatedByFlow:false,
-    RecurParent:"",
+    Recurrence: "",
+    CreatedByFlow: false,
+    RecurParent: "",
     Created: new Date().toString(),
     Backup: {
       EMail: "",
@@ -126,8 +126,8 @@ const UserClientDB = (props): JSX.Element => {
       Id: curuserId.Id,
       Title: curuserId.Title,
     },
-    ReminderRef:0,
-    ReminderDays:0
+    ReminderRef: 0,
+    ReminderDays: 0,
   };
   const [configure, setConfigure] = useState(props.crntBackData);
   const [expandedKeys, setExpandedKeys] =
@@ -146,9 +146,9 @@ const UserClientDB = (props): JSX.Element => {
       DueDate: "",
       PriorityLevel: "",
       Status: "",
-      Recurrence:"",
-      CreatedByFlow:false,
-      RecurParent:"",
+      Recurrence: "",
+      CreatedByFlow: false,
+      RecurParent: "",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -160,8 +160,8 @@ const UserClientDB = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
-      ReminderRef:0,
-      ReminderDays:0
+      ReminderRef: 0,
+      ReminderDays: 0,
     },
     children: [],
   };
@@ -180,9 +180,9 @@ const UserClientDB = (props): JSX.Element => {
       DueDate: "",
       PriorityLevel: "",
       Status: "",
-      Recurrence:"",
-      CreatedByFlow:false,
-      RecurParent:"",
+      Recurrence: "",
+      CreatedByFlow: false,
+      RecurParent: "",
       Created: new Date().toString(),
       Backup: {
         EMail: configure.EMail,
@@ -194,8 +194,8 @@ const UserClientDB = (props): JSX.Element => {
         Id: curuserId.Id,
         Title: curuserId.Title,
       },
-      ReminderRef:0,
-      ReminderDays:0
+      ReminderRef: 0,
+      ReminderDays: 0,
     },
   };
 
@@ -415,19 +415,20 @@ const UserClientDB = (props): JSX.Element => {
     let daysEarly = 0;
 
     if (
-      moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
+      moment(curdata.DueDate).format("YYYY-MM-DD") >=
+        moment().format("YYYY-MM-DD") &&
       curdata.Status["name"] == "Done"
     ) {
       strDoneOnTime = "Done On Time";
       var TDate = moment(moment().format("YYYY-MM-DD"));
       daysEarly = moment(curdata.DueDate).diff(TDate, "days");
-    }
-    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
-    curdata.Status["name"] != "Done")
-    {
+    } else if (
+      moment(curdata.DueDate).format("YYYY-MM-DD") >=
+        moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] != "Done"
+    ) {
       strDoneOnTime = "On Track";
     }
-
 
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -451,7 +452,7 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
-      CreatedByFlow:false,
+      CreatedByFlow: false,
     };
     let Main = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
@@ -474,7 +475,7 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Status["name"] == "Done" ? moment().format() : null,
       DoneFormula: strDoneOnTime,
       DaysOnEarly: daysEarly,
-      CreatedByFlow:false,
+      CreatedByFlow: false,
     };
 
     let Json = obj.isParent ? Main : sub;
@@ -488,13 +489,13 @@ const UserClientDB = (props): JSX.Element => {
         let newJson = {
           TaskIDId: res.data.ID,
           RecurrenceType: curdata.Recurrence["name"],
-          Status:"InProgress"
+          Status: "InProgress",
         };
 
         let newSubJson = {
           SubTaskIDId: res.data.ID,
           RecurrenceType: curdata.Recurrence["name"],
-          Status:"InProgress"
+          Status: "InProgress",
         };
 
         let inputJson = obj.isParent ? newJson : newSubJson;
@@ -518,12 +519,12 @@ const UserClientDB = (props): JSX.Element => {
               DueDate: SPServices.displayDate(Json.DueDate),
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
-              Recurrence:Json.Recurrence,
+              Recurrence: Json.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
-              ReminderRef:0,
-              ReminderDays:0
+              ReminderRef: 0,
+              ReminderDays: 0,
             },
             children: [],
           };
@@ -561,15 +562,20 @@ const UserClientDB = (props): JSX.Element => {
               DueDate: SPServices.displayDate(Json.DueDate),
               PriorityLevel: Json.PriorityLevel,
               Status: Json.Status,
-              Recurrence:Json.Recurrence,
+              Recurrence: Json.Recurrence,
               Created: moment().format("YYYY-MM-DD"),
-              ReminderRef:0,
-              ReminderDays:0
+              ReminderRef: 0,
+              ReminderDays: 0,
             },
           };
 
           if (indexOfObj >= 0)
-            BindAfternewChildData(newData, indexOfObj, indexOfChildren);
+            BindAfternewChildData(
+              newData,
+              indexOfObj,
+              indexOfChildren,
+              "Added"
+            );
         }
       })
       .catch((err) => errFunction(err));
@@ -657,19 +663,19 @@ const UserClientDB = (props): JSX.Element => {
     }
   }
 
-  async function UpdateParentItemRecurrence(recordID,Status,obj)
-  {
-    let listName=obj.isParent?"Tasks":"SubTasks";  
+  async function UpdateParentItemRecurrence(recordID, Status, obj) {
+    let listName = obj.isParent ? "Tasks" : "SubTasks";
     await SPServices.SPUpdateItem({
-        Listname:listName,
-        ID:recordID,
-        RequestJSON:{
-          Recurrence:Status
-        }
-      }).then(function()
-      {
-      })
-      .catch(function (error) {errFunction(error)});
+      Listname: listName,
+      ID: recordID,
+      RequestJSON: {
+        Recurrence: Status,
+      },
+    })
+      .then(function () {})
+      .catch(function (error) {
+        errFunction(error);
+      });
   }
 
   async function InsertOrUpdateRecurrence(recordID, obj, Status) {
@@ -677,13 +683,13 @@ const UserClientDB = (props): JSX.Element => {
     let newJson = {
       TaskIDId: recordID,
       RecurrenceType: Status,
-      Status:"InProgress"
+      Status: "InProgress",
     };
 
     let newSubJson = {
       SubTaskIDId: recordID,
       RecurrenceType: Status,
-      Status:"InProgress"
+      Status: "InProgress",
     };
 
     let inputJson = obj.isParent ? newJson : newSubJson;
@@ -721,25 +727,25 @@ const UserClientDB = (props): JSX.Element => {
     let daysEarly = 0;
     let strDoneOnTime = "Overdue";
     if (
-      moment(curdata.DueDate).format('YYYY-MM-DD')>= moment().format("YYYY-MM-DD") &&
+      moment(curdata.DueDate).format("YYYY-MM-DD") >=
+        moment().format("YYYY-MM-DD") &&
       curdata.Status["name"] == "Done"
     ) {
       strDoneOnTime = "Done On Time";
       var TDate = moment(moment().format("YYYY-MM-DD"));
       daysEarly = moment(curdata.DueDate).diff(TDate, "days");
-    }
-    else if(moment(curdata.DueDate).format('YYYY-MM-DD') >= moment().format("YYYY-MM-DD") &&
-    curdata.Status["name"] != "Done")
-    {
+    } else if (
+      moment(curdata.DueDate).format("YYYY-MM-DD") >=
+        moment().format("YYYY-MM-DD") &&
+      curdata.Status["name"] != "Done"
+    ) {
       strDoneOnTime = "On Track";
     }
 
-    let isRecurChanged=false;
-    if(curdata.Recurrence["name"]!=obj.data.Recurrence)
-    {
-      isRecurChanged= true;
+    let isRecurChanged = false;
+    if (curdata.Recurrence["name"] != obj.data.Recurrence) {
+      isRecurChanged = true;
     }
-
 
     let editval = {
       TaskName: curdata.TaskName,
@@ -763,13 +769,15 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        if(!curdata.CreatedByFlow){
-        InsertOrUpdateRecurrence(obj.Id, obj, curdata.Recurrence["name"]);
-        }
-        else if(curdata.CreatedByFlow&&isRecurChanged)
-        {
-          if(curdata.RecurParent)
-          UpdateParentItemRecurrence(curdata.RecurParent, curdata.Recurrence["name"],obj);
+        if (!curdata.CreatedByFlow) {
+          InsertOrUpdateRecurrence(obj.Id, obj, curdata.Recurrence["name"]);
+        } else if (curdata.CreatedByFlow && isRecurChanged) {
+          if (curdata.RecurParent)
+            UpdateParentItemRecurrence(
+              curdata.RecurParent,
+              curdata.Recurrence["name"],
+              obj
+            );
           //As of now disabled we need to confirm..
         }
         let newData = {};
@@ -789,13 +797,13 @@ const UserClientDB = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Recurrence: editval.Recurrence,
-              CreatedByFlow:curdata.CreatedByFlow,
-              RecurParent:curdata.RecurParent,
+              CreatedByFlow: curdata.CreatedByFlow,
+              RecurParent: curdata.RecurParent,
               Created: moment().format("YYYY-MM-DD"),
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
               Creator: curdata.Creator,
-              ReminderRef:curdata.ReminderRef,
-              ReminderDays:curdata.ReminderDays
+              ReminderRef: curdata.ReminderRef,
+              ReminderDays: curdata.ReminderDays,
             },
             children: obj.children,
           };
@@ -804,7 +812,8 @@ const UserClientDB = (props): JSX.Element => {
           newData = {
             key: obj.key,
             Index: obj.Index,
-            Id: res.data.ID,
+            // Id: res.data.ID,
+            Id: obj.Id,
             subId: obj.subId,
             isClick: false,
             isParent: false,
@@ -820,16 +829,16 @@ const UserClientDB = (props): JSX.Element => {
               PriorityLevel: editval.PriorityLevel,
               Status: editval.Status,
               Recurrence: editval.Recurrence,
-              CreatedByFlow:curdata.CreatedByFlow,
-              RecurParent:curdata.RecurParent,
+              CreatedByFlow: curdata.CreatedByFlow,
+              RecurParent: curdata.RecurParent,
               Created: moment().format("YYYY-MM-DD"),
-              ReminderRef:curdata.ReminderRef,
-              ReminderDays:curdata.ReminderDays
+              ReminderRef: curdata.ReminderRef,
+              ReminderDays: curdata.ReminderDays,
             },
           };
           let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
           if (indexOfObj >= 0)
-            BindAfternewChildData(newData, indexOfObj, obj.Index);
+            BindAfternewChildData(newData, indexOfObj, obj.Index, "Updated");
         }
       })
       .catch((err) => errFunction(err));
@@ -881,12 +890,12 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = obj.data.DueDate;
         curdata.Created = obj.data.Created;
-        curdata.CreatedByFlow=obj.data.CreatedByFlow;
-        curdata.RecurParent=obj.data.RecurParent,
-        curdata.PriorityLevel = {
-          name: obj.data.PriorityLevel,
-          code: obj.data.PriorityLevel,
-        };
+        curdata.CreatedByFlow = obj.data.CreatedByFlow;
+        (curdata.RecurParent = obj.data.RecurParent),
+          (curdata.PriorityLevel = {
+            name: obj.data.PriorityLevel,
+            code: obj.data.PriorityLevel,
+          });
         curdata.Recurrence = {
           name: obj.data.Recurrence,
           code: obj.data.Recurrence,
@@ -902,12 +911,12 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = obj.data.DueDate;
         curdata.Created = obj.data.Created;
-        curdata.CreatedByFlow=obj.data.CreatedByFlow;
-        curdata.RecurParent=obj.data.RecurParent,
-        curdata.PriorityLevel = {
-          name: obj.data.PriorityLevel,
-          code: obj.data.PriorityLevel,
-        };
+        curdata.CreatedByFlow = obj.data.CreatedByFlow;
+        (curdata.RecurParent = obj.data.RecurParent),
+          (curdata.PriorityLevel = {
+            name: obj.data.PriorityLevel,
+            code: obj.data.PriorityLevel,
+          });
         curdata.Recurrence = {
           name: obj.data.Recurrence,
           code: obj.data.Recurrence,
@@ -1038,6 +1047,7 @@ const UserClientDB = (props): JSX.Element => {
             type="text"
             placeholder="Task name"
             value={curdata.TaskName}
+            autoFocus
             className={`${styles.tblTxtBox}${clsValid}`}
             onChange={(e: any) => getOnchange("TaskName", e.target.value)}
           />
@@ -1378,33 +1388,83 @@ const UserClientDB = (props): JSX.Element => {
             {data[fieldType].Title}
           </span>
         );
-      } else if (fieldType == "Status" || fieldType == "PriorityLevel" || fieldType == "Recurrence") {
+      } else if (
+        fieldType == "Status" ||
+        fieldType == "PriorityLevel" ||
+        fieldType == "Recurrence"
+      ) {
         return priorityLevelStyle(data[fieldType]);
-      }
-      else if (fieldType == "TaskName") {
+      } else if (fieldType == "TaskName") {
         return (
-          <><span
-            style={{
-              textOverflow: "ellipsis",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              display: "block",
-              width: "160px",
-            }}
-            title={data[fieldType]}
-          >
-            {data[fieldType]}
-          </span>
-          {data['ReminderDays']>0?<Button
-                  type="button"
-                  icon="pi pi-stopwatch"
-                  title={data['ReminderDays']+" days"}
-                  style={pencilIconBtnStyle}
-          ></Button>:""}
+          <>
+            {/* <span
+              style={{
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                display: "block",
+                width: "160px",
+              }}
+              title={data[fieldType]}
+            >
+              {data[fieldType]}
+            </span> */}
+            <Button
+              style={{
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                display: "block",
+                width: "auto",
+                background: "none",
+                border: "none",
+                outline: "none",
+                color: "#000",
+                fontWeight: "400",
+                padding: 0,
+                paddingRight: "5px",
+                marginTop: "-4px",
+                cursor: "text",
+                maxWidth: "150px",
+              }}
+              tooltip={data[fieldType]}
+              tooltipOptions={{
+                position: "right",
+                style: {
+                  maxWidth: "340px",
+                },
+              }}
+            >
+              {data[fieldType]}
+            </Button>
+            {data["ReminderDays"] > 0 ? (
+              // <Button
+              //   type="button"
+              //   icon="pi pi-stopwatch"
+              //   title={data["ReminderDays"] + " days"}
+              //   style={pencilIconBtnStyle}
+              // ></Button>
+              <Button
+                type="button"
+                icon="pi pi-stopwatch"
+                style={{
+                  color: "#007C81",
+                  border: "none",
+                  backgroundColor: "transparent",
+                  height: 26,
+                  width: 26,
+                  marginLeft: "auto",
+                }}
+                // tooltip={data["ReminderDays"] + " days"}
+                tooltip={`Notify on: ${data["NotifyDate"]}`}
+                tooltipOptions={{ showDelay: 500, hideDelay: 300 }}
+              />
+            ) : (
+              ""
+            )}
           </>
         );
-      } 
-      else {
+      } else {
         return (
           <span
             style={{
@@ -1425,7 +1485,7 @@ const UserClientDB = (props): JSX.Element => {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
-    SPServices.ErrorHandling(err,"UserClientDB");
+    SPServices.ErrorHandling(err, "UserClientDB");
     showMessage(
       "Something went wrong, Please contact system admin",
       toastTopRight,
@@ -1468,8 +1528,10 @@ const UserClientDB = (props): JSX.Element => {
   const toggleApplications = (key) => {
     let _expandedKeys = { ...expandedKeys };
 
-    if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
-    else _expandedKeys[`${key}`] = true;
+    // if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
+    // else _expandedKeys[`${key}`] = true;
+    // ;
+    _expandedKeys[key] = !_expandedKeys[key];
     setExpandedKeys(_expandedKeys);
   };
 
@@ -1487,16 +1549,17 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    props.updateDataFromChildComponent(props.clientId,[...tempData]);
+    props.updateDataFromChildComponent(props.clientId, [...tempData]);
     setLoader(false);
-    showMessage(
-      "Task added successfully",
-      toastTopRight,
-      "success"
-    );
+    showMessage("Task added successfully", toastTopRight, "success");
   }
 
-  function BindAfternewChildData(newData, parentIndex, childIndex) {
+  function BindAfternewChildData(
+    newData,
+    parentIndex,
+    childIndex,
+    popupMessage
+  ) {
     let tempData = curMyTask;
     tempData[parentIndex].children[childIndex] = newData;
     for (let i = 0; i < tempData.length; i++) {
@@ -1512,10 +1575,10 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    props.updateDataFromChildComponent(props.clientId,[...tempData]);
+    props.updateDataFromChildComponent(props.clientId, [...tempData]);
     setLoader(false);
     showMessage(
-      "Task updated successfully",
+      `Sub Task ${popupMessage} successfully`,
       toastTopRight,
       "success"
     );
@@ -1540,13 +1603,9 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    props.updateDataFromChildComponent(props.clientId,[...tempData]);
+    props.updateDataFromChildComponent(props.clientId, [...tempData]);
     setLoader(false);
-    showMessage(
-      "Task updated successfully",
-      toastTopRight,
-      "success"
-    );
+    showMessage("Task updated successfully", toastTopRight, "success");
   }
 
   function BindAfterDataDelete(ID) {
@@ -1558,13 +1617,9 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    props.updateDataFromChildComponent(props.clientId,[...tempData]);
+    props.updateDataFromChildComponent(props.clientId, [...tempData]);
     setLoader(false);
-    showMessage(
-      "Task deleted successfully",
-      toastTopRight,
-      "success"
-    );
+    showMessage("Task deleted successfully", toastTopRight, "success");
   }
 
   function BindAfterChildDataDelete(ID, parentId, childIndex) {
@@ -1574,13 +1629,9 @@ const UserClientDB = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    props.updateDataFromChildComponent(props.clientId,[...tempData]);
+    props.updateDataFromChildComponent(props.clientId, [...tempData]);
     setLoader(false);
-    showMessage(
-      "Task deleted successfully",
-      toastTopRight,
-      "success"
-    );
+    showMessage("Sub Task deleted successfully", toastTopRight, "success");
   }
 
   const showMessage = (event, ref, severity) => {
@@ -1597,39 +1648,48 @@ const UserClientDB = (props): JSX.Element => {
   function validation(objNew) {
     let isAllValueFilled = true;
 
-    let ParentDueDate=[];
-    let ChildDueDate=[];
-    let ParentDate="";
-    let isDueDateGt=true;
-    try
-    {
-      if(objNew.isParent==false)
-      {
-        ParentDueDate=[...curMyTask].filter((item)=>item.Id==objNew.subId);
-        ParentDate=moment(ParentDueDate[0].data.DueDate,'MM/DD/YYYY').format("YYYY-MM-DD");
-        isDueDateGt=ParentDate>=moment(curdata.DueDate).format("YYYY-MM-DD")
+    let ParentDueDate = [];
+    let ChildDueDate = [];
+    let ParentDate = "";
+    let isDueDateGt = true;
+    try {
+      if (objNew.isParent == false) {
+        ParentDueDate = [...curMyTask].filter(
+          (item) => item.Id == objNew.subId
+        );
+        ParentDate = moment(ParentDueDate[0].data.DueDate, "MM/DD/YYYY").format(
+          "YYYY-MM-DD"
+        );
+        isDueDateGt =
+          ParentDate >= moment(curdata.DueDate).format("YYYY-MM-DD");
+      } else {
+        ChildDueDate = objNew.children.filter(
+          (item) =>
+            moment(item.data.DueDate, "MM/DD/YYYY").format("YYYY-MM-DD") >
+            moment(curdata.DueDate).format("YYYY-MM-DD")
+        );
       }
-      else
-      {
-        ChildDueDate=objNew.children.filter((item)=>moment(item.data.DueDate,'MM/DD/YYYY').format("YYYY-MM-DD")>moment(curdata.DueDate).format("YYYY-MM-DD"));
-      }
-    }
-    catch(e)
-    {
+    } catch (e) {
       console.log(e);
     }
 
     if (!curdata.TaskName) {
       isAllValueFilled = false;
-    }
-    else if(!isDueDateGt){
+      showMessage("Task Name is required.", toastTopRight, "warn");
+    } else if (!isDueDateGt) {
       isAllValueFilled = false;
-      showMessage("Due date should be less than parent task", toastTopRight, "warn");
-    }
-    else if(ChildDueDate.length>0)
-    {
+      showMessage(
+        "Due date should be less than parent task",
+        toastTopRight,
+        "warn"
+      );
+    } else if (ChildDueDate.length > 0) {
       isAllValueFilled = false;
-      showMessage("Due date should be greater than child task", toastTopRight, "warn");
+      showMessage(
+        "Due date should be greater than child task",
+        toastTopRight,
+        "warn"
+      );
     }
     return isAllValueFilled;
   }
@@ -1661,29 +1721,34 @@ const UserClientDB = (props): JSX.Element => {
   //     props.Clientdatas["CompanyName"] +
   //     ")"
   //   : "";
-    let ClientFullName="";
-    let strFirstName=props.Clientdatas["FirstName"]?props.Clientdatas["FirstName"]+" ":"";
-    let stSecondName=props.Clientdatas["LastName"]?props.Clientdatas["LastName"]+" ":"";
-    let strCompanyName=props.Clientdatas["CompanyName"]?props.Clientdatas["CompanyName"]:"";
+  let ClientFullName = "";
+  let strFirstName = props.Clientdatas["FirstName"]
+    ? props.Clientdatas["FirstName"] + " "
+    : "";
+  let stSecondName = props.Clientdatas["LastName"]
+    ? props.Clientdatas["LastName"] + " "
+    : "";
+  let strCompanyName = props.Clientdatas["CompanyName"]
+    ? props.Clientdatas["CompanyName"]
+    : "";
 
-    if(strFirstName||stSecondName||strCompanyName)
-    ClientFullName=strFirstName + stSecondName + "("+strCompanyName+")";
+  if (strFirstName || stSecondName || strCompanyName)
+    ClientFullName = strFirstName + stSecondName + "(" + strCompanyName + ")";
 
-    let arrdisplayItems=[...curMyTask].filter((item)=>item.data.Status!="Completed"&&item.data.Status!="Done");
-    for(let i=0;i<arrdisplayItems.length;i++)
-    {
-      let newChildrens=[];  
-      //remove the done data from child array..
-      for(let j=0;j<arrdisplayItems[i].children.length;j++)
-      { 
-          if(arrdisplayItems[i].children[j].data.Status!="Done")
-          {
-            newChildrens.push(arrdisplayItems[i].children[j]);
-          }
+  let arrdisplayItems = [...curMyTask].filter(
+    (item) => item.data.Status != "Completed" && item.data.Status != "Done"
+  );
+  for (let i = 0; i < arrdisplayItems.length; i++) {
+    let newChildrens = [];
+    //remove the done data from child array..
+    for (let j = 0; j < arrdisplayItems[i].children.length; j++) {
+      if (arrdisplayItems[i].children[j].data.Status != "Done") {
+        newChildrens.push(arrdisplayItems[i].children[j]);
       }
-      arrdisplayItems[i].children=newChildrens;
     }
-    
+    arrdisplayItems[i].children = newChildrens;
+  }
+
   return (
     <>
       {loader ? (
@@ -1721,11 +1786,31 @@ const UserClientDB = (props): JSX.Element => {
               visible={props.clientName ? true : false}
               className={styles.btnColor}
               onClick={() => {
-                _handleData("addParent", { ..._sampleParent });
+                let ifHasDublicateChild = curMyTask?.filter((e) => {
+                  return e.children.some((el) => el.Id === null);
+                });
+
+                if (ifHasDublicateChild?.length !== 0) {
+                  curMyTask?.map((e) => {
+                    if (e?.children) {
+                      e.children = e.children.filter((el) => el.Id !== null);
+                    }
+                    return e;
+                  });
+                }
+
+                curMyTask?.filter((e) => e.Id === null)?.length === 0
+                  ? _handleData("addParent", { ..._sampleParent })
+                  : showMessage(
+                      "Can't add multiple tasks at a time",
+                      toastTopRight,
+                      "warn"
+                    );
               }}
             />
           </div>
           <TreeTable
+            removableSort
             selectionMode="checkbox"
             sortMode="multiple"
             selectionKeys={selectedNodeKeys}

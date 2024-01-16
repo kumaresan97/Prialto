@@ -260,6 +260,33 @@ div#spCommandBar {
 .p-paginator-element {
   border: none !important;
 }
-.pi-stopwatch{
+.pi-stopwatch {
   font-size: 16px !important;
+}
+/* .p-tooltip {
+  background-color: #fff !important;
+  color: #fff !important;
+}
+
+.p-tooltip-arrow {
+  background-color: #fff !important;
+  color: #fff !important;
+} */
+
+.p-tooltip-text {
+  background-color: #030e12 !important;
+  color: #efefef !important;
+  font-size: 14px;
+  padding: 6px 12px 8px 12px;
+}
+
+/* footer css */
+#CommentsWrapper {
+  display: none !important;
+}
+.removeGearIcon {
+  display: none !important;
+}
+.addGearIcon {
+  display: flex !important;
 }

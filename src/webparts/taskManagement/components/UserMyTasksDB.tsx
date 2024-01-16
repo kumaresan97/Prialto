@@ -355,8 +355,6 @@ const UserMyTasksDB = (props): JSX.Element => {
   };
   //handle update,delete,edit
   const _handleDataoperation = (obj) => {
-    console.log(obj, "obj");
-
     if (obj.isParent && obj.isEdit && obj.Id) {
       Editfunction(obj);
     } else if (obj.isParent && !obj.Id) {
@@ -1205,8 +1203,10 @@ const UserMyTasksDB = (props): JSX.Element => {
   const toggleApplications = (key) => {
     let _expandedKeys = { ...expandedKeys };
 
-    if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
-    else _expandedKeys[`${key}`] = true;
+    // if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
+    // else _expandedKeys[`${key}`] = true;
+    // ;
+    _expandedKeys[key] = !_expandedKeys[key];
     setExpandedKeys(_expandedKeys);
   };
   useEffect(() => {
@@ -1258,6 +1258,7 @@ const UserMyTasksDB = (props): JSX.Element => {
         />
       </div>
       <TreeTable
+        removableSort
         selectionMode="checkbox"
         sortMode="multiple"
         selectionKeys={selectedNodeKeys}

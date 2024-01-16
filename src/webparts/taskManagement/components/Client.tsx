@@ -120,6 +120,7 @@ const Client = (props) => {
   const [loader, setLoader] = useState(false);
 
   const [clientdetail, setClientdetail] = useState<IClient[]>([]);
+
   const [value, setValue] = useState(Data);
   const [search, setSearch] = useState("");
 
@@ -148,7 +149,6 @@ const Client = (props) => {
       CompanyName: value.CompanyName ? value.CompanyName : "",
       AssistantId: value.Assistant.Id ? value.Assistant.Id : null,
       BackupId: { results: Backupids },
-
       // BackupId: value.Backup.Id ? value.Backup.Id : null,
     };
 
@@ -181,7 +181,7 @@ const Client = (props) => {
 
         let x = clientdetail.filter((val) => val.Id !== null);
         //setClientdetail([...x, resobj]);
-        setClientdetail([resobj,...x]);
+        setClientdetail([resobj, ...x]);
         setisAdd(false);
         setisEdit(false);
 
@@ -1107,7 +1107,14 @@ const Client = (props) => {
 
                     setisEdit(false);
                     //setClientdetail([...clientdetail, Newdatadd]);
-                    setClientdetail([Newdatadd,...clientdetail]);
+                    clientdetail?.filter((e) => e.Id === null)?.length === 0
+                      ? setClientdetail([Newdatadd, ...clientdetail])
+                      : showMessage(
+                          "Can't add multiple Member at a time",
+                          toastTopRight,
+                          "warn"
+                        );
+
                     setValue({ ...Data });
                     // _handleData("addParent", { ..._sampleParent });
                   }}
@@ -1119,6 +1126,7 @@ const Client = (props) => {
             <DataTable
               value={clientdetail}
               sortMode="multiple"
+              removableSort
               tableStyle={{ minWidth: "60rem" }}
               paginator
               rows={10}

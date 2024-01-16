@@ -8,17 +8,17 @@ export interface IMyTasks {
   DueDate: string;
   PriorityLevel: string | any;
   Status: string | any;
-  Recurrence?:string|any;
+  Recurrence?: string | any;
   Created: string;
   TaskAge?: number;
   CompletedDate?: string;
   DoneFormula?: string;
   DaysOnEarly?: number;
   isRecurrence?: boolean;
-  ReminderRef?:number;
-  ReminderDays?:number;
-  CreatedByFlow?:boolean;
-  RecurParent?:string;
+  ReminderRef?: number;
+  ReminderDays?: number;
+  CreatedByFlow?: boolean;
+  RecurParent?: string;
 }
 
 export interface IPeoplePicker {

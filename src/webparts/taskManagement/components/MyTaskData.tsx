@@ -99,7 +99,7 @@ const MyTaskData = (props): JSX.Element => {
     },
   };
 
-  dropStatus=props.choices;
+  dropStatus = props.choices;
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
@@ -217,8 +217,7 @@ const MyTaskData = (props): JSX.Element => {
     } else if (PLevel == "Done") {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
-    }
-    else{
+    } else {
       bgColor = "#dfffbb";
       color = "#6e6e6e";
     }
@@ -336,7 +335,7 @@ const MyTaskData = (props): JSX.Element => {
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
     let sub = {
       TaskName: curdata.TaskName ? curdata.TaskName : "",
-      AssistantId:curuserId.Id,
+      AssistantId: curuserId.Id,
       // BackupId: curdata.Backup.Id
       //   ? curdata.Backup.Id
       //   : configure.backupId
@@ -773,6 +772,7 @@ const MyTaskData = (props): JSX.Element => {
             placeholder="Date"
             value={new Date(curdata.DueDate)}
             onChange={(e) => getOnchange("DueDate", e.value)}
+            minDate={new Date()}
             showIcon
             className={`${styles.tblTxtBox}`}
           />
@@ -1123,8 +1123,10 @@ const MyTaskData = (props): JSX.Element => {
   const toggleApplications = (key) => {
     let _expandedKeys = { ...expandedKeys };
 
-    if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
-    else _expandedKeys[`${key}`] = true;
+    // if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
+    // else _expandedKeys[`${key}`] = true;
+    // ;
+    _expandedKeys[key] = !_expandedKeys[key];
     setExpandedKeys(_expandedKeys);
   };
 
@@ -1287,6 +1289,7 @@ const MyTaskData = (props): JSX.Element => {
             />
           </div>
           <TreeTable
+            removableSort
             selectionMode="checkbox"
             sortMode="multiple"
             selectionKeys={selectedNodeKeys}

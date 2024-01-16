@@ -3,6 +3,8 @@ import { Button } from "primereact/button";
 import * as React from "react";
 import styles from "./MainComponent.module.scss";
 const Member = (props) => {
+  console.log("proro", props);
+
   // console.log(props.selectedMember);
   const tickIconStyle = {
     backgroundColor: "transparent",
@@ -15,7 +17,7 @@ const Member = (props) => {
     padding: 0,
   };
   const ShareMember = (val) => {
-    props.handleMemberClick(val);
+    props.handleMemberClick(val, props.selectedTeamMember, true);
   };
   return (
     <div>
@@ -23,8 +25,8 @@ const Member = (props) => {
         className={styles.righticon}
         style={tickIconStyle}
         label={
-          props.selectedTeamMember.length
-            ? props.selectedTeamMember[0].TeamName
+          props.selectedTeamMember?.length
+            ? props.selectedTeamMember[0]?.TeamName
             : ""
         }
         icon="pi pi-arrow-left"
@@ -34,8 +36,8 @@ const Member = (props) => {
         }}
       />
       <div>
-        {props.selectedTeamMember.length &&
-          props.selectedTeamMember[0].members.map((val) => {
+        {props.selectedTeamMember?.length &&
+          props.selectedTeamMember[0]?.members.map((val) => {
             return (
               <div
                 style={{
@@ -46,7 +48,10 @@ const Member = (props) => {
                   cursor: "pointer",
                   borderBottom: "1px solid #d9d9d9",
                 }}
-                onClick={() => ShareMember(val.Email)}
+                onClick={() => {
+                  console.log(val);
+                  ShareMember(val.Email);
+                }}
               >
                 <div
                   style={{ display: "flex", gap: "10px", alignItems: "center" }}

@@ -1092,7 +1092,7 @@ const OrgChart = (props) => {
 
         let filterdatas = value.filter((val) => val.Id !== null);
         //setValue([...filterdatas, resjson]);
-        setValue([resjson,...filterdatas]);
+        setValue([resjson, ...filterdatas]);
         setAdd(false);
         setEdit(false);
         setcurobj(addparent);
@@ -1352,7 +1352,7 @@ const OrgChart = (props) => {
         setEdit(false);
         setcurobj({ ...addparent });
         setLoader(false);
-        showMessage("Data Edited Successfully", toastTopRight, "success");
+        showMessage("Data Updated Successfully", toastTopRight, "success");
 
         // getdatas();
       })
@@ -1871,7 +1871,7 @@ const OrgChart = (props) => {
     //  else if (!curobj.Manager?.Id || curobj.Manager?.Id === null) {
     //   missingFields.push("Manager");
     // }
-    else if (curobj.Team.length==0 || curobj.Team === ""||!curobj.Team) {
+    else if (curobj.Team.length == 0 || curobj.Team === "" || !curobj.Team) {
       missingFields.push("Cohort");
     }
 
@@ -1945,7 +1945,13 @@ const OrgChart = (props) => {
                   setEdit(false);
                   setAdd(true);
                   //setValue([...value, addInput]);
-                  setValue([addInput,...value]);
+                  value?.filter((e) => e.Id === null)?.length === 0
+                    ? setValue([addInput, ...value])
+                    : showMessage(
+                        "Can't add multiple entries at a time",
+                        toastTopRight,
+                        "warn"
+                      );
 
                   // _handleData("addParent", { ..._sampleParent });
                 }}

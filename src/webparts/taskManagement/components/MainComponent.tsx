@@ -71,7 +71,7 @@ const MainComponent = (props: any): JSX.Element => {
   // State creation
 
   const [Completeuser, setCompleteUser] = useState("");
-  const [module,setModule]= useState("");
+  const [module, setModule] = useState("");
   const [navsearch, setnavsearch] = useState("");
 
   const [params, setParams] = useState({
@@ -83,6 +83,10 @@ const MainComponent = (props: any): JSX.Element => {
   });
   const [value, setvalue] = useState("mytasks");
   const [selectedMember, setselectedMember] = useState(null);
+  const [viewByCardFlow, setviewByCardFlow] = useState(false);
+  const [selectedTeamByCardFlow, setSelectedTeamByCardFlow] = useState(false);
+  console.log("viewByCardFlow", viewByCardFlow);
+
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [teams, setTeams] = useState([]);
   const [masterTeam, setMasterTeam] = useState([]);
@@ -281,17 +285,22 @@ const MainComponent = (props: any): JSX.Element => {
   const toggleTeam = (index) => {
     setExpandedTeam((prev) => (prev === index ? null : index));
   };
-
-  const handleMemberClick = (member) => {
+  const handleMemberClick = (
+    member,
+    selectedTeamData?: any,
+    ViewByCardFlow?: any
+  ) => {
     setvalue("member");
     setselectedMember(member);
+    setviewByCardFlow(ViewByCardFlow);
+    setSelectedTeamByCardFlow(selectedTeamData);
   };
-  const HandleCompleted = (Status, value,Module) => {
+  const HandleCompleted = (Status, value, Module) => {
     setvalue(Status);
     setCompleteUser(value);
     setModule(Module);
   };
-  function HandleBackBtn(){
+  function HandleBackBtn() {
     setvalue(module);
   }
 
@@ -318,6 +327,19 @@ const MainComponent = (props: any): JSX.Element => {
   useEffect(() => {
     _getPrialtoAdmin();
   }, []);
+
+  // useEffect for handle the view of default MS gear(Settings) icon in the page by its role.
+  useEffect(() => {
+    let gearIcons = document.getElementById("O365_MainLink_Settings_container");
+
+    if (_isAdmin) {
+      gearIcons.classList.add("addGearIcon");
+      gearIcons.classList.remove("removeGearIcon");
+    } else if (_isTL || _isTC || _isPA) {
+      gearIcons.classList.remove("addGearIcon");
+      gearIcons.classList.add("removeGearIcon");
+    }
+  }, [_isAdmin, _isTL, _isTC, _isPA]);
 
   return (
     <>
@@ -618,6 +640,9 @@ const MainComponent = (props: any): JSX.Element => {
               Email={selectedMember}
               Module={module}
               HandleCompleted={HandleCompleted}
+              selectedTeamByCardFlow={selectedTeamByCardFlow}
+              viewByCardFlow={viewByCardFlow}
+              memberFunction={memberFunction}
             />
           ) : value == "CardView" ? (
             <CardView

@@ -1668,7 +1668,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
                   marginLeft: "auto",
                 }}
                 // tooltip={data["ReminderDays"] + " days"}
-                tooltip={`Notify on: ${data["NotifyDate"]}`}
+                tooltip={`Notify on ${data["NotifyDate"]}`}
                 tooltipOptions={{
                   showDelay: 500,
                   hideDelay: 300,

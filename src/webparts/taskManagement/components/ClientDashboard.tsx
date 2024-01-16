@@ -1031,8 +1031,10 @@ const ClientDashboard = (props): JSX.Element => {
   const toggleApplications = (key) => {
     let _expandedKeys = { ...expandedKeys };
 
-    if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
-    else _expandedKeys[`${key}`] = true;
+    // if (_expandedKeys[`${key}`]) delete _expandedKeys[`${key}`];
+    // else _expandedKeys[`${key}`] = true;
+    // ;
+    _expandedKeys[key] = !_expandedKeys[key];
     setExpandedKeys(_expandedKeys);
   };
 

@@ -15,7 +15,7 @@ let MyTaskIds = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-let selectedTasks=[];
+let selectedTasks = [];
 export default function UserBackUpTasksNew(props) {
   const UserEmail = !props.Email ? "" : props.Email;
   const [loader, setLoader] = useState(false);
@@ -41,7 +41,7 @@ export default function UserBackUpTasksNew(props) {
 
   const errFunction = (err) => {
     setLoader(false);
-    SPServices.ErrorHandling(err,"userBackupTaksNew");
+    SPServices.ErrorHandling(err, "userBackupTaksNew");
     BindData();
     console.log(err);
   };
@@ -144,13 +144,13 @@ export default function UserBackUpTasksNew(props) {
             Name: val.FirstName,
             CompanyDatas: {
               FirstName: val.FirstName,
-              LastName: val.LastName?val.LastName:"",
+              LastName: val.LastName ? val.LastName : "",
               CompanyName: val.CompanyName,
             },
             Assistant: {
               Id: val.Assistant.ID,
               EMail: val.Assistant.EMail,
-              Title: val.Assistant.Title
+              Title: val.Assistant.Title,
             },
             BackupUsers: val.BackupId ? val.BackupId : [],
           });
@@ -295,7 +295,8 @@ export default function UserBackUpTasksNew(props) {
         console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId && val.AssitantId!=id &&
+          val.ClientId &&
+            val.AssitantId != id &&
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -312,7 +313,10 @@ export default function UserBackUpTasksNew(props) {
                   LastName: val.ClientId ? val.Client.LastName : "",
                   CompanyName: val.ClientId ? val.Client.CompanyName : "",
                 },
-                ClientName: val.ClientId ? val.Client.FirstName : "",
+                // ClientName: val.ClientId ? val.Client.FirstName : "",
+                ClientName: val.ClientId
+                  ? `${val.Client.FirstName} ${val.Client.LastName}`
+                  : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
                 BackupUsers: val.BackupId ? val.BackupId : [],
                 Creator: {
@@ -327,10 +331,10 @@ export default function UserBackUpTasksNew(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
-                ReminderRef:val.ReminderRef,
-                ReminderDays:val.ReminderDays,
+                ReminderRef: val.ReminderRef,
+                ReminderDays: val.ReminderDays,
                 Status: val.Status,
-                Recurrence:val.Recurrence,
+                Recurrence: val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -443,10 +447,10 @@ export default function UserBackUpTasksNew(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
-                ReminderRef:val.ReminderRef,
-                ReminderDays:val.ReminderDays,
+                ReminderRef: val.ReminderRef,
+                ReminderDays: val.ReminderDays,
                 Status: val.Status,
-                Recurrence:val.Recurrence,
+                Recurrence: val.Recurrence,
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -566,68 +570,73 @@ export default function UserBackUpTasksNew(props) {
   //   //setCurMyTask([...filteredResults]);
   // };
 
-  const onselect = (event) => 
-  {
-    if(event.node.isParent)
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:"",isSelected:true,isParent:true,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
-      
-      for(let i=0;i<event.node.children.length;i++)
-      {
-        selectedTasks.push({data:event.node.children[i],Id:event.node.children[i].Id,subId:event.node.Id,isSelected:true,isParent:false,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
+  const onselect = (event) => {
+    if (event.node.isParent) {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: "",
+        isSelected: true,
+        isParent: true,
+        categoryID: event.node.data.ClientID,
+        taskType: "backupTasks",
+      });
+
+      for (let i = 0; i < event.node.children.length; i++) {
+        selectedTasks.push({
+          data: event.node.children[i],
+          Id: event.node.children[i].Id,
+          subId: event.node.Id,
+          isSelected: true,
+          isParent: false,
+          categoryID: event.node.data.ClientID,
+          taskType: "backupTasks",
+        });
+      }
+    } else {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: event.node.subId,
+        isSelected: true,
+        isParent: false,
+        categoryID: event.node.data.ClientID,
+        taskType: "backupTasks",
+      });
+    }
+
+    props.getBackupSelectedTasks([...selectedTasks]);
+  };
+
+  const unselect = (event) => {
+    if (event.node.isParent) {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].subId == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+    } else {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
       }
     }
-    else
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:event.node.subId,isSelected:true,isParent:false,categoryID:event.node.data.ClientID,taskType:"backupTasks"});
-    }
 
-    props.getBackupSelectedTasks([...selectedTasks]);
-  };
-
-  const unselect = (event) => 
-  {
-    
-    if(event.node.isParent)
-    {
-       
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].Id==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].subId==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-        
-    }
-    else
-    {
-        for(let i=0;i<selectedTasks.length;i++)
-        {
-            if(selectedTasks[i].Id==event.node.Id)
-            {
-              selectedTasks[i].isSelected=false;
-            }
-        }
-    }
-
-    let crntSelectedTasks=selectedTasks.filter((item)=>{
-      return item.isSelected==true;
+    let crntSelectedTasks = selectedTasks.filter((item) => {
+      return item.isSelected == true;
     });
-    selectedTasks=[...crntSelectedTasks];
+    selectedTasks = [...crntSelectedTasks];
     props.getBackupSelectedTasks([...selectedTasks]);
   };
 
-  function updateDataFromChildComponent(clientId,Tasks)
-  {
+  function updateDataFromChildComponent(clientId, Tasks) {
     let tempClientNew = [...clientdata];
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == clientId);
     if (categoryIndex < 0) {
@@ -640,7 +649,7 @@ export default function UserBackUpTasksNew(props) {
   }
 
   useEffect(() => {
-    selectedTasks=[];
+    selectedTasks = [];
     setClientdata([...props.UpdatedData]);
   }, [props.UpdatedData]);
 
@@ -687,7 +696,9 @@ export default function UserBackUpTasksNew(props) {
                         backupUsers={val.BackupUsers} ///Changes for backup users multiple
                         onselect={onselect}
                         unselect={unselect}
-                        updateDataFromChildComponent={updateDataFromChildComponent}
+                        updateDataFromChildComponent={
+                          updateDataFromChildComponent
+                        }
                       />
                     </>
                   );

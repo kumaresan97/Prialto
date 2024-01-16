@@ -23,7 +23,7 @@ let MainTask = [];
 let MainArray = [];
 let SubTask = [];
 let statusChoices = [];
-let recurrenceChoices=[];
+let recurrenceChoices = [];
 
 /*For automation */
 let automationTasks = [];
@@ -41,6 +41,16 @@ export default function MyTaskDBNewCategory(props) {
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
+  console.log("clientntnt", clientdata);
+  console.log("mainin", MainTask);
+  console.log("subtsts", SubTask);
+  console.log("automation", automationTasks);
+
+  const NotStartedTasks = curMyTask.filter((task) => {
+    const taskStatus = task.data.Status;
+    const childStatuses = task.children?.map((el) => el.data.Status) || [];
+    return taskStatus !== "Done" && !childStatuses.includes("Done");
+  });
 
   const toastTopRight = React.useRef(null);
   const [teamCaptainData, setTeamCaptainData] = useState({
@@ -68,7 +78,7 @@ export default function MyTaskDBNewCategory(props) {
   const errFunction = (err) => {
     console.log(err);
     setLoader(false);
-    SPServices.ErrorHandling(err,"MyTasksDBNewCategory");
+    SPServices.ErrorHandling(err, "MyTasksDBNewCategory");
     BindData();
     showMessage(
       "Something went wrong, Please contact system admin",
@@ -267,6 +277,8 @@ export default function MyTaskDBNewCategory(props) {
       FilterCondition: "and",
     })
       .then((res) => {
+        console.log("ress", res);
+
         MainTask = [];
         res.forEach((val: any, index) => {
           if (!val.ClientId) {
@@ -300,9 +312,9 @@ export default function MyTaskDBNewCategory(props) {
                 ReminderDays: val.ReminderDays,
                 PriorityLevel: val.PriorityLevel,
                 Status: val.Status,
-                Recurrence:val.Recurrence,
-                CreatedByFlow:val.CreatedByFlow,
-                RecurParent:val.RecurParent?val.RecurParent.ID:"",
+                Recurrence: val.Recurrence,
+                CreatedByFlow: val.CreatedByFlow,
+                RecurParent: val.RecurParent ? val.RecurParent.ID : "",
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -311,6 +323,9 @@ export default function MyTaskDBNewCategory(props) {
                 DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   val.Author?.Title + " " + SPServices.displayDate(val.Created),
+                NotifyDate: val.NotifyDate
+                  ? moment(val.NotifyDate).format("MM/DD/YYYY")
+                  : "",
 
                 // Created:
                 //   SPServices.displayDate(val.Created) + " " + val.Author.Title,
@@ -355,6 +370,8 @@ export default function MyTaskDBNewCategory(props) {
       Topcount: 5000,
     })
       .then((response) => {
+        console.log("sub response", response);
+
         let count = 0;
         for (let i = 0; i < MainTask.length; i++) {
           /* Start Of Subtaks */
@@ -393,9 +410,9 @@ export default function MyTaskDBNewCategory(props) {
                   ReminderDays: val.ReminderDays,
                   PriorityLevel: val.PriorityLevel,
                   Status: val.Status,
-                  Recurrence:val.Recurrence,
-                  CreatedByFlow:val.CreatedByFlow,
-                  RecurParent:val.RecurParent?val.RecurParent.ID:"",
+                  Recurrence: val.Recurrence,
+                  CreatedByFlow: val.CreatedByFlow,
+                  RecurParent: val.RecurParent ? val.RecurParent.ID : "",
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)
@@ -406,6 +423,9 @@ export default function MyTaskDBNewCategory(props) {
                     val.Author.Title +
                     " " +
                     SPServices.displayDate(val.Created),
+                  NotifyDate: val.NotifyDate
+                    ? moment(val.NotifyDate).format("MM/DD/YYYY")
+                    : "",
                 },
               });
           });
@@ -471,9 +491,9 @@ export default function MyTaskDBNewCategory(props) {
   let columns = [
     { header: "Task Name", key: "TaskName", width: 15 },
     { header: "Creation log", key: "Created", width: 25 },
- 
+
     { header: "Parent Task Name", key: "ParenTask", width: 25 },
- 
+
     { header: "Priority Level", key: "PriorityLevel", width: 25 },
     { header: "Status", key: "Status", width: 25 },
     // { header: "Creator", key: "Creator", width: 25 },
@@ -482,13 +502,12 @@ export default function MyTaskDBNewCategory(props) {
     { header: "Task Age", key: "TaskAge", width: 15 },
     { header: "Completed Date", key: "CompletedDate", width: 20 },
     { header: "Days OnEarly", key: "DaysOnEarly", width: 20 },
- 
+
     { header: "Done Formula", key: "DoneFormula", width: 20 },
   ];
 
-  const exportData = () => 
-  {
-    exportToExcel(curMyTask, columns, "MyTask");
+  const exportData = () => {
+    exportToExcel(NotStartedTasks, columns, "MyTask");
   };
 
   function onSpinner() {
@@ -520,6 +539,7 @@ export default function MyTaskDBNewCategory(props) {
         setCategoryValue("");
         setIsCatDialog(false);
         setLoader(false);
+        showMessage("Category Added Successfully!", toastTopRight, "success");
       })
       .catch(function (error) {
         errFunction(error);
@@ -612,11 +632,13 @@ export default function MyTaskDBNewCategory(props) {
     setDays(selectedTasks[0].data.data.ReminderDays);
   }
 
+  // old
   function prepareAutomationData() {
     automationTasks = [];
     let noOfDays = days;
     let tempClientNew = [...clientdata];
     //selectedTasks=selectedTasks[0];//need to remove for this to mulitple..
+
     for (let i = 0; i < selectedTasks.length; i++) {
       if (selectedTasks[i].isParent) {
         automationTasks.push({
@@ -630,6 +652,14 @@ export default function MyTaskDBNewCategory(props) {
             .format("YYYY-MM-DD"),
         });
       } else {
+        // SubTask?.forEach((e) => {
+        //   if (SubTask[i].data.Id === selectedTasks[i].data.Id) {
+        //     SubTask[i].NotifyDate = moment(selectedTasks[i].data.data.DueDate)
+        //       .subtract(noOfDays, "days")
+        //       .format("YYYY-MM-DD");
+        //   }
+        // });
+
         automationTasks.push({
           Title: "Reminder",
           TaskIDId: null,
@@ -643,48 +673,183 @@ export default function MyTaskDBNewCategory(props) {
       }
     }
 
-    for (let i = 0; i < selectedTasks.length; i++) 
-    {
-      try{
-      let categoryIndex = tempClientNew.findIndex(
-        (val) => val.ID == selectedTasks[i].categoryID
-      );
-      if (selectedTasks[i].isParent) {
-        if (categoryIndex >= 0) {
-          let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
-            (item) => {
-              return item.key == selectedTasks[i].data.Id;
-            }
-          );
-          tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
-            noOfDays;
-        }
-      } else 
-      {
-        if(categoryIndex>=0){
-          for(let k=0;k<tempClientNew[categoryIndex].Tasks.length;k++)
-            {
-              for(let j=0;j<tempClientNew[categoryIndex].Tasks[k].children.length;j++)
-              {
-                  if(tempClientNew[categoryIndex].Tasks[k].children[j].Id==selectedTasks[i].data.Id)
-                  {
-                    tempClientNew[categoryIndex].Tasks[k].children[j].data.ReminderDays=noOfDays;
-                  }
+    for (let i = 0; i < selectedTasks.length; i++) {
+      try {
+        let categoryIndex = tempClientNew.findIndex(
+          (val) => val.ID == selectedTasks[i].categoryID
+        );
+        if (selectedTasks[i].isParent) {
+          if (categoryIndex >= 0) {
+            let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
+              (item) => {
+                return item.key == selectedTasks[i].data.Id;
+              }
+            );
+            tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+              noOfDays;
+            tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
+              moment(selectedTasks[i].data.data.DueDate)
+                .subtract(noOfDays, "days")
+                .format("MM/DD/YYYY");
+          }
+        } else {
+          if (categoryIndex >= 0) {
+            for (
+              let k = 0;
+              k < tempClientNew[categoryIndex].Tasks.length;
+              k++
+            ) {
+              for (
+                let j = 0;
+                j < tempClientNew[categoryIndex].Tasks[k].children.length;
+                j++
+              ) {
+                if (
+                  tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
+                  selectedTasks[i].data.Id
+                ) {
+                  tempClientNew[categoryIndex].Tasks[k].children[
+                    j
+                  ].data.ReminderDays = noOfDays;
+
+                  tempClientNew[categoryIndex].Tasks[k].children[
+                    j
+                  ].data.NotifyDate = moment(selectedTasks[i].data.data.DueDate)
+                    .subtract(noOfDays, "days")
+                    .format("MM/DD/YYYY");
+                }
               }
             }
           }
-
+        }
+      } catch (e) {
+        errFunction(e);
       }
-    }
-    catch(e){
-      errFunction(e);
-    }
     }
 
     insertReminderNew([...automationTasks]);
     selectedTasks = [];
     setClientdata([...tempClientNew]);
   }
+
+  // bugs fixed and updated
+  // function prepareAutomationData() {
+  //   automationTasks = [];
+  //   let noOfDays = days;
+  //   let tempClientNew = [...clientdata];
+  //   //selectedTasks=selectedTasks[0];//need to remove for this to mulitple..
+
+  //   let hasPastValues = true;
+
+  //   for (let i = 0; i < selectedTasks.length; i++) {
+  //     let reminderDate = moment(selectedTasks[i].data.data.DueDate)
+  //       .subtract(noOfDays, "days")
+  //       .format("YYYY-MM-DD");
+  //     let tasksDueDate = moment(selectedTasks[i].data.data.DueDate).format(
+  //       "YYYY-MM-DD"
+  //     );
+  //     let todayDate = moment(new Date()).format("YYYY-MM-DD");
+
+  //     if (reminderDate <= tasksDueDate && reminderDate >= todayDate) {
+  //       hasPastValues = false;
+
+  //       if (selectedTasks[i].isParent) {
+  //         automationTasks.push({
+  //           Title: "Reminder",
+  //           TaskIDId: selectedTasks[i].data.Id,
+  //           SubTaskIDId: null,
+  //           Before: days,
+  //           NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+  //             .subtract(noOfDays, "days")
+  //             .format("YYYY-MM-DD"),
+  //         });
+  //       } else {
+  //         automationTasks.push({
+  //           Title: "Reminder",
+  //           TaskIDId: null,
+  //           SubTaskIDId: selectedTasks[i].data.Id,
+  //           Before: days,
+  //           NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+  //             .subtract(noOfDays, "days")
+  //             .format("YYYY-MM-DD"),
+  //         });
+  //       }
+
+  //       try {
+  //         let categoryIndex = tempClientNew.findIndex(
+  //           (val) => val.ID == selectedTasks[i].categoryID
+  //         );
+
+  //         if (selectedTasks[i].isParent) {
+  //           if (categoryIndex >= 0) {
+  //             let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
+  //               (item) => item.key == selectedTasks[i].data.Id
+  //             );
+  //             tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+  //               noOfDays;
+
+  //             tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
+  //               moment(selectedTasks[i].data.data.DueDate)
+  //                 .subtract(noOfDays, "days")
+  //                 .format("MM/DD/YYYY");
+  //           }
+  //         } else {
+  //           if (categoryIndex >= 0) {
+  //             for (
+  //               let k = 0;
+  //               k < tempClientNew[categoryIndex].Tasks.length;
+  //               k++
+  //             ) {
+  //               for (
+  //                 let j = 0;
+  //                 j < tempClientNew[categoryIndex].Tasks[k].children.length;
+  //                 j++
+  //               ) {
+  //                 if (
+  //                   tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
+  //                   selectedTasks[i].data.Id
+  //                 ) {
+  //                   tempClientNew[categoryIndex].Tasks[k].children[
+  //                     j
+  //                   ].data.ReminderDays = noOfDays;
+
+  //                   tempClientNew[categoryIndex].Tasks[k].children[
+  //                     j
+  //                   ].data.NotifyDate = moment(
+  //                     selectedTasks[i].data.data.DueDate
+  //                   )
+  //                     .subtract(noOfDays, "days")
+  //                     .format("MM/DD/YYYY");
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       } catch (e) {
+  //         errFunction(e);
+  //       }
+  //     } else {
+  //       hasPastValues = true;
+  //       break; // Stop processing further tasks if one fails the condition
+  //     }
+  //   }
+
+  //   if (!hasPastValues) {
+  //     insertReminderNew([...automationTasks]);
+  //     selectedTasks = [];
+  //     setClientdata([...tempClientNew]);
+  //   } else {
+  //     setLoader(false);
+  //     setIsautomate(true);
+  //     selectedTasks?.length > 1
+  //       ? showMessage(
+  //           "Some task's reminder has been set to the past! Please check.",
+  //           toastTopRight,
+  //           "warn"
+  //         )
+  //       : showMessage("Can't set reminder to the past!", toastTopRight, "warn");
+  //   }
+  // }
 
   /* for the multiple automation */
 
@@ -868,19 +1033,21 @@ export default function MyTaskDBNewCategory(props) {
     setClientdata([...tempClientNew]);
   }
 
-  function RemoveCategory(Id)
-  {
+  function RemoveCategory(Id) {
     let tempClientNew = [...clientdata];
     let arrIndex = MyCategories.findIndex((val) => val.ID == Id);
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == Id);
-    if (categoryIndex < 0) 
-    {
+    if (categoryIndex < 0) {
       console.log("Category not found");
     } else {
-      tempClientNew.splice(categoryIndex,1);
-      MyCategories.splice(arrIndex,1);
+      tempClientNew.splice(categoryIndex, 1);
+      MyCategories.splice(arrIndex, 1);
     }
+    console.log("tempClientNew", tempClientNew);
+    console.log("curMyTask2", curMyTask);
+    setCurMyTask([]);
     setClientdata([...tempClientNew]);
+    showMessage("Category Deleted Successfully!", toastTopRight, "success");
   }
 
   useEffect(() => {
@@ -891,28 +1058,25 @@ export default function MyTaskDBNewCategory(props) {
     MainArray = [];
     SubTask = [];
     statusChoices = [];
-    recurrenceChoices=[];
+    recurrenceChoices = [];
     getStatus();
     getRecurrence();
     getcurUser();
-    
   }, [props.Email]);
 
   let BeforeData = "";
-  let strTaskName ="";
-  let multipleEntry=false;
-  if(selectedTasks.length == 1)
-  {
-    BeforeData=moment(selectedTasks[0].data.data.DueDate).format("MM/DD/YYYY");
-    strTaskName=selectedTasks[0].data.data.TaskName;
+  let strTaskName = "";
+  let multipleEntry = false;
+  if (selectedTasks.length == 1) {
+    BeforeData = moment(selectedTasks[0].data.data.DueDate).format(
+      "MM/DD/YYYY"
+    );
+    strTaskName = selectedTasks[0].data.data.TaskName;
+  } else if (selectedTasks.length > 1) {
+    BeforeData = "the due date";
+    strTaskName = "Apply for multiple tasks";
+    multipleEntry = true;
   }
-  else if(selectedTasks.length > 1)
-  {
-    BeforeData="the due date";
-    strTaskName="Apply for multiple tasks";
-    multipleEntry=true;
-  }
-    
 
   return (
     <>
@@ -967,11 +1131,19 @@ export default function MyTaskDBNewCategory(props) {
       >
         <div className={styles.addCatSection}>
           <Label className={styles.Automatelabel}>Automate</Label>
-          {multipleEntry?<Label style={{color:"Red"}}><br></br>
-          You have selected more than one task. The current reminder will be applicable for all the selected item.
-          <br></br></Label>:<h4 style={{ margin: "10px 0px 15px 0px" }}>
-            Task name : <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
-          </h4>}
+          {multipleEntry ? (
+            <Label style={{ color: "Red" }}>
+              <br></br>
+              You have selected more than one task. The current reminder will be
+              applicable for all the selected item.
+              <br></br>
+            </Label>
+          ) : (
+            <h4 style={{ margin: "10px 0px 15px 0px" }}>
+              Task name :{" "}
+              <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
+            </h4>
+          )}
           {/* <div
             style={{-
               display: "flex",
@@ -1037,8 +1209,7 @@ export default function MyTaskDBNewCategory(props) {
                 <Label>days before </Label>
                 <Label>{BeforeData}</Label>
               </div>
-              <div>
-              </div>
+              <div></div>
             </div>
           </>
           {/* )} */}
@@ -1213,7 +1384,7 @@ export default function MyTaskDBNewCategory(props) {
                 className={styles.btnColor}
                 label="Done"
                 onClick={() => {
-                  props.HandleCompleted("Completed", UserEmail ,"mytasks");
+                  props.HandleCompleted("Completed", UserEmail, "mytasks");
                 }}
                 // icon="pi pi-file-excel"
               />

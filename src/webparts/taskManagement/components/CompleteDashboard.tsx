@@ -29,8 +29,14 @@ const CompleteDashboard = (props) => {
     display: "contents",
     padding: 0,
   };
+
+  console.log("mains", mainarray);
+  console.log("subs0", subArray);
+
   const UserEmail = props.context.pageContext.user.email;
   const [Userdata, setUserdata] = useState([]);
+  console.log("usrdata", Userdata);
+
   const [masterdata, setMasterdata] = useState([]);
   const [search, setSearch] = useState("");
 
@@ -102,8 +108,8 @@ const CompleteDashboard = (props) => {
             parentTasKName: "",
             key: "",
             TaskName: resdata.TaskName,
-            Category:resdata.Category?.Title,
-            Client:resdata.Client?.FirstName,
+            Category: resdata.Category?.Title,
+            Client: resdata.Client?.FirstName,
             Id: resdata.Id,
             // NotifyDate: resdata?.NotifyDate
             //   ? SPServices.displayDate(resdata.NotifyDate)
@@ -182,8 +188,8 @@ const CompleteDashboard = (props) => {
             subArray.push({
               Id: val.Id,
               subId: val.MainTaskID?.ID,
-              Category:val.Category?.Title,
-              Client:val.Client?.FirstName,
+              Category: val.Category?.Title,
+              Client: val.Client?.FirstName,
               //   NotifyDate: val?.NotifyDate
               //     ? SPServices.displayDate(val.NotifyDate)
               //     : "",
@@ -227,6 +233,7 @@ const CompleteDashboard = (props) => {
   };
 
   const Binddata = () => {
+    debugger;
     let globalArray = [];
     let SubArrayId = [];
 
@@ -254,8 +261,10 @@ const CompleteDashboard = (props) => {
     if (subArray.length && SubArrayId.length === 0) {
       globalArray.push(...subArray);
     } else if (SubArrayId.length) {
-      const output = subArray.filter((item1) =>
-        SubArrayId.some((item2) => item2 !== item1.Id)
+      const output = subArray.filter(
+        (item1) =>
+          // SubArrayId.some((item2) => item2 !== item1.Id)
+          !SubArrayId.includes(item1.Id)
       );
 
       globalArray.push(...output);
@@ -286,27 +295,6 @@ const CompleteDashboard = (props) => {
     setMasterdata([...sortedArray]);
     setLoader(false);
   };
-
-  //   const Binddata = () => {
-  //     let globalArray = [];
-
-  //     for (let i = 0; i < mainarray.length; i++) {
-  //       let mainTask = mainarray[i];
-  //       let subtasks = subArray.filter(
-  //         (subTask) => subTask.subId === mainTask.Id
-  //       );
-
-  //       if (subtasks.length > 0) {
-  //         globalArray.push(mainTask, ...subtasks);
-  //       } else if (!mainTask.complete) {
-  //         globalArray.push(mainTask);
-  //       }
-  //     }
-
-  //     setUserdata([...globalArray]);
-  //     setMasterdata([...globalArray]);
-  //     setLoader(false);
-  //   };
 
   const priorityLevelStyle = (PLevel) => {
     let bgColor: string = "";
@@ -367,10 +355,9 @@ const CompleteDashboard = (props) => {
       ];
       return searchableFields.some((field) => {
         const fieldValue = item[field];
-        return fieldValue.toLowerCase().includes(e.toLowerCase());
+        return fieldValue?.toLowerCase()?.includes(e?.toLowerCase());
       });
     });
-    console.log(Filterdata);
     setUserdata([...Filterdata]);
   };
 
@@ -407,59 +394,61 @@ const CompleteDashboard = (props) => {
         <Loader></Loader>
       ) : (
         <div>
-          
           <div
             style={{
               display: "flex",
               gap: "10px",
               justifyContent: "space-between",
-              alignItems:"center",
+              alignItems: "center",
               marginBottom: "10px",
             }}
-          > <div>
-            <Button
-        className={styles.righticon}
-        style={tickIconStyle}
-        // label={
-        //   props.selectedTeamMember.length
-        //     ? props.selectedTeamMember[0].TeamName
-        //     : ""
-        // }
-        icon="pi pi-arrow-left"
-        iconPos="left"
-        onClick={() => {
-          props.HandleBackBtn();
-        }}
-      />
-      </div>
-            <div style={{display:'flex',gap:15}}>
-            <span className="p-input-icon-left">
-              <i className="pi pi-search" />
-              <InputText
-                placeholder="Search"
-                value={search}
-                onChange={(e: any) => SearchFilter(e.target.value)}
+          >
+            {" "}
+            <div>
+              <Button
+                className={styles.righticon}
+                style={tickIconStyle}
+                // label={
+                //   props.selectedTeamMember.length
+                //     ? props.selectedTeamMember[0].TeamName
+                //     : ""
+                // }
+                icon="pi pi-arrow-left"
+                iconPos="left"
+                onClick={() => {
+                  props.HandleBackBtn();
+                }}
               />
-            </span>
+            </div>
+            <div style={{ display: "flex", gap: 15 }}>
+              <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText
+                  placeholder="Search"
+                  value={search}
+                  onChange={(e: any) => SearchFilter(e.target.value)}
+                />
+              </span>
 
-            <Button
-              style={{
-                backgroundColor: "#f46906",
-                border: "none",
-                padding: "8px 18px",
-                height: "38px",
-              }}
-              // className={styles.btnColor}
-              label="Export"
-              onClick={() => Exportexcel()}
-              icon="pi pi-file-excel"
-            />
+              <Button
+                style={{
+                  backgroundColor: "#f46906",
+                  border: "none",
+                  padding: "8px 18px",
+                  height: "38px",
+                }}
+                // className={styles.btnColor}
+                label="Export"
+                onClick={() => Exportexcel()}
+                icon="pi pi-file-excel"
+              />
             </div>
           </div>
           <DataTable
             paginator
             rows={10}
             value={Userdata}
+            removableSort
             sortMode="multiple"
             tableStyle={{ minWidth: "60rem" }}
           >
@@ -496,7 +485,7 @@ const CompleteDashboard = (props) => {
               sortable
               body={(obj) => priorityLevelStyle(obj.Status)}
             />
-            <Column field="CompletedDate" header="CompletedDate" sortable />
+            <Column field="CompletedDate" header="Completed Date" sortable />
 
             {/* <Column
                   header="Action"

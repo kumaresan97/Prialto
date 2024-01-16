@@ -571,6 +571,7 @@ export default function Mytasks() {
         />
       </div>
       <TreeTable
+        removableSort
         value={nodes}
         tableStyle={{ minWidth: "100%" }}
         selectionMode="checkbox"

@@ -10,11 +10,12 @@ import styles from "./MyTasks.module.scss";
 import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
+import * as moment from "moment";
 let MyClients = [];
 let MainTask = [];
 let MainArray = [];
 let SubTask = [];
-let selectedTasks=[];
+let selectedTasks = [];
 export default function UserTasks(props) {
   const UserEmail = !props.Email ? "" : props.Email;
   const [loader, setLoader] = useState(false);
@@ -40,7 +41,7 @@ export default function UserTasks(props) {
 
   const errFunction = (err) => {
     setLoader(false);
-    SPServices.ErrorHandling(err,"UserTasks");
+    SPServices.ErrorHandling(err, "UserTasks");
     BindData();
     console.log(err);
   };
@@ -185,7 +186,7 @@ export default function UserTasks(props) {
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:
-        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,RecurParent/ID",
+        "*, Assistant/ID, Assistant/EMail, Assistant/Title, Backup/ID, Backup/EMail, Backup/Title, Author/ID, Author/EMail, Author/Title,Client/ID,Client/FirstName,Client/LastName,Client/CompanyName,RecurParent/ID",
 
       Expand: "Assistant,Backup,Author,Client,RecurParent",
       Orderby: "Created",
@@ -208,7 +209,10 @@ export default function UserTasks(props) {
 
               data: {
                 TaskName: val.TaskName,
-                ClientName: val.ClientId ? val.Client.FirstName : "",
+                // ClientName: val.ClientId ? val.Client.FirstName : "",
+                ClientName: val.ClientId
+                  ? `${val.Client.FirstName} ${val.Client.LastName}`
+                  : "",
                 ClientID: val.ClientId ? val.Client.ID : "",
                 Creator: {
                   Id: val.Assistant.ID,
@@ -225,12 +229,12 @@ export default function UserTasks(props) {
                 },
                 DueDate: SPServices.displayDate(val.DueDate),
                 PriorityLevel: val.PriorityLevel,
-                ReminderRef:val.ReminderRef,
-                ReminderDays:val.ReminderDays,
+                ReminderRef: val.ReminderRef,
+                ReminderDays: val.ReminderDays,
                 Status: val.Status,
-                Recurrence:val.Recurrence,
-                CreatedByFlow:val.CreatedByFlow,
-                RecurParent:val.RecurParent?val.RecurParent.ID:"",
+                Recurrence: val.Recurrence,
+                CreatedByFlow: val.CreatedByFlow,
+                RecurParent: val.RecurParent ? val.RecurParent.ID : "",
                 TaskAge: val.TaskAge ? val.TaskAge : null,
                 CompletedDate: val.CompletedDate
                   ? SPServices.displayDate(val.CompletedDate)
@@ -239,6 +243,9 @@ export default function UserTasks(props) {
                 DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   val.Author.Title + " " + SPServices.displayDate(val.Created),
+                NotifyDate: val.NotifyDate
+                  ? moment(val.NotifyDate).format("MM/DD/YYYY")
+                  : "",
               },
               children: [],
             });
@@ -316,12 +323,12 @@ export default function UserTasks(props) {
                   },
                   DueDate: SPServices.displayDate(val.DueDate),
                   PriorityLevel: val.PriorityLevel,
-                  ReminderRef:val.ReminderRef,
-                  ReminderDays:val.ReminderDays,
+                  ReminderRef: val.ReminderRef,
+                  ReminderDays: val.ReminderDays,
                   Status: val.Status,
-                  Recurrence:val.Recurrence,
-                  CreatedByFlow:val.CreatedByFlow,
-                  RecurParent:val.RecurParent?val.RecurParent.ID:"",
+                  Recurrence: val.Recurrence,
+                  CreatedByFlow: val.CreatedByFlow,
+                  RecurParent: val.RecurParent ? val.RecurParent.ID : "",
                   TaskAge: val.TaskAge ? val.TaskAge : null,
                   CompletedDate: val.CompletedDate
                     ? SPServices.displayDate(val.CompletedDate)
@@ -330,6 +337,9 @@ export default function UserTasks(props) {
                   DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                   Created:
                     val.Author.Title + "" + SPServices.displayDate(val.Created),
+                  NotifyDate: val.NotifyDate
+                    ? moment(val.NotifyDate).format("MM/DD/YYYY")
+                    : "",
                 },
               });
           });
@@ -390,69 +400,73 @@ export default function UserTasks(props) {
     setLoader(false);
   }
 
-  const onselect = (event) => 
-  {
-    if(event.node.isParent)
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:"",isSelected:true,isParent:true,categoryID:event.node.data.clientId,taskType:"clientTasks"});
-      
-      for(let i=0;i<event.node.children.length;i++)
-      {
-        selectedTasks.push({data:event.node.children[i],Id:event.node.children[i].Id,subId:event.node.Id,isSelected:true,isParent:false,categoryID:event.node.data.clientId,taskType:"clientTasks"});
+  const onselect = (event) => {
+    if (event.node.isParent) {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: "",
+        isSelected: true,
+        isParent: true,
+        categoryID: event.node.data.clientId,
+        taskType: "clientTasks",
+      });
+
+      for (let i = 0; i < event.node.children.length; i++) {
+        selectedTasks.push({
+          data: event.node.children[i],
+          Id: event.node.children[i].Id,
+          subId: event.node.Id,
+          isSelected: true,
+          isParent: false,
+          categoryID: event.node.data.clientId,
+          taskType: "clientTasks",
+        });
+      }
+    } else {
+      selectedTasks.push({
+        data: event.node,
+        Id: event.node.Id,
+        subId: event.node.subId,
+        isSelected: true,
+        isParent: false,
+        categoryID: event.node.data.clientId,
+        taskType: "clientTasks",
+      });
+    }
+
+    props.getClientSelectedTasks([...selectedTasks]);
+  };
+
+  const unselect = (event) => {
+    if (event.node.isParent) {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].subId == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
+      }
+    } else {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        if (selectedTasks[i].Id == event.node.Id) {
+          selectedTasks[i].isSelected = false;
+        }
       }
     }
-    else
-    {
-      selectedTasks.push({data:event.node,Id:event.node.Id,subId:event.node.subId,isSelected:true,isParent:false,categoryID:event.node.data.clientId,taskType:"clientTasks"});
-    }
 
-    props.getClientSelectedTasks([...selectedTasks]);
-  };
-
-  const unselect = (event) => 
-  {
-    
-    if(event.node.isParent)
-    {
-       
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].Id==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-
-          for(let i=0;i<selectedTasks.length;i++)
-          {
-              if(selectedTasks[i].subId==event.node.Id)
-              {
-                selectedTasks[i].isSelected=false;
-              }
-          }
-        
-    }
-    else
-    {
-        for(let i=0;i<selectedTasks.length;i++)
-        {
-            if(selectedTasks[i].Id==event.node.Id)
-            {
-              selectedTasks[i].isSelected=false;
-            }
-        }
-    }
-
-    let crntSelectedTasks=selectedTasks.filter((item)=>{
-      return item.isSelected==true;
+    let crntSelectedTasks = selectedTasks.filter((item) => {
+      return item.isSelected == true;
     });
-    selectedTasks=[...crntSelectedTasks];
+    selectedTasks = [...crntSelectedTasks];
     props.getClientSelectedTasks([...selectedTasks]);
   };
 
-
-  function updateDataFromChildComponent(clientId,Tasks)
-  {
+  function updateDataFromChildComponent(clientId, Tasks) {
     let tempClientNew = [...clientdata];
     let categoryIndex = tempClientNew.findIndex((val) => val.ID == clientId);
     if (categoryIndex < 0) {
@@ -465,7 +479,7 @@ export default function UserTasks(props) {
   }
 
   useEffect(() => {
-    selectedTasks=[];
+    selectedTasks = [];
     setClientdata([...props.UpdatedData]);
   }, [props.UpdatedData]);
 
@@ -511,7 +525,9 @@ export default function UserTasks(props) {
                         recChoices={props.recChoices}
                         onselect={onselect}
                         unselect={unselect}
-                        updateDataFromChildComponent={updateDataFromChildComponent}
+                        updateDataFromChildComponent={
+                          updateDataFromChildComponent
+                        }
                       />
                     </>
                   );

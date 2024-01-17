@@ -258,9 +258,9 @@ export default function UserTasks(props) {
             FilterValue: MainTask[i].Id.toString(),
             Operator: "eq",
           });
-        }
+        }//arrFilter removed arrFilter changed for issue fix..
         if (arrFilter.length > 0) {
-          getsubTask(arrFilter);
+          getsubTask(Filter);
         } else {
           MainArray = [...MainTask];
           BindData();

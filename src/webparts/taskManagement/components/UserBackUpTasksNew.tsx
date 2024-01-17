@@ -383,7 +383,7 @@ export default function UserBackUpTasksNew(props) {
           });
         }
         if (arrFilter.length > 0) {
-          getsubTask(arrFilter);
+          getsubTask(Filter);
         } else {
           MainArray = [...MainTask];
           BindData();

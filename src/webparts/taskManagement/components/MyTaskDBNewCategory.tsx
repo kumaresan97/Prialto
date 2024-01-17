@@ -268,7 +268,7 @@ export default function MyTaskDBNewCategory(props) {
         FilterKey: "Status",
         Operator: "ne",
         FilterValue: "Done",
-      }
+      },
     ];
     SPServices.SPReadItems({
       Listname: "Tasks",
@@ -638,223 +638,235 @@ export default function MyTaskDBNewCategory(props) {
   }
 
   // old
-  function prepareAutomationData() {
-    automationTasks = [];
-    let noOfDays = days;
-    let tempClientNew = [...clientdata];
-    //selectedTasks=selectedTasks[0];//need to remove for this to mulitple..
-
-    for (let i = 0; i < selectedTasks.length; i++) {
-      if (selectedTasks[i].isParent) {
-        automationTasks.push({
-          Title: "Reminder",
-          TaskIDId: selectedTasks[i].data.Id,
-          SubTaskIDId: null,
-          Before: days,
-          //Status: selectedTasks[i].data.data.Status,
-          NotifyDate: moment(selectedTasks[i].data.data.DueDate)
-            .subtract(noOfDays, "days")
-            .format("YYYY-MM-DD"),
-        });
-      } else {
-        // SubTask?.forEach((e) => {
-        //   if (SubTask[i].data.Id === selectedTasks[i].data.Id) {
-        //     SubTask[i].NotifyDate = moment(selectedTasks[i].data.data.DueDate)
-        //       .subtract(noOfDays, "days")
-        //       .format("YYYY-MM-DD");
-        //   }
-        // });
-
-        automationTasks.push({
-          Title: "Reminder",
-          TaskIDId: null,
-          SubTaskIDId: selectedTasks[i].data.Id,
-          Before: days,
-          //Status: selectedTasks[i].data.data.Status,
-          NotifyDate: moment(selectedTasks[i].data.data.DueDate)
-            .subtract(noOfDays, "days")
-            .format("YYYY-MM-DD"),
-        });
-      }
-    }
-
-    for (let i = 0; i < selectedTasks.length; i++) {
-      try {
-        let categoryIndex = tempClientNew.findIndex(
-          (val) => val.ID == selectedTasks[i].categoryID
-        );
-        if (selectedTasks[i].isParent) {
-          if (categoryIndex >= 0) {
-            let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
-              (item) => {
-                return item.key == selectedTasks[i].data.Id;
-              }
-            );
-            tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
-              noOfDays;
-            tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
-              moment(selectedTasks[i].data.data.DueDate)
-                .subtract(noOfDays, "days")
-                .format("MM/DD/YYYY");
-          }
-        } else {
-          if (categoryIndex >= 0) {
-            for (
-              let k = 0;
-              k < tempClientNew[categoryIndex].Tasks.length;
-              k++
-            ) {
-              for (
-                let j = 0;
-                j < tempClientNew[categoryIndex].Tasks[k].children.length;
-                j++
-              ) {
-                if (
-                  tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
-                  selectedTasks[i].data.Id
-                ) {
-                  tempClientNew[categoryIndex].Tasks[k].children[
-                    j
-                  ].data.ReminderDays = noOfDays;
-
-                  tempClientNew[categoryIndex].Tasks[k].children[
-                    j
-                  ].data.NotifyDate = moment(selectedTasks[i].data.data.DueDate)
-                    .subtract(noOfDays, "days")
-                    .format("MM/DD/YYYY");
-                }
-              }
-            }
-          }
-        }
-      } catch (e) {
-        errFunction(e);
-      }
-    }
-
-    insertReminderNew([...automationTasks]);
-    selectedTasks = [];
-    setClientdata([...tempClientNew]);
-  }
-
-  // bugs fixed and updated
   // function prepareAutomationData() {
   //   automationTasks = [];
   //   let noOfDays = days;
   //   let tempClientNew = [...clientdata];
   //   //selectedTasks=selectedTasks[0];//need to remove for this to mulitple..
 
-  //   let hasPastValues = true;
+  //   for (let i = 0; i < selectedTasks.length; i++) {
+  //     if (selectedTasks[i].isParent) {
+  //       automationTasks.push({
+  //         Title: "Reminder",
+  //         TaskIDId: selectedTasks[i].data.Id,
+  //         SubTaskIDId: null,
+  //         Before: days,
+  //         //Status: selectedTasks[i].data.data.Status,
+  //         NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+  //           .subtract(noOfDays, "days")
+  //           .format("YYYY-MM-DD"),
+  //       });
+  //     } else {
+  //       // SubTask?.forEach((e) => {
+  //       //   if (SubTask[i].data.Id === selectedTasks[i].data.Id) {
+  //       //     SubTask[i].NotifyDate = moment(selectedTasks[i].data.data.DueDate)
+  //       //       .subtract(noOfDays, "days")
+  //       //       .format("YYYY-MM-DD");
+  //       //   }
+  //       // });
+
+  //       automationTasks.push({
+  //         Title: "Reminder",
+  //         TaskIDId: null,
+  //         SubTaskIDId: selectedTasks[i].data.Id,
+  //         Before: days,
+  //         //Status: selectedTasks[i].data.data.Status,
+  //         NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+  //           .subtract(noOfDays, "days")
+  //           .format("YYYY-MM-DD"),
+  //       });
+  //     }
+  //   }
 
   //   for (let i = 0; i < selectedTasks.length; i++) {
-  //     let reminderDate = moment(selectedTasks[i].data.data.DueDate)
-  //       .subtract(noOfDays, "days")
-  //       .format("YYYY-MM-DD");
-  //     let tasksDueDate = moment(selectedTasks[i].data.data.DueDate).format(
-  //       "YYYY-MM-DD"
-  //     );
-  //     let todayDate = moment(new Date()).format("YYYY-MM-DD");
-
-  //     if (reminderDate <= tasksDueDate && reminderDate >= todayDate) {
-  //       hasPastValues = false;
-
+  //     try {
+  //       let categoryIndex = tempClientNew.findIndex(
+  //         (val) => val.ID == selectedTasks[i].categoryID
+  //       );
   //       if (selectedTasks[i].isParent) {
-  //         automationTasks.push({
-  //           Title: "Reminder",
-  //           TaskIDId: selectedTasks[i].data.Id,
-  //           SubTaskIDId: null,
-  //           Before: days,
-  //           NotifyDate: moment(selectedTasks[i].data.data.DueDate)
-  //             .subtract(noOfDays, "days")
-  //             .format("YYYY-MM-DD"),
-  //         });
+  //         if (categoryIndex >= 0) {
+  //           let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
+  //             (item) => {
+  //               return item.key == selectedTasks[i].data.Id;
+  //             }
+  //           );
+  //           tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+  //             noOfDays;
+  //           tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
+  //             moment(selectedTasks[i].data.data.DueDate)
+  //               .subtract(noOfDays, "days")
+  //               .format("MM/DD/YYYY");
+  //         }
   //       } else {
-  //         automationTasks.push({
-  //           Title: "Reminder",
-  //           TaskIDId: null,
-  //           SubTaskIDId: selectedTasks[i].data.Id,
-  //           Before: days,
-  //           NotifyDate: moment(selectedTasks[i].data.data.DueDate)
-  //             .subtract(noOfDays, "days")
-  //             .format("YYYY-MM-DD"),
-  //         });
-  //       }
-
-  //       try {
-  //         let categoryIndex = tempClientNew.findIndex(
-  //           (val) => val.ID == selectedTasks[i].categoryID
-  //         );
-
-  //         if (selectedTasks[i].isParent) {
-  //           if (categoryIndex >= 0) {
-  //             let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
-  //               (item) => item.key == selectedTasks[i].data.Id
-  //             );
-  //             tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
-  //               noOfDays;
-
-  //             tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
-  //               moment(selectedTasks[i].data.data.DueDate)
-  //                 .subtract(noOfDays, "days")
-  //                 .format("MM/DD/YYYY");
-  //           }
-  //         } else {
-  //           if (categoryIndex >= 0) {
+  //         if (categoryIndex >= 0) {
+  //           for (
+  //             let k = 0;
+  //             k < tempClientNew[categoryIndex].Tasks.length;
+  //             k++
+  //           ) {
   //             for (
-  //               let k = 0;
-  //               k < tempClientNew[categoryIndex].Tasks.length;
-  //               k++
+  //               let j = 0;
+  //               j < tempClientNew[categoryIndex].Tasks[k].children.length;
+  //               j++
   //             ) {
-  //               for (
-  //                 let j = 0;
-  //                 j < tempClientNew[categoryIndex].Tasks[k].children.length;
-  //                 j++
+  //               if (
+  //                 tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
+  //                 selectedTasks[i].data.Id
   //               ) {
-  //                 if (
-  //                   tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
-  //                   selectedTasks[i].data.Id
-  //                 ) {
-  //                   tempClientNew[categoryIndex].Tasks[k].children[
-  //                     j
-  //                   ].data.ReminderDays = noOfDays;
+  //                 tempClientNew[categoryIndex].Tasks[k].children[
+  //                   j
+  //                 ].data.ReminderDays = noOfDays;
 
-  //                   tempClientNew[categoryIndex].Tasks[k].children[
-  //                     j
-  //                   ].data.NotifyDate = moment(
-  //                     selectedTasks[i].data.data.DueDate
-  //                   )
-  //                     .subtract(noOfDays, "days")
-  //                     .format("MM/DD/YYYY");
-  //                 }
+  //                 tempClientNew[categoryIndex].Tasks[k].children[
+  //                   j
+  //                 ].data.NotifyDate = moment(selectedTasks[i].data.data.DueDate)
+  //                   .subtract(noOfDays, "days")
+  //                   .format("MM/DD/YYYY");
   //               }
   //             }
   //           }
   //         }
-  //       } catch (e) {
-  //         errFunction(e);
   //       }
-  //     } else {
-  //       hasPastValues = true;
-  //       break; // Stop processing further tasks if one fails the condition
+  //     } catch (e) {
+  //       errFunction(e);
   //     }
   //   }
 
-  //   if (!hasPastValues) {
-  //     insertReminderNew([...automationTasks]);
-  //     selectedTasks = [];
-  //     setClientdata([...tempClientNew]);
-  //   } else {
-  //     setLoader(false);
-  //     setIsautomate(true);
-  //     selectedTasks?.length > 1
-  //       ? showMessage(
-  //           "Some task's reminder has been set to the past! Please check.",
-  //           toastTopRight,
-  //           "warn"
-  //         )
-  //       : showMessage("Can't set reminder to the past!", toastTopRight, "warn");
-  //   }
+  //   insertReminderNew([...automationTasks]);
+  //   selectedTasks = [];
+  //   setClientdata([...tempClientNew]);
   // }
+
+  // bugs fixed and updated
+  function prepareAutomationData() {
+    automationTasks = [];
+    let noOfDays = days;
+    let tempClientNew = [...clientdata];
+    //selectedTasks=selectedTasks[0]; //need to remove for this to mulitple...
+    // let hasPastValues = true;
+
+    let hasPastValues = selectedTasks?.filter((el) => {
+      let reminderDate = moment(el.data.data.DueDate)
+        .subtract(noOfDays, "days")
+        .format("YYYY-MM-DD");
+      let tasksDueDate = moment(el.data.data.DueDate).format("YYYY-MM-DD");
+      let todayDate = moment(new Date()).format("YYYY-MM-DD");
+      return !(reminderDate <= tasksDueDate && reminderDate >= todayDate);
+    });
+
+    if (hasPastValues?.length === 0) {
+      for (let i = 0; i < selectedTasks.length; i++) {
+        // let reminderDate = moment(selectedTasks[i].data.data.DueDate)
+        //   .subtract(noOfDays, "days")
+        //   .format("YYYY-MM-DD");
+        // let tasksDueDate = moment(selectedTasks[i].data.data.DueDate).format(
+        //   "YYYY-MM-DD"
+        // );
+        // let todayDate = moment(new Date()).format("YYYY-MM-DD");
+
+        // if (reminderDate <= tasksDueDate && reminderDate >= todayDate) {
+        //   hasPastValues = false;
+        if (selectedTasks[i].isParent) {
+          automationTasks.push({
+            Title: "Reminder",
+            TaskIDId: selectedTasks[i].data.Id,
+            SubTaskIDId: null,
+            Before: days,
+            NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+              .subtract(noOfDays, "days")
+              .format("YYYY-MM-DD"),
+          });
+        } else {
+          automationTasks.push({
+            Title: "Reminder",
+            TaskIDId: null,
+            SubTaskIDId: selectedTasks[i].data.Id,
+            Before: days,
+            NotifyDate: moment(selectedTasks[i].data.data.DueDate)
+              .subtract(noOfDays, "days")
+              .format("YYYY-MM-DD"),
+          });
+        }
+
+        try {
+          let categoryIndex = tempClientNew.findIndex(
+            (val) => val.ID == selectedTasks[i].categoryID
+          );
+
+          if (selectedTasks[i].isParent) {
+            if (categoryIndex >= 0) {
+              let taskIndex = tempClientNew[categoryIndex].Tasks.findIndex(
+                (item) => item.key == selectedTasks[i].data.Id
+              );
+              tempClientNew[categoryIndex].Tasks[taskIndex].data.ReminderDays =
+                noOfDays;
+
+              tempClientNew[categoryIndex].Tasks[taskIndex].data.NotifyDate =
+                moment(selectedTasks[i].data.data.DueDate)
+                  .subtract(noOfDays, "days")
+                  .format("MM/DD/YYYY");
+            }
+          } else {
+            if (categoryIndex >= 0) {
+              for (
+                let k = 0;
+                k < tempClientNew[categoryIndex].Tasks.length;
+                k++
+              ) {
+                for (
+                  let j = 0;
+                  j < tempClientNew[categoryIndex].Tasks[k].children.length;
+                  j++
+                ) {
+                  if (
+                    tempClientNew[categoryIndex].Tasks[k].children[j].Id ==
+                    selectedTasks[i].data.Id
+                  ) {
+                    tempClientNew[categoryIndex].Tasks[k].children[
+                      j
+                    ].data.ReminderDays = noOfDays;
+
+                    tempClientNew[categoryIndex].Tasks[k].children[
+                      j
+                    ].data.NotifyDate = moment(
+                      selectedTasks[i].data.data.DueDate
+                    )
+                      .subtract(noOfDays, "days")
+                      .format("MM/DD/YYYY");
+                  }
+                }
+              }
+            }
+          }
+        } catch (e) {
+          errFunction(e);
+          selectedTasks = [];
+          insertReminderNew([...automationTasks]);
+          setClientdata([...tempClientNew]);
+        }
+        //   else {
+        //   hasPastValues = true;
+        //   break; // Stop processing further tasks if one fails the condition
+        // }
+      }
+    }
+
+    if (hasPastValues?.length === 0) {
+      selectedTasks = [];
+      insertReminderNew([...automationTasks]);
+      setClientdata([...tempClientNew]);
+    } else {
+      setLoader(false);
+      setIsautomate(true);
+      selectedTasks?.length > 1
+        ? showMessage(
+            "Some task's reminder has been set to the past! Please check.",
+            toastTopRight,
+            "warn"
+          )
+        : showMessage("Can't set reminder to the past!", toastTopRight, "warn");
+    }
+  }
 
   /* for the multiple automation */
 

@@ -890,6 +890,7 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = obj.data.DueDate;
         curdata.Created = obj.data.Created;
+        curdata.ReminderDays = obj.data.ReminderDays;
         curdata.CreatedByFlow = obj.data.CreatedByFlow;
         (curdata.RecurParent = obj.data.RecurParent),
           (curdata.PriorityLevel = {
@@ -911,6 +912,7 @@ const UserClientDB = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = obj.data.DueDate;
         curdata.Created = obj.data.Created;
+        curdata.ReminderDays = obj.data.ReminderDays;
         curdata.CreatedByFlow = obj.data.CreatedByFlow;
         (curdata.RecurParent = obj.data.RecurParent),
           (curdata.PriorityLevel = {

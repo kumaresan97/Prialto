@@ -738,7 +738,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
 
     let daysEarly = 0;
     let strDoneOnTime = "Overdue";
-    debugger;
     if (
       moment(curdata.DueDate).format("YYYY-MM-DD") >=
         moment().format("YYYY-MM-DD") &&
@@ -1089,6 +1088,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = SPServices.displayDate(obj.data.DueDate);
         curdata.Created = obj.data.Created;
+        curdata.ReminderDays = obj.data.ReminderDays;
         curdata.CreatedByFlow = obj.data.CreatedByFlow;
         (curdata.RecurParent = obj.data.RecurParent),
           (curdata.PriorityLevel = {
@@ -1110,6 +1110,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         curdata.Creator = obj.data.Creator;
         curdata.DueDate = SPServices.displayDate(obj.data.DueDate);
         curdata.Created = obj.data.Created;
+        curdata.ReminderDays = obj.data.ReminderDays;
         curdata.CreatedByFlow = obj.data.CreatedByFlow;
         (curdata.RecurParent = obj.data.RecurParent),
           (curdata.PriorityLevel = {

@@ -868,6 +868,8 @@ export default function UserDashboard(props) {
             getClientTasks={getClientTasks}
             getClientSelectedTasks={getClientSelectedTasks}
             UpdatedData={clientTasks}
+            groupMembersList={props.groupMembersList}
+            _curUserDetailsArray={props._curUserDetailsArray}
           />
           {/* <UserBackUpTasks searchValue={search} context={props.context} Email={backUpUser}/> */}
           <UserBackUpTasksNew

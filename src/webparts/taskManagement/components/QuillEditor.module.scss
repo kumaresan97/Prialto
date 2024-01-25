@@ -1,0 +1,140 @@
+// QuillEditor.module.scss
+
+.formatButtons {
+  display: block;
+  width: 100%;
+  background-color: #eeefef;
+  border-radius: 6px;
+  transform: translateY(6px);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 7px 8px 7px;
+  button {
+    cursor: pointer;
+    margin-right: 5px;
+    height: 100%;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    margin-right: 15px;
+    border-bottom: 1px solid #dfe7ef;
+    background-color: transparent;
+  }
+}
+
+.button {
+  cursor: pointer;
+  margin-right: 5px;
+  height: 100%;
+  font-size: 14px;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+}
+
+.mentionEditor {
+  padding: 10px 10px;
+  outline: 0;
+  width: 100%;
+  min-height: 100px;
+  max-height: 100px;
+  overflow-y: auto;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 0.9rem;
+  line-height: 25px;
+}
+
+.emailPill {
+  // color: darkblue;
+  // background-color: #0099ff30;
+  color: #ad4800;
+  // background-color: #fdebde;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+.suggestionDropdown {
+  width: 100%;
+  padding: 10px 0;
+  position: absolute;
+  top: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background-color: white;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 99;
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.suggestionItem {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 12px;
+  &:hover {
+    background-color: #eee;
+  }
+  border-bottom: 1px solid #eee;
+}
+.mentionEditorWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border: 1px solid #dfe7ef;
+}
+.placeHolder {
+  opacity: 0.7;
+  color: #55555580;
+  user-select: none !important;
+  -moz-user-select: none !important;
+  -webkit-user-drag: none !important;
+  font-size: 14px;
+  position: absolute;
+  top: 12%;
+  left: 3%;
+  cursor: text;
+}
+.quillWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  p {
+    font-size: 0.9rem;
+    margin: 0;
+    margin-bottom: -2px;
+  }
+  span {
+    font-size: 0.7rem;
+    color: #55555590;
+  }
+}

@@ -279,25 +279,25 @@ function displayDate(inputDate) {
   return inputDate ? moment(inputDate).format("MM/DD/YYYY") : null;
 }
 
-function ErrorHandling(Error,Module)
-{ 
-  let error="";
-  if(Error.message)
-  {
-    error=Error.message
+function ErrorHandling(Error, Module) {
+  let error = "";
+  if (Error.message) {
+    error = Error.message;
+  } else {
+    error = JSON.stringify(Error);
   }
-  else
-  {
-    error=JSON.stringify(Error);
-  }
-  sp.web.lists.getByTitle('ErrorList').items.add({
-    ErrJson:error,
-    Module:Module
-  }).then(function(data){
-    "Error has logged in the system.."
-  }).catch(function(error){
-    console.log(error);
-  })
+  sp.web.lists
+    .getByTitle("ErrorList")
+    .items.add({
+      ErrJson: error,
+      Module: Module,
+    })
+    .then(function (data) {
+      "Error has logged in the system..";
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
 export default {
@@ -316,5 +316,5 @@ export default {
   batchUpdate,
   batchDelete,
   displayDate,
-  ErrorHandling
+  ErrorHandling,
 };

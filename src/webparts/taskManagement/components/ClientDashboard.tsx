@@ -827,7 +827,6 @@ const ClientDashboard = (props): JSX.Element => {
         FilterValue: val,
       });
     });
-    debugger;
     SPServices.SPReadItems({
       Listname: "Tasks",
       Select:

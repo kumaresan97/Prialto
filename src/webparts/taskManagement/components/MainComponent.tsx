@@ -34,6 +34,13 @@ import {
 import CompleteDashboard from "./CompleteDashboard";
 import { InputText } from "primereact/inputtext";
 
+// Interfaces
+interface ISuggestion {
+  id: number;
+  name: string;
+  email: string;
+}
+
 // Global Variables creation
 let _masterArray: any[] = [];
 let _curUserDetailsArray: any[] = [];
@@ -50,9 +57,12 @@ let admin: any[] = [];
 let TL: any[] = [];
 let TC: any[] = [];
 let TA: any[] = [];
+let suggestions: ISuggestion[] = [];
 
 const MainComponent = (props: any): JSX.Element => {
   // Local Variables creation
+  console.log("currrer", _curUserDetailsArray);
+
   const Sitename = window.location.href;
   let path = Sitename.split("/")[4];
   console.log(path, "sitename");
@@ -92,6 +102,7 @@ const MainComponent = (props: any): JSX.Element => {
   const [masterTeam, setMasterTeam] = useState([]);
   const [selectedTeamMember, setSelectedTeamMember] = useState([]);
   const [menuExpand, setMenuExpand] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState<any[]>([]);
   // Styles creation
   const navStyles: Partial<INavStyles> = {
     root: {
@@ -114,10 +125,19 @@ const MainComponent = (props: any): JSX.Element => {
       .getByName("AdminGroup")
       .users.get()
       .then((res: any) => {
+        suggestions = [];
+
         _isAdmin = res.some(
           (val: any) => val.Email.toLowerCase() === _curUser.toLowerCase()
         );
 
+        res?.forEach((e: any) => {
+          suggestions.push({
+            id: e?.Id,
+            name: e?.Title,
+            email: e?.Email,
+          });
+        });
         _getConfigurationDatas();
       })
       .catch((err: any) => {
@@ -287,9 +307,34 @@ const MainComponent = (props: any): JSX.Element => {
   };
   const handleMemberClick = (
     member,
+    _selTeam: string,
     selectedTeamData?: any,
     ViewByCardFlow?: any
   ) => {
+    let _overAllTeams: any[] = [...teams];
+    let uniqueSet = new Set<string>();
+    let uniqueArray = [];
+
+    _overAllTeams = _overAllTeams?.filter(
+      (data: any) => data.team === _selTeam
+    )[0].members;
+
+    _overAllTeams?.forEach((user: any) => {
+      suggestions.push({
+        id: user?.Id,
+        name: user?.Name,
+        email: user?.Email,
+      });
+    });
+
+    suggestions?.forEach((item: any) => {
+      if (!uniqueSet.has(item["id"])) {
+        uniqueSet.add(item["id"]);
+        uniqueArray.push({ ...item });
+      }
+    });
+
+    setSelectedTeam([...uniqueArray]);
     setvalue("member");
     setselectedMember(member);
     setviewByCardFlow(ViewByCardFlow);
@@ -495,7 +540,7 @@ const MainComponent = (props: any): JSX.Element => {
                           <div
                             key={index}
                             onClick={() => {
-                              handleMemberClick(member.Email);
+                              handleMemberClick(member.Email, val.team);
                             }}
                             className={styles.teamMemberSection}
                           >
@@ -643,6 +688,8 @@ const MainComponent = (props: any): JSX.Element => {
               selectedTeamByCardFlow={selectedTeamByCardFlow}
               viewByCardFlow={viewByCardFlow}
               memberFunction={memberFunction}
+              groupMembersList={selectedTeam}
+              _curUserDetailsArray={_curUserDetailsArray}
             />
           ) : value == "CardView" ? (
             <CardView

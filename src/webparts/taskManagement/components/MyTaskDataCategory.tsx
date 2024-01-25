@@ -16,12 +16,15 @@ import {
 import SPServices from "../../../Global/SPServices";
 import { IChild, IMyTasks, IParent } from "../../../Global/TaskMngmnt";
 import * as moment from "moment";
-import { findIndex } from "office-ui-fabric-react";
+import { Panel, findIndex } from "office-ui-fabric-react";
 import Loader from "./Loader";
 
 import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
+import SidePanel from "./SidePanel";
+import QuillEditor from "./QuillEditor";
+
 let x = [];
 let arrdisplayItems = []; //manipulation array just for data store..
 const cities = [
@@ -68,6 +71,12 @@ const pencilIconBtnStyle = {
 };
 
 const MyTaskDataCategory = (props): JSX.Element => {
+  let commentDetailsVar = {
+    CommentsText: "",
+    TaggedPeople: "",
+    TaskIDId: "",
+  };
+
   // style variables
   const cellStyle = { backgroundColor: "#fff", width: 176 };
   // const cellStyle = { backgroundColor: "#EAEEEE", width: 200 };
@@ -122,6 +131,9 @@ const MyTaskDataCategory = (props): JSX.Element => {
   dropStatus = props.choices;
   dropRecurrence = props.recChoices;
   //const UserEmail=!props.Email?props.context.pageContext.user.email:props.Email;
+
+  const [MData, setMData] = useState<any[]>([]);
+
   const [selectedNodeKeys, setSelectedNodeKeys] = useState(null);
   const [search, setSearch] = useState("");
   const [loader, setLoader] = useState(false);
@@ -359,6 +371,20 @@ const MyTaskDataCategory = (props): JSX.Element => {
             _handleData("edit", obj);
           }}
         />
+        {/* <Button
+          disabled={obj.isClick}
+          type="button"
+          icon="pi pi-comment"
+          style={pencilIconBtnStyle}
+          onClick={(_) => {
+            // console.log("sdfi", obj.Id);
+            // setCommentsPanel({
+            //   open: true,
+            //   rowData: obj.Id,
+            // });
+            // _handleData("edit", obj);
+          }}
+        /> */}
         <Button
           style={delIconBtnStyle}
           disabled={obj.isClick}
@@ -925,8 +951,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
   //           );
   //         //As of now disabled we need to confirm..
   //       }
-
-  //       debugger;
 
   //       let newData = {};
   //       if (obj.isParent) {
@@ -2053,6 +2077,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
           </div>
         </div>
       </Dialog>
+
       {loader ? (
         <Loader />
       ) : (

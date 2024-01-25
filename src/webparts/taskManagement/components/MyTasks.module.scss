@@ -211,3 +211,189 @@ $btnColor: #f46906;
   margin-right: 10px;
   margin-top: 4px;
 }
+.addCommentBtn {
+  background-color: $btnColor;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  margin-top: 5px;
+  margin-left: auto;
+}
+.defaultText {
+  font-size: 14px;
+  color: #55555580;
+  font-weight: 400;
+  margin: 0 2px;
+}
+.errorText {
+  font-size: 14px;
+  color: red;
+  font-weight: 400;
+  margin: 0 2px;
+}
+.activityArea {
+  width: 100%;
+  // max-height: 60vh;
+  overflow-y: auto;
+  padding: 0;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: flex-start;
+}
+
+// chat box styles
+.myMsgStyle {
+  margin: 0;
+  margin-bottom: 7px;
+  max-width: 70%;
+  margin-left: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  .userAvatar {
+    transform: translate(0px, -6px);
+  }
+  .msgWrapper {
+    max-width: 100%;
+    background-color: #fff4ea;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: top right #fff4ea;
+    position: relative;
+    z-index: 9;
+    margin-right: 20px;
+    &::after {
+      content: "";
+      transform: rotate(45deg);
+      position: absolute;
+      right: -8px;
+      top: -10.5px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 21px 20px 0px 0px;
+      border-radius: 30px;
+      border-color: transparent #fff4ea transparent transparent;
+    }
+    p {
+      font-size: 11px;
+      font-weight: 500;
+      margin: 0;
+      padding-bottom: 3px;
+    }
+    .messageContent {
+      line-height: 25px;
+      padding-bottom: 5px;
+      padding-right: 0;
+      width: 100%;
+      font-size: 15px;
+      .emailPill {
+        // color: darkblue;
+        // background-color: #0099ff30;
+        color: #ad4800;
+        background-color: #fdebde;
+        padding: 0;
+        font-size: 0.9rem;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
+      a {
+        color: #ad4800;
+        font-weight: 500 !important;
+        text-decoration: underline !important;
+      }
+      div:nth-child(1) {
+        word-wrap: break-word;
+      }
+    }
+  }
+}
+
+.othersMsgStyle {
+  max-width: 70%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 7px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: top left #f7f7f7;
+  position: relative;
+  z-index: 9;
+  margin-right: auto;
+  .userAvatar {
+    transform: translate(0px, -6px);
+  }
+  .msgWrapper {
+    background-color: #f7f7f7;
+    width: 100%;
+    margin-left: 5px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: top right #f7f7f7;
+    position: relative;
+    z-index: 9;
+
+    &::after {
+      content: "";
+      transform: rotate(45deg);
+      position: absolute;
+      left: -8px;
+      top: -10.5px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 21px 20px 0px 0px;
+      border-radius: 30px;
+      border-color: transparent #f7f7f7 transparent transparent;
+    }
+    p {
+      font-size: 11px;
+      font-weight: 500;
+      margin: 0;
+      padding-bottom: 3px;
+    }
+    .messageContent {
+      line-height: 25px;
+      padding-bottom: 5px;
+      padding-right: 0;
+      width: 100%;
+      font-size: 15px;
+      div:nth-child(1) {
+        word-wrap: break-word;
+      }
+      a {
+        color: #ad4800;
+        font-weight: 500 !important;
+        text-decoration: underline !important;
+      }
+      .emailPill {
+        // color: darkblue;
+        // background-color: #0099ff30;
+        color: #ad4800;
+        background-color: #fdebde;
+        padding: 0;
+        font-size: 0.85rem;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
+    }
+  }
+}

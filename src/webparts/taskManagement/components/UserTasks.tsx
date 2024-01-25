@@ -11,6 +11,8 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 import * as moment from "moment";
+import SidePanel from "./SidePanel";
+import QuillEditor from "./QuillEditor";
 let MyClients = [];
 let MainTask = [];
 let MainArray = [];
@@ -197,7 +199,8 @@ export default function UserTasks(props) {
       .then((res) => {
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId && val.Status !="Done" &&
+          val.ClientId &&
+            val.Status != "Done" &&
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -258,7 +261,7 @@ export default function UserTasks(props) {
             FilterValue: MainTask[i].Id.toString(),
             Operator: "eq",
           });
-        }//arrFilter removed arrFilter changed for issue fix..
+        } //arrFilter removed arrFilter changed for issue fix..
         if (arrFilter.length > 0) {
           getsubTask(Filter);
         } else {
@@ -525,6 +528,8 @@ export default function UserTasks(props) {
                         recChoices={props.recChoices}
                         onselect={onselect}
                         unselect={unselect}
+                        groupMembersList={props.groupMembersList}
+                        _curUserDetailsArray={props._curUserDetailsArray}
                         updateDataFromChildComponent={
                           updateDataFromChildComponent
                         }
@@ -542,6 +547,8 @@ export default function UserTasks(props) {
                 mainData={masterdata}
                 crntUserData={curuserId}
                 crntBackData={configure}
+                groupMembersList={props.groupMembersList}
+                _curUserDetailsArray={props._curUserDetailsArray}
                 Clientdatas={{ FirstName: "", LastName: "", CompanyName: "" }}
                 backupUsers={[]}
               />

@@ -19,6 +19,11 @@ import * as moment from "moment";
 import Loader from "./Loader";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
+import QuillEditor from "./QuillEditor";
+import SidePanel from "./SidePanel";
+import { Persona, PersonaSize } from "office-ui-fabric-react";
+import { Divider } from "primereact/divider";
+import ChatBox from "./ChatMessageBox";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -48,6 +53,8 @@ let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
+  console.log("ror", props);
+
   // style variables
   dropStatus = props.choices;
   dropRecurrence = props.recChoices;
@@ -104,6 +111,11 @@ const UserClientDB = (props): JSX.Element => {
   //Here we exchanges crntUser value with assitant value
   //const [curuserId, setCuruserId] = useState(props.crntUserData);
   const [curuserId, setCuruserId] = useState(props.assistant);
+
+  const [loginUserData, setLoginUserData] = useState(
+    props._curUserDetailsArray && props._curUserDetailsArray[0]?.Name
+  );
+  console.log("loginUserData", loginUserData);
 
   const data: IMyTasks = {
     TaskName: "",
@@ -352,6 +364,19 @@ const UserClientDB = (props): JSX.Element => {
           style={pencilIconBtnStyle}
           onClick={(_) => {
             _handleData("edit", obj);
+          }}
+        />
+        <Button
+          disabled={obj.isClick}
+          type="button"
+          icon="pi pi-comment"
+          style={pencilIconBtnStyle}
+          onClick={(_) => {
+            setCommentsPanel({
+              open: true,
+              curObj: obj,
+            });
+            getCommentsData(obj);
           }}
         />
         <Button
@@ -1707,6 +1732,108 @@ const UserClientDB = (props): JSX.Element => {
     setDeleteObj({});
   }
 
+  // comments functionalities
+  const getCommentsData = (row: any): void => {
+    SPServices.SPReadItems({
+      Listname: "Task_Comments",
+      Select: "*,Author/Title,Author/Id,Author/EMail, TaskID/ID",
+      Expand: "Author, TaskID",
+      Filter: [
+        {
+          FilterKey: "TaskIDId",
+          FilterValue: row?.Id,
+          Operator: "eq",
+        },
+        {
+          FilterKey: "Title",
+          FilterValue: row?.isParent ? "Parent" : "Child",
+          Operator: "eq",
+        },
+      ],
+      Orderby: "Created",
+      Orderbydecorasc: false,
+      Topcount: 5000,
+    })
+      .then((res) => {
+        let mockData = res?.map((e: any) => ({
+          CommentsText: e?.CommentsText || "",
+          Author: e?.Author || "",
+          CreatedOn: moment(e?.Created).format("MM/DD/YYYY HH:mm") || "",
+          TaskIDId: e?.TaskIDId || "",
+          TaggedPeople: e?.TaggedPeople,
+          Id: e?.Id || "",
+        }));
+
+        setResponseSchema(mockData);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const addTaskComments = async () => {
+    try {
+      await SPServices.SPAddItem({
+        Listname: "Task_Comments",
+        RequestJSON: commentDetails,
+      })
+        .then(async (res) => {
+          // let responseData = res?.data;
+
+          setResponseSchema([
+            {
+              CommentsText: res?.data?.CommentsText,
+              Author: {
+                Id: res?.data?.AuthorId,
+              },
+              Created: moment(res?.data?.Created).format("MM/DD/YYYY HH:mm"),
+              TaskIDId: res?.data?.TaskIDId,
+              TaggedPeople: JSON.parse(res?.data?.TaggedPeople),
+              Id: res?.data?.ID,
+            },
+            ...responseScema,
+          ]);
+          setCommentDetails([]);
+          setHtmlText({
+            isValid: true,
+            value: "",
+          });
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      showMessage("Error While adding comment!", toastTopRight, "danger");
+    }
+  };
+
+  const deleteTaskComment = async () => {
+    let isDeleted = {
+      isDeleted: true,
+    };
+    try {
+      await SPServices.SPAddItem({
+        Listname: "Task_Comments",
+        RequestJSON: isDeleted,
+      })
+        .then(async (res) => {
+          console.log(res, "reer");
+          let responseData = res?.data;
+
+          setResponseSchema([
+            {
+              CommentsText: responseData?.CommentsText,
+              AuthorId: responseData?.AuthorId,
+              Created: moment(responseData?.Created).format("MM/DD/YYYY HH:mm"),
+              TaskIDId: responseData?.TaskIDId,
+              TaggedPeople: JSON.parse(responseData?.TaggedPeople),
+              Id: responseData?.Id,
+            },
+            ...responseScema,
+          ]);
+        })
+        .catch((err) => errFunction(err));
+    } catch (err) {
+      showMessage("Error While deleting comment!", toastTopRight, "danger");
+    }
+  };
+
   useEffect(() => {
     SearchFilter(props.searchValue);
   }, [props.searchValue]);
@@ -1751,8 +1878,95 @@ const UserClientDB = (props): JSX.Element => {
     arrdisplayItems[i].children = newChildrens;
   }
 
+  interface commentsPanel {
+    open: Boolean;
+    curObj: any;
+  }
+
+  // quill
+  const [commentPanel, setCommentsPanel] = useState<commentsPanel>({
+    open: false,
+    curObj: undefined,
+  });
+  console.log("commentPanel", commentPanel);
+
+  const [commentDetails, setCommentDetails] = useState([]);
+  const [htmlText, setHtmlText] = useState({
+    isValid: true,
+    value: "",
+  });
+  const [responseScema, setResponseSchema] = useState([]);
+  console.log("resp", responseScema);
+
   return (
     <>
+      <SidePanel
+        visible={commentPanel.open}
+        position="right"
+        onHide={() =>
+          setCommentsPanel({
+            open: false,
+            curObj: undefined,
+          })
+        }
+        panelHeading="Comments"
+      >
+        {/* <QuillEditor /> */}
+
+        <QuillEditor
+          suggestionList={props.groupMembersList}
+          onChange={(htmlText) => {
+            setHtmlText({
+              isValid: true,
+              value: htmlText,
+            });
+            setCommentDetails((prev) => ({
+              ...prev,
+              CommentsText: htmlText,
+              TaskIDId: commentPanel.curObj?.Id,
+              Title: commentPanel.curObj?.isParent ? "Parent" : "Child",
+            }));
+          }}
+          getMentionedEmails={(mentionedEmail) => {
+            setCommentDetails((prev) => ({
+              ...prev,
+              TaggedPeople: JSON.stringify(
+                mentionedEmail?.map((e) => e?.email)
+              ),
+            }));
+          }}
+          defaultValue={commentDetails?.length === 0 ? htmlText.value : ""}
+          placeHolder={"Enter Comments, @ to mentions..."}
+        />
+        {!htmlText.isValid && (
+          <span className={styles.errorText}>comment is required.</span>
+        )}
+        <Button
+          className={styles.addCommentBtn}
+          onClick={() => {
+            if (htmlText?.value?.trim() === "") {
+              setHtmlText((prev) => ({
+                ...prev,
+                isValid: false,
+              }));
+            } else {
+              addTaskComments();
+            }
+          }}
+        >
+          Add Comment
+        </Button>
+        <Divider align="center">
+          <span className={styles.defaultText}>recent</span>
+        </Divider>
+        <div className={styles.activityArea}>
+          {responseScema &&
+            responseScema?.map((e) => (
+              <ChatBox e={e} loginUserData={loginUserData} />
+            ))}
+        </div>
+      </SidePanel>
+
       {loader ? (
         <Loader />
       ) : (

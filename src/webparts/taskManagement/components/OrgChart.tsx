@@ -1061,7 +1061,6 @@ const OrgChart = (props) => {
     // }
   };
   function _handleDataoperationNew(key, obj) {
-    debugger;
     if (obj.Id) {
       // If the item has an Id (existing item), do nothing
       setAdd(false);
@@ -1315,7 +1314,6 @@ const OrgChart = (props) => {
   };
 
   const _curUserDetail = (): void => {
-    debugger;
     _isTL = false;
     _isTC = false;
     _isPA = false;
@@ -1336,7 +1334,6 @@ const OrgChart = (props) => {
   };
 
   const _prepareFilteredData = (): void => {
-    debugger;
     let _TLArray: any[] = [];
     let _TCArray: any[] = [];
     let _PAArray: any[] = [];
@@ -1366,7 +1363,6 @@ const OrgChart = (props) => {
     teamArr =
       _masterArray.length &&
       _masterArray.filter((val: any) => uniqueTeams.includes(val.Team));
-    debugger;
     if (_isAdmin) {
       userTeams = teamArr;
     } else {

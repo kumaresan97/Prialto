@@ -299,7 +299,6 @@ const Client = (props) => {
   };
 
   function _handleDataoperationNew(key, obj) {
-    debugger;
     if (obj.Id) {
       // If the item has an Id (existing item), do nothing
       setisAdd(false);

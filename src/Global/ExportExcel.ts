@@ -585,7 +585,6 @@ const exportToExcel = (data, headers, sheetName) => {
       };
       console.log(data, "data");
 
-      debugger;
       let _count: number = -1;
 
       for (const parent of data[0].clientData) {

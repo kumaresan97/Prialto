@@ -233,7 +233,6 @@ const CompleteDashboard = (props) => {
   };
 
   const Binddata = () => {
-    debugger;
     let globalArray = [];
     let SubArrayId = [];
 

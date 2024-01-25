@@ -17,7 +17,8 @@ const Member = (props) => {
     padding: 0,
   };
   const ShareMember = (val) => {
-    props.handleMemberClick(val, props.selectedTeamMember, true);
+    props.selectedTeamMember[0]?.TeamName,
+      props.handleMemberClick(val, props.selectedTeamMember, true);
   };
   return (
     <div>

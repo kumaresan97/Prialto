@@ -5,6 +5,9 @@ import moment from "moment";
 
 const ChatBox = ({ e, loginUserData }) => {
   const isMyMessage = loginUserData?.ID === e?.Author.Id;
+  console.log(loginUserData?.ID, e?.Author.Id);
+
+  console.log("isMyMessage", isMyMessage);
 
   // working
   const convertURLsToLinks = (text) => {

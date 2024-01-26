@@ -244,6 +244,7 @@ export default function UserTasks(props) {
                   : null,
                 DoneFormula: val.DoneFormula ? val.DoneFormula : "",
                 DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
+                HasComments: val?.HasComments,
                 Created:
                   val.Author.Title + " " + SPServices.displayDate(val.Created),
                 NotifyDate: val.NotifyDate
@@ -343,6 +344,7 @@ export default function UserTasks(props) {
                   NotifyDate: val.NotifyDate
                     ? moment(val.NotifyDate).format("MM/DD/YYYY")
                     : "",
+                  HasComments: val?.HasComments,
                 },
               });
           });
@@ -533,6 +535,7 @@ export default function UserTasks(props) {
                         updateDataFromChildComponent={
                           updateDataFromChildComponent
                         }
+                        getMainTask={getMainTask}
                       />
                     </>
                   );
@@ -551,6 +554,7 @@ export default function UserTasks(props) {
                 _curUserDetailsArray={props._curUserDetailsArray}
                 Clientdatas={{ FirstName: "", LastName: "", CompanyName: "" }}
                 backupUsers={[]}
+                getMainTask={getMainTask}
               />
             )}
           </>

@@ -880,9 +880,11 @@ export default function UserDashboard(props) {
             backupdatafunction={getDataFromBackup}
             recChoices={recurrenceChoices}
             Module={module}
+            groupMembersList={props.groupMembersList}
             getBackupTasks={getBackupTasks}
             getBackupSelectedTasks={getBackupSelectedTasks}
             UpdatedData={backupTasks}
+            _curUserDetailsArray={props._curUserDetailsArray}
           />
         </>
       )}

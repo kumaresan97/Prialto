@@ -58,14 +58,20 @@
 .emailPill {
   // color: darkblue;
   // background-color: #0099ff30;
-  color: #ad4800;
+  color: #ad4800 !important;
   // background-color: #fdebde;
-  padding: 0;
-  font-size: 0.9rem;
+  padding: 0 !important;
+  font-size: 0.9rem !important;
   font-weight: 500 !important;
   text-decoration: none !important;
 }
-
+span[data-emailPill] {
+  color: #ad4800 !important;
+  padding: 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
 .suggestionDropdown {
   width: 100%;
   padding: 10px 0;

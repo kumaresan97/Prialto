@@ -295,7 +295,8 @@ export default function UserBackUpTasksNew(props) {
         console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
-          val.ClientId && val.Status !="Done" &&
+          val.ClientId &&
+            val.Status != "Done" &&
             val.AssitantId != id &&
             MainTask.push({
               key: val.Id,
@@ -343,6 +344,7 @@ export default function UserBackUpTasksNew(props) {
                 DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   val.Author?.Title + " " + SPServices.displayDate(val.Created),
+                HasComments: val?.HasComments,
               },
               children: [],
             });
@@ -459,6 +461,7 @@ export default function UserBackUpTasksNew(props) {
                 DaysOnEarly: val.DaysOnEarly ? val.DaysOnEarly : null,
                 Created:
                   val.Author?.Title + " " + SPServices.displayDate(val.Created),
+                HasComments: val?.HasComments,
               },
             });
           });
@@ -699,6 +702,9 @@ export default function UserBackUpTasksNew(props) {
                         updateDataFromChildComponent={
                           updateDataFromChildComponent
                         }
+                        groupMembersList={props.groupMembersList}
+                        _curUserDetailsArray={props._curUserDetailsArray}
+                        getMainTask={getcurUser}
                       />
                     </>
                   );
@@ -716,6 +722,9 @@ export default function UserBackUpTasksNew(props) {
                 choices={props.choices}
                 Clientdatas={{ FirstName: "", LastName: "", CompanyName: "" }}
                 backupUsers={[]}
+                groupMembersList={props.groupMembersList}
+                _curUserDetailsArray={props._curUserDetailsArray}
+                getMainTask={getcurUser}
               />
             )}
           </>

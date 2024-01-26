@@ -10,7 +10,6 @@ import {
   TextItalicRegular,
   TextUnderline24Regular,
 } from "@fluentui/react-icons";
-import $ from "jquery";
 const QuillEditor = ({
   onChange,
   placeHolder,
@@ -111,6 +110,7 @@ const QuillEditor = ({
     const emailPillClass = generateEmailPillClass();
     const newEmailPill = document.createElement("span");
     newEmailPill.classList.add(styles.emailPill, emailPillClass);
+    newEmailPill.setAttribute("data-emailPill", "true");
     newEmailPill.contentEditable = "false";
     newEmailPill.innerText = `@${mention.name}`;
 
@@ -269,6 +269,235 @@ const QuillEditor = ({
 };
 
 export default QuillEditor;
+
+// using libs
+// import React, { useState, useRef, useEffect } from "react";
+// import ContentEditable from "react-contenteditable";
+// import MentionHashtag from "mention-hashtag";
+// import styles from "./QuillEditor.module.scss";
+// import {
+//   EraserFilled,
+//   TextBoldRegular,
+//   TextItalicRegular,
+//   TextUnderline24Regular,
+// } from "@fluentui/react-icons";
+// import { Persona, PersonaSize } from "office-ui-fabric-react";
+
+// const QuillEditor = ({
+//   onChange,
+//   placeHolder,
+//   defaultValue,
+//   suggestionList,
+//   getMentionedEmails,
+// }) => {
+//   const [content, setContent] = useState(defaultValue || "");
+//   const [suggestions, setSuggestions] = useState([]);
+//   const [mentionedUsers, setMentionedUsers] = useState([]); // Add this line
+//   const contentEditable = useRef(null);
+
+//   useEffect(() => {
+//     if (defaultValue) {
+//       setContent(defaultValue);
+//     }
+//   }, [defaultValue]);
+
+//   const handleInputChange = () => {
+//     const currentContent = contentEditable.current.textContent;
+//     setContent(currentContent);
+
+//     const textContent = currentContent.trim(); // Get the trimmed text content
+//     const words = textContent.split(/\s+/); // Split text content into words
+//     const lastWord = words.length > 0 ? words[words.length - 1] : "";
+
+//     if (lastWord.startsWith("@")) {
+//       const filteredSuggestions = suggestionList.filter((mention) =>
+//         mention.name.toLowerCase().includes(lastWord.slice(1).toLowerCase())
+//       );
+//       setSuggestions(filteredSuggestions);
+//     } else {
+//       setSuggestions([]);
+//     }
+
+//     // The rest of your code...
+
+//     onChange && onChange(currentContent);
+//   };
+
+//   const handleContentChange = (e) => {
+//     const value = e.target.value;
+//     setContent(value);
+
+//     const mentionHashtag = new MentionHashtag({
+//       trigger: "@",
+//       data: suggestionList,
+//     });
+
+//     setSuggestions(mentionHashtag.getSuggestions(value));
+//   };
+
+//   const handleSuggestionClick = (mention) => {
+//     const updatedContent = MentionHashtag.insertMention(content, mention, "@");
+//     setContent(updatedContent);
+//     setSuggestions([]);
+//     getMentionedEmails && getMentionedEmails([...mentionedUsers, mention]);
+//     contentEditable.current.focus();
+//   };
+
+//   const handleKeyDown = (e) => {
+//     if (e.key === "Enter" && suggestions.length > 0) {
+//       e.preventDefault();
+//       handleSuggestionClick(suggestions[0]);
+//     }
+//   };
+
+//   const handleFormat = (format) => {
+//     document.execCommand(format, false, null);
+//     contentEditable.current.focus();
+//   };
+
+//   return (
+//     <div className={styles.quillWrapper}>
+//       <div className={styles.formatButtons}>
+//         <button onClick={() => handleFormat("bold")}>
+//           <TextBoldRegular className={styles.button} />
+//         </button>
+//         <button onClick={() => handleFormat("italic")}>
+//           <TextItalicRegular className={styles.button} />
+//         </button>
+//         <button onClick={() => handleFormat("underline")}>
+//           <TextUnderline24Regular className={styles.button} />
+//         </button>
+//         <button onClick={() => handleFormat("removeFormat")}>
+//           <EraserFilled className={styles.button} />
+//         </button>
+//       </div>
+//       <div className={styles.mentionEditorWrapper}>
+//         <ContentEditable
+//           innerRef={contentEditable}
+//           html={content}
+//           onInput={handleContentChange}
+//           onChange={handleContentChange}
+//           tagName="div"
+//           onKeyDown={handleKeyDown}
+//         />
+//         {content.trim() === "" && (
+//           <div
+//             onClick={() => contentEditable.current.focus()}
+//             className={styles.placeHolder}
+//           >
+//             {placeHolder}
+//           </div>
+//         )}
+//         {suggestions.length > 0 && (
+//           <div className={styles.suggestionDropdown}>
+//             {suggestions.map((mention) => (
+//               <div
+//                 key={mention.id}
+//                 className={styles.suggestionItem}
+//                 onClick={() => handleSuggestionClick(mention)}
+//               >
+//                 <Persona
+//                   title={mention.id}
+//                   imageUrl={
+//                     "/_layouts/15/userphoto.aspx?username=" + mention.email
+//                   }
+//                   size={PersonaSize.size32}
+//                 />
+//                 <div className={styles.userDetails}>
+//                   <p>{mention.name}</p>
+//                   <span>{mention.email}</span>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default QuillEditor;
+
+//quill mention
+
+// import React, { useState, useRef, useEffect } from "react";
+// import Quill from "quill";
+// import "quill/dist/quill.snow.css";
+// import "quill-mention";
+// import "./QuillEditor.module.scss";
+
+// const QuillEditor = ({
+//   onChange,
+//   placeHolder,
+//   defaultValue,
+//   suggestionList,
+//   getMentionedEmails,
+// }) => {
+//   const [suggestions, setSuggestions] = useState([]);
+//   const [mentionedUsers, setMentionedUsers] = useState([]);
+//   const [content, setContent] = useState(defaultValue || "");
+//   const quillRef = useRef(null);
+//   async function suggestPeople(searchTerm) {
+//     const allPeople = [
+//       {
+//         id: 1,
+//         value: "Fredrik Sundqvist",
+//       },
+//       {
+//         id: 2,
+//         value: "Patrik Sjölin",
+//       },
+//     ];
+//     return allPeople.filter((person) => person.value.includes(searchTerm));
+//   }
+
+//   useEffect(() => {
+//     // Initialize Quill with the mention module
+//     const quill = new Quill("#quill-editor", {
+//       theme: "snow", // or use another theme
+//       modules: {
+//         toolbar: [
+//           ["bold", "italic", "underline"],
+//           // Add other toolbar options as needed
+//         ],
+//         mention: {
+//           allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+//           mentionDenotationChars: ["@"],
+//           source: async function (searchTerm, renderList) {
+//             const matchedPeople = await suggestPeople(searchTerm);
+//             renderList(matchedPeople);
+//           },
+//         },
+//       },
+//     });
+
+//     quill.on("text-change", (delta, oldDelta, source) => {
+//       // Handle text changes here
+//       const quillContent = quill.root.innerHTML;
+//       onChange && onChange(quillContent);
+//     });
+
+//     quillRef.current = quill;
+
+//     // Cleanup function to destroy the Quill instance when the component unmounts
+//     return () => {
+//       const quillInstance = quillRef.current;
+//       if (quillInstance) {
+//         quillInstance.root.innerHTML = "";
+//       }
+//     };
+//   }, [onChange]);
+
+//   return (
+//     <div className="quill-editor-wrapper">
+//       <div id="quill-editor" className="quill-editor" />
+//     </div>
+//   );
+// };
+
+// export default QuillEditor;
+
+//quil mention ends
 
 // new one
 

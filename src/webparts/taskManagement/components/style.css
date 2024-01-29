@@ -304,10 +304,17 @@ div#spCommandBar {
 .emailPill {
   /* color: darkblue;
   background-color: #0099ff30; */
-  color: #ad4800;
-  background-color: #fdebde;
-  padding: 0;
-  font-size: 0.9rem;
+  color: #ad4800 !important;
+  /* background-color: #fdebde ; */
+  padding: 0 !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+span[data-emailPill] {
+  color: #ad4800 !important;
+  padding: 0 !important;
+  font-size: 0.9rem !important;
   font-weight: 500 !important;
   text-decoration: none !important;
 }
@@ -317,4 +324,12 @@ div#spCommandBar {
   align-items: stretch;
   justify-content: flex-start;
   height: 100%;
+}
+.p-badge-dot {
+  width: 0.4rem !important;
+  min-width: 0.4rem !important;
+  height: 0.38rem !important;
+}
+.p-badge {
+  transform: translate(28%, -34%) !important;
 }

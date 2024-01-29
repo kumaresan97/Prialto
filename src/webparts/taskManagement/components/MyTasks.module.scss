@@ -300,13 +300,20 @@ $btnColor: #f46906;
       padding-right: 0;
       width: 100%;
       font-size: 15px;
+      span[data-emailPill] {
+        color: #ad4800 !important;
+        padding: 0 !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
       .emailPill {
         // color: darkblue;
         // background-color: #0099ff30;
-        color: #ad4800;
-        background-color: #fdebde;
-        padding: 0;
-        font-size: 0.9rem;
+        color: #ad4800 !important;
+        // background-color: #fdebde;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
         font-weight: 500 !important;
         text-decoration: none !important;
       }
@@ -376,6 +383,23 @@ $btnColor: #f46906;
       padding-right: 0;
       width: 100%;
       font-size: 15px;
+      span[data-emailPill] {
+        color: #ad4800 !important;
+        padding: 0 !important;
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
+      .emailPill {
+        // color: darkblue;
+        // background-color: #0099ff30;
+        color: #ad4800 !important;
+        // background-color: #fdebde;
+        padding: 0 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+      }
       div:nth-child(1) {
         word-wrap: break-word;
       }
@@ -383,16 +407,6 @@ $btnColor: #f46906;
         color: #ad4800;
         font-weight: 500 !important;
         text-decoration: underline !important;
-      }
-      .emailPill {
-        // color: darkblue;
-        // background-color: #0099ff30;
-        color: #ad4800;
-        background-color: #fdebde;
-        padding: 0;
-        font-size: 0.85rem;
-        font-weight: 500 !important;
-        text-decoration: none !important;
       }
     }
   }

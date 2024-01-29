@@ -47,6 +47,7 @@ const MyTasksDashboard = (props): JSX.Element => {
   });
 
   const data: IMyTasks = {
+    HasComments: false,
     TaskName: "",
     DueDate: "",
     PriorityLevel: "",
@@ -79,6 +80,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       DueDate: "",
       PriorityLevel: "",
@@ -107,6 +109,7 @@ const MyTasksDashboard = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       DueDate: "",
       PriorityLevel: "",
@@ -807,6 +810,7 @@ const MyTasksDashboard = (props): JSX.Element => {
               isAdd: false,
               isEdit: false,
               data: {
+                HasComments: false,
                 TaskName: val.TaskName,
                 Creator: {
                   Id: val.Author.ID,
@@ -874,6 +878,7 @@ const MyTasksDashboard = (props): JSX.Element => {
                 isAdd: false,
                 isEdit: false,
                 data: {
+                  HasComments: false,
                   TaskName: val.TaskName,
                   Creator: {
                     Id: val.Author.ID,

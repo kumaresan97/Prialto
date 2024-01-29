@@ -110,6 +110,7 @@ const MyTaskData = (props): JSX.Element => {
   const [curuserId, setCuruserId] = useState(props.crntUserData);
 
   const data: IMyTasks = {
+    HasComments: false,
     TaskName: "",
     ClientName: "",
     ClientID: 0,
@@ -140,6 +141,8 @@ const MyTaskData = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
+
       TaskName: "",
       ClientName: "",
       DueDate: "",
@@ -169,6 +172,7 @@ const MyTaskData = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: "",
       DueDate: "",

@@ -48,6 +48,7 @@ const ClientDashboard = (props): JSX.Element => {
   });
 
   const data: IMyTasks = {
+    HasComments: false,
     TaskName: "",
     ClientName: "",
     DueDate: "",
@@ -81,6 +82,7 @@ const ClientDashboard = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: "",
       DueDate: "",
@@ -110,6 +112,7 @@ const ClientDashboard = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: "",
       DueDate: "",
@@ -851,6 +854,7 @@ const ClientDashboard = (props): JSX.Element => {
               isEdit: false,
 
               data: {
+                HasComments: false,
                 TaskName: val.TaskName,
                 ClientName: val.ClientId ? val.Client.FirstName : "",
                 Creator: {
@@ -919,6 +923,7 @@ const ClientDashboard = (props): JSX.Element => {
                 isAdd: false,
                 isEdit: false,
                 data: {
+                  HasComments: false,
                   TaskName: val.TaskName,
                   ClientName: MainTask[i].ClientName,
                   Creator: {

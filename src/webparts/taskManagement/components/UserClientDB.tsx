@@ -24,6 +24,8 @@ import SidePanel from "./SidePanel";
 import { Persona, PersonaSize } from "office-ui-fabric-react";
 import { Divider } from "primereact/divider";
 import ChatBox from "./ChatMessageBox";
+import { Badge } from "primereact/badge";
+import { PreviewLink16Filled } from "@fluentui/react-icons";
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -85,6 +87,15 @@ const UserClientDB = (props): JSX.Element => {
     width: 26,
     marginLeft: 4,
   };
+  const IconBtnStyle = {
+    color: "#007C81",
+    border: "none",
+    backgroundColor: "transparent",
+    marginLeft: 4,
+    fontSize: "15px",
+    margin: "6px",
+    fontWeight: "600",
+  };
   const delIconBtnStyle = {
     color: "#BF4927",
     border: "none",
@@ -115,9 +126,11 @@ const UserClientDB = (props): JSX.Element => {
   const [loginUserData, setLoginUserData] = useState(
     props._curUserDetailsArray && props._curUserDetailsArray[0]?.Name
   );
+
   console.log("loginUserData", loginUserData);
 
   const data: IMyTasks = {
+    HasComments: false,
     TaskName: "",
     ClientName: "",
     ClientID: 0,
@@ -153,6 +166,7 @@ const UserClientDB = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: props.clientName ? props.clientName : "",
       DueDate: "",
@@ -187,6 +201,7 @@ const UserClientDB = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: props.clientName ? props.clientName : "",
       DueDate: "",
@@ -345,6 +360,31 @@ const UserClientDB = (props): JSX.Element => {
   //delete,update,add buttons
 
   const _action = (obj: any): JSX.Element => {
+    // let hasComments;
+    // console.log(
+    //   obj.Id,
+    //   tempHasComments.CurRowID,
+    //   obj?.data?.HasComments,
+    //   tempHasComments?.CurRowID.includes(obj.Id),
+    //   (tempHasComments?.CurRowID.includes(obj.Id) &&
+    //     obj?.data?.HasComments === null) ||
+    //     (obj?.data?.HasComments === false && tempHasComments.tempHasComments)
+    // );
+
+    // if (
+    //   (tempHasComments?.CurRowID.includes(obj.Id) &&
+    //     obj?.data?.HasComments === null) ||
+    //   (obj?.data?.HasComments === false && tempHasComments.tempHasComments)
+    // ) {
+    //   console.log("illa");
+    //   hasComments = tempHasComments.tempHasComments;
+    // } else {
+    //   console.log("iruke");
+    //   hasComments = obj?.data?.HasComments;
+    // }
+
+    console.log("obj f", obj);
+
     return (
       <div className={styles.tblAction}>
         <Button
@@ -366,7 +406,8 @@ const UserClientDB = (props): JSX.Element => {
             _handleData("edit", obj);
           }}
         />
-        <Button
+
+        {/* <Button
           disabled={obj.isClick}
           type="button"
           icon="pi pi-comment"
@@ -378,7 +419,34 @@ const UserClientDB = (props): JSX.Element => {
             });
             getCommentsData(obj);
           }}
-        />
+        > */}
+        <i
+          className="pi pi-comment p-overlay-badge"
+          style={{
+            color: "#007C81",
+            border: "none",
+            backgroundColor: "transparent",
+            marginLeft: 4,
+            fontSize: "15px",
+            margin: "6px",
+            fontWeight: "600",
+            opacity: obj.isClick ? "0.65" : "1",
+            cursor: obj.isClick ? "default" : "pointer",
+          }}
+          onClick={(_) => {
+            if (!obj.isClick) {
+              setCommentsPanel({
+                open: true,
+                curObj: obj,
+                hasAdded: false,
+              });
+              getCommentsData(obj);
+            }
+          }}
+        >
+          {obj?.data?.HasComments ? <Badge severity="danger"></Badge> : ""}
+        </i>
+        {/* </Button> */}
         <Button
           style={delIconBtnStyle}
           disabled={obj.isClick}
@@ -510,6 +578,8 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: Json,
     })
       .then((res) => {
+        console.log("resss", res);
+
         /*For Recurrence Insert */
         let newJson = {
           TaskIDId: res.data.ID,
@@ -550,6 +620,7 @@ const UserClientDB = (props): JSX.Element => {
               Creator: curdata.Creator,
               ReminderRef: 0,
               ReminderDays: 0,
+              HasComments: false,
             },
             children: [],
           };
@@ -591,6 +662,7 @@ const UserClientDB = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               ReminderRef: 0,
               ReminderDays: 0,
+              HasComments: false,
             },
           };
 
@@ -829,6 +901,7 @@ const UserClientDB = (props): JSX.Element => {
               Creator: curdata.Creator,
               ReminderRef: curdata.ReminderRef,
               ReminderDays: curdata.ReminderDays,
+              HasComments: curdata.HasComments,
             },
             children: obj.children,
           };
@@ -859,6 +932,7 @@ const UserClientDB = (props): JSX.Element => {
               Created: moment().format("YYYY-MM-DD"),
               ReminderRef: curdata.ReminderRef,
               ReminderDays: curdata.ReminderDays,
+              HasComments: curdata.HasComments,
             },
           };
           let indexOfObj = curMyTask.findIndex((data) => data.Id == obj.subId);
@@ -1769,7 +1843,7 @@ const UserClientDB = (props): JSX.Element => {
       .catch((err) => console.log(err));
   };
 
-  const addTaskComments = async () => {
+  const addTaskComments = async (hasComments) => {
     try {
       await SPServices.SPAddItem({
         Listname: "Task_Comments",
@@ -1791,6 +1865,44 @@ const UserClientDB = (props): JSX.Element => {
             },
             ...responseScema,
           ]);
+
+          if (hasComments !== null && hasComments !== false) {
+            setCommentDetails([]);
+            setHtmlText({
+              isValid: true,
+              value: "",
+            });
+          } else {
+            updateCurTask(res?.data?.TaskIDId);
+          }
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      showMessage("Error While adding comment!", toastTopRight, "danger");
+    }
+  };
+
+  const updateCurTask = async (taskID) => {
+    let listName = commentPanel.curObj?.isParent ? "Tasks" : "SubTasks";
+    let hasCommentsUpdated = {
+      HasComments: true,
+    };
+    try {
+      SPServices.SPUpdateItem({
+        Listname: listName,
+        ID: taskID,
+        RequestJSON: hasCommentsUpdated,
+      })
+        .then((res) => {
+          // setTempHasComments((prev) => ({
+          //   ...prev,
+          //   tempHasComments: true,
+          //   CurRowID: [...tempHasComments?.CurRowID, taskID],
+          // }));
+          setCommentsPanel((prev) => ({
+            ...prev,
+            hasAdded: true,
+          }));
           setCommentDetails([]);
           setHtmlText({
             isValid: true,
@@ -1799,17 +1911,18 @@ const UserClientDB = (props): JSX.Element => {
         })
         .catch((err) => console.log(err));
     } catch (err) {
-      showMessage("Error While adding comment!", toastTopRight, "danger");
+      console.log(err);
     }
   };
 
-  const deleteTaskComment = async () => {
+  const deleteTaskComment = async (taskID) => {
     let isDeleted = {
       isDeleted: true,
     };
     try {
-      await SPServices.SPAddItem({
+      await SPServices.SPUpdateItem({
         Listname: "Task_Comments",
+        ID: 1,
         RequestJSON: isDeleted,
       })
         .then(async (res) => {
@@ -1881,12 +1994,14 @@ const UserClientDB = (props): JSX.Element => {
   interface commentsPanel {
     open: Boolean;
     curObj: any;
+    hasAdded: boolean;
   }
 
   // quill
   const [commentPanel, setCommentsPanel] = useState<commentsPanel>({
     open: false,
     curObj: undefined,
+    hasAdded: false,
   });
   console.log("commentPanel", commentPanel);
 
@@ -1895,6 +2010,10 @@ const UserClientDB = (props): JSX.Element => {
     isValid: true,
     value: "",
   });
+  // const [tempHasComments, setTempHasComments] = useState({
+  //   tempHasComments: false,
+  //   CurRowID: [],
+  // });
   const [responseScema, setResponseSchema] = useState([]);
   console.log("resp", responseScema);
 
@@ -1903,12 +2022,24 @@ const UserClientDB = (props): JSX.Element => {
       <SidePanel
         visible={commentPanel.open}
         position="right"
-        onHide={() =>
+        onHide={() => {
+          console.log(
+            !commentPanel.curObj?.data?.HasComments,
+            commentPanel.curObj?.data?.HasComments,
+            commentPanel.hasAdded
+          );
+
+          if (!commentPanel.curObj?.data?.HasComments) {
+            props?.getMainTask();
+          }
+
           setCommentsPanel({
             open: false,
             curObj: undefined,
-          })
-        }
+            hasAdded: false,
+          });
+          setCommentDetails([]);
+        }}
         panelHeading="Comments"
       >
         {/* <QuillEditor /> */}
@@ -1916,16 +2047,20 @@ const UserClientDB = (props): JSX.Element => {
         <QuillEditor
           suggestionList={props.groupMembersList}
           onChange={(htmlText) => {
+            console.log("dededed", htmlText);
+
             setHtmlText({
               isValid: true,
               value: htmlText,
             });
+
             setCommentDetails((prev) => ({
               ...prev,
               CommentsText: htmlText,
               TaskIDId: commentPanel.curObj?.Id,
               Title: commentPanel.curObj?.isParent ? "Parent" : "Child",
             }));
+            console.log("setCommentDetails", commentDetails);
           }}
           getMentionedEmails={(mentionedEmail) => {
             setCommentDetails((prev) => ({
@@ -1950,7 +2085,8 @@ const UserClientDB = (props): JSX.Element => {
                 isValid: false,
               }));
             } else {
-              addTaskComments();
+              let hasComments = commentPanel.curObj?.data?.HasComments;
+              addTaskComments(hasComments);
             }
           }}
         >

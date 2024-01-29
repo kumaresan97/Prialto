@@ -149,6 +149,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
   const [displayItems, setDisplayItems] = useState([]);
 
   const data: IMyTasks = {
+    HasComments: false,
     TaskName: "",
     ClientName: "",
     ClientID: 0,
@@ -184,6 +185,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: "",
       DueDate: "",
@@ -218,6 +220,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
     isEdit: false,
     isAdd: false,
     data: {
+      HasComments: false,
       TaskName: "",
       ClientName: "",
       DueDate: "",

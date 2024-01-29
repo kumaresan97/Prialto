@@ -1,4 +1,5 @@
 export interface IMyTasks {
+  HasComments?: any;
   Id?: number;
   TaskName: string;
   ClientName?: string;

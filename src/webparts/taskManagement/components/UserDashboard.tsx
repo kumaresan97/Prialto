@@ -38,8 +38,6 @@ let backupTasks = [];
 /*end Automation */
 
 export default function UserDashboard(props) {
-  console.log("mainprosp", props);
-
   const UserEmail = !props.Email
     ? props.context.pageContext.user.email
     : props.Email;
@@ -211,7 +209,6 @@ export default function UserDashboard(props) {
       FieldName: "Status",
     })
       .then(function (data) {
-        console.log(data["Choices"]);
         for (let i = 0; i < data["Choices"].length; i++) {
           statusChoices.push({
             name: data["Choices"][i],
@@ -231,7 +228,6 @@ export default function UserDashboard(props) {
       FieldName: "Recurrence",
     })
       .then(function (data) {
-        console.log(data["Choices"]);
         for (let i = 0; i < data["Choices"].length; i++) {
           recurrenceChoices.push({
             name: data["Choices"][i],
@@ -253,12 +249,10 @@ export default function UserDashboard(props) {
 
   function getDataFromClient(data) {
     arrClientData = [...data];
-    console.log(arrClientData);
   }
 
   function getDataFromBackup(data) {
     arrBackupData = [...data];
-    console.log(arrBackupData);
   }
 
   function BindExportData() {

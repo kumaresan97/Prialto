@@ -292,7 +292,6 @@ export default function UserBackUpTasksNew(props) {
       FilterCondition: "or",
     })
       .then((res) => {
-        console.log(res, "res");
         MainTask = [];
         res.forEach((val: any, index) => {
           val.ClientId &&
@@ -524,7 +523,6 @@ export default function UserBackUpTasksNew(props) {
           tempClient[i].Tasks.push(MainArray[j]);
       }
     }
-    console.log(tempClient, "tempclient");
 
     props.backupdatafunction([...tempClient]);
     props.getBackupTasks([...tempClient]);
@@ -680,7 +678,6 @@ export default function UserBackUpTasksNew(props) {
             {clientdata.length > 0 ? (
               <>
                 {clientdata.map((val, i) => {
-                  console.log(val, "valdb");
                   return (
                     <>
                       <UserClientDB

@@ -1135,7 +1135,6 @@ const OrgChart = (props) => {
       name: obj.Role,
       code: obj.Role,
     };
-    console.log(editobj, "editobj");
     setcurobj({ ...editobj });
   };
 
@@ -1148,8 +1147,6 @@ const OrgChart = (props) => {
   };
 
   function _handleDataoperationNew(key, obj) {
-    console.log(previousvalue, "previous");
-
     if (obj.Id) {
       setAdd(false);
       setEdit(false);

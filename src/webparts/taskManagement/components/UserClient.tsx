@@ -50,7 +50,6 @@ export default function UserClients(props) {
         .getByEmail(UserEmail)
         .get()
         .then((res) => {
-          console.log(UserEmail);
           let crntUserDetails = {
             Id: res.Id,
             EMail: res.Email,

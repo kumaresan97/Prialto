@@ -22,7 +22,6 @@ const QuillEditor = ({
   const emailPillCounter = useRef(0);
   const [mentionedUsers, setMentionedUsers] = useState([]);
   const [content, setContent] = useState(defaultValue || "");
-  console.log("sugg", suggestionList);
 
   useEffect(() => {
     if (suggestions.length > 0) {

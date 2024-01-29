@@ -277,7 +277,6 @@ const UserMyTasksDB = (props): JSX.Element => {
     else {
       FormData[key] = _value;
     }
-    console.log(FormData, "formdata");
     setError({ ...err });
 
     setCurdata({ ...FormData });
@@ -421,7 +420,6 @@ const UserMyTasksDB = (props): JSX.Element => {
         .then((res) => {
           setCurdata({ ...data });
           getcurUser();
-          console.log(res, "success");
         })
         .catch((err) => errFunction(err));
     }
@@ -439,8 +437,6 @@ const UserMyTasksDB = (props): JSX.Element => {
           isParent: val.isParent,
         })
       );
-
-    console.log(Ids);
 
     SPServices.SPDeleteItem({
       Listname: ListName,
@@ -491,7 +487,6 @@ const UserMyTasksDB = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
         setCurdata({ ...data });
 
         getcurUser();
@@ -1041,7 +1036,6 @@ const UserMyTasksDB = (props): JSX.Element => {
               children: [],
             });
         });
-        console.log(MainTask, "maintask");
         getsubTask();
       })
       .catch((err) => {
@@ -1113,8 +1107,6 @@ const UserMyTasksDB = (props): JSX.Element => {
             setCurMyTask([...MainArray]);
             setMasterdata([...MainArray]);
           }
-
-          console.log(MainArray, "MainArray");
         })
         .catch((err) => {
           errFunction(err);
@@ -1124,7 +1116,6 @@ const UserMyTasksDB = (props): JSX.Element => {
   //getcuruser
   const getcurUser = () => {
     let user = sp.web.currentUser().then((res) => {
-      console.log(res.Id);
       curuserId.Id = res.Id;
       curuserId.EMail = res.Email;
       curuserId.Title = res.Title;
@@ -1158,19 +1149,14 @@ const UserMyTasksDB = (props): JSX.Element => {
       getMainTask(res.Id);
     });
   };
-  console.log(setSelectedNodeKeys, "nodekeys");
   const onSelect = (event) => {
     // x = [];
     x.push(event.node.Id);
-    console.log(x, "xpush");
-    console.log(event.node.Id);
   };
   const unselect = (event) => {
     x = x.filter((removeId) => {
       return removeId != event.node.Id;
     });
-    console.log(x, "yremove,");
-    console.log(event.node.Id);
   };
   const SearchFilter = (e) => {
     setSearch(e);

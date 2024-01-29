@@ -41,10 +41,6 @@ export default function MyTaskDBNewCategory(props) {
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
   const [masterdata, setMasterdata] = useState<any[]>([]);
   const [clientdata, setClientdata] = useState<any[]>([]);
-  console.log("clientntnt", clientdata);
-  console.log("mainin", MainTask);
-  console.log("subtsts", SubTask);
-  console.log("automation", automationTasks);
 
   const NotStartedTasks = curMyTask.filter((task) => {
     const taskStatus = task.data.Status;
@@ -113,7 +109,6 @@ export default function MyTaskDBNewCategory(props) {
       FieldName: "Recurrence",
     })
       .then(function (data) {
-        console.log(data["Choices"]);
         for (let i = 0; i < data["Choices"].length; i++) {
           recurrenceChoices.push({
             name: data["Choices"][i],
@@ -133,7 +128,6 @@ export default function MyTaskDBNewCategory(props) {
         .getByEmail(UserEmail)
         .get()
         .then((res) => {
-          console.log(UserEmail);
           let crntUserDetails = {
             Id: res.Id,
             EMail: res.Email,
@@ -282,12 +276,9 @@ export default function MyTaskDBNewCategory(props) {
       FilterCondition: "and",
     })
       .then((res) => {
-        console.log("ress", res);
-
         MainTask = [];
         res.forEach((val: any, index) => {
           if (!val.ClientId) {
-            console.log(val.Id);
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -375,8 +366,6 @@ export default function MyTaskDBNewCategory(props) {
       Topcount: 5000,
     })
       .then((response) => {
-        console.log("sub response", response);
-
         let count = 0;
         for (let i = 0; i < MainTask.length; i++) {
           /* Start Of Subtaks */
@@ -1060,8 +1049,6 @@ export default function MyTaskDBNewCategory(props) {
       tempClientNew.splice(categoryIndex, 1);
       MyCategories.splice(arrIndex, 1);
     }
-    console.log("tempClientNew", tempClientNew);
-    console.log("curMyTask2", curMyTask);
     setCurMyTask([]);
     setClientdata([...tempClientNew]);
     showMessage("Category Deleted Successfully!", toastTopRight, "success");

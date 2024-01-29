@@ -286,7 +286,6 @@ const ClientDashboard = (props): JSX.Element => {
             })
               .then((res) => {
                 if (Ids.length === i + 1) {
-                  console.log("delete successfully");
                   getcurUser();
                 }
               })
@@ -295,7 +294,6 @@ const ClientDashboard = (props): JSX.Element => {
               });
           }
         } else {
-          console.log("delete successfully");
           getcurUser();
         }
       })
@@ -322,7 +320,6 @@ const ClientDashboard = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
         setCurdata({ ...data });
 
         getcurUser();
@@ -951,7 +948,6 @@ const ClientDashboard = (props): JSX.Element => {
           count++;
 
           if (count === MainTask.length) {
-            console.log(MainArray, "MainArray");
             setCurMyTask([...MainArray]);
             setMasterdata([...MainArray]);
           }

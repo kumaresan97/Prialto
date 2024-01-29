@@ -168,7 +168,10 @@ const UserClientDB = (props): JSX.Element => {
     data: {
       HasComments: false,
       TaskName: "",
-      ClientName: props.clientName ? props.clientName : "",
+      // ClientName: props.clientName ? props.clientName : "",
+      ClientName: props.Clientdatas
+        ? props.Clientdatas.FirstName + props.Clientdatas.LastName
+        : "",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -203,7 +206,10 @@ const UserClientDB = (props): JSX.Element => {
     data: {
       HasComments: false,
       TaskName: "",
-      ClientName: props.clientName ? props.clientName : "",
+      // ClientName: props.clientName ? props.clientName : "",
+      ClientName: props.Clientdatas
+        ? props.Clientdatas.FirstName + props.Clientdatas.LastName
+        : "",
       DueDate: "",
       PriorityLevel: "",
       Status: "",
@@ -609,7 +615,10 @@ const UserClientDB = (props): JSX.Element => {
             isAdd: false,
             data: {
               TaskName: Json.TaskName,
-              ClientName: props.clientName,
+              // ClientName: props.clientName,
+              ClientName: props.Clientdatas
+                ? props.Clientdatas.FirstName + props.Clientdatas.LastName
+                : "",
               ClientID: props.clientId,
               DueDate: SPServices.displayDate(Json.DueDate),
               PriorityLevel: Json.PriorityLevel,
@@ -651,7 +660,10 @@ const UserClientDB = (props): JSX.Element => {
             isEdit: false,
             data: {
               TaskName: curdata.TaskName,
-              ClientName: props.clientName,
+              // ClientName: props.clientName,
+              ClientName: props.Clientdatas
+                ? props.Clientdatas.FirstName + props.Clientdatas.LastName
+                : "",
               ClientID: props.clientId,
               Creator: curdata.Creator,
               Backup: curdata.Backup.Id ? curdata.Backup : configure,
@@ -1808,11 +1820,10 @@ const UserClientDB = (props): JSX.Element => {
 
   // comments functionalities
   const getCommentsData = (row: any): void => {
-    SPServices.SPReadItems({
-      Listname: "Task_Comments",
-      Select: "*,Author/Title,Author/Id,Author/EMail, TaskID/ID",
-      Expand: "Author, TaskID",
-      Filter: [
+    let filterKeys;
+
+    if (row?.isParent) {
+      filterKeys = [
         {
           FilterKey: "TaskIDId",
           FilterValue: row?.Id,
@@ -1820,10 +1831,30 @@ const UserClientDB = (props): JSX.Element => {
         },
         {
           FilterKey: "Title",
-          FilterValue: row?.isParent ? "Parent" : "Child",
+          FilterValue: "Parent",
           Operator: "eq",
         },
-      ],
+      ];
+    } else {
+      filterKeys = [
+        {
+          FilterKey: "SubTaskIDId",
+          FilterValue: row?.Id,
+          Operator: "eq",
+        },
+        {
+          FilterKey: "Title",
+          FilterValue: "Child",
+          Operator: "eq",
+        },
+      ];
+    }
+
+    SPServices.SPReadItems({
+      Listname: "Task_Comments",
+      Select: "*,Author/Title,Author/Id,Author/EMail, TaskID/ID",
+      Expand: "Author, TaskID",
+      Filter: filterKeys,
       Orderby: "Created",
       Orderbydecorasc: false,
       Topcount: 5000,
@@ -1873,7 +1904,10 @@ const UserClientDB = (props): JSX.Element => {
               value: "",
             });
           } else {
-            updateCurTask(res?.data?.TaskIDId);
+            let taskIDForUpdate = commentPanel.curObj?.isParent
+              ? res?.data?.TaskIDId
+              : res?.data?.SubTaskIDId;
+            updateCurTask(taskIDForUpdate);
           }
         })
         .catch((err) => console.log(err));
@@ -2054,12 +2088,22 @@ const UserClientDB = (props): JSX.Element => {
               value: htmlText,
             });
 
-            setCommentDetails((prev) => ({
-              ...prev,
-              CommentsText: htmlText,
-              TaskIDId: commentPanel.curObj?.Id,
-              Title: commentPanel.curObj?.isParent ? "Parent" : "Child",
-            }));
+            if (commentPanel.curObj?.isParent) {
+              setCommentDetails((prev) => ({
+                ...prev,
+                CommentsText: htmlText,
+                TaskIDId: commentPanel.curObj?.Id,
+                Title: "Parent",
+              }));
+            } else {
+              setCommentDetails((prev) => ({
+                ...prev,
+                CommentsText: htmlText,
+                SubTaskIDId: commentPanel.curObj?.Id,
+                Title: "Child",
+              }));
+            }
+
             console.log("setCommentDetails", commentDetails);
           }}
           getMentionedEmails={(mentionedEmail) => {

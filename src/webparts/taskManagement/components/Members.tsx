@@ -3,8 +3,6 @@ import { Button } from "primereact/button";
 import * as React from "react";
 import styles from "./MainComponent.module.scss";
 const Member = (props) => {
-  console.log("proro", props);
-
   // console.log(props.selectedMember);
   const tickIconStyle = {
     backgroundColor: "transparent",
@@ -17,8 +15,12 @@ const Member = (props) => {
     padding: 0,
   };
   const ShareMember = (val) => {
-    props.selectedTeamMember[0]?.TeamName,
-      props.handleMemberClick(val, props.selectedTeamMember, true);
+    props.handleMemberClick(
+      val,
+      props.selectedTeamMember[0]?.TeamName,
+      props.selectedTeamMember,
+      true
+    );
   };
   return (
     <div>
@@ -50,7 +52,6 @@ const Member = (props) => {
                   borderBottom: "1px solid #d9d9d9",
                 }}
                 onClick={() => {
-                  console.log(val);
                   ShareMember(val.Email);
                 }}
               >

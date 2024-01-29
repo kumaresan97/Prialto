@@ -6,7 +6,6 @@ const exportToExcel = (data, headers, sheetName) => {
   return new Promise<void>((resolve, reject) => {
     const workbook = new Excel.Workbook();
     const worksheet = workbook.addWorksheet(sheetName);
-    console.log("data", data);
 
     // Set headers dynamically
     worksheet.columns = headers.map((header) => ({
@@ -353,7 +352,6 @@ const exportToExcel = (data, headers, sheetName) => {
         });
       });
     } else if (sheetName == "DoneDashboard") {
-      console.log(data, "datas");
       data.forEach((item, index) => {
         const oddRowFill = {
           type: "pattern",
@@ -583,7 +581,6 @@ const exportToExcel = (data, headers, sheetName) => {
         pattern: "solid",
         fgColor: { argb: "FFFFFF" },
       };
-      console.log(data, "data");
 
       let _count: number = -1;
 
@@ -752,7 +749,6 @@ const exportToExcel = (data, headers, sheetName) => {
           if (parent.children?.length > 0) {
             // if (parent.Tasks && parent.Tasks?.children?.length > 0) {
             for (const child of parent.children) {
-              console.log("child", child);
               _count++;
 
               // const oddRowFill = {

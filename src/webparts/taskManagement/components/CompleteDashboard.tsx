@@ -30,12 +30,8 @@ const CompleteDashboard = (props) => {
     padding: 0,
   };
 
-  console.log("mains", mainarray);
-  console.log("subs0", subArray);
-
   const UserEmail = props.context.pageContext.user.email;
   const [Userdata, setUserdata] = useState([]);
-  console.log("usrdata", Userdata);
 
   const [masterdata, setMasterdata] = useState([]);
   const [search, setSearch] = useState("");
@@ -50,8 +46,6 @@ const CompleteDashboard = (props) => {
         .getByEmail(UserEmail)
         .get()
         .then((res) => {
-          //   console.log("res", res.Id);
-
           let crntUserDetails = {
             Id: res?.Id,
             EMail: res?.Email,
@@ -139,8 +133,6 @@ const CompleteDashboard = (props) => {
               SPServices.displayDate(resdata.Created),
           });
         });
-        console.log("mainarray", mainarray);
-
         getDSubTask();
       })
       .catch((err) => {
@@ -180,7 +172,6 @@ const CompleteDashboard = (props) => {
       FilterCondition: "and",
     })
       .then((val) => {
-        console.log(val, "val");
         subArray = [];
 
         val.forEach((val: any, index) => {
@@ -268,7 +259,6 @@ const CompleteDashboard = (props) => {
 
       globalArray.push(...output);
     }
-    console.log("globalArray", globalArray);
 
     const sortedArray = globalArray.sort((a, b) => {
       if (!a.parentTasKName && b.parentTasKName) {
@@ -342,8 +332,6 @@ const CompleteDashboard = (props) => {
 
   const SearchFilter = (e) => {
     setSearch(e);
-    console.log(e);
-    console.log(masterdata, "masterdata");
     const Filterdata = masterdata.filter((item) => {
       const searchableFields = [
         "TaskName",

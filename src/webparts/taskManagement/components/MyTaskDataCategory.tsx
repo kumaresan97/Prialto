@@ -247,11 +247,8 @@ const MyTaskDataCategory = (props): JSX.Element => {
 
   const [curdata, setCurdata] = useState<IMyTasks>(data);
   const [curMyTask, setCurMyTask] = useState<any[]>([]);
-  console.log("curMyTask", curMyTask);
-  console.log("curdata", curdata);
 
   const [masterdata, setMasterdata] = useState<any[]>([]);
-  console.log("master data", masterdata);
 
   const toastTopRight = React.useRef(null);
   // style function
@@ -1194,9 +1191,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
             )
           );
         }
-
-        console.log("_curArray", _curArray);
-
         return val;
       });
     } else if (type == "cancel") {
@@ -1816,7 +1810,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);
     setCurdata({ ...data });
-    console.log("new Data", newData);
 
     props.updateDataFromChildComponent(props.categoryId, [...tempData]);
     setLoader(false);
@@ -1843,7 +1836,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
         tempData[i].children[j].isEdit = false;
       }
     }
-    console.log("after edit", tempData);
 
     setCurMyTask([...tempData]);
     setMasterdata([...tempData]);

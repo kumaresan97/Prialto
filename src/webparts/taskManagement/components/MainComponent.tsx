@@ -61,11 +61,9 @@ let suggestions: ISuggestion[] = [];
 
 const MainComponent = (props: any): JSX.Element => {
   // Local Variables creation
-  console.log("currrer", _curUserDetailsArray);
 
   const Sitename = window.location.href;
   let path = Sitename.split("/")[4];
-  console.log(path, "sitename");
   const _curUser: string = props.context._pageContext._user.email;
   const Teams = [
     {
@@ -95,7 +93,6 @@ const MainComponent = (props: any): JSX.Element => {
   const [selectedMember, setselectedMember] = useState(null);
   const [viewByCardFlow, setviewByCardFlow] = useState(false);
   const [selectedTeamByCardFlow, setSelectedTeamByCardFlow] = useState(false);
-  console.log("viewByCardFlow", viewByCardFlow);
 
   const [expandedTeam, setExpandedTeam] = useState(null);
   const [teams, setTeams] = useState([]);
@@ -393,6 +390,7 @@ const MainComponent = (props: any): JSX.Element => {
         <div
           className={styles.leftNav}
           style={{
+            transition: `all 0.2s`,
             width: `${menuExpand ? "260px" : "92px"}`,
           }}
         >

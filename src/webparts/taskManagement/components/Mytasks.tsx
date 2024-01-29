@@ -107,7 +107,6 @@ export default function Mytasks() {
     setToggle({ ...toggle });
 
     setEditRowKey(rowData.id === editRowKey ? null : rowData.id);
-    console.log(editRowKey, "editrowkey");
 
     // setisEdit(true);
     // setNodes([...nodes]); // Trigger a re-render by updating the nodes state
@@ -147,9 +146,6 @@ export default function Mytasks() {
   };
 
   const actionBodyTemplate = (rowData, rowIndex) => {
-    console.log(rowData);
-    console.log(toggle);
-
     return (
       <div
         style={{
@@ -493,9 +489,6 @@ export default function Mytasks() {
   // <Column body={actionTemplate} headerClassName="w-10rem" />;
 
   const sizeTemplate = (rowData, field) => {
-    console.log(editRowKey);
-    console.log(add);
-
     const data = rowData?.data;
 
     if (data) {

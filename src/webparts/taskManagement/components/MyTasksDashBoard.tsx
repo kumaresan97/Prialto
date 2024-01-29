@@ -318,7 +318,6 @@ const MyTasksDashboard = (props): JSX.Element => {
       RequestJSON: editval,
     })
       .then((res) => {
-        console.log(res, "editsuccessfully");
         setCurdata({ ...data });
 
         getcurUser();
@@ -905,7 +904,6 @@ const MyTasksDashboard = (props): JSX.Element => {
           count++;
 
           if (count === MainTask.length) {
-            console.log(MainArray, "MainArray");
             setCurMyTask([...MainArray]);
             setMasterdata([...MainArray]);
           }

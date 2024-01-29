@@ -55,8 +55,6 @@ let SubTask: IChild[] = [];
 let MainArray: IParent[] = [];
 
 const UserClientDB = (props): JSX.Element => {
-  console.log("ror", props);
-
   // style variables
   dropStatus = props.choices;
   dropRecurrence = props.recChoices;
@@ -126,8 +124,6 @@ const UserClientDB = (props): JSX.Element => {
   const [loginUserData, setLoginUserData] = useState(
     props._curUserDetailsArray && props._curUserDetailsArray[0]?.Name
   );
-
-  console.log("loginUserData", loginUserData);
 
   const data: IMyTasks = {
     HasComments: false,
@@ -366,31 +362,6 @@ const UserClientDB = (props): JSX.Element => {
   //delete,update,add buttons
 
   const _action = (obj: any): JSX.Element => {
-    // let hasComments;
-    // console.log(
-    //   obj.Id,
-    //   tempHasComments.CurRowID,
-    //   obj?.data?.HasComments,
-    //   tempHasComments?.CurRowID.includes(obj.Id),
-    //   (tempHasComments?.CurRowID.includes(obj.Id) &&
-    //     obj?.data?.HasComments === null) ||
-    //     (obj?.data?.HasComments === false && tempHasComments.tempHasComments)
-    // );
-
-    // if (
-    //   (tempHasComments?.CurRowID.includes(obj.Id) &&
-    //     obj?.data?.HasComments === null) ||
-    //   (obj?.data?.HasComments === false && tempHasComments.tempHasComments)
-    // ) {
-    //   console.log("illa");
-    //   hasComments = tempHasComments.tempHasComments;
-    // } else {
-    //   console.log("iruke");
-    //   hasComments = obj?.data?.HasComments;
-    // }
-
-    console.log("obj f", obj);
-
     return (
       <div className={styles.tblAction}>
         <Button
@@ -584,8 +555,6 @@ const UserClientDB = (props): JSX.Element => {
       RequestJSON: Json,
     })
       .then((res) => {
-        console.log("resss", res);
-
         /*For Recurrence Insert */
         let newJson = {
           TaskIDId: res.data.ID,
@@ -1145,7 +1114,6 @@ const UserClientDB = (props): JSX.Element => {
     }
 
     setCurMyTask([..._curArray]);
-    console.log("test");
   };
   //addtextfield
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
@@ -1960,7 +1928,6 @@ const UserClientDB = (props): JSX.Element => {
         RequestJSON: isDeleted,
       })
         .then(async (res) => {
-          console.log(res, "reer");
           let responseData = res?.data;
 
           setResponseSchema([
@@ -2037,7 +2004,6 @@ const UserClientDB = (props): JSX.Element => {
     curObj: undefined,
     hasAdded: false,
   });
-  console.log("commentPanel", commentPanel);
 
   const [commentDetails, setCommentDetails] = useState([]);
   const [htmlText, setHtmlText] = useState({
@@ -2049,7 +2015,6 @@ const UserClientDB = (props): JSX.Element => {
   //   CurRowID: [],
   // });
   const [responseScema, setResponseSchema] = useState([]);
-  console.log("resp", responseScema);
 
   return (
     <>
@@ -2057,12 +2022,6 @@ const UserClientDB = (props): JSX.Element => {
         visible={commentPanel.open}
         position="right"
         onHide={() => {
-          console.log(
-            !commentPanel.curObj?.data?.HasComments,
-            commentPanel.curObj?.data?.HasComments,
-            commentPanel.hasAdded
-          );
-
           if (!commentPanel.curObj?.data?.HasComments) {
             props?.getMainTask();
           }
@@ -2081,8 +2040,6 @@ const UserClientDB = (props): JSX.Element => {
         <QuillEditor
           suggestionList={props.groupMembersList}
           onChange={(htmlText) => {
-            console.log("dededed", htmlText);
-
             setHtmlText({
               isValid: true,
               value: htmlText,
@@ -2103,8 +2060,6 @@ const UserClientDB = (props): JSX.Element => {
                 Title: "Child",
               }));
             }
-
-            console.log("setCommentDetails", commentDetails);
           }}
           getMentionedEmails={(mentionedEmail) => {
             setCommentDetails((prev) => ({

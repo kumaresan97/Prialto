@@ -715,7 +715,6 @@ const Client = (props) => {
       Topcount: 5000,
     })
       .then((res) => {
-        console.log(MyTeamMembers);
         let array: IClient[] = [];
         res.forEach((val: any) => {
           let isTeamMemberinAssitant = false;

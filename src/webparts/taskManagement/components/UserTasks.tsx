@@ -140,8 +140,6 @@ export default function UserTasks(props) {
       .then((res) => {
         MyClients = [];
         res.forEach((val: any) => {
-          console.log(val, "usertasks");
-
           MyClients.push({
             ID: val.ID,
             Name: val.FirstName,

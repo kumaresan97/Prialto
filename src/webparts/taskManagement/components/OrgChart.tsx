@@ -1036,7 +1036,6 @@ const OrgChart = (props) => {
 
   const errFunction = (type, err) => {
     setLoader(false);
-    console.log(type, err);
   };
   const _handleDataoperation = (key, obj) => {
     if (edit && obj.Id) {
@@ -1355,10 +1354,6 @@ const OrgChart = (props) => {
         // }
       });
     }
-    console.log(uniqueTeams, "uniqteam");
-    console.log(_isAdmin, "admin");
-    console.log(_isTC, "tc");
-    console.log(_isTL, "tl");
 
     teamArr =
       _masterArray.length &&
@@ -1451,7 +1446,6 @@ const OrgChart = (props) => {
     //     },
     //   ],
     // }));
-    console.log(orgcgart, "orgchart");
 
     setValue([...orgcgart]);
     setMasterdata([...orgcgart]);

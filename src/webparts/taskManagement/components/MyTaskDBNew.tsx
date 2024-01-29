@@ -54,7 +54,6 @@ export default function UserClients(props) {
         .getByEmail(UserEmail)
         .get()
         .then((res) => {
-          console.log(UserEmail);
           let crntUserDetails = {
             Id: res.Id,
             EMail: res.Email,
@@ -191,9 +190,7 @@ export default function UserClients(props) {
         res.forEach((val: any, index) => {
           const createdString =
             SPServices.displayDate(val.Created) + val.Author.Title;
-          console.log(createdString);
           if (!val.ClientId) {
-            console.log(val.Id);
             MainTask.push({
               key: val.Id,
               Id: val.Id,
@@ -233,8 +230,6 @@ export default function UserClients(props) {
             });
           }
         });
-        console.log(MainTask, "MainTask");
-
         let arrFilter = [];
         for (let i = 0; i < MainTask.length; i++) {
           arrFilter.push({
@@ -280,7 +275,6 @@ export default function UserClients(props) {
           res.forEach((val: any, index) => {
             const createdString =
               SPServices.displayDate(val.Created) + val.Author.Title;
-            console.log(createdString);
 
             val.ClientName == null &&
               SubTask.push({
@@ -422,7 +416,6 @@ export default function UserClients(props) {
       FieldName: "Status",
     })
       .then(function (data) {
-        console.log(data["Choices"]);
         for (let i = 0; i < data["Choices"].length; i++) {
           statusChoices.push({
             name: data["Choices"][i],

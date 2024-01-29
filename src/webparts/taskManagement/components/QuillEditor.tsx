@@ -63,11 +63,11 @@ const QuillEditor = ({
     const textContent = inputRef.current.innerText;
 
     // Extract the last word
-    const lastWordMatch = textContent.match(/@[\w\s]*$/);
+    const lastWordMatch = fullHtmlContent.match(/@[\w\s]*$/);
     const lastWord = lastWordMatch ? lastWordMatch[0] : "";
 
     // Check if "@" is present
-    if (inputRef.current.innerHTML.includes("@")) {
+    if (lastWord.includes("@")) {
       const filteredSuggestions = suggestionList.filter((mention) =>
         mention.name.toLowerCase().includes(lastWord.slice(1).toLowerCase())
       );

@@ -64,7 +64,10 @@ const MainComponent = (props: any): JSX.Element => {
 
   const Sitename = window.location.href;
   let path = Sitename.split("/")[4];
+
   const _curUser: string = props.context._pageContext._user.email;
+  // const _curUser: string = "ka@prialto.com";
+
   const Teams = [
     {
       name: "Team A",
@@ -668,6 +671,7 @@ const MainComponent = (props: any): JSX.Element => {
               <MyTaskDBNewCategory
                 context={props.context}
                 Module={module}
+                Email={_curUser}
                 HandleCompleted={HandleCompleted}
               />
             </>

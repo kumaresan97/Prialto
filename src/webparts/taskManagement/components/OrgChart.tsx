@@ -20,6 +20,7 @@ import { Toast } from "primereact/toast";
 
 import exportToExcel from "../../../Global/ExportExcel";
 import { sp } from "@pnp/sp/presets/all";
+import { Icon } from "office-ui-fabric-react";
 
 let _masterArray: any[] = [];
 let _curUserDetailsArray: any[] = [];
@@ -1892,7 +1893,7 @@ const OrgChart = (props) => {
                   />
                 </span>
               </div>
-              <Button
+              {/* <Button
                 label="Export"
                 icon="pi pi-file-excel"
                 onClick={() => ExportExcel()}
@@ -1900,7 +1901,26 @@ const OrgChart = (props) => {
                 //   onClick={() => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
+                /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => ExportExcel()}
               />
+
               <Button
                 label="Add New"
                 className={styles.btnColor}

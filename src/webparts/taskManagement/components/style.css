@@ -1,3 +1,18 @@
+/* FONT FACES */
+@font-face {
+  font-family: "Apertura Regular";
+  src: url("../assets/fonts/apertura/Apertura-Regular.ttf");
+}
+
+/* * {
+  font-family: "Apertura Regular";
+} */
+
+/* theme color */
+/* #29323C */
+/* #F46906 */
+/* #747a7f */
+
 #workbenchPageContent {
   max-width: 100%;
 }
@@ -28,6 +43,7 @@
 .p-inputtext:focus {
   box-shadow: unset;
   border-color: #000;
+  border: 1px solid #adadad;
 }
 
 .p-button:focus {
@@ -47,10 +63,17 @@
 /* treetable styles start */
 
 .p-treetable-thead th {
-  background-color: #fff !important;
+  /* background-color: #fff !important; */
+  background-color: #f5f5f3 !important;
   font-size: 14px;
   font-weight: 600;
   border: none;
+}
+.p-treetable-thead th:nth-child(1) {
+  border-top-left-radius: 6px;
+}
+.p-treetable-thead th:last-child {
+  border-top-right-radius: 6px;
 }
 
 .p-treetable-tbody span,
@@ -60,7 +83,7 @@ td {
 
 .p-treetable .p-treetable-tbody > tr,
 .p-treetable .p-treetable-thead > tr {
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid #eeeeee90;
 }
 
 .p-treetable .p-treetable-tbody > tr > td {
@@ -178,6 +201,7 @@ td {
 
 .p-dialog .p-dialog-footer {
   padding: 10px;
+  padding-bottom: 15px;
   text-align: center;
   border: none;
   border-radius: 0px;
@@ -217,9 +241,14 @@ td {
 }
 
 .p-inputtext {
-  height: 38px;
+  height: 34px;
+  /* padding: 6px 10px; */
+  font-size: 14px;
+  /* border: 1px solid #adadad; */
 }
-
+.pi-search {
+  color: #adadad;
+}
 /*
  *  STYLE 7
  */
@@ -254,7 +283,7 @@ td {
 }
 
 tr:has(.p-checkbox-box.p-highlight) {
-  background: #e0e9e9 !important;
+  background: #025c5f14 !important;
 }
 
 div#spSiteHeader {
@@ -264,7 +293,9 @@ div#spSiteHeader {
 div#spCommandBar {
   display: none !important;
 }
-
+.p-paginator {
+  border-top: 1px solid #eee !important;
+}
 .p-paginator-pages button {
   border-radius: 50% !important;
 }
@@ -315,8 +346,8 @@ div#spCommandBar {
 .emailPill {
   /* color: darkblue;
   background-color: #0099ff30; */
-  color: #ad4800 !important;
   /* background-color: #fdebde ; */
+  color: #ad4800 !important;
   padding: 0 !important;
   font-size: 0.9rem !important;
   font-weight: 500 !important;
@@ -343,4 +374,199 @@ span[data-emailPill] {
 }
 .p-badge {
   transform: translate(28%, -34%) !important;
+}
+
+/* data table styles */
+.p-datatable .p-datatable-thead > tr > th {
+  background-color: #f5f5f3 !important;
+  padding: 14px !important;
+  color: #555 !important;
+}
+.p-datatable .p-datatable-thead > tr > th:nth-child(1) {
+  border-top-left-radius: 6px;
+}
+.p-datatable .p-datatable-thead > tr > th:last-child {
+  border-top-right-radius: 6px;
+}
+table {
+  border-color: #eeeeee90 !important;
+}
+.p-datatable tbody td {
+  border-top: 1px solid #eeeee090 !important;
+  padding: 13px 16px !important;
+}
+.p-datatable .p-datatable-thead > tr > th {
+  font-size: 14px !important;
+  border: 0 !important;
+}
+
+/* pagination styles */
+.p-paginator-icon {
+  color: #545454;
+}
+.p-paginator-page.p-highlight {
+  background-color: #545454;
+  color: #eff5ff;
+  font-weight: 500;
+}
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight) {
+  color: #545454;
+}
+
+/* dropdown styles */
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  margin: 0;
+  padding: 8px;
+  border-radius: 4px;
+  border: 0 none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #212529;
+  background: transparent;
+  transition: box-shadow 0.15s;
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  color: #ffffff;
+  background: #016e72;
+}
+.p-dropdown-panel .p-dropdown-items {
+  padding: 5px !important;
+}
+.p-dropdown {
+  /* min-width: 140px; */
+  min-width: 100%;
+  height: 32px;
+  border: 1px solid #eeeeee;
+  outline: 0 !important;
+}
+.p-dropdown:not(.p-disabled).p-focus {
+  border-color: #eee;
+}
+.p-dropdown-trigger-icon {
+  color: #3231306e;
+}
+/* datepicker styles */
+.p-datepicker table td > span.p-highlight {
+  background-color: #016e72;
+}
+p-datepicker .p-datepicker-header,
+.p-datepicker table th,
+.p-datepicker table td {
+  padding: 2px;
+}
+
+/* calendar styles */
+.p-calendar {
+  height: 32px;
+  border: 1px solid #eeeeee;
+}
+.p-calendar .p-inputtext {
+  height: 30px;
+}
+.p-datepicker-trigger {
+  color: #3231306e;
+}
+
+/* input inside TD styles  */
+td > .p-inputtext {
+  height: 32px;
+  font-size: 0.85rem;
+  border: 1px solid #eeeeee;
+}
+/* people picker styles */
+.ms-BasePicker-text {
+  max-height: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  border: 1px solid #eeeeee !important;
+}
+.ms-BasePicker-text input {
+  max-height: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+}
+/* checkbox styles */
+.p-checkbox .p-checkbox-box {
+  width: 18px;
+  height: 18px;
+}
+.p-treetable-toggler-icon {
+  height: 14px !important;
+  width: 18px !important;
+}
+
+/* sub menu styles */
+.p-menu {
+  width: 9.5rem;
+  top: 226px;
+  left: 1292.5px;
+  border: 1px solid #eee !important;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.05);
+  padding: 0 !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+}
+.p-menu .p-submenu-header {
+  font-size: 14px;
+  padding: 10px 15px;
+  color: #555;
+  background: #eeeeee60;
+}
+.p-menu .p-menuitem-link {
+  font-size: 14px;
+}
+.p-menuitem-icon {
+  font-size: 13px;
+}
+/* multiselect */
+.p-multiselect {
+  border: 1px solid #eee;
+  height: 32px;
+}
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+  background-color: #016e72;
+}
+.p-multiselect .p-multiselect-label {
+  font-size: 14px;
+  padding: 5px 10px;
+  max-width: 150px;
+}
+.p-multiselect-trigger {
+  font-size: 14px;
+  color: #3231306e;
+}
+/* toast styles */
+.p-toast .p-toast-message .p-toast-message-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  border-left: 5px solid;
+  border-radius: 6px;
+}
+.p-toast .p-toast-message {
+  box-shadow: none;
+}
+.p-toast
+  .p-toast-message
+  .p-toast-message-content
+  .p-toast-message-icon.p-icon {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}
+.p-dialog {
+  border-radius: 6px;
+  overflow: hidden;
+}
+.p-dialog .p-dialog-content {
+  padding: 1rem;
+}
+.p-dialog .p-dialog-footer {
+  padding-top: 0;
+}
+/* divider styles */
+.p-divider.p-divider-horizontal {
+  margin-bottom: 0;
 }

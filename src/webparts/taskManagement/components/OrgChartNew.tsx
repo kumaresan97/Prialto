@@ -22,6 +22,7 @@ import { Toast } from "primereact/toast";
 import exportToExcel from "../../../Global/ExportExcel";
 import { sp } from "@pnp/sp/presets/all";
 import { Tooltip } from "@fluentui/react";
+import { Icon, Persona, PersonaSize } from "office-ui-fabric-react";
 
 let _masterArray: any[] = [];
 let _curUserDetailsArray: any[] = [];
@@ -169,8 +170,9 @@ const OrgChart = (props) => {
 
   const editIconStyle = {
     backgroundColor: "transparent",
-    color: "#007C81",
+    color: "#555",
     border: "none",
+    width: "1.5rem",
     // height: 26,
     // width: 26,
   };
@@ -201,6 +203,7 @@ const OrgChart = (props) => {
 
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     const data: any = val;
+    console.log("val", data);
 
     if (!val.Id && add) {
       // if (fieldType == "FirstName") {
@@ -833,7 +836,29 @@ const OrgChart = (props) => {
               width: "160px",
             }}
           >
-            {data[fieldType].Title}
+            {fieldType === "Name" || fieldType === "Manager" ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                }}
+              >
+                {data[fieldType].EMail && (
+                  <Persona
+                    imageUrl={
+                      data &&
+                      "/_layouts/15/userphoto.aspx?username=" +
+                        data[fieldType].EMail
+                    }
+                    size={PersonaSize.size24}
+                  />
+                )}
+                {data[fieldType].Title}
+              </div>
+            ) : (
+              data[fieldType].Title
+            )}
           </span>
         );
       }
@@ -1926,7 +1951,7 @@ const OrgChart = (props) => {
                   />
                 </span>
               </div>
-              <Button
+              {/* <Button
                 label="Export"
                 icon="pi pi-file-excel"
                 onClick={() => ExportExcel()}
@@ -1934,7 +1959,26 @@ const OrgChart = (props) => {
                 //   onClick={() => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
+              /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => ExportExcel()}
               />
+
               <Button
                 label="Add New"
                 className={styles.btnColor}

@@ -6,9 +6,124 @@ $roleHeader: #757b81;
   flex-wrap: wrap;
   width: 100%;
   gap: 16px;
+
   .cardSize {
-    width: 32.3%;
-    box-shadow: 0px -1px 4px #b9b9b926;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 32%;
+    box-shadow: 0 3px 4px #adadad40;
+    border: 1px solid #eeeeee90;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 10px;
+    .cardHeadIcon {
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      margin: 10px 10px 0 10px;
+      border-radius: 50%;
+      border: 1px solid #adadad;
+      font-size: 30px;
+      color: #adadad;
+    }
+    .avatarLabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 10px;
+      position: relative;
+      transition: all 0.3s;
+      &::before {
+        transition: all 0.3s;
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -8%;
+        height: 20px;
+        border: 1px solid #55555530;
+      }
+    }
+    .avatarLabel2L {
+      transition: all 0.3s;
+      position: relative;
+      &::before {
+        transition: all 0.3s;
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -67%;
+        height: 20px;
+        border: 1px solid #55555530;
+      }
+    }
+    .avatarLabel2SM {
+      transition: all 0.3s;
+      position: relative;
+      &::before {
+        transition: all 0.3s;
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: -41%;
+        height: 20px;
+        border: 1px solid #55555530;
+      }
+    }
+    .leadWrapper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+      .lead {
+        transition: all 0.3s;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
+        padding: 3px 15px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        margin-top: 5px;
+        background: #eeeeee60;
+        color: #555;
+        .label {
+          color: #555;
+        }
+      }
+    }
+
+    .defaultText {
+      font-size: 14px;
+      color: #55555580;
+      font-weight: 400;
+      margin: 0 2px;
+    }
+    .membersListWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin: 5px 0;
+      width: 100%;
+      .memberList {
+        margin-top: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        .Avtr {
+          width: 34px !important;
+          height: 34px !important;
+          margin: 0 -13px 0 0 !important;
+        }
+      }
+    }
     .secDivider {
       display: flex;
       gap: 10px;
@@ -19,6 +134,10 @@ $roleHeader: #757b81;
     }
     .rightSideContainer {
       width: 50%;
+    }
+    .cohortName {
+      padding: 10px;
+      font-size: 20px;
     }
     .noPaddingLable {
       padding: 0px;
@@ -36,5 +155,96 @@ $roleHeader: #757b81;
       align-items: center;
       gap: 2px;
     }
+    .CTOBtn {
+      cursor: pointer;
+      padding: 5px 8px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      background: #eeeeee60;
+      color: #555;
+      i {
+        font-size: 14px;
+        color: #555;
+      }
+    }
+    &:hover {
+      transition: all 0.3s;
+      box-shadow: 0 5px 10px #adadad50;
+      .cohortName {
+        color: #00797c;
+        text-align: center;
+      }
+      .cardHeadIcon {
+        transition: all 0.3s;
+        background-color: #00797c15;
+        color: #00797c;
+        border: 1px solid #00797c;
+        .label {
+          color: #00797c;
+        }
+      }
+      .lead {
+        transition: all 0.3s;
+        background-color: #00797c15;
+        color: #00797c;
+        border: 1px solid #00797c50;
+        .label:nth-child(1) {
+          color: #00797c;
+        }
+      }
+      .CTOBtn {
+        transition: all 0.3s;
+        background-color: #00797c;
+        border: 1px solid #00797c50;
+        i {
+          color: #fff;
+        }
+      }
+      .avatarLabel2L {
+        transition: all 0.3s;
+        &::before {
+          transition: all 0.3s;
+          border: 1px solid #00797c50;
+        }
+      }
+      .avatarLabel {
+        transition: all 0.3s;
+        &::before {
+          transition: all 0.3s;
+          border: 1px solid #00797c50;
+        }
+      }
+      .avatarLabel2L {
+        transition: all 0.3s;
+        &::before {
+          transition: all 0.3s;
+          border: 1px solid #00797c50;
+        }
+      }
+      .avatarLabel2SM {
+        transition: all 0.3s;
+        &::before {
+          transition: all 0.3s;
+          border: 1px solid #00797c50;
+        }
+      }
+    }
+  }
+}
+// card Heading
+.cardHeading {
+  h2 {
+    padding: 5px 16px;
+    min-width: 150px;
+    height: 36px;
+    color: #00797c;
+    background: #009b9f0d;
+    border-radius: 4px;
+    border-left: 4px solid;
+    text-align: center;
+    font-size: 18px;
+    width: max-content;
+    font-weight: 600;
+    margin: 0 0 15px 0;
   }
 }

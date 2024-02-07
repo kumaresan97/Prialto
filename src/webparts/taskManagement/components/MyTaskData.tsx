@@ -201,17 +201,19 @@ const MyTaskData = (props): JSX.Element => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      color = "#bf4927";
-      bgColor = "#ffded5";
+      color = "#dc3100";
+      bgColor = "#ffe5dd";
     } else if (PLevel == "High") {
-      bgColor = "#ffd5b8";
-      color = "#f46906";
+      // bgColor = "#ffd5b8";
+      // color = "#f46906";
+      bgColor = "#ffeadb";
+      color = "#bc0000";
     } else if (PLevel == "Normal") {
-      bgColor = "#bbfcff";
-      color = "#4b6164";
+      bgColor = "#d5fdff";
+      color = "#00525d";
     } else if (PLevel == "In Progress") {
-      bgColor = "#defffd";
-      color = "#666666";
+      bgColor = "#d9fffd";
+      color = "#005b5d";
     } else if (PLevel == "Pending") {
       bgColor = "#f5ffbd";
       color = "#5c5c5c";
@@ -219,11 +221,11 @@ const MyTaskData = (props): JSX.Element => {
       bgColor = "#c7ffc7";
       color = "#1a8100";
     } else if (PLevel == "Done") {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     } else {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     }
     return (
       <div
@@ -1278,12 +1280,7 @@ const MyTaskData = (props): JSX.Element => {
               margin: "15px 0px",
             }}
           >
-            <h2
-
-            // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
-            >
-              My Tasks
-            </h2>
+            <h2>My Tasks</h2>
             <Button
               label="New task"
               className={styles.btnColor}

@@ -34,6 +34,10 @@ import {
 import CompleteDashboard from "./CompleteDashboard";
 import { InputText } from "primereact/inputtext";
 
+// img
+const prialtoLogoLG: any = require("../assets/images/logoPrialto.png");
+const prialtoLogoSM: any = require("../assets/images/prialtoLogoSM.png");
+
 // Interfaces
 interface ISuggestion {
   id: number;
@@ -61,6 +65,7 @@ let suggestions: ISuggestion[] = [];
 
 const MainComponent = (props: any): JSX.Element => {
   // Local Variables creation
+  console.log("curarr", _curArray);
 
   const Sitename = window.location.href;
   let path = Sitename.split("/")[4];
@@ -81,7 +86,7 @@ const MainComponent = (props: any): JSX.Element => {
   const [Completeuser, setCompleteUser] = useState("");
   const [module, setModule] = useState("");
   const [navsearch, setnavsearch] = useState("");
-
+  const [sendSelectedUserData, setSendSelectedUserData] = useState(null);
   const [params, setParams] = useState({
     admin: false,
     currentUser: "",
@@ -100,6 +105,8 @@ const MainComponent = (props: any): JSX.Element => {
   const [selectedTeamMember, setSelectedTeamMember] = useState([]);
   const [menuExpand, setMenuExpand] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<any[]>([]);
+  const [currentMember, setCurrentMember] = useState(null);
+
   // Styles creation
   const navStyles: Partial<INavStyles> = {
     root: {
@@ -276,7 +283,7 @@ const MainComponent = (props: any): JSX.Element => {
           if (_curArray[j].team.length) {
             for (let k: number = 0; _curArray[j].team.length > k; k++) {
               if (uniqueTeams[i].Team === _curArray[j].team[k]) {
-                delete _curArray[j].members[0].Role;
+                // delete _curArray[j].members[0].Role;
                 _curMembers.push(..._curArray[j].members);
               }
 
@@ -302,12 +309,24 @@ const MainComponent = (props: any): JSX.Element => {
   const toggleTeam = (index) => {
     setExpandedTeam((prev) => (prev === index ? null : index));
   };
+
   const handleMemberClick = (
     member,
     _selTeam: string,
     selectedTeamData?: any,
     ViewByCardFlow?: any
   ) => {
+    console.log("member", member, _selTeam, selectedTeamData, ViewByCardFlow);
+
+    let filterByTeam = _curArray?.filter((e) => {
+      let c = e?.team?.includes(_selTeam);
+      return c;
+    });
+    let finalFilter = filterByTeam?.filter((e) =>
+      e?.members?.some((el) => el?.Email === member)
+    );
+    // console.log( "b", finalFilter[0]?.members[0]);
+    setCurrentMember(finalFilter[0]?.members[0]);
     let _overAllTeams: any[] = [...teams];
     let uniqueSet = new Set<string>();
     let uniqueArray = [];
@@ -385,51 +404,81 @@ const MainComponent = (props: any): JSX.Element => {
 
   return (
     <>
-      <h1 className={styles.pageHeader}>Member Task Tracker</h1>
+      {/* <h1 className={styles.pageHeader}>Member Task Tracker</h1> */}
       <div className={styles.TaskManagementSection}>
         <div
           className={styles.leftNav}
           style={{
-            transition: `all 0.2s`,
             width: `${menuExpand ? "260px" : "92px"}`,
+            transition: `width 0.2s`,
           }}
         >
           <div
             className={styles.iconsearchcontainer}
             // style={{ display: "flex", gap: "10px", alignItems: "center" }}
           >
-            <div className={styles.leftNavExpandController}>
+            <div
+              className={styles.leftNavExpandController}
+              onClick={() => {
+                setMenuExpand(!menuExpand);
+              }}
+            >
               <i
                 title={menuExpand ? "Collapse" : "Expand"}
-                className="pi pi-bars"
-                style={{ fontSize: "1.25rem", color: "#fff" }}
+                className={`pi ${
+                  menuExpand ? `pi-angle-left` : `pi-angle-right`
+                }`}
                 onClick={() => {
                   setMenuExpand(!menuExpand);
                 }}
               ></i>
             </div>
-            {menuExpand && (
-              <div className={styles.rightNavSearch}>
-                <Label
+            {/* // <div className={styles.rightNavSearch}>
+              //   <Label
+              //     style={{
+              //       width: "100%",
+              //       color: "#ffff",
+              //       fontSize: "16px",
+              //       fontWeight: 700,
+              //     }}
+              //   >
+              //     {/* Member Task Tracker */}
+            {/* </Label> */}
+            {/* <span className="p-input-icon-left">
+              //   <i className="pi pi-search" />
+              //   <InputText
+              //     placeholder="Search"
+              //     value={navsearch}
+              //     onChange={(e: any) => searchFilter(e.target.value)}
+              //   />
+              // </span> */}
+            {/* // </div> */}
+            <div className={styles.navTitle}>
+              {/* <img
+                src={menuExpand ? prialtoLogoLG : prialtoLogoSM}
+                aria-expanded={menuExpand ? "true" : "false"}
+              />
+              <p title="Member Task Tracker">
+                {menuExpand ? "Member Task Tracker" : "MTT"}
+              </p> */}
+
+              {menuExpand ? (
+                <div
                   style={{
-                    width: "100%",
-                    color: "#ffff",
-                    fontSize: "16px",
-                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
                   }}
                 >
-                  {/* Member Task Tracker */}
-                </Label>
-                {/* <span className="p-input-icon-left">
-                <i className="pi pi-search" />
-                <InputText
-                  placeholder="Search"
-                  value={navsearch}
-                  onChange={(e: any) => searchFilter(e.target.value)}
-                />
-              </span> */}
-              </div>
-            )}
+                  <p title="Member Task Tracker">Member </p>
+                  <p title="Member Task Tracker">Task</p>
+                  <p title="Member Task Tracker">Tracker </p>
+                </div>
+              ) : (
+                <span title="Member Task Tracker">MTT</span>
+              )}
+            </div>
           </div>
           <div>
             <Label
@@ -437,7 +486,11 @@ const MainComponent = (props: any): JSX.Element => {
                 setvalue("mytasks");
               }}
               className={
-                value == "mytasks" ? styles.activeBtn : styles.inActive
+                value == "mytasks"
+                  ? menuExpand
+                    ? styles.expandedActiveBtn
+                    : styles.activeBtn
+                  : styles.inActive
               }
               style={{
                 display: "flex",
@@ -500,7 +553,7 @@ const MainComponent = (props: any): JSX.Element => {
                         },
                       }}
                       // className={
-                      //   value == "OrgChart" ? styles.activeBtn : styles.inActive
+                      //   value == "OrgChart" ?menuExpand?styles.expandedActiveBtn: styles.activeBtn : styles.inActive
                       // }
                     >
                       {menuExpand ? val.team : ""}
@@ -531,7 +584,9 @@ const MainComponent = (props: any): JSX.Element => {
                           }}
                           className={
                             value == "member" && selectedMember === member.Email
-                              ? styles.activeBtn
+                              ? menuExpand
+                                ? styles.expandedActiveBtn
+                                : styles.activeBtn
                               : styles.inActive
                           }
                         >
@@ -580,7 +635,11 @@ const MainComponent = (props: any): JSX.Element => {
                       },
                     }}
                     className={
-                      value == "CardView" ? styles.activeBtn : styles.inActive
+                      value == "CardView"
+                        ? menuExpand
+                          ? styles.expandedActiveBtn
+                          : styles.activeBtn
+                        : styles.inActive
                     }
                   >
                     {menuExpand ? "Card View" : ""}
@@ -611,7 +670,11 @@ const MainComponent = (props: any): JSX.Element => {
                       },
                     }}
                     className={
-                      value == "OrgChart" ? styles.activeBtn : styles.inActive
+                      value == "OrgChart"
+                        ? menuExpand
+                          ? styles.expandedActiveBtn
+                          : styles.activeBtn
+                        : styles.inActive
                     }
                   >
                     {menuExpand ? "Organization Chart" : ""}
@@ -642,7 +705,11 @@ const MainComponent = (props: any): JSX.Element => {
                       },
                     }}
                     className={
-                      value == "Client" ? styles.activeBtn : styles.inActive
+                      value == "Client"
+                        ? menuExpand
+                          ? styles.expandedActiveBtn
+                          : styles.activeBtn
+                        : styles.inActive
                     }
                   >
                     {menuExpand ? "Member list" : ""}
@@ -660,9 +727,42 @@ const MainComponent = (props: any): JSX.Element => {
         <div
           style={{
             width: `calc(100% - ${menuExpand ? "280px" : "112px"})`,
-            padding: "16px 16px 0 0",
+            // padding: "10px 16px 0 0",
+            padding: "26px 15px",
           }}
         >
+          {/* <div className={styles.MainHeader}>
+            <h1 className={styles.pageHeader}>
+              {menuExpand ? "Member Task Tracker" : "MTT"}
+            </h1>
+
+            {value == "member" && (
+              <div className={styles.memberProfileCard}>
+                <div className={styles.profileText}>
+                  <span>{currentMember?.Name}</span>
+                  <span>
+                    {currentMember?.Role?.toLowerCase() === "tl"
+                      ? "team leader"
+                      : currentMember?.Role?.toLowerCase() === "tc"
+                      ? "team captain"
+                      : currentMember?.Role?.toLowerCase() === "pa"
+                      ? "personal assistant"
+                      : ""}
+                  </span>
+                </div>
+                <Persona
+                  className={styles.memberAvatar}
+                  // title={e?.Author?.Title || loginUserData?.Title}
+                  imageUrl={
+                    currentMember &&
+                    "/_layouts/15/userphoto.aspx?username=" +
+                      currentMember?.Email
+                  }
+                  size={PersonaSize.size32}
+                />
+              </div>
+            )}
+          </div> */}
           {value == "mytasks" ? (
             <>
               <MyTaskDBNewCategory
@@ -678,6 +778,7 @@ const MainComponent = (props: any): JSX.Element => {
             //   Email={selectedMember}
             // />
             <UserDashboard
+              currentMember={currentMember}
               selectedMember={selectedMember}
               context={props.context}
               Email={selectedMember}

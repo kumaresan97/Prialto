@@ -24,7 +24,8 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { Dialog } from "primereact/dialog";
 import SidePanel from "./SidePanel";
 import QuillEditor from "./QuillEditor";
-
+import { Menu } from "primereact/menu";
+const categoryImg: any = require("../assets/images/important.png");
 let x = [];
 let arrdisplayItems = []; //manipulation array just for data store..
 const cities = [
@@ -86,19 +87,23 @@ const MyTaskDataCategory = (props): JSX.Element => {
   // const actionCellStyle = { backgroundColor: "#EAEEEE", width: 150 };
   const iconbtnStyle = {
     backgroundColor: "transparent",
-    color: "#007C81",
+    // color: "#007C81",
+    color: "#555555",
     border: "none",
     height: 24,
     width: 24,
+    marginLeft: 4,
     // borderRadius: "50%",
   };
   const tickIconStyle = {
     backgroundColor: "transparent",
     border: "transparent",
     color: "#007C81",
+    // color: "#555555",
   };
   const pencilIconBtnStyle = {
-    color: "#007C81",
+    // color: "#007C81",
+    color: "#555555",
     border: "none",
     backgroundColor: "transparent",
     height: 26,
@@ -256,17 +261,19 @@ const MyTaskDataCategory = (props): JSX.Element => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      color = "#bf4927";
-      bgColor = "#ffded5";
+      color = "#dc3100";
+      bgColor = "#ffe5dd";
     } else if (PLevel == "High") {
-      bgColor = "#ffd5b8";
-      color = "#f46906";
+      // bgColor = "#ffd5b8";
+      // color = "#f46906";
+      bgColor = "#ffeadb";
+      color = "#bc0000";
     } else if (PLevel == "Normal") {
-      bgColor = "#bbfcff";
-      color = "#4b6164";
+      bgColor = "#d5fdff";
+      color = "#00525d";
     } else if (PLevel == "In Progress") {
-      bgColor = "#defffd";
-      color = "#666666";
+      bgColor = "#d9fffd";
+      color = "#005b5d";
     } else if (PLevel == "Pending") {
       bgColor = "#f5ffbd";
       color = "#5c5c5c";
@@ -274,47 +281,47 @@ const MyTaskDataCategory = (props): JSX.Element => {
       bgColor = "#c7ffc7";
       color = "#1a8100";
     } else if (PLevel == "Done") {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     } else if (PLevel == "One time") {
-      bgColor = "#b7bfeb";
+      bgColor = "#d6dcff";
       color = "#182154";
     } else if (PLevel == "Daily") {
-      bgColor = "#ebb7b7";
-      color = "#f92e2e";
+      bgColor = "#ffdcdc";
+      color = "#680000";
     } else if (PLevel == "Every Monday") {
-      bgColor = "#ebcdb7";
-      color = "#b55d1d";
+      bgColor = "#ffe7d5";
+      color = "#6f3000";
     } else if (PLevel == "Every Tuesday") {
-      bgColor = "#e1f7c0";
-      color = "#4d7216";
+      bgColor = "#ecffce";
+      color = "#355800";
     } else if (PLevel == "Every Wednesday") {
-      bgColor = "#e6f7c0";
-      color = "#626262";
+      bgColor = "#f2ffd6";
+      color = "#1b4d00";
     } else if (PLevel == "Every Thursday") {
-      bgColor = "#f7c0eb";
-      color = "#680d54";
+      bgColor = "#ffcef4";
+      color = "#6c0054";
     } else if (PLevel == "Every Friday") {
       bgColor = "#ffeaea";
       color = "#a55b5b";
     } else if (PLevel == "Every Saturday") {
-      bgColor = "#f0eaff";
-      color = "#6539d3";
+      bgColor = "#e1d5ff";
+      color = "#20006f";
     } else if (PLevel == "Every Sunday") {
-      bgColor = "#ffeaf4";
-      color = "#f30074";
+      bgColor = "#ffd4e8";
+      color = "#6d0034";
     } else if (PLevel == "Weekly") {
-      bgColor = "#fcbdbd";
-      color = "#812727";
+      bgColor = "#ffd0d0";
+      color = "#700000";
     } else if (PLevel == "Monthly") {
-      bgColor = "#b7e1eb";
-      color = "#225662";
+      bgColor = "#d9f8ff";
+      color = "#003c4a";
     } else if (PLevel == "On-hold") {
       bgColor = "#f7f6da";
       color = "#4a4a3b";
     } else {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     }
     return (
       <div
@@ -366,7 +373,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-pencil"
-          style={pencilIconBtnStyle}
+          style={iconbtnStyle}
           onClick={(_) => {
             _handleData("edit", obj);
           }}
@@ -1656,6 +1663,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
                 marginTop: "-4px",
                 cursor: "text",
                 maxWidth: "150px",
+                fontSize: "15px",
               }}
               tooltip={data[fieldType]}
               // tooltip={
@@ -2028,6 +2036,45 @@ const MyTaskDataCategory = (props): JSX.Element => {
     arrdisplayItems[i].children = newChildrens;
   }
 
+  const menuLeft = React.useRef(null);
+  const itemsWithOutData = [
+    {
+      label: "Category options",
+      items: [
+        {
+          label: "Update",
+          icon: "pi pi-pencil",
+          command: (event) => {
+            Editcategory(true, props.categoryName, props.categoryId);
+          },
+        },
+        {
+          label: "Delete",
+          icon: "pi pi-trash",
+          command: () => {
+            arrdisplayItems.length === 0 &&
+              DeleteCategory(true, props.categoryName, props.categoryId);
+          },
+        },
+      ],
+    },
+  ];
+
+  const itemsWithData = [
+    {
+      label: "Category options",
+      items: [
+        {
+          label: "Update",
+          icon: "pi pi-pencil",
+          command: (event) => {
+            Editcategory(true, props.categoryName, props.categoryId);
+          },
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <Dialog
@@ -2061,7 +2108,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               label="Update"
             />
             <Button
-              className={styles.btnColor}
+              className={styles.cancelBtn}
               onClick={() => {
                 setCategoryValue("");
                 setCategoryId(null);
@@ -2097,23 +2144,15 @@ const MyTaskDataCategory = (props): JSX.Element => {
             accept={acceptDeleteCategory}
             reject={rejectDeleteCategory}
           />
-          <div
-            className={styles.myTaskHeader}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              margin: "15px 0px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <h2
-
-              // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
-              >
-                {props.categoryName}
-              </h2>
-              {props.categoryName ? (
+          {props.categoryName && (
+            <div className={styles.myTaskHeader}>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <h2
+                // style={{ color: "#f46906",fontSize: "20px",fontWeight: "700"}}
+                >
+                  <img src={categoryImg} /> {props.categoryName}
+                </h2>
+                {/* {props.categoryName ? (
                 <>
                   <Button
                     type="button"
@@ -2142,39 +2181,106 @@ const MyTaskDataCategory = (props): JSX.Element => {
                 </>
               ) : (
                 ""
+              )} */}
+              </div>
+              {props.categoryName ? (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {/* <Button
+                  label="New task"
+                  className={styles.btnColor}
+                  onClick={(e) => {
+                    let ifHasDublicateChild = curMyTask?.filter((e) => {
+                      return e.children.some((el) => el.Id === null);
+                    });
+
+                    if (ifHasDublicateChild?.length !== 0) {
+                      curMyTask?.map((e) => {
+                        if (e?.children) {
+                          e.children = e.children.filter(
+                            (el) => el.Id !== null
+                          );
+                        }
+                        return e;
+                      });
+                    }
+
+                    curMyTask?.filter((e) => e.Id === null)?.length === 0
+                      ? _handleData("addParent", { ..._sampleParent })
+                      : showMessage(
+                          "Can't add multiple tasks at a time",
+                          toastTopRight,
+                          "warn"
+                        );
+                  }}
+                /> */}
+
+                  <span className="p-buttonset">
+                    <Button
+                      // label="New task"
+                      icon="pi pi-plus"
+                      className={styles.btnColor}
+                      style={{
+                        padding: " 4px 18px",
+                        height: " 30px",
+                        fontSize: " 14px",
+                        fontWeight: " 500",
+                      }}
+                      onClick={(e) => {
+                        let ifHasDublicateChild = curMyTask?.filter((e) => {
+                          return e.children.some((el) => el.Id === null);
+                        });
+
+                        if (ifHasDublicateChild?.length !== 0) {
+                          curMyTask?.map((e) => {
+                            if (e?.children) {
+                              e.children = e.children.filter(
+                                (el) => el.Id !== null
+                              );
+                            }
+                            return e;
+                          });
+                        }
+
+                        curMyTask?.filter((e) => e.Id === null)?.length === 0
+                          ? _handleData("addParent", { ..._sampleParent })
+                          : showMessage(
+                              "Can't add multiple tasks at a time",
+                              toastTopRight,
+                              "warn"
+                            );
+                      }}
+                    />
+                    <Menu
+                      model={
+                        arrdisplayItems.length == 0
+                          ? itemsWithOutData
+                          : itemsWithData
+                      }
+                      popup
+                      ref={menuLeft}
+                      id="popup_menu_left"
+                    />
+                    <Button
+                      className={styles.secondaryBtn}
+                      icon="pi pi-ellipsis-v"
+                      onClick={(event) => {
+                        menuLeft.current.toggle(event);
+                        console.log(menuLeft.current);
+                      }}
+                    ></Button>
+                  </span>
+                </div>
+              ) : (
+                ""
               )}
             </div>
-            {props.categoryName ? (
-              <Button
-                label="New task"
-                className={styles.btnColor}
-                onClick={(e) => {
-                  let ifHasDublicateChild = curMyTask?.filter((e) => {
-                    return e.children.some((el) => el.Id === null);
-                  });
-
-                  if (ifHasDublicateChild?.length !== 0) {
-                    curMyTask?.map((e) => {
-                      if (e?.children) {
-                        e.children = e.children.filter((el) => el.Id !== null);
-                      }
-                      return e;
-                    });
-                  }
-
-                  curMyTask?.filter((e) => e.Id === null)?.length === 0
-                    ? _handleData("addParent", { ..._sampleParent })
-                    : showMessage(
-                        "Can't add multiple tasks at a time",
-                        toastTopRight,
-                        "warn"
-                      );
-                }}
-              />
-            ) : (
-              ""
-            )}
-          </div>
+          )}
           <TreeTable
             removableSort
             selectionMode="checkbox"
@@ -2206,7 +2312,13 @@ const MyTaskDataCategory = (props): JSX.Element => {
               style={TaskCellStyle}
               body={(obj: any) => _addTextField(obj, "TaskName")}
             />
-            <Column style={cellStyle} body={(obj: any) => _action(obj)} />
+            <Column
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
+              body={(obj: any) => _action(obj)}
+            />
             {/* <Column
           field="ClientName"
           header="ClientName"
@@ -2231,7 +2343,10 @@ const MyTaskDataCategory = (props): JSX.Element => {
               field="DueDate"
               header="Due date"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 150,
+              }}
               body={(obj: any) => _addTextField(obj, "DueDate")}
             />
 

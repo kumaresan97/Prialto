@@ -1,273 +1,273 @@
 // Custom Rich Text Editor is start
 
-// import React, { useState, useRef, useEffect } from "react";
-// import styles from "./QuillEditor.module.scss";
-// import "./QuillEditor.module.scss";
-// import { Persona, PersonaSize } from "office-ui-fabric-react";
-// import {
-//   EraserFilled,
-//   TextBoldRegular,
-//   TextItalicRegular,
-//   TextUnderline24Regular,
-// } from "@fluentui/react-icons";
-// const QuillEditor = ({
-//   onChange,
-//   placeHolder,
-//   defaultValue,
-//   suggestionList,
-//   getMentionedEmails,
-// }) => {
-//   const [suggestions, setSuggestions] = useState([]);
-//   const inputRef = useRef(null);
-//   const emailPillCounter = useRef(0);
-//   const [mentionedUsers, setMentionedUsers] = useState([]);
-//   const [content, setContent] = useState(defaultValue || "");
+import React, { useState, useRef, useEffect } from "react";
+import styles from "./QuillEditor.module.scss";
+import "./QuillEditor.module.scss";
+import { Persona, PersonaSize } from "office-ui-fabric-react";
+import {
+  EraserFilled,
+  TextBoldRegular,
+  TextItalicRegular,
+  TextUnderline24Regular,
+} from "@fluentui/react-icons";
+const QuillEditor = ({
+  onChange,
+  placeHolder,
+  defaultValue,
+  suggestionList,
+  getMentionedEmails,
+}) => {
+  const [suggestions, setSuggestions] = useState([]);
+  const inputRef = useRef(null);
+  const emailPillCounter = useRef(0);
+  const [mentionedUsers, setMentionedUsers] = useState([]);
+  const [content, setContent] = useState(defaultValue || "");
 
-//   useEffect(() => {
-//     if (suggestions.length > 0) {
-//       const handleEscapePress = (event) => {
-//         if (event.key === "Escape") {
-//           setSuggestions([]);
-//         }
-//       };
+  useEffect(() => {
+    if (suggestions.length > 0) {
+      const handleEscapePress = (event) => {
+        if (event.key === "Escape") {
+          setSuggestions([]);
+        }
+      };
 
-//       document.addEventListener("keydown", handleEscapePress);
+      document.addEventListener("keydown", handleEscapePress);
 
-//       return () => {
-//         document.removeEventListener("keydown", handleEscapePress);
-//       };
-//     }
-//   }, [suggestions]);
+      return () => {
+        document.removeEventListener("keydown", handleEscapePress);
+      };
+    }
+  }, [suggestions]);
 
-//   useEffect(() => {
-//     // Set the initial content
-//     if (defaultValue) {
-//       inputRef.current.innerHTML = defaultValue;
-//     } else if (defaultValue?.trim() === "") {
-//       setContent("");
-//     }
-//   }, [defaultValue]);
+  useEffect(() => {
+    // Set the initial content
+    if (defaultValue) {
+      inputRef.current.innerHTML = defaultValue;
+    } else if (defaultValue?.trim() === "") {
+      setContent("");
+    }
+  }, [defaultValue]);
 
-//   const generateEmailPillClass = () => {
-//     const uniqueClass = `emailPill_${emailPillCounter.current}`;
-//     emailPillCounter.current += 1;
-//     // Remove spaces from the generated class
-//     return uniqueClass.replace(/\s+/g, "");
-//   };
+  const generateEmailPillClass = () => {
+    const uniqueClass = `emailPill_${emailPillCounter.current}`;
+    emailPillCounter.current += 1;
+    // Remove spaces from the generated class
+    return uniqueClass.replace(/\s+/g, "");
+  };
 
-//   //stable
-//   const handleInputChange = (e) => {
-//     setContent(inputRef.current.innerHTML);
-//     const fullHtmlContent = inputRef.current.innerHTML;
+  //stable
+  const handleInputChange = (e) => {
+    setContent(inputRef.current.innerHTML);
+    const fullHtmlContent = inputRef.current.innerHTML;
 
-//     const textContent = inputRef.current.innerText;
+    const textContent = inputRef.current.innerText;
 
-//     // Extract the last word
-//     const lastWordMatch = fullHtmlContent.match(/@[\w\s]*$/);
-//     const lastWord = lastWordMatch ? lastWordMatch[0] : "";
+    // Extract the last word
+    const lastWordMatch = fullHtmlContent.match(/@[\w\s]*$/);
+    const lastWord = lastWordMatch ? lastWordMatch[0] : "";
 
-//     // Check if "@" is present
-//     if (lastWord.includes("@")) {
-//       const filteredSuggestions = suggestionList.filter((mention) =>
-//         mention.name.toLowerCase().includes(lastWord.slice(1).toLowerCase())
-//       );
-//       setSuggestions(filteredSuggestions);
-//     } else {
-//       setSuggestions([]);
-//     }
+    // Check if "@" is present
+    if (lastWord.includes("@")) {
+      const filteredSuggestions = suggestionList.filter((mention) =>
+        mention.name.toLowerCase().includes(lastWord.slice(1).toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
 
-//     // Check for removed mentions
-//     const removedMentions = mentionedUsers.filter((mention) => {
-//       const mentionPattern = `@${mention.name}`;
-//       return !fullHtmlContent.includes(mentionPattern);
-//     });
+    // Check for removed mentions
+    const removedMentions = mentionedUsers.filter((mention) => {
+      const mentionPattern = `@${mention.name}`;
+      return !fullHtmlContent.includes(mentionPattern);
+    });
 
-//     // Remove the mentions from the array
-//     setMentionedUsers((prevUsers) => {
-//       const updatedMentions = prevUsers.filter(
-//         (mention) =>
-//           !removedMentions.some((removed) => removed.email === mention.email)
-//       );
+    // Remove the mentions from the array
+    setMentionedUsers((prevUsers) => {
+      const updatedMentions = prevUsers.filter(
+        (mention) =>
+          !removedMentions.some((removed) => removed.email === mention.email)
+      );
 
-//       getMentionedEmails && getMentionedEmails(updatedMentions);
-//       return updatedMentions;
-//     });
+      getMentionedEmails && getMentionedEmails(updatedMentions);
+      return updatedMentions;
+    });
 
-//     // Remove the mentions from the array
-//     onChange && onChange(fullHtmlContent);
-//   };
+    // Remove the mentions from the array
+    onChange && onChange(fullHtmlContent);
+  };
 
-//   //stable
-//   const handleSuggestionClick = (mention) => {
-//     const selection = saveSelection();
-//     const text = inputRef.current.innerHTML;
-//     const innerText = inputRef.current.innerText;
+  //stable
+  const handleSuggestionClick = (mention) => {
+    const selection = saveSelection();
+    const text = inputRef.current.innerHTML;
+    const innerText = inputRef.current.innerText;
 
-//     const lastWordRegex = /(@[\w\s]*)(&nbsp;)?$/;
-//     const matches = innerText.match(lastWordRegex);
+    const lastWordRegex = /(@[\w\s]*)(&nbsp;)?$/;
+    const matches = innerText.match(lastWordRegex);
 
-//     const emailPillClass = generateEmailPillClass();
-//     const newEmailPill = document.createElement("span");
-//     newEmailPill.classList.add(styles.emailPill, emailPillClass);
-//     newEmailPill.setAttribute("data-emailPill", "true");
-//     newEmailPill.contentEditable = "false";
-//     newEmailPill.innerText = `@${mention.name}`;
+    const emailPillClass = generateEmailPillClass();
+    const newEmailPill = document.createElement("span");
+    newEmailPill.classList.add(styles.emailPill, emailPillClass);
+    newEmailPill.setAttribute("data-emailPill", "true");
+    newEmailPill.contentEditable = "false";
+    newEmailPill.innerText = `@${mention.name}`;
 
-//     if (matches && matches[1]) {
-//       // Replace the last mention in the text
-//       const lastMention = matches[1];
-//       const newText = text.replace(lastWordRegex, newEmailPill.outerHTML);
-//       inputRef.current.innerHTML = newText + "&nbsp;";
-//     } else {
-//       // Insert the new mention at the current caret position
-//       const range = window.getSelection().getRangeAt(0);
-//       range.deleteContents();
-//       range.insertNode(newEmailPill);
-//     }
+    if (matches && matches[1]) {
+      // Replace the last mention in the text
+      const lastMention = matches[1];
+      const newText = text.replace(lastWordRegex, newEmailPill.outerHTML);
+      inputRef.current.innerHTML = newText + "&nbsp;";
+    } else {
+      // Insert the new mention at the current caret position
+      const range = window.getSelection().getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(newEmailPill);
+    }
 
-//     setSuggestions([]);
-//     restoreSelection(selection);
+    setSuggestions([]);
+    restoreSelection(selection);
 
-//     // Update your mentioned users state
-//     const formattedEmail = mention.email;
-//     setMentionedUsers((prevUsers) => {
-//       // Check if the mention is already in the list
-//       if (!prevUsers.some((user) => user.email === formattedEmail)) {
-//         const mentionedEmailsTemp = [...prevUsers, mention];
-//         getMentionedEmails && getMentionedEmails(mentionedEmailsTemp);
-//         return mentionedEmailsTemp;
-//       }
-//       return prevUsers;
-//     });
+    // Update your mentioned users state
+    const formattedEmail = mention.email;
+    setMentionedUsers((prevUsers) => {
+      // Check if the mention is already in the list
+      if (!prevUsers.some((user) => user.email === formattedEmail)) {
+        const mentionedEmailsTemp = [...prevUsers, mention];
+        getMentionedEmails && getMentionedEmails(mentionedEmailsTemp);
+        return mentionedEmailsTemp;
+      }
+      return prevUsers;
+    });
 
-//     setFocusToEnd();
-//   };
+    setFocusToEnd();
+  };
 
-//   const handleKeyDown = (e) => {
-//     if (e.key === "Enter" && suggestions.length > 0) {
-//       e.preventDefault();
-//       handleSuggestionClick(suggestions[0]);
-//     } else if (e.key === "Backspace") {
-//       const selection = window.getSelection();
-//       const range = selection.getRangeAt(0);
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && suggestions.length > 0) {
+      e.preventDefault();
+      handleSuggestionClick(suggestions[0]);
+    } else if (e.key === "Backspace") {
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
 
-//       // Use type assertion to inform TypeScript that currentNode is an HTML element
-//       const currentNode = range.startContainer.parentNode as HTMLElement;
+      // Use type assertion to inform TypeScript that currentNode is an HTML element
+      const currentNode = range.startContainer.parentNode as HTMLElement;
 
-//       // Check if the caret is right after an email pill
-//       if (
-//         currentNode &&
-//         currentNode.classList &&
-//         currentNode.classList.contains(styles.emailPill)
-//       ) {
-//         // Remove the entire email pill span
-//         currentNode.remove();
-//         e.preventDefault();
-//       }
-//     }
-//   };
+      // Check if the caret is right after an email pill
+      if (
+        currentNode &&
+        currentNode.classList &&
+        currentNode.classList.contains(styles.emailPill)
+      ) {
+        // Remove the entire email pill span
+        currentNode.remove();
+        e.preventDefault();
+      }
+    }
+  };
 
-//   const handleFormat = (format: any) => {
-//     document.execCommand(format, false, null);
-//     inputRef.current.focus();
-//   };
+  const handleFormat = (format: any) => {
+    document.execCommand(format, false, null);
+    inputRef.current.focus();
+  };
 
-//   const saveSelection = () => {
-//     const selection = window.getSelection();
-//     if (selection.rangeCount > 0) {
-//       return selection.getRangeAt(0).cloneRange();
-//     }
-//     return null;
-//   };
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      return selection.getRangeAt(0).cloneRange();
+    }
+    return null;
+  };
 
-//   const restoreSelection = (range) => {
-//     if (range) {
-//       const selection = window.getSelection();
-//       selection.removeAllRanges();
-//       selection.addRange(range);
-//     }
-//   };
+  const restoreSelection = (range) => {
+    if (range) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  };
 
-//   const setFocusToEnd = () => {
-//     const range = document.createRange();
-//     const selection = window.getSelection();
-//     range.selectNodeContents(inputRef.current);
-//     range.collapse(false);
-//     selection.removeAllRanges();
-//     selection.addRange(range);
-//     inputRef.current.focus();
-//   };
+  const setFocusToEnd = () => {
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(inputRef.current);
+    range.collapse(false);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    inputRef.current.focus();
+  };
 
-//   return (
-//     <div className={styles.quillWrapper}>
-//       <div className={styles.formatButtons}>
-//         <button onClick={() => handleFormat("bold")}>
-//           <TextBoldRegular className={styles.button} />
-//         </button>
-//         <button onClick={() => handleFormat("italic")}>
-//           <TextItalicRegular className={styles.button} />
-//         </button>
-//         <button onClick={() => handleFormat("underline")}>
-//           <TextUnderline24Regular className={styles.button} />
-//         </button>
-//         <button onClick={() => handleFormat("removeFormat")}>
-//           <EraserFilled className={styles.button} />
-//         </button>
-//       </div>
-//       <div className={styles.mentionEditorWrapper}>
-//         <div
-//           className={styles.mentionEditor}
-//           ref={inputRef}
-//           contentEditable
-//           onInput={handleInputChange}
-//           onBlur={handleInputChange}
-//           onKeyDown={handleKeyDown}
-//           dangerouslySetInnerHTML={{ __html: defaultValue }}
-//         />
-//         {content.trim() === "" ? (
-//           <div
-//             onClick={() => {
-//               inputRef.current.focus();
-//             }}
-//             className={styles.placeHolder}
-//           >
-//             {placeHolder}
-//           </div>
-//         ) : (
-//           ""
-//         )}
-//         {suggestions?.length > 0 && (
-//           <div className={styles.suggestionDropdown}>
-//             {suggestions?.map((mention) => (
-//               <div
-//                 key={mention.id}
-//                 className={styles.suggestionItem}
-//                 onClick={(e) => {
-//                   e.preventDefault();
-//                   handleSuggestionClick(mention);
-//                 }}
-//               >
-//                 <Persona
-//                   title={mention?.id}
-//                   imageUrl={
-//                     "/_layouts/15/userphoto.aspx?username=" + mention?.email
-//                   }
-//                   size={PersonaSize.size32}
-//                 />{" "}
-//                 <div className={styles.userDetails}>
-//                   <p>{mention.name}</p>
-//                   <span>{mention.email}</span>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
+  return (
+    <div className={styles.quillWrapper}>
+      <div className={styles.formatButtons}>
+        <button onClick={() => handleFormat("bold")}>
+          <TextBoldRegular className={styles.button} />
+        </button>
+        <button onClick={() => handleFormat("italic")}>
+          <TextItalicRegular className={styles.button} />
+        </button>
+        <button onClick={() => handleFormat("underline")}>
+          <TextUnderline24Regular className={styles.button} />
+        </button>
+        <button onClick={() => handleFormat("removeFormat")}>
+          <EraserFilled className={styles.button} />
+        </button>
+      </div>
+      <div className={styles.mentionEditorWrapper}>
+        <div
+          className={styles.mentionEditor}
+          ref={inputRef}
+          contentEditable
+          onInput={handleInputChange}
+          onBlur={handleInputChange}
+          onKeyDown={handleKeyDown}
+          dangerouslySetInnerHTML={{ __html: defaultValue }}
+        />
+        {content.trim() === "" ? (
+          <div
+            onClick={() => {
+              inputRef.current.focus();
+            }}
+            className={styles.placeHolder}
+          >
+            {placeHolder}
+          </div>
+        ) : (
+          ""
+        )}
+        {suggestions?.length > 0 && (
+          <div className={styles.suggestionDropdown}>
+            {suggestions?.map((mention) => (
+              <div
+                key={mention.id}
+                className={styles.suggestionItem}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSuggestionClick(mention);
+                }}
+              >
+                <Persona
+                  title={mention?.id}
+                  imageUrl={
+                    "/_layouts/15/userphoto.aspx?username=" + mention?.email
+                  }
+                  size={PersonaSize.size32}
+                />{" "}
+                <div className={styles.userDetails}>
+                  <p>{mention.name}</p>
+                  <span>{mention.email}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
-// export default QuillEditor;
+export default QuillEditor;
 
 // using libs
 // import React, { useState, useRef, useEffect } from "react";
@@ -419,133 +419,133 @@
 
 //quill mention
 // under development
-import React, { useState, useRef, useEffect } from "react";
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-import "quill-mention";
-import "./QuillEditor.module.scss";
+// import React, { useState, useRef, useEffect } from "react";
+// import Quill from "quill";
+// import "quill/dist/quill.snow.css";
+// import "quill-mention";
+// import "./QuillEditor.module.scss";
 
-const QuillEditor = ({
-  onChange,
-  placeHolder,
-  defaultValue,
-  suggestionList,
-  getMentionedEmails,
-}) => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [mentionedUsers, setMentionedUsers] = useState([]);
-  const [content, setContent] = useState(defaultValue || "");
-  const quillRef = useRef(null);
-  let suggestionItems = suggestionList?.map((e) => {
-    return {
-      id: e?.id,
-      value: e?.name,
-      email: e?.email,
-    };
-  });
-  async function suggestPeople(searchTerm) {
-    // const allPeople = [
-    //   {
-    //     id: 1,
-    //     value: "Fredrik Sundqvist",
-    //     email: "fre@fre.com",
-    //   },
-    //   {
-    //     id: 2,
-    //     value: "Patrik Sjölin",
-    //     email: "abc@erf.com",
-    //   },
-    // ];
-    return suggestionItems.filter((person) =>
-      person.value?.toLowerCase().includes(searchTerm?.toLowerCase())
-    );
-  }
+// const QuillEditor = ({
+//   onChange,
+//   placeHolder,
+//   defaultValue,
+//   suggestionList,
+//   getMentionedEmails,
+// }) => {
+//   const [suggestions, setSuggestions] = useState([]);
+//   const [mentionedUsers, setMentionedUsers] = useState([]);
+//   const [content, setContent] = useState(defaultValue || "");
+//   const quillRef = useRef(null);
+//   let suggestionItems = suggestionList?.map((e) => {
+//     return {
+//       id: e?.id,
+//       value: e?.name,
+//       email: e?.email,
+//     };
+//   });
+//   async function suggestPeople(searchTerm) {
+//     // const allPeople = [
+//     //   {
+//     //     id: 1,
+//     //     value: "Fredrik Sundqvist",
+//     //     email: "fre@fre.com",
+//     //   },
+//     //   {
+//     //     id: 2,
+//     //     value: "Patrik Sjölin",
+//     //     email: "abc@erf.com",
+//     //   },
+//     // ];
+//     return suggestionItems.filter((person) =>
+//       person.value?.toLowerCase().includes(searchTerm?.toLowerCase())
+//     );
+//   }
 
-  console.log("suugg", suggestionItems);
+//   console.log("suugg", suggestionItems);
 
-  console.log("content", content);
-  function getMentionValues(className: string): any[] {
-    const mentionElements = document.getElementsByClassName(className);
-    const mentionValues = Array.from(mentionElements).map((e) =>
-      e?.getAttribute("data-value")
-    );
-    return mentionValues;
-  }
+//   console.log("content", content);
+//   function getMentionValues(className: string): any[] {
+//     const mentionElements = document.getElementsByClassName(className);
+//     const mentionValues = Array.from(mentionElements).map((e) =>
+//       e?.getAttribute("data-value")
+//     );
+//     return mentionValues;
+//   }
 
-  function filterPeopleByMentions(
-    allPeople: any[],
-    mentionValues: any[]
-  ): string[] {
-    const filteredPeople = allPeople?.filter((el) =>
-      mentionValues?.includes(el?.value)
-    );
-    const uniqueEmails = Array.from(
-      new Set(filteredPeople?.map((e) => e?.email))
-    );
-    return uniqueEmails;
-  }
+//   function filterPeopleByMentions(
+//     allPeople: any[],
+//     mentionValues: any[]
+//   ): string[] {
+//     const filteredPeople = allPeople?.filter((el) =>
+//       mentionValues?.includes(el?.value)
+//     );
+//     const uniqueEmails = Array.from(
+//       new Set(filteredPeople?.map((e) => e?.email))
+//     );
+//     return uniqueEmails;
+//   }
 
-  // Example usage:
+//   // Example usage:
 
-  const mentionValues = getMentionValues("mention");
-  console.log("mentionValues", mentionValues);
+//   const mentionValues = getMentionValues("mention");
+//   console.log("mentionValues", mentionValues);
 
-  const uniqueEmails = filterPeopleByMentions(suggestionItems, mentionValues);
-  console.log("uniqueEmails", uniqueEmails);
+//   const uniqueEmails = filterPeopleByMentions(suggestionItems, mentionValues);
+//   console.log("uniqueEmails", uniqueEmails);
 
-  useEffect(() => {
-    onChange(content);
-  }, [content]);
+//   useEffect(() => {
+//     onChange(content);
+//   }, [content]);
 
-  useEffect(() => {
-    // Initialize Quill with the mention module
-    const quill = new Quill("#quill-editor", {
-      theme: "snow", // or use another theme
-      modules: {
-        toolbar: [
-          ["bold", "italic", "underline"],
-          // Add other toolbar options as needed
-        ],
-        mention: {
-          allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
-          mentionDenotationChars: ["@"],
-          source: async function (searchTerm, renderList, mentionsChar) {
-            const matchedPeople = await suggestPeople(searchTerm);
-            renderList(matchedPeople, searchTerm);
-            console.log("matchedPeople", matchedPeople);
-          },
-        },
-      },
-    });
+//   useEffect(() => {
+//     // Initialize Quill with the mention module
+//     const quill = new Quill("#quill-editor", {
+//       theme: "snow", // or use another theme
+//       modules: {
+//         toolbar: [
+//           ["bold", "italic", "underline"],
+//           // Add other toolbar options as needed
+//         ],
+//         mention: {
+//           allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
+//           mentionDenotationChars: ["@"],
+//           source: async function (searchTerm, renderList, mentionsChar) {
+//             const matchedPeople = await suggestPeople(searchTerm);
+//             renderList(matchedPeople, searchTerm);
+//             console.log("matchedPeople", matchedPeople);
+//           },
+//         },
+//       },
+//     });
 
-    quill.on("text-change", (delta, oldDelta, source) => {
-      // Handle text changes here
-      const quillContent = quill.root.innerHTML;
-      onChange && onChange(quillContent);
-      setContent(quillContent);
-      console.log("content1", content);
-    });
+//     quill.on("text-change", (delta, oldDelta, source) => {
+//       // Handle text changes here
+//       const quillContent = quill.root.innerHTML;
+//       onChange && onChange(quillContent);
+//       setContent(quillContent);
+//       console.log("content1", content);
+//     });
 
-    quillRef.current = quill;
-    content && console.log(document.getElementsByClassName("mention"));
+//     quillRef.current = quill;
+//     content && console.log(document.getElementsByClassName("mention"));
 
-    // Cleanup function to destroy the Quill instance when the component unmounts
-    return () => {
-      const quillInstance = quillRef.current;
-      if (quillInstance) {
-        quillInstance.root.innerHTML = "";
-      }
-    };
-  }, []);
+//     // Cleanup function to destroy the Quill instance when the component unmounts
+//     return () => {
+//       const quillInstance = quillRef.current;
+//       if (quillInstance) {
+//         quillInstance.root.innerHTML = "";
+//       }
+//     };
+//   }, []);
 
-  return (
-    <div className="quill-editor-wrapper">
-      <div id="quill-editor" className="quill-editor" />
-    </div>
-  );
-};
+//   return (
+//     <div className="quill-editor-wrapper">
+//       <div id="quill-editor" className="quill-editor" />
+//     </div>
+//   );
+// };
 
-export default QuillEditor;
+// export default QuillEditor;
 
 //quil mention ends
 

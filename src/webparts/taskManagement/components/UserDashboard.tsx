@@ -706,7 +706,7 @@ export default function UserDashboard(props) {
                 alignItems: "center",
               }}
             >
-              <Label>Notify</Label>{" "}
+              <Label>Notify</Label>
               <div style={{ width: "14%" }}>
                 <InputNumber
                   value={days}

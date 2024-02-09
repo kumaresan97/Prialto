@@ -129,7 +129,6 @@ const SPDetailsListGroupItems = async (params: IDetailsListGroup) => {
       count: recordLength,
     });
   });
-  // console.log([...varGroup]);
   return varGroup;
 };
 

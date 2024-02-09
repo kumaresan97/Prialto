@@ -11,6 +11,7 @@ import { PeoplePicker } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 import { Avatar } from "primereact/avatar";
 import Loader from "./Loader";
 import exportToExcel from "../../../Global/ExportExcel";
+import { Icon } from "office-ui-fabric-react";
 let MyClients = [];
 let MainTask = [];
 let MainArray = [];
@@ -475,11 +476,29 @@ export default function UserClients(props) {
                 </span>
               </div>
               <Button className={styles.btnColor} label="Automate" />
-              <Button
+              {/* <Button
                 className={styles.btnColor}
                 label="Export"
                 onClick={() => exportData()}
                 icon="pi pi-file-excel"
+              /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => exportData()}
               />
             </div>
           </div>

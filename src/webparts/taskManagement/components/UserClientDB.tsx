@@ -26,6 +26,8 @@ import { Divider } from "primereact/divider";
 import ChatBox from "./ChatMessageBox";
 import { Badge } from "primereact/badge";
 import { PreviewLink16Filled } from "@fluentui/react-icons";
+const categoryImg: any = require("../assets/images/important.png");
+
 let x = [];
 const cities = [
   { name: "New York", code: "NY" },
@@ -66,10 +68,12 @@ const UserClientDB = (props): JSX.Element => {
   // const actionCellStyle = { backgroundColor: "#EAEEEE", width: 150 };
   const iconbtnStyle = {
     backgroundColor: "transparent",
-    color: "#007C81",
+    // color: "#007C81",
+    color: "#555",
     border: "none",
     height: 24,
     width: 24,
+    marginLeft: "4px",
     // borderRadius: "50%",
   };
   const tickIconStyle = {
@@ -268,17 +272,19 @@ const UserClientDB = (props): JSX.Element => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      color = "#bf4927";
-      bgColor = "#ffded5";
+      color = "#dc3100";
+      bgColor = "#ffe5dd";
     } else if (PLevel == "High") {
-      bgColor = "#ffd5b8";
-      color = "#f46906";
+      // bgColor = "#ffd5b8";
+      // color = "#f46906";
+      bgColor = "#ffeadb";
+      color = "#bc0000";
     } else if (PLevel == "Normal") {
-      bgColor = "#bbfcff";
-      color = "#4b6164";
+      bgColor = "#d5fdff";
+      color = "#00525d";
     } else if (PLevel == "In Progress") {
-      bgColor = "#defffd";
-      color = "#666666";
+      bgColor = "#d9fffd";
+      color = "#005b5d";
     } else if (PLevel == "Pending") {
       bgColor = "#f5ffbd";
       color = "#5c5c5c";
@@ -286,47 +292,47 @@ const UserClientDB = (props): JSX.Element => {
       bgColor = "#c7ffc7";
       color = "#1a8100";
     } else if (PLevel == "Done") {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     } else if (PLevel == "One time") {
-      bgColor = "#b7bfeb";
+      bgColor = "#d6dcff";
       color = "#182154";
     } else if (PLevel == "Daily") {
-      bgColor = "#ebb7b7";
-      color = "#f92e2e";
+      bgColor = "#ffdcdc";
+      color = "#680000";
     } else if (PLevel == "Every Monday") {
-      bgColor = "#ebcdb7";
-      color = "#b55d1d";
+      bgColor = "#ffe7d5";
+      color = "#6f3000";
     } else if (PLevel == "Every Tuesday") {
-      bgColor = "#e1f7c0";
-      color = "#4d7216";
+      bgColor = "#ecffce";
+      color = "#355800";
     } else if (PLevel == "Every Wednesday") {
-      bgColor = "#e6f7c0";
-      color = "#626262";
+      bgColor = "#f2ffd6";
+      color = "#1b4d00";
     } else if (PLevel == "Every Thursday") {
-      bgColor = "#f7c0eb";
-      color = "#680d54";
+      bgColor = "#ffcef4";
+      color = "#6c0054";
     } else if (PLevel == "Every Friday") {
       bgColor = "#ffeaea";
       color = "#a55b5b";
     } else if (PLevel == "Every Saturday") {
-      bgColor = "#f0eaff";
-      color = "#6539d3";
+      bgColor = "#e1d5ff";
+      color = "#20006f";
     } else if (PLevel == "Every Sunday") {
-      bgColor = "#ffeaf4";
-      color = "#f30074";
+      bgColor = "#ffd4e8";
+      color = "#6d0034";
     } else if (PLevel == "Weekly") {
-      bgColor = "#fcbdbd";
-      color = "#812727";
+      bgColor = "#ffd0d0";
+      color = "#700000";
     } else if (PLevel == "Monthly") {
-      bgColor = "#b7e1eb";
-      color = "#225662";
+      bgColor = "#d9f8ff";
+      color = "#003c4a";
     } else if (PLevel == "On-hold") {
       bgColor = "#f7f6da";
       color = "#4a4a3b";
     } else {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     }
     return (
       <div
@@ -378,7 +384,7 @@ const UserClientDB = (props): JSX.Element => {
           disabled={obj.isClick}
           type="button"
           icon="pi pi-pencil"
-          style={pencilIconBtnStyle}
+          style={iconbtnStyle}
           onClick={(_) => {
             _handleData("edit", obj);
           }}
@@ -400,7 +406,8 @@ const UserClientDB = (props): JSX.Element => {
         <i
           className="pi pi-comment p-overlay-badge"
           style={{
-            color: "#007C81",
+            // color: "#007C81",
+            color: "#555",
             border: "none",
             backgroundColor: "transparent",
             marginLeft: 4,
@@ -424,6 +431,7 @@ const UserClientDB = (props): JSX.Element => {
           {obj?.data?.HasComments ? <Badge severity="danger"></Badge> : ""}
         </i>
         {/* </Button> */}
+
         <Button
           style={delIconBtnStyle}
           disabled={obj.isClick}
@@ -1507,6 +1515,7 @@ const UserClientDB = (props): JSX.Element => {
                 marginTop: "-4px",
                 cursor: "text",
                 maxWidth: "150px",
+                fontSize: "15px",
               }}
               tooltip={data[fieldType]}
               tooltipOptions={{
@@ -2125,17 +2134,48 @@ const UserClientDB = (props): JSX.Element => {
               // margin: "10px 0px",
             }}
           >
-            <Label
-              className={styles.leftFilterSection}
-              style={{ color: "#009b9f" }}
-            >
+            <Label className={styles.leftFilterSection}>
+              <img src={categoryImg} />
               {ClientFullName}
               {/* {props.clientName ? props.clientName : ""} */}
             </Label>
-            <Button
+            {/* <Button
               label="New task"
               visible={props.clientName ? true : false}
               className={styles.btnColor}
+              onClick={() => {
+                let ifHasDublicateChild = curMyTask?.filter((e) => {
+                  return e.children.some((el) => el.Id === null);
+                });
+
+                if (ifHasDublicateChild?.length !== 0) {
+                  curMyTask?.map((e) => {
+                    if (e?.children) {
+                      e.children = e.children.filter((el) => el.Id !== null);
+                    }
+                    return e;
+                  });
+                }
+
+                curMyTask?.filter((e) => e.Id === null)?.length === 0
+                  ? _handleData("addParent", { ..._sampleParent })
+                  : showMessage(
+                      "Can't add multiple tasks at a time",
+                      toastTopRight,
+                      "warn"
+                    );
+              }}
+            /> */}
+            <Button
+              icon="pi pi-plus"
+              visible={props.clientName ? true : false}
+              className={styles.btnColor}
+              style={{
+                padding: " 4px 18px",
+                height: " 30px",
+                fontSize: " 14px",
+                fontWeight: " 500",
+              }}
               onClick={() => {
                 let ifHasDublicateChild = curMyTask?.filter((e) => {
                   return e.children.some((el) => el.Id === null);
@@ -2192,12 +2232,21 @@ const UserClientDB = (props): JSX.Element => {
               style={TaskCellStyle}
               body={(obj: any) => _addTextField(obj, "TaskName")}
             />
-            <Column style={cellStyle} body={(obj: any) => _action(obj)} />
+            <Column
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
+              body={(obj: any) => _action(obj)}
+            />
             <Column
               field="ClientName"
               header="Member name"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
             />
             {/*///Changes for backup users multiple*/}
             {/* <Column
@@ -2218,7 +2267,10 @@ const UserClientDB = (props): JSX.Element => {
               field="DueDate"
               header="Due date"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 150,
+              }}
               body={(obj: any) => _addTextField(obj, "DueDate")}
             />
 
@@ -2226,21 +2278,30 @@ const UserClientDB = (props): JSX.Element => {
               field="PriorityLevel"
               header=" Priority level"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
               body={(obj: any) => _addTextField(obj, "PriorityLevel")}
             />
             <Column
               field="Recurrence"
               header="Recurrence"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
               body={(obj: any) => _addTextField(obj, "Recurrence")}
             />
             <Column
               field="Status"
               header="Status"
               sortable
-              style={cellStyle}
+              style={{
+                backgroundColor: "#fff",
+                width: 140,
+              }}
               body={(obj: any) => _addTextField(obj, "Status")}
             />
             {/* <Column

@@ -16,13 +16,14 @@ import exportToExcel from "../../../Global/ExportExcel";
 let mainarray = [];
 let subArray = [];
 import styles from "./MainComponent.module.scss";
+import { Icon } from "office-ui-fabric-react";
 
 const CompleteDashboard = (props) => {
   // style variables
   const tickIconStyle = {
     backgroundColor: "transparent",
     border: "transparent",
-    color: "#007C81",
+    // color: "#007C81",
     height: 30,
     width: "100%",
     fontSize: "30px",
@@ -211,7 +212,6 @@ const CompleteDashboard = (props) => {
         });
 
         Binddata();
-        console.log(subArray, "subarray");
       })
       // .catch((err) => {
       //   setLoader(false);
@@ -289,17 +289,19 @@ const CompleteDashboard = (props) => {
     let bgColor: string = "";
     let color: string = "";
     if (PLevel == "Urgent") {
-      color = "#bf4927";
-      bgColor = "#ffded5";
+      color = "#dc3100";
+      bgColor = "#ffe5dd";
     } else if (PLevel == "High") {
-      bgColor = "#ffd5b8";
-      color = "#f46906";
+      // bgColor = "#ffd5b8";
+      // color = "#f46906";
+      bgColor = "#ffeadb";
+      color = "#bc0000";
     } else if (PLevel == "Normal") {
-      bgColor = "#bbfcff";
-      color = "#4b6164";
+      bgColor = "#d5fdff";
+      color = "#00525d";
     } else if (PLevel == "In Progress") {
-      bgColor = "#defffd";
-      color = "#666666";
+      bgColor = "#d9fffd";
+      color = "#005b5d";
     } else if (PLevel == "Pending") {
       bgColor = "#f5ffbd";
       color = "#5c5c5c";
@@ -307,22 +309,18 @@ const CompleteDashboard = (props) => {
       bgColor = "#c7ffc7";
       color = "#1a8100";
     } else if (PLevel == "Done") {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     } else {
-      bgColor = "#dfffbb";
-      color = "#6e6e6e";
+      bgColor = "#daffd6";
+      color = "#175200";
     }
     return (
       <div
-        // className={styles.pLevelStyle}
+        className={styles.pLevelStyle}
         style={{
           backgroundColor: bgColor,
           color: color,
-          padding: "6px 0px",
-          textAlign: "center",
-          borderRadius: "12px",
-          width: "96px",
         }}
       >
         {PLevel}
@@ -381,17 +379,9 @@ const CompleteDashboard = (props) => {
         <Loader></Loader>
       ) : (
         <div>
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
+          <div className={styles.Header}>
             {" "}
-            <div>
+            <div className={styles.Heading}>
               <Button
                 className={styles.righticon}
                 style={tickIconStyle}
@@ -406,6 +396,7 @@ const CompleteDashboard = (props) => {
                   props.HandleBackBtn();
                 }}
               />
+              <span>Completed Tasks</span>
             </div>
             <div style={{ display: "flex", gap: 15 }}>
               <span className="p-input-icon-left">
@@ -417,17 +408,29 @@ const CompleteDashboard = (props) => {
                 />
               </span>
 
-              <Button
-                style={{
-                  backgroundColor: "#f46906",
-                  border: "none",
-                  padding: "8px 18px",
-                  height: "38px",
-                }}
-                // className={styles.btnColor}
+              {/* <Button
+                className={styles.btnColor}
                 label="Export"
                 onClick={() => Exportexcel()}
                 icon="pi pi-file-excel"
+              /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => Exportexcel()}
               />
             </div>
           </div>

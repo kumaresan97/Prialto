@@ -26,7 +26,7 @@ const Member = (props) => {
     <div>
       <Button
         className={styles.righticon}
-        style={tickIconStyle}
+        // style={tickIconStyle}
         label={
           props.selectedTeamMember?.length
             ? props.selectedTeamMember[0]?.TeamName
@@ -38,19 +38,12 @@ const Member = (props) => {
           props.memberFunction(null, "CardView");
         }}
       />
-      <div>
+      <div className={styles.TeamMembers}>
         {props.selectedTeamMember?.length &&
           props.selectedTeamMember[0]?.members.map((val) => {
             return (
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  margin: "10px 0px",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #d9d9d9",
-                }}
+                className={styles.memberCard}
                 onClick={() => {
                   ShareMember(val.Email);
                 }}
@@ -67,7 +60,7 @@ const Member = (props) => {
                 </div>
                 <Button
                   onClick={() => ShareMember(val.Email)}
-                  icon="pi pi-arrow-right"
+                  icon="pi pi-angle-right"
                   rounded
                   className={styles.lefticon}
                 />

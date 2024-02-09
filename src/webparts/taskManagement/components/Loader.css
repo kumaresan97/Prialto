@@ -57,11 +57,11 @@
 
 .loading span {
   width: 4px;
-  height: 50px;
+  height: 30px;
+  border-radius: 4px;
   background: var(--first-color);
   animation: scale var(--speed-of-animation) ease-in-out infinite;
 }
-
 .loading span:nth-child(2) {
   background: var(--second-color);
   animation-delay: -0.8s;

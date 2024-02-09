@@ -1,5 +1,4 @@
 // Custom Rich Text Editor is start
-
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./QuillEditor.module.scss";
 import "./QuillEditor.module.scss";
@@ -418,7 +417,7 @@ export default QuillEditor;
 // export default QuillEditor;
 
 //quill mention
-
+// under development
 // import React, { useState, useRef, useEffect } from "react";
 // import Quill from "quill";
 // import "quill/dist/quill.snow.css";
@@ -436,19 +435,66 @@ export default QuillEditor;
 //   const [mentionedUsers, setMentionedUsers] = useState([]);
 //   const [content, setContent] = useState(defaultValue || "");
 //   const quillRef = useRef(null);
+//   let suggestionItems = suggestionList?.map((e) => {
+//     return {
+//       id: e?.id,
+//       value: e?.name,
+//       email: e?.email,
+//     };
+//   });
 //   async function suggestPeople(searchTerm) {
-//     const allPeople = [
-//       {
-//         id: 1,
-//         value: "Fredrik Sundqvist",
-//       },
-//       {
-//         id: 2,
-//         value: "Patrik Sjölin",
-//       },
-//     ];
-//     return allPeople.filter((person) => person.value.includes(searchTerm));
+//     // const allPeople = [
+//     //   {
+//     //     id: 1,
+//     //     value: "Fredrik Sundqvist",
+//     //     email: "fre@fre.com",
+//     //   },
+//     //   {
+//     //     id: 2,
+//     //     value: "Patrik Sjölin",
+//     //     email: "abc@erf.com",
+//     //   },
+//     // ];
+//     return suggestionItems.filter((person) =>
+//       person.value?.toLowerCase().includes(searchTerm?.toLowerCase())
+//     );
 //   }
+
+//   console.log("suugg", suggestionItems);
+
+//   console.log("content", content);
+//   function getMentionValues(className: string): any[] {
+//     const mentionElements = document.getElementsByClassName(className);
+//     const mentionValues = Array.from(mentionElements).map((e) =>
+//       e?.getAttribute("data-value")
+//     );
+//     return mentionValues;
+//   }
+
+//   function filterPeopleByMentions(
+//     allPeople: any[],
+//     mentionValues: any[]
+//   ): string[] {
+//     const filteredPeople = allPeople?.filter((el) =>
+//       mentionValues?.includes(el?.value)
+//     );
+//     const uniqueEmails = Array.from(
+//       new Set(filteredPeople?.map((e) => e?.email))
+//     );
+//     return uniqueEmails;
+//   }
+
+//   // Example usage:
+
+//   const mentionValues = getMentionValues("mention");
+//   console.log("mentionValues", mentionValues);
+
+//   const uniqueEmails = filterPeopleByMentions(suggestionItems, mentionValues);
+//   console.log("uniqueEmails", uniqueEmails);
+
+//   useEffect(() => {
+//     onChange(content);
+//   }, [content]);
 
 //   useEffect(() => {
 //     // Initialize Quill with the mention module
@@ -462,9 +508,10 @@ export default QuillEditor;
 //         mention: {
 //           allowedChars: /^[A-Za-z\sÅÄÖåäö]*$/,
 //           mentionDenotationChars: ["@"],
-//           source: async function (searchTerm, renderList) {
+//           source: async function (searchTerm, renderList, mentionsChar) {
 //             const matchedPeople = await suggestPeople(searchTerm);
-//             renderList(matchedPeople);
+//             renderList(matchedPeople, searchTerm);
+//             console.log("matchedPeople", matchedPeople);
 //           },
 //         },
 //       },
@@ -474,9 +521,12 @@ export default QuillEditor;
 //       // Handle text changes here
 //       const quillContent = quill.root.innerHTML;
 //       onChange && onChange(quillContent);
+//       setContent(quillContent);
+//       console.log("content1", content);
 //     });
 
 //     quillRef.current = quill;
+//     content && console.log(document.getElementsByClassName("mention"));
 
 //     // Cleanup function to destroy the Quill instance when the component unmounts
 //     return () => {
@@ -485,7 +535,7 @@ export default QuillEditor;
 //         quillInstance.root.innerHTML = "";
 //       }
 //     };
-//   }, [onChange]);
+//   }, []);
 
 //   return (
 //     <div className="quill-editor-wrapper">

@@ -19,6 +19,7 @@ import { Dialog } from "primereact/dialog";
 import { InputNumber } from "primereact/inputnumber";
 import * as moment from "moment";
 import { Toast } from "primereact/toast";
+import { Icon, Persona, PersonaSize } from "office-ui-fabric-react";
 let statusChoices = [];
 let recurrenceChoices = [];
 let arrClientData = []; //For export function..
@@ -79,6 +80,16 @@ export default function UserDashboard(props) {
     height: 30,
     width: "100%",
     fontSize: "30px",
+    display: "contents",
+    padding: 0,
+  };
+  const backArrowIconStyle = {
+    backgroundColor: "transparent",
+    border: "transparent",
+    color: "#007C81",
+    height: 30,
+    width: "100%",
+    fontSize: "18px",
     display: "contents",
     padding: 0,
   };
@@ -683,7 +694,7 @@ export default function UserDashboard(props) {
           ) : (
             <h4 style={{ margin: "10px 0px 15px 0px" }}>
               Task name :{" "}
-              <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
+              <span style={{ color: "#009b9f" }}>{strTaskName}</span>{" "}
             </h4>
           )}
           <>
@@ -695,7 +706,7 @@ export default function UserDashboard(props) {
                 alignItems: "center",
               }}
             >
-              <Label>Notify</Label>{" "}
+              <Label>Notify</Label>
               <div style={{ width: "14%" }}>
                 <InputNumber
                   value={days}
@@ -745,29 +756,32 @@ export default function UserDashboard(props) {
                 justifyContent: "center",
               }}
             >
-              {props?.viewByCardFlow ? (
-                <Button
-                  className={styles.righticon}
-                  style={tickIconStyle}
-                  // label={
-                  //   props.selectedTeamMember.length
-                  //     ? props.selectedTeamMember[0].TeamName
-                  //     : ""
-                  // }
-                  icon="pi pi-arrow-left"
-                  iconPos="left"
-                  onClick={() => {
-                    props.memberFunction(
-                      props.selectedTeamByCardFlow,
-                      "TeamMembers"
-                    );
-                  }}
-                />
-              ) : (
-                ""
-              )}
-              <Label className={styles.leftFilterSection}>
+              {/* <Label className={styles.leftFilterSection}>
                 {curuserId.Title}
+              </Label> */}
+              <Label className={styles.leftFilterSection}>
+                {props?.viewByCardFlow ? (
+                  <Button
+                    className={styles.righticon}
+                    style={backArrowIconStyle}
+                    // label={
+                    //   props.selectedTeamMember.length
+                    //     ? props.selectedTeamMember[0].TeamName
+                    //     : ""
+                    // }
+                    icon="pi pi-arrow-left"
+                    iconPos="left"
+                    onClick={() => {
+                      props.memberFunction(
+                        props.selectedTeamByCardFlow,
+                        "TeamMembers"
+                      );
+                    }}
+                  />
+                ) : (
+                  ""
+                )}
+                Members Task
               </Label>
             </div>
 
@@ -787,6 +801,34 @@ export default function UserDashboard(props) {
                   />
                 </span>
               </div>
+
+              {/* <Button
+                className={styles.btnColor}
+                label="Export"
+                icon="pi pi-file-excel"
+                onClick={() => {
+                  BindExportData();
+                }}
+              /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => BindExportData()}
+              />
+
               <Button
                 className={styles.btnColor}
                 label="Automate"
@@ -805,14 +847,7 @@ export default function UserDashboard(props) {
                   }
                 }}
               />
-              <Button
-                className={styles.btnColor}
-                label="Export"
-                icon="pi pi-file-excel"
-                onClick={() => {
-                  BindExportData();
-                }}
-              />
+
               <Button
                 className={styles.btnColor}
                 label="Done"
@@ -821,6 +856,30 @@ export default function UserDashboard(props) {
                 }}
                 // icon="pi pi-file-excel"
               />
+              <div className={styles.memberProfileCard}>
+                <div className={styles.profileText}>
+                  <span>{props?.currentMember?.Name}</span>
+                  <span>
+                    {props?.currentMember?.Role?.toLowerCase() === "tl"
+                      ? "team leader"
+                      : props?.currentMember?.Role?.toLowerCase() === "tc"
+                      ? "team captain"
+                      : props?.currentMember?.Role?.toLowerCase() === "pa"
+                      ? "personal assistant"
+                      : ""}
+                  </span>
+                </div>
+                <Persona
+                  className={styles.memberAvatar}
+                  // title={e?.Author?.Title || loginUserData?.Title}
+                  imageUrl={
+                    props?.currentMember &&
+                    "/_layouts/15/userphoto.aspx?username=" +
+                      props?.currentMember?.Email
+                  }
+                  size={PersonaSize.size32}
+                />
+              </div>
             </div>
           </div>
           {/* <div className={styles.TLTCSection}>

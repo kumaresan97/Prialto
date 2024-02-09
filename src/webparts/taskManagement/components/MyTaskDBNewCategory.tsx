@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Label } from "@fluentui/react";
+import { Icon, Label } from "@fluentui/react";
 import SPServices from "../../../Global/SPServices";
 import { sp } from "@pnp/sp/presets/all";
 import MyTaskDataCategory from "./MyTaskDataCategory";
@@ -1114,7 +1114,7 @@ export default function MyTaskDBNewCategory(props) {
               label="Add"
             />
             <Button
-              className={styles.btnColor}
+              className={styles.cancelBtn}
               onClick={() => {
                 setCategoryValue("");
                 setIsCatDialog(false);
@@ -1336,7 +1336,7 @@ export default function MyTaskDBNewCategory(props) {
         <>
           <div className={styles.commonFilterSection}>
             <div>
-              <Label className={styles.leftFilterSection}></Label>
+              <Label className={styles.leftFilterSection}>My Tasks</Label>
               <>
                 <div>
                   <Toast ref={toastTopRight} position="top-right" />
@@ -1356,11 +1356,28 @@ export default function MyTaskDBNewCategory(props) {
                 </span>
               </div>
 
-              <Button
+              {/* <Button
                 className={styles.btnColor}
-                label="Export"
+                // label="Export"
                 onClick={() => exportData()}
                 icon="pi pi-file-excel"
+              /> */}
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => exportData()}
               />
               <Button
                 className={styles.btnColor}

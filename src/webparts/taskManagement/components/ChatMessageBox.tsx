@@ -7,11 +7,11 @@ const ChatBox = ({ e, loginUserData }) => {
   const isMyMessage = loginUserData?.ID === e?.Author.Id;
 
   // working
-  const convertURLsToLinks = (text) => {
+  const convertURLsToLinks = (htmlText) => {
     const linkRegex =
       /(?:https?&#\d+;\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:\/[^\s<>]*)?/g;
 
-    const replacedText = text.replace(linkRegex, (match) => {
+    const replacedText = htmlText.replace(linkRegex, (match) => {
       const url = match.startsWith("http")
         ? match
         : `https://${match.replace(/&\#\d+;/g, ":")}`;

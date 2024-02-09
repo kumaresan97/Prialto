@@ -15,6 +15,8 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import Loader from "./Loader";
 import exportToExcel from "../../../Global/ExportExcel";
 import { Toast } from "primereact/toast";
+import { Icon, Persona } from "office-ui-fabric-react";
+import { PersonaSize } from "@fluentui/react";
 let _isTL: boolean = false;
 let _isTC: boolean = false;
 let _isPA: boolean = false;
@@ -42,10 +44,11 @@ const Client = (props) => {
   // style variables
   const editIconStyle = {
     backgroundColor: "transparent",
-    color: "#007C81",
+    color: "#555",
     border: "none",
     // height: 26,
     // width: 26,
+    width: "1.5rem",
   };
   const tickIconStyle = {
     backgroundColor: "transparent",
@@ -665,7 +668,23 @@ const Client = (props) => {
     } else {
       if (fieldType == "Assistant") {
         return (
-          <span className={styles.textOverflow}>{data[fieldType].Title}</span>
+          <span
+            className={styles.textOverflow}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-start",
+            }}
+          >
+            <Persona
+              imageUrl={
+                data &&
+                "/_layouts/15/userphoto.aspx?username=" + data[fieldType].EMail
+              }
+              size={PersonaSize.size24}
+            />{" "}
+            {data[fieldType].Title}
+          </span>
         );
       }
 
@@ -676,15 +695,20 @@ const Client = (props) => {
               data[fieldType].map((val, index) => (
                 <span
                   key={index} // Add a unique key prop when mapping elements in React
-                  // style={{
-                  //   textOverflow: "ellipsis",
-                  //   overflow: "hidden",
-                  //   whiteSpace: "nowrap",
-                  //   display: "block",
-                  //   width: "160px",
-                  // }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                  }}
                   className={styles.textOverflow}
                 >
+                  <Persona
+                    imageUrl={
+                      data &&
+                      "/_layouts/15/userphoto.aspx?username=" + val.EMail
+                    }
+                    size={PersonaSize.size24}
+                  />
                   {val.Title}
                 </span>
               ))}
@@ -1084,7 +1108,8 @@ const Client = (props) => {
                   />
                 </span>
               </div>
-              <Button
+
+              {/* <Button
                 icon="pi pi-file-excel"
                 className={styles.btnColor}
                 label="Export"
@@ -1094,6 +1119,24 @@ const Client = (props) => {
                 //   onClick={() => {
                 //     _handleData("addParent", { ..._sampleParent });
                 //   }}
+              /> */}
+
+              <Icon
+                iconName="ExcelDocument"
+                style={{
+                  background: "#edffe6",
+                  color: "#175200",
+                  border: "1px solid #17520010",
+                  padding: "4px 12px",
+                  borderRadius: "4px",
+                  height: " 34px",
+                  fontSize: "20px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+                onClick={() => exportExcel()}
               />
               {
                 <Button

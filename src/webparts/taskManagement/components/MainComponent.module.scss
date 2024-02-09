@@ -1,6 +1,18 @@
-.activeBtn {
-  background: #007c81 !important;
+.activeBtn,
+.expandedActiveBtn {
+  // background: #007c81 !important;
+  // background: #013233 !important;
+  background: #00595d !important;
+  margin: 10px;
+  border-radius: 4px;
   font-weight: 600 !important;
+  width: 77% !important;
+}
+.expandedActiveBtn {
+  .teamMemberSection {
+    margin-left: 42px;
+  }
+  width: 92% !important;
 }
 
 .inActive {
@@ -9,15 +21,15 @@
 }
 
 .pageHeader {
-  color: #f46906;
-  font-size: 22px;
-  margin: 10px;
+  color: #29323c;
+  font-size: 26px;
+  margin: 0;
 }
 
 .TaskManagementSection {
   width: 100%;
   display: flex;
-  gap: 20px;
+  gap: 10px;
   .leftNav {
     // width: 20%;
     width: 15%;
@@ -25,7 +37,10 @@
     min-height: 100vh;
     max-height: max-content;
     // height: 100vh;
-    background: #009b9f;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    // background: #009b9f;
+    background: linear-gradient(124deg, #009b9f, #006c6e);
     .teamNameShort {
       margin: 0;
       font-weight: 600;
@@ -63,41 +78,293 @@
     }
   }
   .iconsearchcontainer {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 6px;
+    // height: 80px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    padding-left: 20px;
+    // background-color: #013233;
+    background-color: #00595d;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
   }
 }
 
-.lefticon {
-  background-color: #f46906 !important;
-  border: none;
-  width: 26px;
-  height: 26px;
+.righticon {
+  padding: 5px 16px;
+  min-width: 150px;
+  height: 36px;
+  color: #00797c;
+  background: #009b9f0d;
+  border-radius: 4px;
+  border: 0;
+  border-left: 4px solid;
+  text-align: center;
+  font-size: 17px;
+  margin: 0 0 15px 0;
+  font-weight: 600;
 }
 
-.lefticon > span {
-  color: #fff;
-}
-
-.righticon > span {
-  font-size: 20px;
+.righticon > span:nth-child(1) {
+  font-size: 14px;
+  font-weight: 600;
   margin-right: 14px;
+  margin-top: 3px;
+}
+.Heading {
+  .righticon > span {
+    font-size: 14px;
+    margin: 4px 0 0 0 !important;
+    color: #007c81;
+  }
+}
+.activeBtn {
+  .teamMemberSection {
+    margin-left: 42px;
+  }
 }
 
 .teamMemberSection {
   display: flex;
+  align-items: center;
   height: 100%;
   margin-left: 52px;
   justify-content: space-between;
 }
 
 .leftNavExpandController {
+  cursor: pointer;
   display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 16px;
+  position: absolute;
+  right: -16px;
+  // top: 23%;
+  top: 16%;
+  background-color: #fff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  color: #29323c;
   transition: all 0.2s !important;
+  border: 1px solid #55555520;
+  box-shadow: 0px 0 6px rgba(0, 0, 0, 0.1);
   i {
+    font-weight: 700;
+    color: #29323c;
     cursor: pointer;
+    font-size: 17px;
+  }
+}
+
+// Badge Styles
+.pLevelStyle {
+  // color: #fff;
+  // padding: 6px 0px;
+  // text-align: center;
+  // border-radius: 12px;
+  // width: 134px;
+  padding: 5px 0;
+  font-size: 0.8rem;
+  text-align: center;
+  border-radius: 12px;
+  min-width: 115px;
+  max-width: 130px;
+  font-weight: 500;
+}
+
+// profile card styles
+.MainHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+.memberProfileCard {
+  min-width: 100px;
+  background-color: #eeeeee80;
+  border: 0.5px solid #adadad20;
+  border-radius: 6px;
+  padding: 7px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  .profileText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    // margin: 0 10px;
+    margin-left: 10px;
+    span {
+      font-size: 12px;
+      color: #101010b0;
+      margin-top: -2px;
+    }
+    span:nth-child(1) {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 0;
+      color: #101010;
+    }
+  }
+}
+.memberAvatar {
+  transform: translateX(11px);
+}
+// btn styles
+.btnColor {
+  background-color: #f46906;
+  border: none;
+  padding: 4px 18px;
+  height: 34px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.secondaryBtn {
+  color: #555;
+  font-weight: 700;
+  background-color: #f5f5f3 !important;
+  border: none;
+  padding: 4px 18px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #eee;
+}
+
+// heading with back btn
+.Heading {
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  // background-color: #f5f5f5;
+  // padding: 6px 15px;
+  // border-radius: 4px;
+  // color: #555;
+  padding: 5px 16px;
+  min-width: 150px;
+  height: 36px;
+  color: #00797c;
+  background: #009b9f0d;
+  border-radius: 4px;
+  border-left: 4px solid;
+  text-align: center;
+  font-size: 18px;
+  width: max-content;
+  span {
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 10px;
+    color: #00797c;
+  }
+}
+.Header {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+// nav logo
+.navTitle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  img[aria-expanded="true"] {
+    width: 100px;
+    object-fit: contain;
+    filter: brightness(1.5);
+    &.activeBtn {
+      width: 92%;
+    }
+  }
+  img[aria-expanded="false"] {
+    width: 42px;
+    object-fit: contain;
+    &.activeBtn {
+      width: 42%;
+    }
+  }
+  p {
+    margin: 0;
+    padding: 0;
+    color: #eff5ff;
+    line-height: 27px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    &::first-letter {
+      font-size: 19px;
+    }
+  }
+  span {
+    margin: 0;
+    padding: 0;
+    color: #eff5ff;
+    line-height: 27px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+}
+
+// member List styles
+.TeamMembers {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  .memberCard {
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin: 10px;
+    padding: 0 10px;
+    padding-right: 0;
+    border-radius: 6px;
+    border: 1px solid #eeeeee90;
+    box-shadow: 0 2px 2px #adadad20;
+    transition: all 0.3s;
+    &:hover {
+      transition: all 0.3s;
+      box-shadow: 0 5px 10px #adadad50;
+      .lefticon {
+        transition: all 0.3s;
+        background-color: #007c81;
+        span {
+          transition: all 0.3s;
+          color: #fff;
+        }
+      }
+    }
+    .lefticon {
+      transition: all 0.3s;
+      width: 26px;
+      height: 100%;
+      border: 0;
+      border-radius: 4px;
+      background-color: #00595d15;
+      margin-right: 5px;
+      span {
+        transition: all 0.3s;
+        color: #007c81;
+      }
+    }
   }
 }

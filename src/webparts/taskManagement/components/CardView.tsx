@@ -9,6 +9,7 @@ import styles from "./Cardview.module.scss";
 import { useEffect, useState } from "react";
 import Members from "./Members";
 import Loader from "./Loader";
+import { Divider } from "primereact/divider";
 
 const CardView = (props) => {
   const [Cardarr, setCardarr] = useState([]);
@@ -175,7 +176,7 @@ const CardView = (props) => {
               memberFunction={memberFunction}
             />
           ) : ( */}
-          <div>
+          <div className={styles.cardHeading}>
             <h2>Card View</h2>
             <div
               className={styles.mainContainer}
@@ -184,141 +185,122 @@ const CardView = (props) => {
               {Cardarr.length > 0 &&
                 Cardarr.map((val: any) => {
                   return (
-                    <div className={styles.cardSize}>
-                      <Card
-                        style={{ width: "100%", cursor: "pointer" }}
-                        onClick={() => {
-                          teamClick(val, "TeamMembers");
-                          // teamClick(val.members, "TeamMembers");
-                        }}
-                      >
-                        <>
-                          <div className={styles.secDivider}>
-                            <div className={styles.leftSideContainer}>
-                              <Label className={styles.roleHead}>Cohort</Label>
-                              <Label className={styles.noPaddingLable}>
-                                {val.TeamName}
-                              </Label>
-                            </div>
-                            <div className={styles.rightSideContainer}>
-                              <Label className={styles.roleHead}>
-                                Team Captain
-                              </Label>
-                              <div className={styles.teaCaptianSec}>
-                                {/* <Avatar
-                                  image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamCaptain[0]?.Email}`}
-                                  size="normal"
-                                  shape="circle"
-                                  label={val.TeamCaptain[0]?.Title}
-                                  data-pr-tooltip="test"
-                                />
-                                <Label
-                                  className={styles.noPaddingLable}
-                                  style={{ marginLeft: 6 }}
-                                >
-                                  {val.TeamCaptain[0]?.Title}
-                                </Label> */}
+                    <div
+                      className={styles.cardSize}
+                      onClick={() => {
+                        teamClick(val, "TeamMembers");
+                      }}
+                    >
+                      {/* <Label className={styles.roleHead}>Cohort</Label> */}
+                      <i className={`pi pi-users ${styles.cardHeadIcon}`}></i>
+                      <Label className={styles.cohortName}>
+                        {val.TeamName}
+                      </Label>
 
-                                {val.TeamCaptain.length > 0 ? (
-                                  val.TeamCaptain.map((item) => {
-                                    return (
-                                      <>
-                                        <div title={item?.Title}>
-                                          <Avatar
-                                            image={`/_layouts/15/userphoto.aspx?size=S&username=${item?.Email}`}
-                                            size="normal"
-                                            shape="circle"
-                                            label={item?.Title}
-                                            data-pr-tooltip={item?.Title}
-                                          />
-                                        </div>
-                                        {/* <Label
-                                        className={styles.noPaddingLable}
-                                        style={{ marginLeft: 6 }}
-                                      >
-                                        {item?.Title}
-                                      </Label> */}
-                                      </>
-                                    );
-                                  })
-                                ) : (
-                                  <>
-                                    <Avatar
-                                      image={`/_layouts/15/userphoto.aspx?size=S&username=''`}
-                                      size="normal"
-                                      shape="circle"
-                                      label={""}
-                                      data-pr-tooltip=""
-                                    />
-                                    <Label
-                                      className={styles.noPaddingLable}
-                                      style={{ marginLeft: 6 }}
-                                    >
-                                      {""}
-                                    </Label>
-                                  </>
-                                )}
-                              </div>
-                            </div>
+                      <div className={styles.leadWrapper}>
+                        <div className={styles.lead}>
+                          <Label className={styles.label}>Team leader</Label>
+                          <div className={styles.avatarLabel}>
+                            <Avatar
+                              image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
+                              size="normal"
+                              shape="circle"
+                              label={val.TeamLeader[0]?.Title}
+                            />
+                            <Label
+                              className={styles.label}
+                              style={{ marginLeft: "12px" }}
+                            >
+                              {val.TeamLeader[0]?.Title}
+                            </Label>
                           </div>
-                          <div
+                        </div>
+                        <div className={styles.lead}>
+                          <Label className={styles.label}>Team captain</Label>
+                          <AvatarGroup
+                            className={
+                              val.TeamCaptain.length > 1
+                                ? styles.avatarLabel2L
+                                : styles.avatarLabel2SM
+                            }
                             style={{
-                              display: "flex",
-                              gap: "10px",
-                              justifyContent: "space-between",
+                              marginLeft:
+                                val.TeamCaptain.length > 1 ? "14px" : "4px",
                             }}
                           >
-                            <div className={styles.leftSideContainer}>
-                              <Label className={styles.roleHead}>
-                                Team Leader
-                              </Label>
-                              <div className={styles.teaCaptianSec}>
+                            {val.TeamCaptain.length &&
+                              val.TeamCaptain.slice(0, 5).map((item) => {
+                                return (
+                                  <>
+                                    <div title={item?.Title}>
+                                      <Avatar
+                                        image={`/_layouts/15/userphoto.aspx?size=S&username=${item?.Email}`}
+                                        size="normal"
+                                        shape="circle"
+                                        data-pr-tooltip={item?.Title}
+                                        style={{
+                                          marginLeft:
+                                            val.TeamCaptain.length > 1
+                                              ? "-10px"
+                                              : "0",
+                                        }}
+                                      />
+                                    </div>
+                                  </>
+                                );
+                              })}
+                            {val.TeamCaptain.length > 5 && (
+                              <Avatar
+                                size="normal"
+                                shape="circle"
+                                label={`+${val.members.length - 5} `}
+                                style={{
+                                  marginLeft: "-10px",
+                                }}
+                              />
+                            )}
+                          </AvatarGroup>
+                        </div>
+                      </div>
+
+                      {/* <Label className={styles.roleHead}>Team Members</Label> */}
+                      <Divider>
+                        <span className={styles.defaultText}>members</span>
+                      </Divider>
+                      <div className={styles.membersListWrapper}>
+                        <AvatarGroup className={styles.memberList}>
+                          {val.members.length &&
+                            val.members.slice(0, 8).map((res) => {
+                              let username =
+                                "/_layouts/15/userphoto.aspx?size=S&username=" +
+                                res?.Email;
+                              return (
                                 <Avatar
-                                  image={`/_layouts/15/userphoto.aspx?size=S&username=${val.TeamLeader[0]?.Email}`}
+                                  className={styles.Avtr}
+                                  image={username}
                                   size="normal"
                                   shape="circle"
-                                  label={val.TeamLeader[0]?.Title}
                                 />
-                                <Label
-                                  className={styles.noPaddingLable}
-                                  style={{ marginLeft: 6 }}
-                                >
-                                  {val.TeamLeader[0]?.Title}
-                                </Label>
-                              </div>
-                            </div>
-                            <div className={styles.rightSideContainer}>
-                              <Label className={styles.roleHead}>
-                                Team Members
-                              </Label>
-                              <div style={{ display: "flex", height: 26 }}>
-                                <AvatarGroup>
-                                  {val.members.length &&
-                                    val.members.slice(0, 5).map((res) => {
-                                      let username =
-                                        "/_layouts/15/userphoto.aspx?size=S&username=" +
-                                        res?.Email;
-                                      return (
-                                        <Avatar
-                                          image={username}
-                                          size="normal"
-                                          shape="circle"
-                                        />
-                                      );
-                                    })}
-                                  {val.members.length > 5 && (
-                                    <Avatar
-                                      size="normal"
-                                      shape="circle"
-                                      label={`+${val.members.length - 5} `}
-                                    />
-                                  )}
-                                </AvatarGroup>
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      </Card>
+                              );
+                            })}
+                          {val.members.length > 8 && (
+                            <Avatar
+                              className={styles.Avtr}
+                              size="normal"
+                              shape="circle"
+                              label={`+${val.members.length - 5} `}
+                            />
+                          )}
+                        </AvatarGroup>
+                        <button
+                          onClick={() => {
+                            teamClick(val, "TeamMembers");
+                          }}
+                          className={styles.CTOBtn}
+                        >
+                          <i className="pi pi-arrow-right"></i>
+                        </button>
+                      </div>
                     </div>
                   );
                 })}

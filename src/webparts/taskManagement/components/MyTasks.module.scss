@@ -1,8 +1,15 @@
 $btnColor: #f46906;
 .myTaskSection {
   margin-bottom: 15px;
+  padding: 13px 15px;
+  margin: 10px 0 15px 0;
+  border-top: 1px solid #eeeeee90;
+  border-left: 1px solid #eeeeee90;
+  border-radius: 5px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
   thead > tr > th {
-    padding: 10px !important;
+    padding: 12px !important;
+    color: #545454;
   }
   .filterSection {
     display: flex;
@@ -11,7 +18,7 @@ $btnColor: #f46906;
   }
   td:nth-child(1) {
     display: flex;
-    height: 54px;
+    height: 52px;
     align-items: center;
   }
   // tr :nth-child(1) {
@@ -26,17 +33,26 @@ $btnColor: #f46906;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    // margin: 10px 0;
+    margin: 0;
+    margin-bottom: 10px;
     // margin: 15px 0px;
     // margin: 25px 0px 10px 0px;
-    h2 {
+    h2,
+    label {
       margin: 0;
       font-weight: 600;
-      color: $btnColor;
-      font-size: 19px;
-    }
-    label {
-      font-size: 18px;
-      font-weight: 600;
+      color: #545454;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      img {
+        width: 12px;
+        height: 16px;
+        margin-top: 2px;
+      }
     }
   }
 }
@@ -52,11 +68,18 @@ $btnColor: #f46906;
 }
 
 .pLevelStyle {
-  color: #fff;
-  padding: 6px 0px;
+  // color: #fff;
+  // padding: 6px 0px;
+  // text-align: center;
+  // border-radius: 12px;
+  // width: 134px;
+  padding: 5px 0;
+  font-size: 0.8rem;
   text-align: center;
   border-radius: 12px;
-  width: 134px;
+  min-width: 115px;
+  max-width: 130px;
+  font-weight: 500;
 }
 
 .actionContainer {
@@ -69,30 +92,85 @@ $btnColor: #f46906;
   background-color: $btnColor;
   border: none;
   padding: 4px 18px;
-  height: 38px;
+  height: 34px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.secondaryBtn {
+  color: #555;
+  font-weight: 700;
+  background-color: #f5f5f3 !important;
+  border: none;
+  padding: 4px 18px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #eee;
 }
 
 // topContainer
 .commonFilterSection {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   height: 32px;
-  .leftFilterSection {
-    font-size: 20px;
-    font-weight: 700;
-    text-transform: capitalize;
-  }
-  .rightFilterSection {
-    display: flex;
-    gap: 10px;
+  margin-bottom: 15px;
+
+  // margin-top: 15px;
+  div {
+    // label {
+    //   padding: 5px 16px;
+    //   min-width: 150px;
+    //   height: 36px;
+    //   color: #bb4e00;
+    //   background: #ff780017;
+    //   border-radius: 4px;
+    //   border-left: 4px solid;
+    //   text-align: center;
+    //   font-size: 18px;
+    // }
+    label {
+      padding: 5px 16px;
+      min-width: 150px;
+      height: 36px;
+      color: #00797c;
+      background: #009b9f0d;
+      border-radius: 4px;
+      border-left: 4px solid;
+      text-align: center;
+      font-size: 18px;
+    }
   }
 }
-
-.clientHeader {
-  font-size: 19px;
+.leftFilterSection {
+  font-size: 20px;
   font-weight: 600;
-  color: #f46906;
-  // margin-top: 15px;
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rightFilterSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.clientHeader {
+  // font-size: 19px;
+  // font-weight: 600;
+  // color: #f46906;
+  // // margin-top: 15px;
+  width: max-content;
+  font-weight: 600;
+  padding: 5px 16px;
+  min-width: 150px;
+  height: 36px;
+  color: #bb4e00;
+  background: #ff780017;
+  border-radius: 4px;
+  border-left: 4px solid;
+  text-align: center;
+  font-size: 18px;
 }
 
 // TL and TC Section styles
@@ -177,24 +255,34 @@ $btnColor: #f46906;
   }
 }
 .cancelBtn {
-  background-color: #a49890;
+  // background-color: #a49890;
   border: none;
   padding: 4px 18px;
-  height: 38px;
+  height: 34px;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: grey;
+  color: #fff;
+  border: none;
 }
 .Submitbtn {
   background-color: #009b9f;
   border: none;
   padding: 4px 18px;
-  height: 38px;
+  height: 34px;
+  font-size: 15px;
+  font-weight: 500;
 }
 .Automatelabel {
   font-size: 18px;
   font-weight: 600;
+  padding: 10px !important;
+  background: #eeeeeeaa;
+  border-radius: 4px;
 }
 .catDialogBtnSection {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   justify-content: end;
   margin-top: 16px;
   button {
@@ -207,9 +295,10 @@ $btnColor: #f46906;
   }
 }
 .righticon > span {
-  font-size: 20px;
-  margin-right: 10px;
-  margin-top: 4px;
+  font-size: 16px;
+  margin-right: 7px;
+  margin-top: 2px;
+  font-weight: 600;
 }
 .addCommentBtn {
   background-color: $btnColor;
@@ -410,4 +499,37 @@ $btnColor: #f46906;
       }
     }
   }
+}
+
+.memberProfileCard {
+  min-width: 100px;
+  background-color: #eeeeee80;
+  border: 0.5px solid #adadad20;
+  border-radius: 6px;
+  padding: 7px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  .profileText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    // margin: 0 10px;
+    margin-left: 10px;
+    span {
+      font-size: 12px;
+      color: #101010b0;
+      margin-top: -2px;
+    }
+    span:nth-child(1) {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 0;
+      color: #101010;
+    }
+  }
+}
+.memberAvatar {
+  transform: translateX(11px);
 }

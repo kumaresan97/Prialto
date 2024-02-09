@@ -2049,8 +2049,6 @@ const UserClientDB = (props): JSX.Element => {
         <QuillEditor
           suggestionList={props.groupMembersList}
           onChange={(htmlText) => {
-            console.log("htmlText", htmlText);
-
             setHtmlText({
               isValid: true,
               value: htmlText,

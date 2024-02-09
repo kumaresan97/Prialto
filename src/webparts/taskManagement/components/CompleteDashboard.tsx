@@ -212,7 +212,6 @@ const CompleteDashboard = (props) => {
         });
 
         Binddata();
-        console.log(subArray, "subarray");
       })
       // .catch((err) => {
       //   setLoader(false);

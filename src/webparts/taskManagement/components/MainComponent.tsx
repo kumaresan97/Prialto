@@ -65,7 +65,6 @@ let suggestions: ISuggestion[] = [];
 
 const MainComponent = (props: any): JSX.Element => {
   // Local Variables creation
-  console.log("curarr", _curArray);
 
   const Sitename = window.location.href;
   let path = Sitename.split("/")[4];
@@ -319,8 +318,6 @@ const MainComponent = (props: any): JSX.Element => {
     selectedTeamData?: any,
     ViewByCardFlow?: any
   ) => {
-    console.log("member", member, _selTeam, selectedTeamData, ViewByCardFlow);
-
     let filterByTeam = _curArray?.filter((e) => {
       let c = e?.team?.includes(_selTeam);
       return c;

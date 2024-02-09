@@ -2271,7 +2271,6 @@ const MyTaskDataCategory = (props): JSX.Element => {
                       icon="pi pi-ellipsis-v"
                       onClick={(event) => {
                         menuLeft.current.toggle(event);
-                        console.log(menuLeft.current);
                       }}
                     ></Button>
                   </span>

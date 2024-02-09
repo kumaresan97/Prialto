@@ -1,5 +1,4 @@
 // Custom Rich Text Editor is start
-
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./QuillEditor.module.scss";
 import "./QuillEditor.module.scss";

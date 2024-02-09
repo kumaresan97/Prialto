@@ -1053,7 +1053,6 @@ export default function MyTaskDBNewCategory(props) {
     setClientdata([...tempClientNew]);
     showMessage("Category Deleted Successfully!", toastTopRight, "success");
   }
-  console.log("clientdata", clientdata);
 
   useEffect(() => {
     setLoader(true);

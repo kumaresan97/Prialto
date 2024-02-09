@@ -203,7 +203,6 @@ const OrgChart = (props) => {
 
   const _addTextField = (val: any, fieldType: string): JSX.Element => {
     const data: any = val;
-    console.log("val", data);
 
     if (!val.Id && add) {
       // if (fieldType == "FirstName") {

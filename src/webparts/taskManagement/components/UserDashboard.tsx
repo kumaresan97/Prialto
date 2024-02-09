@@ -694,7 +694,7 @@ export default function UserDashboard(props) {
           ) : (
             <h4 style={{ margin: "10px 0px 15px 0px" }}>
               Task name :{" "}
-              <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
+              <span style={{ color: "#009b9f" }}>{strTaskName}</span>{" "}
             </h4>
           )}
           <>

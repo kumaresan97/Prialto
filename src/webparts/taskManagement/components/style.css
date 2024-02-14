@@ -1,4 +1,7 @@
 /* FONT FACES */
+* {
+  font-smooth: smooth !important;
+}
 @font-face {
   font-family: "Apertura Regular";
   src: url("../assets/fonts/apertura/Apertura-Regular.ttf");
@@ -569,4 +572,95 @@ td > .p-inputtext {
 /* divider styles */
 .p-divider.p-divider-horizontal {
   margin-bottom: 0;
+}
+
+/* snow  theme specific classes */
+.quill-editor .ql-editor .mention {
+  color: #ad4800 !important;
+  padding: 0 !important;
+  /* font-size: 0.9rem !important; */
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+.mention,
+span[data-denotation-char="@"] {
+  color: #ad4800 !important;
+  padding: 0 !important;
+  /* font-size: 0.9rem !important; */
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.ql-mention-list-container {
+  z-index: 99;
+}
+.ql-mention-list {
+  padding: 5px !important;
+  width: 100%;
+  max-width: 310px !important;
+  overflow-x: auto;
+  border: 1px solid #eee !important;
+  border-radius: 6px !important;
+  background-color: white !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 99 !important;
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.05) !important;
+}
+/* .ql-mention-list > li {
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  list-style-type: none !important;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+  border-radius: 4px !important;
+}
+*/
+.ql-mention-list > li:hover {
+  background-color: #eee !important;
+  border-radius: 4px !important;
+}
+.ql-mention-list-item.selected {
+  background-color: #eee !important;
+}
+.ql-toolbar {
+  display: block;
+  width: 100%;
+  background-color: #eeefef;
+  border-radius: 4px;
+  /* transform: translateY(6px); */
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 7px 8px 7px;
+  border: 1px solid #dfe7ef !important;
+}
+.ql-toolbar button {
+  cursor: pointer;
+  margin-right: 5px;
+  height: 100%;
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  margin-right: 5px;
+  border-bottom: 1px solid #dfe7ef;
+  background-color: transparent;
+}
+.ql-editor {
+  padding: 10px !important;
+}
+.ql-container.ql-snow {
+  border: 1px solid #dfe7ef !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
 }

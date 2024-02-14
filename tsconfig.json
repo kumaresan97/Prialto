@@ -28,5 +28,10 @@
       "es2020"
     ]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "declarations.d.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "declarations.d.ts",
+    "src/webparts/taskManagement/components/QuillEditor.tsx"
+  ]
 }

@@ -377,7 +377,7 @@ $btnColor: #f46906;
       border-radius: 30px;
       border-color: transparent #fff4ea transparent transparent;
     }
-    p {
+    .createdTime {
       font-size: 11px;
       font-weight: 500;
       margin: 0;
@@ -388,7 +388,20 @@ $btnColor: #f46906;
       padding-bottom: 5px;
       padding-right: 0;
       width: 100%;
-      font-size: 15px;
+      font-size: 14px;
+      div > p {
+        line-height: 25px;
+        padding-bottom: 5px;
+        padding-right: 0;
+        width: 100%;
+        font-size: 15px;
+        margin: 0 !important;
+      }
+      div > ul {
+        margin: 0 !important;
+        padding: 0 20px !important;
+        font-size: 15px !important;
+      }
       span[data-emailPill] {
         color: #ad4800 !important;
         padding: 0 !important;
@@ -408,6 +421,7 @@ $btnColor: #f46906;
       }
       a {
         color: #ad4800;
+        font-size: 14px;
         font-weight: 500 !important;
         text-decoration: underline !important;
       }

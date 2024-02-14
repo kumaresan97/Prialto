@@ -1770,11 +1770,33 @@ const OrgChart = (props) => {
     setShowDialog(true);
     // deleteItem(item)
   };
+  // const deleteItem = () => {
+  //   setLoader(true);
+
+  //   if (showDialog) {
+  //     SPServices.SPDeleteItem({
+  //       Listname: "Configuration",
+  //       ID: itemToDelete.Id,
+  //     }).then((res) => {
+  //       let deleteobj = value.filter((val) => val.Id !== itemToDelete.Id);
+  //       setValue([...deleteobj]);
+  //       setShowDialog(false);
+  //       setLoader(false);
+  //       showMessage("Data Deleted Successfully", toastTopRight, "success");
+
+  //       // getdatas();
+  //     });
+  //   } else {
+  //     setLoader(false);
+  //     setShowDialog(false);
+  //   }
+  // };
+
   const deleteItem = () => {
     setLoader(true);
 
     if (showDialog) {
-      SPServices.SPDeleteItem({
+      SPServices.SPRecycleItem({
         Listname: "Configuration",
         ID: itemToDelete.Id,
       }).then((res) => {

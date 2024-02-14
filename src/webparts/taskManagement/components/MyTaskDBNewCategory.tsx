@@ -206,6 +206,11 @@ export default function MyTaskDBNewCategory(props) {
           Operator: "eq",
           FilterValue: id,
         },
+        {
+          FilterKey: "isDeleted",
+          Operator: "ne",
+          FilterValue: "1",
+        },
       ],
     })
       .then(function (data: any) {
@@ -1015,17 +1020,45 @@ export default function MyTaskDBNewCategory(props) {
 
   /*End for automate single */
 
-  function updateCategory(categryValue, categryId) {
-    let tempClientNew = [...clientdata];
-    let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
-    let arrIndex = MyCategories.findIndex((val) => val.ID == categryId);
-    if (arrIndex < 0) {
-      console.log("Category not found");
-    } else {
-      tempClientNew[categoryIndex].Title = categryValue;
-      MyCategories[arrIndex].Name = categryValue;
+  // function updateCategory(categryValue, categryId) {
+  //   let tempClientNew = [...clientdata];
+  //   let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
+  //   let arrIndex = MyCategories.findIndex((val) => val.ID == categryId);
+  //   if (arrIndex < 0) {
+  //     console.log("Category not found");
+  //   } else {
+  //     tempClientNew[categoryIndex].Title = categryValue;
+  //     MyCategories[arrIndex].Name = categryValue;
+  //   }
+  //   setClientdata([...tempClientNew]);
+  // }
+
+  function updateCategory(categryValue, categryId, command) {
+    if (command === "delete") {
+      let tempClientNew = [...clientdata];
+      let arrIndex = MyCategories.findIndex((val) => val.ID == categryId);
+      let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
+      if (categoryIndex < 0) {
+        console.log("Category not found");
+      } else {
+        tempClientNew.splice(categoryIndex, 1);
+        MyCategories.splice(arrIndex, 1);
+      }
+      setCurMyTask([]);
+      setClientdata([...tempClientNew]);
+      showMessage("Category Deleted Successfully!", toastTopRight, "success");
+    } else if (command === "update") {
+      let tempClientNew = [...clientdata];
+      let categoryIndex = tempClientNew.findIndex((val) => val.ID == categryId);
+      let arrIndex = MyCategories.findIndex((val) => val.ID == categryId);
+      if (arrIndex < 0) {
+        console.log("Category not found");
+      } else {
+        tempClientNew[categoryIndex].Title = categryValue;
+        MyCategories[arrIndex].Name = categryValue;
+      }
+      setClientdata([...tempClientNew]);
     }
-    setClientdata([...tempClientNew]);
   }
 
   function updateDataFromChildComponent(categryId, Tasks) {
@@ -1145,7 +1178,7 @@ export default function MyTaskDBNewCategory(props) {
           ) : (
             <h4 style={{ margin: "10px 0px 15px 0px" }}>
               Task name :{" "}
-              <span style={{ color: "#f46906" }}>{strTaskName}</span>{" "}
+              <span style={{ color: "#009b9f" }}>{strTaskName}</span>{" "}
             </h4>
           )}
           {/* <div

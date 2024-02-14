@@ -627,6 +627,52 @@ const MyTaskDataCategory = (props): JSX.Element => {
       .catch((err) => errFunction(err));
   };
   //deleteitem
+  // const deleteData = (obj) => {
+  //   setLoader(true);
+  //   let ListName = obj.isParent ? "Tasks" : "SubTasks";
+  //   let Ids = [];
+
+  //   ListName === "Tasks" &&
+  //     obj.children.length &&
+  //     obj?.children.map((val) =>
+  //       Ids.push({
+  //         Id: val.Id,
+  //         isParent: val.isParent,
+  //       })
+  //     );
+
+  //   SPServices.SPDeleteItem({
+  //     Listname: ListName,
+  //     ID: obj.Id,
+  //   })
+  //     .then((res) => {
+  //       if (Ids.length) {
+  //         DeleteFunction(obj);
+  //         for (let i: number = 0; Ids.length > i; i++) {
+  //           SPServices.SPDeleteItem({
+  //             Listname: "SubTasks",
+  //             ID: Ids[i].Id,
+  //           })
+  //             .then((res) => {
+  //               if (Ids.length === i + 1) {
+  //                 console.log("delete successfully");
+  //                 //getcurUser();
+  //               }
+  //             })
+  //             .catch((err) => {
+  //               errFunction(err);
+  //             });
+  //         }
+  //       } else {
+  //         console.log("delete successfully");
+  //         DeleteFunction(obj);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       errFunction(err);
+  //     });
+  // };
+
   const deleteData = (obj) => {
     setLoader(true);
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
@@ -641,7 +687,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         })
       );
 
-    SPServices.SPDeleteItem({
+    SPServices.SPRecycleItem({
       Listname: ListName,
       ID: obj.Id,
     })
@@ -649,7 +695,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
         if (Ids.length) {
           DeleteFunction(obj);
           for (let i: number = 0; Ids.length > i; i++) {
-            SPServices.SPDeleteItem({
+            SPServices.SPRecycleItem({
               Listname: "SubTasks",
               ID: Ids[i].Id,
             })
@@ -1958,28 +2004,83 @@ const MyTaskDataCategory = (props): JSX.Element => {
     setDeleteObj({});
   }
 
-  const UpdateCategory = (value, Id) => {
+  // const UpdateCategory = (value, Id) => {
+  //   setLoader(true);
+  //   SPServices.SPUpdateItem({
+  //     Listname: "Categories",
+  //     ID: Id,
+  //     RequestJSON: {
+  //       Title: value,
+  //     },
+  //   })
+  //     .then((val) => {
+  //       props.categoryName = categoryValue;
+  //       props.updateCategory(categoryValue, Id);
+  //       setLoader(false);
+  //       setCategoryId(null);
+  //       setIseditdialog(false);
+  //       setCategoryValue("");
+  //       showMessage("Category Updated Successfully!", toastTopRight, "success");
+  //     })
+  //     .catch((err) => {
+  //       errFunction(err);
+  //     });
+  // };
+
+  const UpdateCategory = (value, Id, command) => {
     setLoader(true);
-    SPServices.SPUpdateItem({
-      Listname: "Categories",
-      ID: Id,
-      RequestJSON: {
-        Title: value,
-      },
-    })
-      .then((val) => {
-        props.categoryName = categoryValue;
-        props.updateCategory(categoryValue, Id);
-        setLoader(false);
-        setCategoryId(null);
-        setIseditdialog(false);
-        setCategoryValue("");
-        showMessage("Category Updated Successfully!", toastTopRight, "success");
+
+    if (command === "update") {
+      SPServices.SPUpdateItem({
+        Listname: "Categories",
+        ID: Id,
+        RequestJSON: {
+          Title: value,
+        },
       })
-      .catch((err) => {
-        errFunction(err);
-      });
+        .then((val) => {
+          props.categoryName = categoryValue;
+          props.updateCategory(categoryValue, Id, "update");
+          setLoader(false);
+          setCategoryId(null);
+          setIseditdialog(false);
+          setCategoryValue("");
+          showMessage(
+            "Category Updated Successfully!",
+            toastTopRight,
+            "success"
+          );
+        })
+        .catch((err) => {
+          errFunction(err);
+        });
+    } else if (command === "delete") {
+      SPServices.SPUpdateItem({
+        Listname: "Categories",
+        ID: Id,
+        RequestJSON: {
+          isDeleted: true,
+        },
+      })
+        .then((val) => {
+          props.categoryName = categoryValue;
+          props.updateCategory(categoryValue, Id, "delete");
+          setLoader(false);
+          setCategoryId(null);
+          setIseditdialog(false);
+          setCategoryValue("");
+          showMessage(
+            "Category Updated Successfully!",
+            toastTopRight,
+            "success"
+          );
+        })
+        .catch((err) => {
+          errFunction(err);
+        });
+    }
   };
+
   const Editcategory = (value, value1, value3) => {
     setIseditdialog(value);
     setCategoryValue(value1);
@@ -2097,7 +2198,7 @@ const MyTaskDataCategory = (props): JSX.Element => {
               className={styles.btnColor}
               onClick={() => {
                 if (validationCategory())
-                  UpdateCategory(categoryValue, categoryId);
+                  UpdateCategory(categoryValue, categoryId, "update");
                 else
                   showMessage(
                     "Please enter valid Category",
@@ -2141,7 +2242,10 @@ const MyTaskDataCategory = (props): JSX.Element => {
             message="Are you sure you want to delete?"
             // header="Confirmation"
             // icon="pi pi-exclamation-triangle"
-            accept={acceptDeleteCategory}
+            // accept={acceptDeleteCategory}
+            accept={() => {
+              UpdateCategory(categoryValue, categoryId, "delete");
+            }}
             reject={rejectDeleteCategory}
           />
           {props.categoryName && (

@@ -667,6 +667,52 @@ const UserClientDB = (props): JSX.Element => {
       .catch((err) => errFunction(err));
   };
   //deleteitem
+  // const deleteData = (obj) => {
+  //   setLoader(true);
+  //   let ListName = obj.isParent ? "Tasks" : "SubTasks";
+  //   let Ids = [];
+
+  //   ListName === "Tasks" &&
+  //     obj.children.length &&
+  //     obj?.children.map((val) =>
+  //       Ids.push({
+  //         Id: val.Id,
+  //         isParent: val.isParent,
+  //       })
+  //     );
+
+  //   SPServices.SPDeleteItem({
+  //     Listname: ListName,
+  //     ID: obj.Id,
+  //   })
+  //     .then((res) => {
+  //       if (Ids.length) {
+  //         DeleteFunction(obj);
+  //         for (let i: number = 0; Ids.length > i; i++) {
+  //           SPServices.SPDeleteItem({
+  //             Listname: "SubTasks",
+  //             ID: Ids[i].Id,
+  //           })
+  //             .then((res) => {
+  //               if (Ids.length === i + 1) {
+  //                 console.log("delete successfully");
+  //                 //getcurUser();
+  //               }
+  //             })
+  //             .catch((err) => {
+  //               errFunction(err);
+  //             });
+  //         }
+  //       } else {
+  //         console.log("delete successfully");
+  //         DeleteFunction(obj);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       errFunction(err);
+  //     });
+  // };
+
   const deleteData = (obj) => {
     setLoader(true);
     let ListName = obj.isParent ? "Tasks" : "SubTasks";
@@ -681,7 +727,7 @@ const UserClientDB = (props): JSX.Element => {
         })
       );
 
-    SPServices.SPDeleteItem({
+    SPServices.SPRecycleItem({
       Listname: ListName,
       ID: obj.Id,
     })
@@ -689,7 +735,7 @@ const UserClientDB = (props): JSX.Element => {
         if (Ids.length) {
           DeleteFunction(obj);
           for (let i: number = 0; Ids.length > i; i++) {
-            SPServices.SPDeleteItem({
+            SPServices.SPRecycleItem({
               Listname: "SubTasks",
               ID: Ids[i].Id,
             })
@@ -2076,30 +2122,41 @@ const UserClientDB = (props): JSX.Element => {
               TaggedPeople: JSON.stringify(
                 mentionedEmail?.map((e) => e?.email)
               ),
+              // TaggedPeople: JSON.stringify(mentionedEmail),
             }));
           }}
-          defaultValue={commentDetails?.length === 0 ? htmlText.value : ""}
+          defaultValue={htmlText.value}
           placeHolder={"Enter Comments, @ to mentions..."}
         />
-        {!htmlText.isValid && (
-          <span className={styles.errorText}>comment is required.</span>
-        )}
-        <Button
-          className={styles.addCommentBtn}
-          onClick={() => {
-            if (htmlText?.value?.trim() === "") {
-              setHtmlText((prev) => ({
-                ...prev,
-                isValid: false,
-              }));
-            } else {
-              let hasComments = commentPanel.curObj?.data?.HasComments;
-              addTaskComments(hasComments);
-            }
+        <div
+          style={{
+            marginTop: "38px",
           }}
         >
-          Add Comment
-        </Button>
+          {!htmlText.isValid && (
+            <span className={styles.errorText}>comment is required.</span>
+          )}
+          <Button
+            className={styles.addCommentBtn}
+            onClick={() => {
+              if (
+                // htmlText?.value?.trim() === "" ||
+                // !contentValidationRegex.test(htmlText.value)
+                htmlText.value.replace(/<(.|\n)*?>/g, "").trim().length === 0
+              ) {
+                setHtmlText((prev) => ({
+                  ...prev,
+                  isValid: false,
+                }));
+              } else {
+                let hasComments = commentPanel.curObj?.data?.HasComments;
+                addTaskComments(hasComments);
+              }
+            }}
+          >
+            Add Comment
+          </Button>
+        </div>
         <Divider align="center">
           <span className={styles.defaultText}>recent</span>
         </Divider>

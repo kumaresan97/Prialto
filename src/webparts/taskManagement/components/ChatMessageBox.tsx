@@ -36,7 +36,9 @@ const ChatBox = ({ e, loginUserData }) => {
         />
       )}
       <div className={styles.msgWrapper}>
-        <p>{moment(e?.CreatedOn).format("HH:mm")}</p>
+        <p className={styles.createdTime}>
+          {moment(e?.CreatedOn).format("HH:mm")}
+        </p>
         <div
           className={styles.messageContent}
           contentEditable={false}

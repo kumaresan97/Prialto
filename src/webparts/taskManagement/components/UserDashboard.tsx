@@ -859,7 +859,7 @@ export default function UserDashboard(props) {
               <div className={styles.memberProfileCard}>
                 <div className={styles.profileText}>
                   <span>{props?.currentMember?.Name}</span>
-                  <span>
+                  {/* <span>
                     {props?.currentMember?.Role?.toLowerCase() === "tl"
                       ? "team leader"
                       : props?.currentMember?.Role?.toLowerCase() === "tc"
@@ -867,7 +867,7 @@ export default function UserDashboard(props) {
                       : props?.currentMember?.Role?.toLowerCase() === "pa"
                       ? "personal assistant"
                       : ""}
-                  </span>
+                  </span> */}
                 </div>
                 <Persona
                   className={styles.memberAvatar}

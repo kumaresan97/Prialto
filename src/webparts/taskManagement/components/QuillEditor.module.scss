@@ -97,9 +97,13 @@ span[data-emailPill] {
   align-items: center;
   justify-content: flex-start;
   padding: 10px 12px;
-  &:hover {
-    background-color: #eee;
+  // border-radius: 4px !important;
+  span {
+    margin-top: 2px;
   }
+  // &:hover {
+  //   background-color: #eee;
+  // }
   border-bottom: 1px solid #eee;
 }
 .mentionEditorWrapper {
@@ -135,6 +139,9 @@ span[data-emailPill] {
   align-items: flex-start;
   justify-content: flex-start;
   p {
+    margin: 0;
+  }
+  .createdTime {
     font-size: 0.9rem;
     margin: 0;
     margin-bottom: -2px;

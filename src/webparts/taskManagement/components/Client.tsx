@@ -847,10 +847,32 @@ const Client = (props) => {
     setShowDialog(true);
     // deleteItem(item)
   };
+  // const deleteItem = () => {
+  //   setLoader(true);
+  //   if (showDialog) {
+  //     SPServices.SPDeleteItem({
+  //       Listname: "ClientDetails",
+  //       ID: itemToDelete.Id,
+  //     }).then((res) => {
+  //       setShowDialog(false);
+  //       setLoader(false);
+  //       let deleteobj = clientdetail.filter(
+  //         (val) => val.Id !== itemToDelete.Id
+  //       );
+  //       setClientdetail([...deleteobj]);
+  //       showMessage("Data Deleted Successfully", toastTopRight, "success");
+
+  //       // getdatas();
+  //     });
+  //   } else {
+  //     setShowDialog(false);
+  //   }
+  // };
+
   const deleteItem = () => {
     setLoader(true);
     if (showDialog) {
-      SPServices.SPDeleteItem({
+      SPServices.SPRecycleItem({
         Listname: "ClientDetails",
         ID: itemToDelete.Id,
       }).then((res) => {
@@ -861,7 +883,6 @@ const Client = (props) => {
         );
         setClientdetail([...deleteobj]);
         showMessage("Data Deleted Successfully", toastTopRight, "success");
-
         // getdatas();
       });
     } else {
